@@ -454,6 +454,7 @@ public final class Terminal {
 				if (!running) {
 					return;
 				}
+				
 				reader.print(ConsoleReader.RESET_LINE + "");
 				reader.flush();
 				super.flush();

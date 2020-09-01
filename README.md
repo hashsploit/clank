@@ -21,15 +21,13 @@ Emulator features that are complete will be checked, features that are still in 
 - [x] Inbound handlers for incoming packets.
 - [ ] Oubound handlers for outgoing packets.
 - [ ] SCE-RT encryption/decryption.
-- [ ] SCE-RT packet splitting.
-- [ ] SCE-RT app packet handling (structs).
+- [ ] SCE-RT packet fragmentation/defragmentation.
+- [ ] Medius packet handling (Medius structs).
 - [ ] Lua sandbox.
 - [ ] Lua scripting API.
 - [ ] Send server "system messages" to clients.
 - [ ] Emulates Medius Authentication Server (MAS).
 - [ ] Emulates Medius Lobby Server (MLS).
-- [ ] Configurable EULA screen.
-- [ ] Configurable Announcements screen.
 - [ ] Database and API integration.
 - [ ] Server operator chat commands.
 - [ ] Configurable player server operators.
