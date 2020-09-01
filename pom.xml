@@ -67,12 +67,6 @@
 			<artifactId>netty-all</artifactId>
 			<version>4.1.50.Final</version>
 		</dependency>
-		<!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
-		<dependency>
-			<groupId>org.fusesource.jansi</groupId>
-			<artifactId>jansi</artifactId>
-			<version>1.18</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/jline/jline -->
 		<dependency>
 			<groupId>jline</groupId>
