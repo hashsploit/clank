@@ -11,8 +11,12 @@ if [ ! -f "${DIR}/${JAR}" ]; then
 	exit 1
 fi
 
+if ! command -v java &> /dev/null; then
+    echo -e "$(tput bold)$(tput setaf 1)Java is not installed, please install java!$(tput sgr0)"
+    exit 1
+fi
+
 java -server -XX:+UseG1GC -Xms${INIT_MEM} -Xmx${MAX_MEM} -jar ${DIR}/${JAR} $@
 
 # Fix coloring
 echo -e "$(tput sgr0)"
-
