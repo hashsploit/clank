@@ -7,12 +7,14 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.server.pipeline.OldInboundPacketParser;
+import net.hashsploit.clank.server.pipeline.TestHandler;
 import net.hashsploit.clank.utils.Utils;
 
 public class Client {
 	
 	private static final Logger logger = Logger.getLogger("");
-	private final OldInboundPacketParser mediusPacketParser;
+	private final TestHandler mediusTestHandler;
+	//private final OldInboundPacketParser mediusPacketParser;
 	//private final InboundMessageHandler mediusClientHandler;
 	
 	
@@ -37,11 +39,12 @@ public class Client {
 		
 		logger.info("Client connected: " + getIPAddress());
 		
-		this.mediusPacketParser = new OldInboundPacketParser(this);
+		this.mediusTestHandler = new TestHandler(this);
+		//this.mediusPacketParser = new OldInboundPacketParser(this);
 		//this.mediusClientHandler = new InboundMessageHandler(this);
 		
 		
-		channel.pipeline().addLast("MediusPacketParser", mediusPacketParser);
+		channel.pipeline().addLast("MediusTestHandler", mediusTestHandler);
 		//channel.pipeline().addLast("MediusClientHandler", mediusClientHandler);
 		
 		
