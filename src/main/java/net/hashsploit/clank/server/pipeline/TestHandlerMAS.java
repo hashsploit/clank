@@ -18,12 +18,12 @@ import net.hashsploit.clank.utils.Utils;
 /**
  * Handles a server-side channel.
  */
-public class TestHandler extends ChannelInboundHandlerAdapter { // (1)
+public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 	
 	private static final Logger logger = Logger.getLogger("");
 	private final Client client;
 	
-	public TestHandler(final Client client) {
+	public TestHandlerMAS(final Client client) {
 		super();
 		this.client = client;
 	}

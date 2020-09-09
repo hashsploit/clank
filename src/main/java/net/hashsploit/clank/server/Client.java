@@ -6,14 +6,17 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.hashsploit.clank.MediusComponent;
 import net.hashsploit.clank.server.pipeline.OldInboundPacketParser;
-import net.hashsploit.clank.server.pipeline.TestHandler;
+import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
+import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
 import net.hashsploit.clank.utils.Utils;
 
 public class Client {
 	
 	private static final Logger logger = Logger.getLogger("");
-	private final TestHandler mediusTestHandler;
+	private final TestHandlerMAS testHandlerMAS;
+	private final TestHandlerMLS testHandlerMLS;
 	//private final OldInboundPacketParser mediusPacketParser;
 	//private final InboundMessageHandler mediusClientHandler;
 	
@@ -37,16 +40,24 @@ public class Client {
 		this.txPacketCount = 0L;
 		this.rxPacketCount = 0L;
 		
+		
+		this.testHandlerMAS = new TestHandlerMAS(this);
+		this.testHandlerMLS = new TestHandlerMLS(this);
+
+	
 		logger.info("Client connected: " + getIPAddress());
 		
-		this.mediusTestHandler = new TestHandler(this);
 		//this.mediusPacketParser = new OldInboundPacketParser(this);
 		//this.mediusClientHandler = new InboundMessageHandler(this);
 		
-		
-		channel.pipeline().addLast("MediusTestHandler", mediusTestHandler);
+		if (server.getComponent() == MediusComponent.MEDIUS_AUTHENTICATION_SERVER) {
+			channel.pipeline().addLast("MediusTestHandlerMAS", testHandlerMAS);	
+		}
+		else if (server.getComponent() == MediusComponent.MEDIUS_LOBBY_SERVER) {
+			channel.pipeline().addLast("MediusTestHandlerMLS", testHandlerMLS);
+		}
+
 		//channel.pipeline().addLast("MediusClientHandler", mediusClientHandler);
-		
 		
 		
 		ChannelFuture closeFuture = channel.closeFuture();
