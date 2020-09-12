@@ -21,7 +21,7 @@ public enum RTPacketId {
 	
 	CLIENT_APP_SINGLE(0x03),
 	
-	CLIENT_APP_LIST(0x04),
+	CLIENT_APP_LIST(0x04), 
 	
 	CLIENT_ECHO(0x05),
 	

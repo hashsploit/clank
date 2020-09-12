@@ -1,5 +1,6 @@
 package net.hashsploit.clank.server;
 
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import io.netty.channel.ChannelFuture;
@@ -7,9 +8,12 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.MediusComponent;
+import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.pipeline.OldInboundPacketParser;
 import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
+import net.hashsploit.clank.utils.MediusPacketMapInitializer;
 import net.hashsploit.clank.utils.Utils;
 
 public class Client {
@@ -20,6 +24,7 @@ public class Client {
 	//private final OldInboundPacketParser mediusPacketParser;
 	//private final InboundMessageHandler mediusClientHandler;
 	
+	private HashMap<MediusPacketType, MediusPacket> mediusPacketMap;
 	
 	private Server server;
 	private SocketChannel socketChannel;
@@ -29,6 +34,8 @@ public class Client {
 	private long unixConnectTime;
 	private long txPacketCount;
 	private long rxPacketCount;
+	
+	private byte playerID = 0x00;
 	
 	
 	public Client(Server server, SocketChannel channel) {
@@ -40,6 +47,7 @@ public class Client {
 		this.txPacketCount = 0L;
 		this.rxPacketCount = 0L;
 		
+		this.mediusPacketMap = MediusPacketMapInitializer.getMap();
 		
 		this.testHandlerMAS = new TestHandlerMAS(this);
 		this.testHandlerMLS = new TestHandlerMLS(this);
@@ -47,8 +55,6 @@ public class Client {
 	
 		logger.info("Client connected: " + getIPAddress());
 		
-		//this.mediusPacketParser = new OldInboundPacketParser(this);
-		//this.mediusClientHandler = new InboundMessageHandler(this);
 		
 		if (server.getComponent() == MediusComponent.MEDIUS_AUTHENTICATION_SERVER) {
 			channel.pipeline().addLast("MediusTestHandlerMAS", testHandlerMAS);	
@@ -57,7 +63,6 @@ public class Client {
 			channel.pipeline().addLast("MediusTestHandlerMLS", testHandlerMLS);
 		}
 
-		//channel.pipeline().addLast("MediusClientHandler", mediusClientHandler);
 		
 		
 		ChannelFuture closeFuture = channel.closeFuture();
@@ -172,9 +177,16 @@ public class Client {
 		}
 	}
 	
+	public byte getPlayerId() {
+		return playerID;
+	}
 	
+	public void setPlayerId(byte newId) {
+		this.playerID = newId;
+	}
 	
-	
-	
+	public final HashMap<MediusPacketType, MediusPacket> getMediusMap() {
+		return mediusPacketMap;
+	}
 	
 }

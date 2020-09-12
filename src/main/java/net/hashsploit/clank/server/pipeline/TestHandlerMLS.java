@@ -2,6 +2,10 @@ package net.hashsploit.clank.server.pipeline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -12,7 +16,11 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.util.ReferenceCountUtil;
 import net.hashsploit.clank.server.Client;
 import net.hashsploit.clank.server.DataPacket;
+import net.hashsploit.clank.server.EncryptedDataPacket;
+import net.hashsploit.clank.server.ISCERTMessage;
 import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -42,44 +50,38 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		logger.fine(ctx.channel().remoteAddress() + ": channel inactive");
 	}
 	
-	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for (int j = 0; j < bytes.length; j++) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-	        hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-	    }
-	    return new String(hexChars).toLowerCase();
-	}
-	
-	/* s must be an even-length string. */
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
+
 	
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
         
-		final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
+    	logger.fine("======================================================");
+    	logger.fine("======================================================");
+    	logger.fine("======================================================");
+
+    	final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
 		final byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
 
-		logger.finest("RAW: " + bytesToHex(data));
+		logger.finest("RAW: " + Utils.bytesToHex(data));
 
+		// Get the packets
+		 List<DataPacket> packets = processData(ctx, data);
+		for (DataPacket packet: packets) {
+			processSinglePacket(ctx, packet.toData().array());
+		}
+
+    }
+    
+    private void processSinglePacket(ChannelHandlerContext ctx, byte[] data) {
+		 logger.finest("RAW Single packet: " + Utils.bytesToHex(data));
 		// No valid packet is < 3 or > 2048 bytes, drop the connection
 		if (data.length < 3 || data.length > 2048) {
 			ctx.close();
 			return;
 		}
-
-		// Get RT Packet ID
+    	
+    	// Get RT Packet ID
 		RTPacketId rtid = null;
 		
 		for (RTPacketId p : RTPacketId.values()) {
@@ -88,21 +90,23 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 				break;
 			}
 		}
+		
 	    logger.fine("Packet ID: " + rtid.toString());
 	    logger.fine("Packet ID: " + rtid.getByte());
 		// =============================================
 		//              IF STATEMENTS
 		// =============================================	  
 	    byte[] finalPayload = null; 
-	    String res = replayMap.getResponse(data);
 	    
-	    if (bytesToHex(data).equals("006b000108010500bc2900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000031330000000000000000000000000000005a657138626b494b77704d6632444f5000")) {
-	    	byte[] firstPart = hexStringToByteArray("07170001081000000100");
+	    if (Utils.bytesToHex(data).equals("006b000108010500bc2900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000031330000000000000000000000000000005a657138626b494b77704d6632444f5000")) {
+	    	// TODO: Don't hard code the player ID (0x33 in this example)
+	    	logger.fine(Utils.bytesToHex(data));
+	    	byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
 			byte[] ipAddr = "192.168.1.99".getBytes();
 			int numZeros = 16 - "192.168.1.99".length();
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
-			byte[] zeroTrail = hexStringToByteArray(zeroString);
-			byte[] lastPart = hexStringToByteArray("1a02000100");
+			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
+			byte[] lastPart = Utils.hexStringToByteArray("1a02000100");
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			try {
 				outputStream.write(firstPart);
@@ -115,18 +119,51 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			}
 			
 			finalPayload = outputStream.toByteArray();
-	    }
-	    else if (!res.equals("")) {
-	    	logger.fine("Found matching response: " + res);
-	    	finalPayload = hexStringToByteArray(res);
-	    }
-		
-		if (finalPayload != null) {
-			logger.fine("Final payload: " + bytesToHex(finalPayload));
-	        msg = Unpooled.copiedBuffer(finalPayload);
+	    
+			logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
+	        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
 	        ctx.write(msg); // (1)
 	        ctx.flush(); // (2)
-		}
+	    }
+	    
+	    
+	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
+	    if (rtid.toString().contains("APP")) {
+		    
+			// Get medius packet type
+		    MediusPacketType mediusPacketType = null;
+		    ByteBuffer bb = ByteBuffer.allocate(2);
+		    bb.order(ByteOrder.LITTLE_ENDIAN);
+		    bb.put(data[3]);
+		    bb.put(data[4]);
+		    short shortVal = bb.getShort(0);
+
+		    
+		    // TODO: Make this not O(n)
+			for (MediusPacketType p : MediusPacketType.values()) {
+				if (p.getShort() == shortVal) {
+					mediusPacketType = p;
+					break;
+				}
+			}	
+			
+			ByteBuffer buffer = ByteBuffer.allocate(2);
+			buffer.putShort(shortVal);
+						
+			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(buffer.array()));
+			logger.fine("Found Medius Packet ID: " + mediusPacketType.toString());
+			
+			// Detect which medius packet is being parsed
+		    MediusPacket mediusPacket = client.getMediusMap().get(mediusPacketType);
+		    
+		    // Remove RT-ID and length from the packet data
+		    byte[] packetData = Arrays.copyOfRange(data,5,data.length);
+		    
+		    // Process this medius packet
+		    mediusPacket.process(client, ctx, packetData);
+		    		    
+	    }
+
     }
 
     @Override
@@ -144,4 +181,53 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		buffer.getBytes(buffer.readerIndex(), bytes);
 		return ByteBuffer.wrap(bytes);
 	}
+	
+	private static List<DataPacket> processData(ChannelHandlerContext ctx, byte[] data) {
+		final List<DataPacket> packets = new ArrayList<DataPacket>();
+
+		int index = 0;
+
+		try {
+			while (index < data.length) {
+				final byte id = data[index + 0];
+				
+				ByteBuffer bb = ByteBuffer.allocate(2);
+				bb.order(ByteOrder.LITTLE_ENDIAN);
+				bb.put(data[index+1]);
+				bb.put(data[index+2]);
+				short length = bb.getShort(0);
+				
+				logger.fine("Length: " + Integer.toString(length));
+				byte[] finalData = new byte[length];
+				int offset = 0;
+
+				if (length > 0) {
+					// ID(1) + Length(2)
+					offset += 1 + 2;
+				}
+
+					//logger.warning("PLAIN DATA PACKET");
+					System.arraycopy(data, index + offset, finalData, 0, finalData.length);
+					
+					RTPacketId rtid = null;
+					
+					for (RTPacketId p : RTPacketId.values()) {
+						if (p.getByte() == id) {
+							rtid = p;
+							break;
+						}
+					}
+					
+					packets.add(new DataPacket(rtid, finalData));
+				
+				index += length + 3;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
+
+		return packets;
+	}
+
 }
