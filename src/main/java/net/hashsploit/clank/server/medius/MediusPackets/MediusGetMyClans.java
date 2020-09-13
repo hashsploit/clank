@@ -50,21 +50,21 @@ public class MediusGetMyClans extends MediusPacket {
         ctx.flush(); // (2)
         */
     	
-    	byte[] statusCode = Utils.intToBytes(0);
-    	
-    	byte[] clanID = Utils.intToBytes(5);
-    	byte[] applicationID = Utils.intToBytes(1);
+    	byte[] statusCode = Utils.intToBytesLittle(0);
+    	byte[] clanID = Utils.intToBytesLittle(5);
+    	byte[] applicationID = Utils.intToBytesLittle(1);
     	byte[] clanName = Utils.buildByteArrayFromString("Test", MediusConstants.CLANNAME_MAXLEN.getValue());
-    	byte[] leaderAccountID = Utils.intToBytes(1);
+    	byte[] leaderAccountID = Utils.intToBytesLittle(1);
     	byte[] leaderAccountName = Utils.buildByteArrayFromString("LeaderAccountName", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
     	byte[] stats = Utils.buildByteArrayFromString("0", MediusConstants.CLANSTATS_MAXLEN.getValue());
-    	byte[] clanStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
-    	byte[] endOfList = Utils.hexStringToByteArray("00");
+    	byte[] clanStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
+    	byte[] endOfList = Utils.hexStringToByteArray("0100");
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
 			outputStream.write(MediusPacketType.GetMyClansResponse.getShortByte());
 			outputStream.write(messageID);
+			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(statusCode);			
 			outputStream.write(clanID);
 			outputStream.write(applicationID);

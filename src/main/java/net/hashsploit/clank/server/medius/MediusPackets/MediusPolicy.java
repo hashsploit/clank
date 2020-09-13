@@ -22,6 +22,8 @@ public class MediusPolicy extends MediusPacket {
 	
 	private static final Logger logger = Logger.getLogger("");
     
+	// WORKING !!!
+	
     public MediusPolicy() {
         super(MediusPacketType.Policy);
     }
@@ -39,12 +41,13 @@ public class MediusPolicy extends MediusPacket {
     	buf.get(sessionKey);
 
     	byte [] policy = Utils.buildByteArrayFromString("POLICY TEST", MediusConstants.POLICY_MAXLEN.getValue());
-    	byte[] endOfList = Utils.hexStringToByteArray("00");
+    	byte endOfList = 0x01;
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
 			outputStream.write(MediusPacketType.PolicyResponse.getShortByte());
 			outputStream.write(messageID);
+			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));		
 			outputStream.write(policy);
 			outputStream.write(endOfList);

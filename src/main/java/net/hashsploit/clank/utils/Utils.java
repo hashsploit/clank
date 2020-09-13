@@ -9,19 +9,25 @@ public class Utils {
 	
 	// Prevent instantiation
 	private Utils() {}
+
 	
-	
-	
-	
-	
-	
-	
+	public static byte[] intToBytesLittle(final int data) {
+		ByteBuffer b = ByteBuffer.allocate(4);
+		b.order(ByteOrder.LITTLE_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
+		b.putInt(data);
+
+		byte[] result = b.array();
+		return result;
+	}
+		
 	
 	public static byte[] buildByteArrayFromString(String s, int len) {
 		byte[] dst = new byte[len];
 		byte[] src = s.getBytes();
 		System.arraycopy(src, 0, dst, 0, src.length);
-		dst[len-1] = 0x00;
+		if (len != 1) {
+			dst[len-1] = 0x00;
+		}
 		return dst;
 	}
 	
@@ -95,12 +101,6 @@ public class Utils {
 
 		byte[] result = b.array();
 		return result;
-//	    return new byte[] {
-//	        (byte)((data >> 24) & 0xff),
-//	        (byte)((data >> 16) & 0xff),
-//	        (byte)((data >> 8) & 0xff),
-//	        (byte)((data >> 0) & 0xff),
-//	    };
 	}
 	
 	

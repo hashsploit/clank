@@ -138,7 +138,6 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		    bb.put(data[4]);
 		    short shortVal = bb.getShort(0);
 
-		    
 		    // TODO: Make this not O(n)
 			for (MediusPacketType p : MediusPacketType.values()) {
 				if (p.getShort() == shortVal) {
