@@ -14,14 +14,16 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerOnlineState;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusChannelInfo extends MediusPacket {
+public class MediusGetLobbyPlayerNames_ExtraInfo extends MediusPacket {
 
 	private static final Logger logger = Logger.getLogger("");
 
-	public MediusChannelInfo() {
-		super(MediusPacketType.ChannelInfo);
+	public MediusGetLobbyPlayerNames_ExtraInfo() {
+		super(MediusPacketType.GetLobbyPlayerNames_ExtraInfo);
 	}
 
 	@Override
@@ -30,11 +32,9 @@ public class MediusChannelInfo extends MediusPacket {
 		ByteBuffer buf = ByteBuffer.wrap(packetData);
 
 		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
 		byte[] worldId = new byte[4];
 
 		buf.get(messageID);
-		buf.get(sessionKey);
 		buf.get(worldId);
 
 		// RESPONSE
@@ -43,24 +43,35 @@ public class MediusChannelInfo extends MediusPacket {
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
 		try {
-			outputStream.write(MediusPacketType.ChannelInfoResponse.getShortByte());
+			outputStream.write(MediusPacketType.GetLobbyPlayerNames_ExtraInfoResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
-
-			// Lobby name (64)
-			byte[] lobbyName = "Aquatos v2".getBytes();
-			int numLobbyNameZeros = MediusConstants.LOBBYNAME_MAXLEN.getValue() - "Aquatos v2".length();
-			String lobbyNameZeroString = new String(new char[numLobbyNameZeros]).replace("\0", "00");
-			byte[] lobbyNameZeros = Utils.hexStringToByteArray(lobbyNameZeroString);
-			outputStream.write(lobbyName);
-			outputStream.write(lobbyNameZeros);
 			
-			// Active players
-			outputStream.write(Utils.intToBytesLittle(3));
+			// LIST OF ACCOUNTS
 			
-			// Max players
-			outputStream.write(Utils.intToBytesLittle(100));
+			// Account ID
+			outputStream.write(Utils.intToBytesLittle(1));
+			
+			// Account name (32)
+			outputStream.write(Utils.buildByteArrayFromString("Bunz", MediusConstants.ACCOUNTNAME_MAXLEN.getValue()));
+			
+			// Online State
+			MediusPlayerOnlineState onlineState = new MediusPlayerOnlineState(MediusPlayerStatus.MEDIUS_PLAYER_IN_AUTH_WORLD, 0, 0, "Aquatos v2", "Aquatos v2");
+			
+				// connect state
+				outputStream.write(Utils.intToBytesLittle(onlineState.getConnectionStatus().getValue()));
+				// lobby world id
+				outputStream.write(Utils.intToBytesLittle(onlineState.getLobbyWorldId()));
+				// game world id
+				outputStream.write(Utils.intToBytesLittle(onlineState.getGameWorldId()));
+				// lobby name
+				outputStream.write(Utils.buildByteArrayFromString(onlineState.getGameName(), MediusConstants.WORLDNAME_MAXLEN.getValue()));
+				// game name
+				outputStream.write(Utils.buildByteArrayFromString(onlineState.getGameName(), MediusConstants.GAMENAME_MAXLEN.getValue()));
+			
+			// End of list
+			outputStream.write(Utils.hexStringToByteArray("01"));
 			
 
 		} catch (IOException e) {
