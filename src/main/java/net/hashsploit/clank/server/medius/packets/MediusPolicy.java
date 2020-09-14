@@ -1,9 +1,8 @@
-package net.hashsploit.clank.server.medius.MediusPackets;
+package net.hashsploit.clank.server.medius.packets;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -19,43 +18,43 @@ import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusPolicy extends MediusPacket {
-	
-	private static final Logger logger = Logger.getLogger("");
-    
-	// WORKING !!!
-	
-    public MediusPolicy() {
-        super(MediusPacketType.Policy);
-    }
-    
-    @Override
-    public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) { 
-    	// Process the packet
-    	
-    	ByteBuffer buf = ByteBuffer.wrap(packetData);
-    	
-    	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-    	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-    	
-    	buf.get(messageID);
-    	buf.get(sessionKey);
 
-    	byte [] policy = Utils.buildByteArrayFromString("POLICY TEST", MediusConstants.POLICY_MAXLEN.getValue());
-    	byte endOfList = 0x01;
-    	
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+	private static final Logger logger = Logger.getLogger("");
+
+	// WORKING !!!
+
+	public MediusPolicy() {
+		super(MediusPacketType.Policy);
+	}
+
+	@Override
+	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
+		// Process the packet
+
+		ByteBuffer buf = ByteBuffer.wrap(packetData);
+
+		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+		byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+
+		buf.get(messageID);
+		buf.get(sessionKey);
+
+		byte[] policy = Utils.buildByteArrayFromString("POLICY TEST", MediusConstants.POLICY_MAXLEN.getValue());
+		byte endOfList = 0x01;
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(MediusPacketType.PolicyResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));		
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
 			outputStream.write(policy);
 			outputStream.write(endOfList);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
+
 //    	byte[] locationID = Utils.intToBytes(10);// random location
 //    	byte[] locationName = Utils.buildByteArrayFromString("Chicago", MediusConstants.LOCATIONNAME_MAXLEN.getValue());
 //    	byte[] statusCode = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
@@ -73,16 +72,16 @@ public class MediusPolicy extends MediusPacket {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-		
+
 		// Combine RT id and len
 		byte[] data = outputStream.toByteArray();
 		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-		
+
 		byte[] finalPayload = packet.toData().array();
 		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-        ctx.write(msg); // (1)
-        ctx.flush(); // (2)
-    }
+		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
+		ctx.write(msg); // (1)
+		ctx.flush(); // (2)
+	}
 
 }

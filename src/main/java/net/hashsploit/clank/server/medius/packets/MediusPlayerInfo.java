@@ -1,9 +1,8 @@
-package net.hashsploit.clank.server.medius.MediusPackets;
+package net.hashsploit.clank.server.medius.packets;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
