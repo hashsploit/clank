@@ -43,8 +43,8 @@ public class MediusJoinChannel extends MediusPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
-		byte[] ipAddr = "172.16.222.5".getBytes();
-		int numZeros = 16 - "172.16.222.5".length();
+		byte[] ipAddr = "172.16.222.31".getBytes();
+		int numZeros = 16 - "172.16.222.31".length();
 		String zeroString = new String(new char[numZeros]).replace("\0", "00");
 		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
@@ -64,16 +64,16 @@ public class MediusJoinChannel extends MediusPacket {
 			outputStream.write(Utils.intToBytesLittle(10078)); // port
 
 			outputStream.write(Utils.hexStringToByteArray("00000000")); // world id
+			
+			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000FFFFFFFF0B000000")); // ???
 
-			// outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000FFFFFFFF0B000000CF09ADE3EA5551113BBB519AC5BCB0CB45CD22DD399257E74E886684A12A3E68A865F487CE86777545D6CBFD90C2C6186F7D05E82419DB2E2230E7F73C"));
-			// // RSA_KEY 144
-			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")); // RSA_KEY 144
+			//outputStream.write(Utils.hexStringToByteArray("CF09ADE3EA5551113BBB519AC5BCB0CB45CD22DD399257E74E886684A12A3E68A865F487CE86777545D6CBFD90C2C6186F7D05E82419DB2E2230E7F73CCF8BB33333323837")); // RSA_KEY 64
+			
+			outputStream.write(Utils.hexStringToByteArray("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")); // RSA_KEY 64
 
-			outputStream.write(Utils.hexStringToByteArray("CF8BB33333323837000000000000000000")); // aSessionKey
-			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
+			outputStream.write(Utils.hexStringToByteArray("0000000000000000000000000000000000")); // aSessionKey
 
-			outputStream.write(Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E")); // aAccessKey
-			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
+			outputStream.write(Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E00")); // aAccessKey
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
