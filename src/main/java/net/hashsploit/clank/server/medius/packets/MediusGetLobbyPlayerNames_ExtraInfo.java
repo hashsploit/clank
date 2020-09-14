@@ -57,7 +57,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfo extends MediusPacket {
 			outputStream.write(Utils.buildByteArrayFromString("Bunz", MediusConstants.ACCOUNTNAME_MAXLEN.getValue()));
 			
 			// Online State
-			MediusPlayerOnlineState onlineState = new MediusPlayerOnlineState(MediusPlayerStatus.MEDIUS_PLAYER_IN_AUTH_WORLD, 0, 0, "Aquatos v2", "Aquatos v2");
+			MediusPlayerOnlineState onlineState = new MediusPlayerOnlineState(MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD, 0, 0, "Aquatos v2", "Aquatos v2");
 			
 				// connect state
 				outputStream.write(Utils.intToBytesLittle(onlineState.getConnectionStatus().getValue()));
