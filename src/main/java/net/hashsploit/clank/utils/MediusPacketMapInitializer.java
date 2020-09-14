@@ -4,23 +4,23 @@ import java.util.HashMap;
 
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusAccountUpdateStats;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusChannelList_ExtraInfoOne;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusChatToggle;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusClearGameListFilterZero;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusGameList_ExtraInfoZero;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusGetAllAnnouncements;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusGetBuddyList_ExtraInfo;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusGetLadderStatsWide;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusGetLocations;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusGetMyClanMessages;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusGetMyClans;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusPlayerInfo;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusPolicy;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusSetGameListFilterZero;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusSetLobbyWorldFilter;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusUpdateLadderStatsWide;
-import net.hashsploit.clank.server.medius.MediusPackets.MediusUpdateUserState;
+import net.hashsploit.clank.server.medius.packets.MediusAccountUpdateStats;
+import net.hashsploit.clank.server.medius.packets.MediusChannelList_ExtraInfoOne;
+import net.hashsploit.clank.server.medius.packets.MediusChatToggle;
+import net.hashsploit.clank.server.medius.packets.MediusClearGameListFilterZero;
+import net.hashsploit.clank.server.medius.packets.MediusGameList_ExtraInfoZero;
+import net.hashsploit.clank.server.medius.packets.MediusGetAllAnnouncements;
+import net.hashsploit.clank.server.medius.packets.MediusGetBuddyList_ExtraInfo;
+import net.hashsploit.clank.server.medius.packets.MediusGetLadderStatsWide;
+import net.hashsploit.clank.server.medius.packets.MediusGetLocations;
+import net.hashsploit.clank.server.medius.packets.MediusGetMyClanMessages;
+import net.hashsploit.clank.server.medius.packets.MediusGetMyClans;
+import net.hashsploit.clank.server.medius.packets.MediusPlayerInfo;
+import net.hashsploit.clank.server.medius.packets.MediusPolicy;
+import net.hashsploit.clank.server.medius.packets.MediusSetGameListFilterZero;
+import net.hashsploit.clank.server.medius.packets.MediusSetLobbyWorldFilter;
+import net.hashsploit.clank.server.medius.packets.MediusUpdateLadderStatsWide;
+import net.hashsploit.clank.server.medius.packets.MediusUpdateUserState;
 
 public class MediusPacketMapInitializer {
 	
