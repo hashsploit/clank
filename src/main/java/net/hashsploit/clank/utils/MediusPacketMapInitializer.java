@@ -5,6 +5,7 @@ import java.util.HashMap;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.packets.MediusAccountUpdateStats;
+import net.hashsploit.clank.server.medius.packets.MediusChannelInfo;
 import net.hashsploit.clank.server.medius.packets.MediusChannelList_ExtraInfoOne;
 import net.hashsploit.clank.server.medius.packets.MediusChatToggle;
 import net.hashsploit.clank.server.medius.packets.MediusClearGameListFilterZero;
@@ -49,6 +50,8 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.ChannelList_ExtraInfo1, new MediusChannelList_ExtraInfoOne());  // hard coded
 
 		mp.put(MediusPacketType.JoinChannel, new MediusJoinChannel());  // hard coded
+		
+		mp.put(MediusPacketType.ChannelInfo, new MediusChannelInfo());  // hard coded
 	
 		return mp;
 	}

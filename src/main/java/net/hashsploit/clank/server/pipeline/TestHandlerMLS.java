@@ -102,12 +102,12 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	    	// TODO: Don't hard code the player ID (0x33 in this example)
 	    	logger.fine(Utils.bytesToHex(data));
 	    	byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
-			byte[] ipAddr = "192.168.1.99".getBytes();
-			int numZeros = 16 - "192.168.1.99".length();
+			byte[] ipAddr = "172.16.222.31".getBytes();
+			int numZeros = 16 - "172.16.222.31".length();
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
 			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 			byte[] lastPart = Utils.hexStringToByteArray("1a02000100");
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {
 				outputStream.write(firstPart);
 				outputStream.write(ipAddr);
@@ -125,6 +125,66 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	        ctx.write(msg); // (1)
 	        ctx.flush(); // (2)
 	    }
+	    
+	    
+	    
+	    // Handle cities reconnect
+	    else if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
+	    	
+	    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			try {
+				
+				// ID_14
+				//byte[] p14 = Utils.hexStringToByteArray("BE2F79946D8FFFCA8D08671D329ACDB89A488F33ABEDD83C278E8C6F4FA68CBA0A66CEEC21EB8EE6C841B725FAA913E3A6982ECAF76B85977C36C1B4538C8850");
+				final byte[] p14 = Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+				outputStream.write(RTPacketId.SERVER_CRYPTKEY_GAME.getByte());
+				outputStream.write(Utils.shortToBytesLittle((short) p14.length));
+				outputStream.write(p14);
+				
+				// ID_07
+				//outputStream.write(Utils.hexStringToByteArray("0108D30000010039362E3234322E38382E333600000000")); // ip address to send back to the client
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();
+				
+				baos.write(Utils.hexStringToByteArray("0108D300000100"));
+				
+				byte[] ipAddr = client.getIPAddressAsBytes();
+				int numZeros = 16 - client.getIPAddressAsBytes().length;
+				String zeroString = new String(new char[numZeros]).replace("\0", "00");
+				byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
+				
+				baos.write(ipAddr);
+				baos.write(zeroTrail);
+				baos.write(Utils.hexStringToByteArray("00"));
+				
+				
+				outputStream.write(RTPacketId.SERVER_CONNECT_ACCEPT_TCP.getByte());
+				outputStream.write(Utils.shortToBytesLittle((short) baos.size()));
+				outputStream.write(baos.toByteArray());
+				
+				// ID_1a
+				//outputStream.write(Utils.hexStringToByteArray("0100"));
+				final byte[] p1a = Utils.hexStringToByteArray("0100");
+				outputStream.write(RTPacketId.SERVER_CONNECT_COMPLETE.getByte());
+				outputStream.write(Utils.shortToBytesLittle((short) p1a.length));
+				outputStream.write(p1a);
+				
+				
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+
+			finalPayload = outputStream.toByteArray();
+	    
+			logger.fine("Cities re-connect Final payload: " + Utils.bytesToHex(finalPayload));
+	        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
+	        ctx.write(msg); // (1)
+	        ctx.flush(); // (2)
+		}
+	    
+	    
+	    
 	    
 	    
 	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
