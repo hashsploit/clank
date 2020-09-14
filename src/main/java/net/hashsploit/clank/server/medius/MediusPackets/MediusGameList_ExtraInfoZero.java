@@ -18,38 +18,83 @@ import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGetAllAnnouncements extends MediusPacket {
+public class MediusGameList_ExtraInfoZero extends MediusPacket {
 	
 	private static final Logger logger = Logger.getLogger("");
     
-    public MediusGetAllAnnouncements() {
-        super(MediusPacketType.GetAllAnnouncements);
+    public MediusGameList_ExtraInfoZero() {
+        super(MediusPacketType.GameList_ExtraInfo0);
     }
     
     @Override
     public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) { 
     	// Process the packet
+    	try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			logger.fine("Error sleeping...");
+			e1.printStackTrace();
+		}
     	
     	ByteBuffer buf = ByteBuffer.wrap(packetData);
     	
     	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-    	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+    	byte[] pageID = new byte[2];
+    	byte[] pageSize = new byte[2];
     	
     	buf.get(messageID);
-    	buf.get(sessionKey);
-
-    	byte [] announcementID = Utils.intToBytesLittle(10);
-    	byte [] announcement = Utils.buildByteArrayFromString("Announcment TEST", MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());
+    	buf.get(pageID);
+    	buf.get(pageSize);
+    	
+    	byte[] mediusWorldID = Utils.intToBytesLittle(40);
+    	byte[] playerCount = Utils.shortToBytesLittle((short) 1);
+    	byte[] minPlayers = Utils.shortToBytesLittle((short) 1);
+    	byte[] maxPlayers = Utils.shortToBytesLittle((short) 8);
+    	byte[] gameLevel = Utils.intToBytesLittle(1);
+    	byte[] playerSkillLevel = Utils.intToBytesLittle(1);
+    	byte[] rulesSet = Utils.intToBytesLittle(0);
+    	byte[] genericField1 = Utils.intToBytesLittle(0);
+    	byte[] genericField2 = Utils.intToBytesLittle(0);
+    	byte[] genericField3 = Utils.intToBytesLittle(0);
+    	byte[] genericField4 = Utils.intToBytesLittle(0);
+    	byte[] genericField5 = Utils.intToBytesLittle(0);
+    	byte[] genericField6 = Utils.intToBytesLittle(0);
+    	byte[] genericField7 = Utils.intToBytesLittle(0);
+    	byte[] genericField8 = Utils.intToBytesLittle(0);
+    	byte[] worldSecurityLevelType = Utils.intToBytesLittle(1);
+    	byte[] worldStatus = Utils.intToBytesLittle(1);
+    	byte[] gameHostType = Utils.intToBytesLittle(0);
+    	byte[] gameName = Utils.buildByteArrayFromString("1v1 f.o dox", MediusConstants.GAMENAME_MAXLEN.getValue());
+    	byte[] gameStats = Utils.buildByteArrayFromString("game stats", MediusConstants.GAMESTATS_MAXLEN.getValue());
     	byte endOfList = 0x01;
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
-			outputStream.write(MediusPacketType.GetAnnouncementsResponse.getShortByte());
+			outputStream.write(MediusPacketType.GameList_ExtraInfoResponse0.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));		
-			outputStream.write(announcementID);
-			outputStream.write(announcement);
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));	
+			outputStream.write(mediusWorldID);
+			outputStream.write(playerCount);
+			outputStream.write(minPlayers);
+			outputStream.write(maxPlayers);
+			outputStream.write(gameLevel);
+			outputStream.write(playerSkillLevel);
+			outputStream.write(rulesSet);
+			outputStream.write(genericField1);
+			outputStream.write(genericField2);
+			outputStream.write(genericField3);
+			outputStream.write(genericField4);
+			outputStream.write(genericField5);
+			outputStream.write(genericField6);
+			outputStream.write(genericField7);
+			outputStream.write(genericField8);
+			outputStream.write(worldSecurityLevelType);
+			outputStream.write(worldStatus);
+			outputStream.write(gameHostType);
+			outputStream.write(gameName);
+			outputStream.write(gameStats);
 			outputStream.write(endOfList);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

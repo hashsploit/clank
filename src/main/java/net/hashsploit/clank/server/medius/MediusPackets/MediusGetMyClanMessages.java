@@ -18,12 +18,12 @@ import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGetAllAnnouncements extends MediusPacket {
+public class MediusGetMyClanMessages extends MediusPacket {
 	
 	private static final Logger logger = Logger.getLogger("");
     
-    public MediusGetAllAnnouncements() {
-        super(MediusPacketType.GetAllAnnouncements);
+    public MediusGetMyClanMessages() {
+        super(MediusPacketType.GetMyClanMessages);
     }
     
     @Override
@@ -34,22 +34,29 @@ public class MediusGetAllAnnouncements extends MediusPacket {
     	
     	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
     	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+    	byte[] clanID = new byte[4];
+    	byte[] start = new byte[4];
+    	byte[] pageSize= new byte[4];
     	
     	buf.get(messageID);
     	buf.get(sessionKey);
-
-    	byte [] announcementID = Utils.intToBytesLittle(10);
-    	byte [] announcement = Utils.buildByteArrayFromString("Announcment TEST", MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());
+    	buf.get(clanID);
+    	buf.get(start);
+    	buf.get(pageSize);
+    	
+    	
+    	byte [] clanIDresponse = Utils.intToBytesLittle(1);
+    	byte [] message = Utils.buildByteArrayFromString("Clan message TEST", MediusConstants.CLANMSG_MAXLEN.getValue());
     	byte endOfList = 0x01;
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
-			outputStream.write(MediusPacketType.GetAnnouncementsResponse.getShortByte());
+			outputStream.write(MediusPacketType.GetMyClanMessagesResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));		
-			outputStream.write(announcementID);
-			outputStream.write(announcement);
+			outputStream.write(clanID);
+			outputStream.write(message);
 			outputStream.write(endOfList);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

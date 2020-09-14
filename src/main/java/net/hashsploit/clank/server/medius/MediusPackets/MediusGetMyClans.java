@@ -53,26 +53,27 @@ public class MediusGetMyClans extends MediusPacket {
     	byte[] statusCode = Utils.intToBytesLittle(0);
     	byte[] clanID = Utils.intToBytesLittle(5);
     	byte[] applicationID = Utils.intToBytesLittle(1);
-    	byte[] clanName = Utils.buildByteArrayFromString("Test", MediusConstants.CLANNAME_MAXLEN.getValue());
+    	byte[] clanName = Utils.buildByteArrayFromString("Test clan name", MediusConstants.CLANNAME_MAXLEN.getValue()); // 32
     	byte[] leaderAccountID = Utils.intToBytesLittle(1);
     	byte[] leaderAccountName = Utils.buildByteArrayFromString("LeaderAccountName", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
     	byte[] stats = Utils.buildByteArrayFromString("0", MediusConstants.CLANSTATS_MAXLEN.getValue());
     	byte[] clanStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
-    	byte[] endOfList = Utils.hexStringToByteArray("0100");
+    	//byte[] endOfList = Utils.hexStringToByteArray("01000000");
+    	byte endOfList = 0x01;
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
 			outputStream.write(MediusPacketType.GetMyClansResponse.getShortByte());
-			outputStream.write(messageID);
-			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(statusCode);			
-			outputStream.write(clanID);
-			outputStream.write(applicationID);
-			outputStream.write(clanName);
-			outputStream.write(leaderAccountID);
-			outputStream.write(leaderAccountName);
-			outputStream.write(stats);
-			outputStream.write(clanStatus);
+			outputStream.write(messageID); // 21
+			outputStream.write(Utils.hexStringToByteArray("000000")); // 3
+			outputStream.write(statusCode);	// 4
+			outputStream.write(clanID); // 4
+			outputStream.write(applicationID); // 4
+			outputStream.write(clanName); // 32
+			outputStream.write(leaderAccountID); // 4
+			outputStream.write(leaderAccountName); // 32
+			outputStream.write(stats); // 256
+			outputStream.write(clanStatus); // 4
 			outputStream.write(endOfList);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

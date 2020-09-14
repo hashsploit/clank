@@ -23,6 +23,7 @@ public class MediusUpdateUserState extends MediusPacket {
     	// Process the packet
     	logger.fine("Update user state: " + Utils.bytesToHex(packetData));
     	
+    	/*
     	byte[] finalPayload = Utils.hexStringToByteArray("0a1e00019731000000000000000000000000000000000000000000000000000000");
     		
     	
@@ -30,6 +31,7 @@ public class MediusUpdateUserState extends MediusPacket {
         ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
         ctx.write(msg); // (1)
         ctx.flush(); // (2)
+    	*/
     }
 
 }

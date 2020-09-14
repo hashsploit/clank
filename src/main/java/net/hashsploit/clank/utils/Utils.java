@@ -10,6 +10,14 @@ public class Utils {
 	// Prevent instantiation
 	private Utils() {}
 
+	public static byte[] shortToBytesLittle(final short data) {
+		ByteBuffer b = ByteBuffer.allocate(2);
+		b.order(ByteOrder.LITTLE_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
+		b.putShort(data);
+
+		byte[] result = b.array();
+		return result;
+	}
 	
 	public static byte[] intToBytesLittle(final int data) {
 		ByteBuffer b = ByteBuffer.allocate(4);

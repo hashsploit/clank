@@ -18,12 +18,12 @@ import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGetAllAnnouncements extends MediusPacket {
+public class MediusSetGameListFilterZero extends MediusPacket {
 	
 	private static final Logger logger = Logger.getLogger("");
     
-    public MediusGetAllAnnouncements() {
-        super(MediusPacketType.GetAllAnnouncements);
+    public MediusSetGameListFilterZero() {
+        super(MediusPacketType.SetGameListFilter0);
     }
     
     @Override
@@ -33,24 +33,32 @@ public class MediusGetAllAnnouncements extends MediusPacket {
     	ByteBuffer buf = ByteBuffer.wrap(packetData);
     	
     	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-    	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+    	byte[] filterField = new byte[4];
+    	byte[] mask = new byte[4];
+    	byte[] comparisonOperator = new byte[4];
+    	byte[] baselineValue = new byte[4];
     	
     	buf.get(messageID);
-    	buf.get(sessionKey);
-
-    	byte [] announcementID = Utils.intToBytesLittle(10);
-    	byte [] announcement = Utils.buildByteArrayFromString("Announcment TEST", MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());
-    	byte endOfList = 0x01;
+    	buf.get(filterField);
+    	buf.get(mask);
+    	buf.get(comparisonOperator);
+    	buf.get(baselineValue);
+    	
+    	
+    	byte[] filterID = Utils.intToBytesLittle(154); 
+    	logger.fine(Utils.bytesToHex(messageID));
+    	logger.fine(Utils.bytesToHex(Utils.hexStringToByteArray("000000")));
+    	logger.fine(Utils.bytesToHex(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue())));
+    	logger.fine(Utils.bytesToHex(filterID));
+    	
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
-			outputStream.write(MediusPacketType.GetAnnouncementsResponse.getShortByte());
+			outputStream.write(MediusPacketType.SetGameListFilterResponse0.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));		
-			outputStream.write(announcementID);
-			outputStream.write(announcement);
-			outputStream.write(endOfList);
+			outputStream.write(filterID);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

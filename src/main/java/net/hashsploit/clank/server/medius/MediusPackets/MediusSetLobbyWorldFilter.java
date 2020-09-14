@@ -18,12 +18,12 @@ import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGetAllAnnouncements extends MediusPacket {
+public class MediusSetLobbyWorldFilter extends MediusPacket {
 	
 	private static final Logger logger = Logger.getLogger("");
     
-    public MediusGetAllAnnouncements() {
-        super(MediusPacketType.GetAllAnnouncements);
+    public MediusSetLobbyWorldFilter() {
+        super(MediusPacketType.SetLobbyWorldFilter);
     }
     
     @Override
@@ -33,24 +33,40 @@ public class MediusGetAllAnnouncements extends MediusPacket {
     	ByteBuffer buf = ByteBuffer.wrap(packetData);
     	
     	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-    	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-    	
-    	buf.get(messageID);
-    	buf.get(sessionKey);
+    	byte[] filter1 = new byte[4];
+    	byte[] filter2 = new byte[4];
+    	byte[] filter3 = new byte[4];
+    	byte[] filter4= new byte[4];
+    	byte[] lobbyFilterType = new byte[4];
+    	byte[] lobbyFilterMaskLevelType = new byte[4];
 
-    	byte [] announcementID = Utils.intToBytesLittle(10);
-    	byte [] announcement = Utils.buildByteArrayFromString("Announcment TEST", MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());
-    	byte endOfList = 0x01;
+    	buf.get(messageID);
+    	buf.get(filter1);
+    	buf.get(filter2);
+    	buf.get(filter3);
+    	buf.get(filter4);
+    	buf.get(lobbyFilterType);
+    	buf.get(lobbyFilterMaskLevelType);
+    	
+    	byte[] filterID = Utils.intToBytesLittle(154); 
+    	logger.fine(Utils.bytesToHex(messageID));
+    	logger.fine(Utils.bytesToHex(Utils.hexStringToByteArray("000000")));
+    	logger.fine(Utils.bytesToHex(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue())));
+
+    	
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
-			outputStream.write(MediusPacketType.GetAnnouncementsResponse.getShortByte());
+			outputStream.write(MediusPacketType.SetLobbyWorldFilterResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));		
-			outputStream.write(announcementID);
-			outputStream.write(announcement);
-			outputStream.write(endOfList);
+			outputStream.write(filter1);
+			outputStream.write(filter2);
+			outputStream.write(filter3);
+			outputStream.write(filter4);
+			outputStream.write(lobbyFilterType);
+			outputStream.write(lobbyFilterMaskLevelType);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
