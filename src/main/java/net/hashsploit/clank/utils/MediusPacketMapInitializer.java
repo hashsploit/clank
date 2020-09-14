@@ -15,6 +15,7 @@ import net.hashsploit.clank.server.medius.packets.MediusGetLadderStatsWide;
 import net.hashsploit.clank.server.medius.packets.MediusGetLocations;
 import net.hashsploit.clank.server.medius.packets.MediusGetMyClanMessages;
 import net.hashsploit.clank.server.medius.packets.MediusGetMyClans;
+import net.hashsploit.clank.server.medius.packets.MediusJoinChannel;
 import net.hashsploit.clank.server.medius.packets.MediusPlayerInfo;
 import net.hashsploit.clank.server.medius.packets.MediusPolicy;
 import net.hashsploit.clank.server.medius.packets.MediusSetGameListFilterZero;
@@ -47,6 +48,7 @@ public class MediusPacketMapInitializer {
 		
 		mp.put(MediusPacketType.ChannelList_ExtraInfo1, new MediusChannelList_ExtraInfoOne());  // hard coded
 
+		mp.put(MediusPacketType.JoinChannel, new MediusJoinChannel());  // hard coded
 	
 		return mp;
 	}
