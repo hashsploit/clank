@@ -35,6 +35,7 @@ public class MediusJoinChannel extends MediusPacket {
 		byte[] lobbyChannelPassword = new byte[MediusConstants.LOBBYPASSWORD_MAXLEN.getValue()];
 
 		buf.get(messageID);
+		buf.get(sessionKey);
 		buf.get(worldId);
 		buf.get(lobbyChannelPassword);
 
