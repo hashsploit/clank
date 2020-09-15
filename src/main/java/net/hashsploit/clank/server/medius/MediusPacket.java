@@ -21,6 +21,14 @@ public abstract class MediusPacket {
     }
     
     
+    public void read(byte[] dataPacket) {
+    	
+    }
+    
+    public void write(Client client, ChannelHandlerContext ctx) {
+    	
+    }
+    
     public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) { 
 
     }

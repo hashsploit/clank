@@ -20,60 +20,67 @@ import net.hashsploit.clank.utils.Utils;
 public class MediusClearGameListFilterZero extends MediusPacket {
 
 	private static final Logger logger = Logger.getLogger("");
+	
+	private byte[] responsePacketType = MediusPacketType.ClearGameListFilterResponse.getShortByte();
 
+	private byte[] messageID;
+	private byte[] filterID;
+	
 	public MediusClearGameListFilterZero() {
 		super(MediusPacketType.ClearGameListFilter0);
 	}
-
+	
 	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
-
+	public void read(byte[] packetData) {
 		ByteBuffer buf = ByteBuffer.wrap(packetData);
 
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] filterID = new byte[4];
+		messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+		byte[] buffer = new byte[3];
+		filterID = new byte[4];
 
 		buf.get(messageID);
+		buf.get(buffer);
 		buf.get(filterID);
+		
+		logger.finest("ClearGameListFilter0 data read:");
+		logger.finest("Message ID  : " + Utils.bytesToHex(messageID) + " | Length: " + Integer.toString(messageID.length));
+		logger.finest("filterID : " + Utils.bytesToHex(filterID) + " | Length: " + Integer.toString(filterID.length));
+	}
+	
+	@Override
+	public void write(Client client, ChannelHandlerContext ctx) {
+		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
 
+		logger.finest("Writing ClearGameListFilter0 OUT:");
+		logger.finest("CallbackStatus : " + Utils.bytesToHex(callbackStatus) + " | Length: " + Integer.toString(callbackStatus.length));
+		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(MediusPacketType.ClearGameListFilterResponse.getShortByte());
+			outputStream.write(responsePacketType);
 			outputStream.write(messageID);
-			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
+			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
+			outputStream.write(callbackStatus);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-//    	byte[] locationID = Utils.intToBytes(10);// random location
-//    	byte[] locationName = Utils.buildByteArrayFromString("Chicago", MediusConstants.LOCATIONNAME_MAXLEN.getValue());
-//    	byte[] statusCode = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
-//    	byte[] endOfList = Utils.hexStringToByteArray("00");
-//
-//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-//		try {
-//			outputStream.write(MediusPacketType.GetLocationsResponse.getShortByte());
-//			outputStream.write(messageID);
-//			outputStream.write(locationID);			
-//			outputStream.write(locationName);			
-//			outputStream.write(statusCode);			
-//			outputStream.write(endOfList);			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
+		
 		// Combine RT id and len
 		byte[] data = outputStream.toByteArray();
+		logger.finest("Final Payload Length: " + Integer.toString(data.length));
 		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
 
 		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
+		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
 		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
 		ctx.write(msg); // (1)
 		ctx.flush(); // (2)
+	}
+
+	@Override
+	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
+		read(packetData);
+		write(client, ctx);
 	}
 
 }
