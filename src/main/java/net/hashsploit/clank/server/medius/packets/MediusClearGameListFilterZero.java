@@ -27,7 +27,6 @@ public class MediusClearGameListFilterZero extends MediusPacket {
 
 	@Override
 	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
-		// Process the packet
 
 		ByteBuffer buf = ByteBuffer.wrap(packetData);
 

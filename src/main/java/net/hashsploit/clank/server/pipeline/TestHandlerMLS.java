@@ -102,8 +102,8 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	    	// TODO: Don't hard code the player ID (0x33 in this example)
 	    	logger.fine(Utils.bytesToHex(data));
 	    	byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
-			byte[] ipAddr = "172.16.222.31".getBytes();
-			int numZeros = 16 - "172.16.222.31".length();
+			byte[] ipAddr = "192.168.1.99".getBytes();
+			int numZeros = 16 - "192.168.1.99".length();
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
 			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 			byte[] lastPart = Utils.hexStringToByteArray("1a02000100");

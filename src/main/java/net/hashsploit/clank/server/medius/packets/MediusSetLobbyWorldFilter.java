@@ -56,14 +56,15 @@ public class MediusSetLobbyWorldFilter extends MediusPacket {
 		try {
 			outputStream.write(MediusPacketType.SetLobbyWorldFilterResponse.getShortByte());
 			outputStream.write(messageID);
-			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
-			outputStream.write(filter1);
-			outputStream.write(filter2);
-			outputStream.write(filter3);
-			outputStream.write(filter4);
-			outputStream.write(lobbyFilterType);
-			outputStream.write(lobbyFilterMaskLevelType);
+//			outputStream.write(Utils.hexStringToByteArray("000000"));
+//			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
+//			outputStream.write(filter1);
+//			outputStream.write(filter2);
+//			outputStream.write(filter3);
+//			outputStream.write(filter4);
+//			outputStream.write(lobbyFilterType);
+//			outputStream.write(lobbyFilterMaskLevelType);
+			outputStream.write(Utils.hexStringToByteArray("00000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000020000000"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

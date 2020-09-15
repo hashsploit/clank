@@ -55,7 +55,6 @@ public class MediusSetGameListFilterZero extends MediusPacket {
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
-			outputStream.write(filterID);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

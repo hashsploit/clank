@@ -28,13 +28,6 @@ public class MediusGameList_ExtraInfoZero extends MediusPacket {
 	@Override
 	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
 		// Process the packet
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e1) {
-			// TODO Auto-generated catch block
-			logger.fine("Error sleeping...");
-			e1.printStackTrace();
-		}
 
 		ByteBuffer buf = ByteBuffer.wrap(packetData);
 
@@ -72,29 +65,30 @@ public class MediusGameList_ExtraInfoZero extends MediusPacket {
 		try {
 			outputStream.write(MediusPacketType.GameList_ExtraInfoResponse0.getShortByte());
 			outputStream.write(messageID);
-			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
-			outputStream.write(mediusWorldID);
-			outputStream.write(playerCount);
-			outputStream.write(minPlayers);
-			outputStream.write(maxPlayers);
-			outputStream.write(gameLevel);
-			outputStream.write(playerSkillLevel);
-			outputStream.write(rulesSet);
-			outputStream.write(genericField1);
-			outputStream.write(genericField2);
-			outputStream.write(genericField3);
-			outputStream.write(genericField4);
-			outputStream.write(genericField5);
-			outputStream.write(genericField6);
-			outputStream.write(genericField7);
-			outputStream.write(genericField8);
-			outputStream.write(worldSecurityLevelType);
-			outputStream.write(worldStatus);
-			outputStream.write(gameHostType);
-			outputStream.write(gameName);
-			outputStream.write(gameStats);
-			outputStream.write(endOfList);
+//			outputStream.write(Utils.hexStringToByteArray("000000"));
+//			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
+//			outputStream.write(mediusWorldID);
+//			outputStream.write(playerCount);
+//			outputStream.write(minPlayers);
+//			outputStream.write(maxPlayers);
+//			outputStream.write(gameLevel);
+//			outputStream.write(playerSkillLevel);
+//			outputStream.write(rulesSet);
+//			outputStream.write(genericField1);
+//			outputStream.write(genericField2);
+//			outputStream.write(genericField3);
+//			outputStream.write(genericField4);
+//			outputStream.write(genericField5);
+//			outputStream.write(genericField6);
+//			outputStream.write(genericField7);
+//			outputStream.write(genericField8);
+//			outputStream.write(worldSecurityLevelType);
+//			outputStream.write(worldStatus);
+//			outputStream.write(gameHostType);
+//			outputStream.write(gameName);
+//			outputStream.write(gameStats);
+//			outputStream.write(endOfList);
+			outputStream.write(Utils.hexStringToByteArray("00000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

@@ -20,6 +20,7 @@ public class MediusChannelInfo extends MediusPacket {
 
 	private static final Logger logger = Logger.getLogger("");
 
+	
 	public MediusChannelInfo() {
 		super(MediusPacketType.ChannelInfo);
 	}
@@ -31,10 +32,12 @@ public class MediusChannelInfo extends MediusPacket {
 
 		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 		byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+		byte[] buffer = new byte[2];
 		byte[] worldId = new byte[4];
 
 		buf.get(messageID);
 		buf.get(sessionKey);
+		buf.get(buffer);
 		buf.get(worldId);
 
 		// RESPONSE
@@ -48,20 +51,15 @@ public class MediusChannelInfo extends MediusPacket {
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
 
-			// Lobby name (64)
-			byte[] lobbyName = "Aquatos v2".getBytes();
-			int numLobbyNameZeros = MediusConstants.LOBBYNAME_MAXLEN.getValue() - "Aquatos v2".length();
-			String lobbyNameZeroString = new String(new char[numLobbyNameZeros]).replace("\0", "00");
-			byte[] lobbyNameZeros = Utils.hexStringToByteArray(lobbyNameZeroString);
-			outputStream.write(lobbyName);
-			outputStream.write(lobbyNameZeros);
+			// Lobby name
+			//outputStream.write(Utils.buildByteArrayFromString("Aquatos v2", MediusConstants.LOBBYNAME_MAXLEN.getValue()));
 			
 			// Active players
-			outputStream.write(Utils.intToBytesLittle(3));
+			//outputStream.write(Utils.intToBytesLittle(3));
 			
 			// Max players
-			outputStream.write(Utils.intToBytesLittle(100));
-			
+			//outputStream.write(Utils.intToBytesLittle(100));
+			outputStream.write(Utils.hexStringToByteArray("435930303030303030332D30300000000000000000000000000000000000000020000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000010100000000010001000000E0000000"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

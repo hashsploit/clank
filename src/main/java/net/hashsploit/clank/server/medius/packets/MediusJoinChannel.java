@@ -44,8 +44,8 @@ public class MediusJoinChannel extends MediusPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
-		byte[] ipAddr = "172.16.222.31".getBytes();
-		int numZeros = 16 - "172.16.222.31".length();
+		byte[] ipAddr = "192.168.1.99".getBytes();
+		int numZeros = 16 - "192.168.1.99".length();
 		String zeroString = new String(new char[numZeros]).replace("\0", "00");
 		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
