@@ -58,13 +58,16 @@ public class MediusChannelInfo extends MediusPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
-		byte[] lobbyName = Utils.hexStringToByteArray("435930303030303030332D30300000000000000000000000000000000000000020000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00000000010100000000");
+		//byte[] lobbyNamePart1 = Utils.hexStringToByteArray("435930303030303030302d303000000000000000000000000000000000000000");
+		//byte[] lobbyNamePart2 = Utils.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
+    	byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.LOBBYNAME_MAXLEN.getValue());
 		byte[] activePlayerCount = Utils.intToBytesLittle(1);
 		byte[] maxPlayers = Utils.intToBytesLittle(224);
 		
 		logger.finest("Writing ChannelInfo OUT:");
 		logger.finest("CallbackStatus : " + Utils.bytesToHex(callbackStatus) + " | Length: " + Integer.toString(callbackStatus.length));
-		logger.finest("lobbyName : " + Utils.bytesToHex(lobbyName) + " | Length: " + Integer.toString(lobbyName.length));
+		logger.finest("lobbyNamePart1 : " + Utils.bytesToHex(lobbyName) + " | Length: " + Integer.toString(lobbyName.length));
+		//logger.finest("lobbyNamePart2 : " + Utils.bytesToHex(lobbyNamePart2) + " | Length: " + Integer.toString(lobbyNamePart2.length));
 		logger.finest("activePlayerCount : " + Utils.bytesToHex(activePlayerCount) + " | Length: " + Integer.toString(activePlayerCount.length));
 		logger.finest("maxPlayers : " + Utils.bytesToHex(maxPlayers) + " | Length: " + Integer.toString(maxPlayers.length));
 		
@@ -74,6 +77,7 @@ public class MediusChannelInfo extends MediusPacket {
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
 			outputStream.write(lobbyName);
+			//outputStream.write(lobbyNamePart2);
 			outputStream.write(activePlayerCount);
 			outputStream.write(maxPlayers);
 		} catch (IOException e) {

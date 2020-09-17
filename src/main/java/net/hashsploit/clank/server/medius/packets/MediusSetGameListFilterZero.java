@@ -70,7 +70,7 @@ public class MediusSetGameListFilterZero extends MediusPacket {
 		try {
 			outputStream.write(responsePacketType);
 			outputStream.write(messageID);
-			outputStream.write(Utils.hexStringToByteArray("000000"));
+			outputStream.write(Utils.hexStringToByteArray("B6FFBF"));
 			outputStream.write(callbackStatus);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

@@ -32,6 +32,7 @@ public class MediusSetLobbyWorldFilter extends MediusPacket {
 		ByteBuffer buf = ByteBuffer.wrap(packetData);
 
 		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+		byte[] buffer = new byte[3];
 		byte[] filter1 = new byte[4];
 		byte[] filter2 = new byte[4];
 		byte[] filter3 = new byte[4];
@@ -40,6 +41,7 @@ public class MediusSetLobbyWorldFilter extends MediusPacket {
 		byte[] lobbyFilterMaskLevelType = new byte[4];
 
 		buf.get(messageID);
+		buf.get(buffer);
 		buf.get(filter1);
 		buf.get(filter2);
 		buf.get(filter3);
@@ -47,24 +49,20 @@ public class MediusSetLobbyWorldFilter extends MediusPacket {
 		buf.get(lobbyFilterType);
 		buf.get(lobbyFilterMaskLevelType);
 
-		byte[] filterID = Utils.intToBytesLittle(154);
-		logger.fine(Utils.bytesToHex(messageID));
-		logger.fine(Utils.bytesToHex(Utils.hexStringToByteArray("000000")));
-		logger.fine(Utils.bytesToHex(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue())));
-
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(MediusPacketType.SetLobbyWorldFilterResponse.getShortByte());
 			outputStream.write(messageID);
-//			outputStream.write(Utils.hexStringToByteArray("000000"));
-//			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
-//			outputStream.write(filter1);
-//			outputStream.write(filter2);
-//			outputStream.write(filter3);
-//			outputStream.write(filter4);
-//			outputStream.write(lobbyFilterType);
-//			outputStream.write(lobbyFilterMaskLevelType);
-			outputStream.write(Utils.hexStringToByteArray("00000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000020000000"));
+			outputStream.write(Utils.hexStringToByteArray("000000"));
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
+			outputStream.write(filter1);
+			outputStream.write(filter2);
+			outputStream.write(filter3);
+			outputStream.write(filter4);
+			outputStream.write(lobbyFilterType);
+			outputStream.write(lobbyFilterMaskLevelType);
+//			outputStream.write(Utils.hexStringToByteArray("00000000000000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF0000000020000000"));
+//			outputStream.write(Utils.hexStringToByteArray("00000000000000010000000800000000000000000000000100000020000000"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

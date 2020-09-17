@@ -49,8 +49,10 @@ public class MediusClearGameListFilterZero extends MediusPacket {
 	
 	@Override
 	public void write(Client client, ChannelHandlerContext ctx) {
-		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
+		//byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
+		byte[] callbackStatus = Utils.hexStringToByteArray("2CFCFFFF");
 
+		
 		logger.finest("Writing ClearGameListFilter0 OUT:");
 		logger.finest("CallbackStatus : " + Utils.bytesToHex(callbackStatus) + " | Length: " + Integer.toString(callbackStatus.length));
 		

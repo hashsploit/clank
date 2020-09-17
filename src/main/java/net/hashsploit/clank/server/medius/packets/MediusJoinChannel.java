@@ -31,11 +31,13 @@ public class MediusJoinChannel extends MediusPacket {
 
 		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 		byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+		byte[] buffer = new byte[2];
 		byte[] worldId = new byte[4];
 		byte[] lobbyChannelPassword = new byte[MediusConstants.LOBBYPASSWORD_MAXLEN.getValue()];
 
 		buf.get(messageID);
 		buf.get(sessionKey);
+		buf.get(buffer);
 		buf.get(worldId);
 		buf.get(lobbyChannelPassword);
 
@@ -64,7 +66,7 @@ public class MediusJoinChannel extends MediusPacket {
 
 			outputStream.write(Utils.intToBytesLittle(10078)); // port
 
-			outputStream.write(Utils.hexStringToByteArray("00000000")); // world id
+			outputStream.write(worldId); // world id
 			
 			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000FFFFFFFF0B000000")); // ???
 
