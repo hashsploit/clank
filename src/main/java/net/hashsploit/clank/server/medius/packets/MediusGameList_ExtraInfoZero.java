@@ -15,30 +15,30 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGameList_ExtraInfoZero extends MediusPacket {
-
-	private static final Logger logger = Logger.getLogger("");
-
+	
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] pageID = new byte[2];
+	private byte[] pageSize = new byte[2];
+	
 	public MediusGameList_ExtraInfoZero() {
-		super(MediusPacketType.GameList_ExtraInfo0);
+		super(MediusPacketType.GameList_ExtraInfo0,MediusPacketType.GameList_ExtraInfoResponse0);
 	}
-
+	
 	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
+	public void read(MediusMessage mm) {
 		// Process the packet
-
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] pageID = new byte[2];
-		byte[] pageSize = new byte[2];
-
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
 		buf.get(pageID);
 		buf.get(pageSize);
-
+	}
+	
+	@Override
+	public MediusMessage write(Client client) {
 		byte[] mediusWorldID = Utils.intToBytesLittle(40);
 		byte[] playerCount = Utils.shortToBytesLittle((short) 1);
 		byte[] minPlayers = Utils.shortToBytesLittle((short) 1);
@@ -63,7 +63,6 @@ public class MediusGameList_ExtraInfoZero extends MediusPacket {
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(MediusPacketType.GameList_ExtraInfoResponse0.getShortByte());
 			outputStream.write(messageID);
 //			outputStream.write(Utils.hexStringToByteArray("000000"));
 //			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
@@ -96,34 +95,8 @@ public class MediusGameList_ExtraInfoZero extends MediusPacket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-//    	byte[] locationID = Utils.intToBytes(10);// random location
-//    	byte[] locationName = Utils.buildByteArrayFromString("Chicago", MediusConstants.LOCATIONNAME_MAXLEN.getValue());
-//    	byte[] statusCode = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
-//    	byte[] endOfList = Utils.hexStringToByteArray("00");
-//
-//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-//		try {
-//			outputStream.write(MediusPacketType.GetLocationsResponse.getShortByte());
-//			outputStream.write(messageID);
-//			outputStream.write(locationID);			
-//			outputStream.write(locationName);			
-//			outputStream.write(statusCode);			
-//			outputStream.write(endOfList);			
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
+		
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 }

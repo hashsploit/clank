@@ -6,14 +6,20 @@ import java.util.logging.Logger;
 
 import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.server.Client;
+import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.ISCERTMessage;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 
 public abstract class MediusPacket {
-    
-    public final MediusPacketType type;
+	
+	public static final Logger logger = Logger.getLogger("");
 
-    public MediusPacket(MediusPacketType type) {
+    public final MediusPacketType type;
+    public final MediusPacketType responseType;
+
+    public MediusPacket(MediusPacketType type, MediusPacketType responseType) {
         this.type = type;    
+        this.responseType = responseType;
     }
     
     public MediusPacketType getType() {
@@ -21,18 +27,13 @@ public abstract class MediusPacket {
     }
     
     
-    public void read(byte[] dataPacket) {
+    public void read(MediusMessage mm) {
     	
     }
     
-    public void write(Client client, ChannelHandlerContext ctx) {
-    	
+    public MediusMessage write(Client client) {
+    	return null;
     }
     
-    public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) { 
-
-    }
-    
-
 }
 	

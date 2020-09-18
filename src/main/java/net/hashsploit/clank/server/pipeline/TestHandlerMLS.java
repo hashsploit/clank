@@ -21,6 +21,7 @@ import net.hashsploit.clank.server.ISCERTMessage;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -58,78 +59,82 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     	logger.fine("======================================================");
     	logger.fine("======================================================");
     	logger.fine("======================================================");
-
+    	
+    	// Read in the data
     	final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
 		final byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
 
-		logger.finest("RAW: " + Utils.bytesToHex(data));
+		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		 List<DataPacket> packets = processData(ctx, data);
+		List<DataPacket> packets = processData(ctx, data);
 		for (DataPacket packet: packets) {
-			processSinglePacket(ctx, packet.toData().array());
+			processSinglePacket(ctx, packet);
 		}
 
     }
     
-    private void processSinglePacket(ChannelHandlerContext ctx, byte[] data) {
-		 logger.finest("RAW Single packet: " + Utils.bytesToHex(data));
-		// No valid packet is < 3 or > 2048 bytes, drop the connection
-		if (data.length < 3 || data.length > 2048) {
-			ctx.close();
-			return;
-		}
+    private void processSinglePacket(ChannelHandlerContext ctx, DataPacket packet) {
+    	// Get the raw data    	
+		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
+		
+	    logger.fine("Packet ID: " + packet.getId().toString());
+	    logger.fine("Packet ID: " + packet.getId().getByte());
+		
+	    // Check initial connection TODO: take it out of here!
+	    checkInitialConnect(ctx, packet);
+	    
+	    // Handle cities reconnect TODO: take it out of here!
+	    checkForCitiesReconnect(ctx, packet);
+	    
+	    // Medius packets
+	    MediusMessage response = checkMediusPackets(packet);
+	    
+	    // If there is a response, pass it onto the next handler
+	    passOnToHandler(ctx, response);
+    }
+    
+    private void passOnToHandler(ChannelHandlerContext ctx, MediusMessage mm) {
+    	if (mm == null) 
+    		return;
     	
-    	// Get RT Packet ID
-		RTPacketId rtid = null;
-		
-		for (RTPacketId p : RTPacketId.values()) {
-			if (p.getByte() == data[0]) {
-				rtid = p;
-				break;
-			}
-		}
-		
-	    logger.fine("Packet ID: " + rtid.toString());
-	    logger.fine("Packet ID: " + rtid.getByte());
-		// =============================================
-		//              IF STATEMENTS
-		// =============================================	  
-	    byte[] finalPayload = null; 
-	    
-	    if (Utils.bytesToHex(data).equals("006b000108010500bc2900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000031330000000000000000000000000000005a657138626b494b77704d6632444f5000")) {
-	    	// TODO: Don't hard code the player ID (0x33 in this example)
-	    	logger.fine(Utils.bytesToHex(data));
-	    	byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
-			byte[] ipAddr = "192.168.1.99".getBytes();
-			int numZeros = 16 - "192.168.1.99".length();
-			String zeroString = new String(new char[numZeros]).replace("\0", "00");
-			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
-			byte[] lastPart = Utils.hexStringToByteArray("1a02000100");
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			try {
-				outputStream.write(firstPart);
-				outputStream.write(ipAddr);
-				outputStream.write(zeroTrail);
-				outputStream.write(lastPart);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
+
+		byte[] finalPayload = packet.toBytes();
+		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
+		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
+		ctx.write(msg);
+		ctx.flush();	
+    }
+    
+    
+    private MediusMessage checkMediusPackets(DataPacket packet) {
+	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
+    	MediusMessage mm = null;
+	    if (packet.getId().toString().contains("APP")) {
+	    	
+	    	MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
+
+			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
+			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
 			
-			finalPayload = outputStream.toByteArray();
-	    
-			logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-	        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-	        ctx.write(msg); // (1)
-	        ctx.flush(); // (2)
+			// Detect which medius packet is being parsed
+		    MediusPacket mediusPacket = client.getMediusMap().get(incomingMessage.getMediusPacketType());
+		    
+		    // Process this medius packet
+		    mediusPacket.read(incomingMessage);
+		    mm = mediusPacket.write(client);	    
 	    }
-	    
-	    
-	    
-	    // Handle cities reconnect
-	    else if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
+	    return mm;
+    }
+    
+    
+    private void checkForCitiesReconnect(ChannelHandlerContext ctx, DataPacket packet) {
+		// TODO Auto-generated method stub
+		byte[] data = packet.toBytes();
+
+    	if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
 	    	
 	    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {
@@ -175,54 +180,46 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			}
 			
 
-			finalPayload = outputStream.toByteArray();
+			byte[] finalPayload = outputStream.toByteArray();
 	    
 			logger.fine("Cities re-connect Final payload: " + Utils.bytesToHex(finalPayload));
 	        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
 	        ctx.write(msg); // (1)
 	        ctx.flush(); // (2)
 		}
-	    
-	    
-	    
-	    
-	    
-	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
-	    if (rtid.toString().contains("APP")) {
-		    
-			// Get medius packet type
-		    MediusPacketType mediusPacketType = null;
-		    ByteBuffer bb = ByteBuffer.allocate(2);
-		    bb.order(ByteOrder.LITTLE_ENDIAN);
-		    bb.put(data[3]);
-		    bb.put(data[4]);
-		    short shortVal = bb.getShort(0);
+	}
 
-		    // TODO: Make this not O(n)
-			for (MediusPacketType p : MediusPacketType.values()) {
-				if (p.getShort() == shortVal) {
-					mediusPacketType = p;
-					break;
-				}
-			}	
+
+	public void checkInitialConnect(ChannelHandlerContext ctx, DataPacket packet) {
+		byte[] data = packet.toBytes();
+
+	    if (Utils.bytesToHex(data).equals("006b000108010500bc2900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000031330000000000000000000000000000005a657138626b494b77704d6632444f5000")) {
+	    	// TODO: Don't hard code the player ID (0x33 in this example)
+	    	logger.fine(Utils.bytesToHex(data));
+	    	byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
+			byte[] ipAddr = "192.168.1.99".getBytes();
+			int numZeros = 16 - "192.168.1.99".length();
+			String zeroString = new String(new char[numZeros]).replace("\0", "00");
+			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
+			byte[] lastPart = Utils.hexStringToByteArray("1a02000100");
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+			try {
+				outputStream.write(firstPart);
+				outputStream.write(ipAddr);
+				outputStream.write(zeroTrail);
+				outputStream.write(lastPart);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
-			ByteBuffer buffer = ByteBuffer.allocate(2);
-			buffer.putShort(shortVal);
-						
-			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(buffer.array()));
-			logger.fine("Found Medius Packet ID: " + mediusPacketType.toString());
-			
-			// Detect which medius packet is being parsed
-		    MediusPacket mediusPacket = client.getMediusMap().get(mediusPacketType);
-		    
-		    // Remove RT-ID and length from the packet data
-		    byte[] packetData = Arrays.copyOfRange(data,5,data.length);
-		    
-		    // Process this medius packet
-		    mediusPacket.process(client, ctx, packetData);
-		    		    
+			byte[] finalPayload = outputStream.toByteArray();
+	    
+			logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
+	        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
+	        ctx.write(msg); // (1)
+	        ctx.flush(); // (2)
 	    }
-
     }
 
     @Override

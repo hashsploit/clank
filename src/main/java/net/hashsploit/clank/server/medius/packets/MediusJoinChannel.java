@@ -14,33 +14,34 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusJoinChannel extends MediusPacket {
 
-	private static final Logger logger = Logger.getLogger("");
-
+	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	byte[] buffer = new byte[2];
+	byte[] worldId = new byte[4];
+	byte[] lobbyChannelPassword = new byte[MediusConstants.LOBBYPASSWORD_MAXLEN.getValue()];
+	
 	public MediusJoinChannel() {
-		super(MediusPacketType.JoinChannel);
+		super(MediusPacketType.JoinChannel, MediusPacketType.JoinChannelResponse);
 	}
-
+	
 	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
-
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-		byte[] buffer = new byte[2];
-		byte[] worldId = new byte[4];
-		byte[] lobbyChannelPassword = new byte[MediusConstants.LOBBYPASSWORD_MAXLEN.getValue()];
+	public void read(MediusMessage mm) {
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
 		buf.get(messageID);
 		buf.get(sessionKey);
 		buf.get(buffer);
 		buf.get(worldId);
 		buf.get(lobbyChannelPassword);
+	}
 
+	@Override
+	public MediusMessage write(Client client) {
 		// RESPONSE
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -52,7 +53,6 @@ public class MediusJoinChannel extends MediusPacket {
 		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
 		try {
-			outputStream.write(MediusPacketType.JoinChannelResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
@@ -82,18 +82,8 @@ public class MediusJoinChannel extends MediusPacket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.fine("LENGTH: " + Integer.toString(data.length));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg);
-		ctx.flush();
-
+		
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 }

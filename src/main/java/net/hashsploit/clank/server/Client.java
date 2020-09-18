@@ -171,7 +171,7 @@ public class Client {
 			
 		} else {
 			final DataPacket pdp = (DataPacket) msg;
-			final byte[] data = pdp.toData().array();
+			final byte[] data = pdp.toBytes();
 			logger.fine("Sending: " + Utils.bytesToString(data));
 			sendRaw(data);
 		}

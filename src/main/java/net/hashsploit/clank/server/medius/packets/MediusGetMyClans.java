@@ -15,38 +15,31 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetMyClans extends MediusPacket {
 
-	private static final Logger logger = Logger.getLogger("");
-
+	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	
 	public MediusGetMyClans() {
-		super(MediusPacketType.GetMyClans);
+		super(MediusPacketType.GetMyClans, MediusPacketType.GetMyClansResponse);
+	}
+	
+	public void read(MediusMessage mm) {
+		// Process the packet
+		logger.fine("Get my clans: " + Utils.bytesToHex(mm.getPayload()));
+
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
+		buf.get(messageID);
+		buf.get(sessionKey);
 	}
 
 	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
-		// Process the packet
-		logger.fine("Get my clans: " + Utils.bytesToHex(packetData));
-
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		// byte[] finalPayload = Utils.hexStringToByteArray("0a1e00019731000000000000000000000000000000000000000000000000000000");
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-
-		buf.get(messageID);
-		buf.get(sessionKey);
-
+	public MediusMessage write(Client client) {
 		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
 		logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
-
-		/*
-		 * logger.fine("Final payload: " + Utils.bytesToHex(finalPayload)); ByteBuf msg
-		 * = Unpooled.copiedBuffer(finalPayload); ctx.write(msg); // (1) ctx.flush(); //
-		 * (2)
-		 */
 
 		byte[] statusCode = Utils.intToBytesLittle(0);
 		byte[] clanID = Utils.intToBytesLittle(5);
@@ -57,11 +50,10 @@ public class MediusGetMyClans extends MediusPacket {
 		byte[] stats = Utils.buildByteArrayFromString("0", MediusConstants.CLANSTATS_MAXLEN.getValue());
 		byte[] clanStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
 		// byte[] endOfList = Utils.hexStringToByteArray("01000000");
-		byte endOfList = 0x01;
+		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(MediusPacketType.GetMyClansResponse.getShortByte());
 			outputStream.write(messageID); // 21
 			outputStream.write(Utils.hexStringToByteArray("000000")); // 3
 			outputStream.write(statusCode); // 4
@@ -78,16 +70,7 @@ public class MediusGetMyClans extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.fine("Data: " + Utils.bytesToHex(data));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 }

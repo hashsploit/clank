@@ -14,41 +14,31 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerOnlineState;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetLobbyPlayerNames_ExtraInfo extends MediusPacket {
 
-	private static final Logger logger = Logger.getLogger("");
-
-	private byte[] responsePacketType = MediusPacketType.GetLobbyPlayerNames_ExtraInfoResponse.getShortByte();
-	private byte[] messageID;
-	private int worldId;
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];;
+	private byte[] lobbyWorldID = new byte[4];
 	
 	
 	public MediusGetLobbyPlayerNames_ExtraInfo() {
-		super(MediusPacketType.GetLobbyPlayerNames_ExtraInfo);
+		super(MediusPacketType.GetLobbyPlayerNames_ExtraInfo, MediusPacketType.GetLobbyPlayerNames_ExtraInfoResponse);
 	}
 	@Override
-	public void read(byte[] packetData) {
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] empty = new byte[3];
-		byte[] worldIdBytes = new byte[4];
+	public void read(MediusMessage mm) {
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
 		buf.get(messageID);
-		this.messageID = messageID;
-		buf.get(empty);
-		buf.get(worldIdBytes);
-		
-		worldId = Utils.bytesToIntLittle(worldIdBytes);
-		
+		buf.get(new byte[3]);
+		buf.get(lobbyWorldID);		
 	}
 	
 	@Override
-	public void write(Client client, ChannelHandlerContext ctx) {
+	public MediusMessage write(Client client) {
 		// RESPONSE
 		
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
@@ -56,7 +46,6 @@ public class MediusGetLobbyPlayerNames_ExtraInfo extends MediusPacket {
 		byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
 		MediusPlayerOnlineState onlineState = new MediusPlayerOnlineState(MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD, 0, 0, "Aquatos v2", "Aquatos v2");
 		byte[] connectState = Utils.intToBytesLittle(onlineState.getConnectionStatus().getValue());
-		byte[] lobbyWorldID = Utils.intToBytesLittle(worldId);
 		byte[] gameWorldID = Utils.intToBytesLittle(0);
 		byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.WORLDNAME_MAXLEN.getValue());
 		byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.getValue());
@@ -74,7 +63,6 @@ public class MediusGetLobbyPlayerNames_ExtraInfo extends MediusPacket {
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(responsePacketType);
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
@@ -91,28 +79,9 @@ public class MediusGetLobbyPlayerNames_ExtraInfo extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.finest("Final Payload Length: " + Integer.toString(data.length));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg);
-		ctx.flush();
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 	
-	
-	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
-		read(packetData);
-		write(client, ctx);
-		return;
 
-
-
-
-	}
 
 }

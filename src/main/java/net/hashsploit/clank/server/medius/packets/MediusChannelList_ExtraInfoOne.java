@@ -15,29 +15,30 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusChannelList_ExtraInfoOne extends MediusPacket {
 	
-	private static final Logger logger = Logger.getLogger("");
-    
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] pageID = new byte[2];
+	private byte[] pageSize = new byte[2];
+	
+	
     public MediusChannelList_ExtraInfoOne() {
-        super(MediusPacketType.ChannelList_ExtraInfo1);
+        super(MediusPacketType.ChannelList_ExtraInfo1, MediusPacketType.ChannelList_ExtraInfoResponse);
     }
     
     @Override
-    public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) { 
-    	
-    	ByteBuffer buf = ByteBuffer.wrap(packetData);
-    	
-    	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-    	byte[] pageID = new byte[2];
-    	byte[] pageSize = new byte[2];
-    	
+    public void read(MediusMessage mm) {
+    	ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
     	buf.get(messageID);
     	buf.get(pageID);
     	buf.get(pageSize);
-    	
+    }
+    
+    @Override
+    public MediusMessage write(Client client) {
     	byte[] mediusWorldID = Utils.hexStringToByteArray("45070000");
     	byte[] playerCount = Utils.shortToBytesLittle((short) 1);
     	byte[] maxPlayers = Utils.shortToBytesLittle((short) 224);
@@ -48,7 +49,6 @@ public class MediusChannelList_ExtraInfoOne extends MediusPacket {
     	byte[] genericField4 = Utils.intToBytesLittle(0);
     	byte[] genericFieldFilter = Utils.intToBytesLittle(32);
     	byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.LOBBYNAME_MAXLEN.getValue());
-		//byte[] lobbyName = Utils.hexStringToByteArray("435930303030303030312d30300000000000000000000000000000000000000020000000ffffffffffffffffffffffffffffffff000000000101000000000100");
     	
 		logger.finest("Writing ChannelList_ExtraInfo1 OUT:");
 		logger.finest("mediusWorldID : " + Utils.bytesToHex(mediusWorldID) + " | Length: " + Integer.toString(mediusWorldID.length));
@@ -60,12 +60,11 @@ public class MediusChannelList_ExtraInfoOne extends MediusPacket {
 		logger.finest("genericField3 : " + Utils.bytesToHex(genericField3) + " | Length: " + Integer.toString(genericField3.length));
 		logger.finest("genericField4 : " + Utils.bytesToHex(genericField4) + " | Length: " + Integer.toString(genericField4.length));
 		logger.finest("lobbyName : " + Utils.bytesToHex(lobbyName) + " | Length: " + Integer.toString(lobbyName.length));
-//    	byte endOfList = 0x01;
+		
     	byte[] endOfList = Utils.hexStringToByteArray("01000000");
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
-			outputStream.write(MediusPacketType.ChannelList_ExtraInfoResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));	
@@ -84,32 +83,7 @@ public class MediusChannelList_ExtraInfoOne extends MediusPacket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		    	
-    	//byte[] response = Utils.hexStringToByteArray("0000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000");
-    	//byte[] response = Utils.hexStringToByteArray("000000000000006B0B01000100E000000000000100000002000000000000000000000020000000435930303030303030312D303000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000");
-    	//byte[] response = Utils.hexStringToByteArray("000000000000006b0b01000100e000000000000100000002000000000000000000000020000000435930303030303030332d30300000000000000000000000000000000000000020000000ffffffffffffffffffffffffffffffff00000000010100000000010001000000");
-    	//byte[] response = Utils.hexStringToByteArray("000000000000006b0b01000100e000000000000100000002000000000000000000000020000000435930303030303030312d303000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000");
-    																									                            
-//    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//		try {
-//			outputStream.write(MediusPacketType.ChannelList_ExtraInfoResponse.getShortByte());
-//			outputStream.write(messageID);
-//			outputStream.write(response);					
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
 		
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.fine("LENGTH: " + Integer.toString(data.length));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-		
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-        ctx.write(msg); // (1)
-        ctx.flush(); // (2)
+		return new MediusMessage(responseType, outputStream.toByteArray());
     }
-
 }

@@ -10,33 +10,25 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusChatToggle extends MediusPacket {
 
-	private static final Logger logger = Logger.getLogger("");
-
 	public MediusChatToggle() {
-		super(MediusPacketType.ChatToggle);
+		super(MediusPacketType.ChatToggle, MediusPacketType.ChatToggleResponse);
+	}
+	@Override
+	public void read(MediusMessage mm) {
+		// example input where username is GGGGGGGGGGGG
+		// 0b2e0001963100474747474747474747474747000000000000003133000000000000000000007b24000000000000000000
+		logger.fine("Chat toggle data: " + Utils.bytesToHex(mm.getPayload()));
 	}
 
 	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
-		// Process the packet
-		logger.fine("Chat toggle data: " + Utils.bytesToHex(packetData));
-
-		// example input where username is GGGGGGGGGGGG
-		// 0b2e0001963100474747474747474747474747000000000000003133000000000000000000007b24000000000000000000
-		byte[] response = Utils.hexStringToByteArray("019731000000000000000000000000000000000000000000000000000000");
-
-		// Combine RT id and len
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, response);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
+	public MediusMessage write(Client client) {
+		byte[] response = Utils.hexStringToByteArray("31000000000000000000000000000000000000000000000000000000");
+		return new MediusMessage(responseType, response);
 	}
 
 }

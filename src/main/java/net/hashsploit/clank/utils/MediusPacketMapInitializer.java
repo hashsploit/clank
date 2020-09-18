@@ -9,6 +9,7 @@ import net.hashsploit.clank.server.medius.packets.MediusChannelInfo;
 import net.hashsploit.clank.server.medius.packets.MediusChannelList_ExtraInfoOne;
 import net.hashsploit.clank.server.medius.packets.MediusChatToggle;
 import net.hashsploit.clank.server.medius.packets.MediusClearGameListFilterZero;
+import net.hashsploit.clank.server.medius.packets.MediusCreateGameOne;
 import net.hashsploit.clank.server.medius.packets.MediusGameList_ExtraInfoZero;
 import net.hashsploit.clank.server.medius.packets.MediusGetAllAnnouncements;
 import net.hashsploit.clank.server.medius.packets.MediusGetBuddyList_ExtraInfo;
@@ -54,6 +55,8 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.ChannelInfo, new MediusChannelInfo());  // vvvv
 		mp.put(MediusPacketType.GetLobbyPlayerNames_ExtraInfo, new MediusGetLobbyPlayerNames_ExtraInfo());  // vvvv
 	
+		mp.put(MediusPacketType.CreateGame1, new MediusCreateGameOne());
+		
 		return mp;
 	}
 

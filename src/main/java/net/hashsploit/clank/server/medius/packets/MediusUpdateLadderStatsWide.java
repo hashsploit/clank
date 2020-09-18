@@ -14,35 +14,33 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusUpdateLadderStatsWide extends MediusPacket {
 
-	private static final Logger logger = Logger.getLogger("");
-
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] ladderType = new byte[4];
+	private byte[] stats = new byte[MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue()];
+	
 	public MediusUpdateLadderStatsWide() {
-		super(MediusPacketType.UpdateLadderStatsWide);
+		super(MediusPacketType.UpdateLadderStatsWide,MediusPacketType.UpdateLadderStatsWideResponse);
 	}
-
+	
 	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
+	public void read(MediusMessage mm) {
 		// Process the packet
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		// byte[] finalPayload =
-		// Utils.hexStringToByteArray("0a1e00019731000000000000000000000000000000000000000000000000000000");
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] ladderType = new byte[4];
-		byte[] stats = new byte[MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue()];
-
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
 		buf.get(ladderType);
 		buf.get(stats);
+	}
 
+	@Override
+	public MediusMessage write(Client client) {
 		byte[] statsResponse = Utils.buildByteArrayFromString("0000000", 7); // empty 7 byte array
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(MediusPacketType.UpdateLadderStatsWideResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(statsResponse);
 		} catch (IOException e) {
@@ -50,16 +48,7 @@ public class MediusUpdateLadderStatsWide extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.fine("Data: " + Utils.bytesToHex(data));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 }

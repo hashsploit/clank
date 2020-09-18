@@ -15,37 +15,35 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetLadderStatsWide extends MediusPacket {
 
-	private static final Logger logger = Logger.getLogger("");
-
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] accountOrClanID = new byte[4]; // int
+	
 	public MediusGetLadderStatsWide() {
-		super(MediusPacketType.GetLadderStatsWide);
+		super(MediusPacketType.GetLadderStatsWide,MediusPacketType.GetLadderStatsWideResponse);
 	}
 
 	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
+	public void read(MediusMessage mm) {
 		// Process the packet
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		// byte[] finalPayload =
-		// Utils.hexStringToByteArray("0a1e00019731000000000000000000000000000000000000000000000000000000");
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] accountOrClanID = new byte[4]; // int
-
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
 		buf.get(accountOrClanID);
-
 		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
 		logger.fine("Account or Clan ID: " + Utils.bytesToHex(accountOrClanID));
+	}
+	
+	@Override
+	public MediusMessage write(Client client) {
 
 		byte[] stats = Utils.buildByteArrayFromString("0", MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue());
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(MediusPacketType.GetLadderStatsWideResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
 			outputStream.write(accountOrClanID);
@@ -54,17 +52,8 @@ public class MediusGetLadderStatsWide extends MediusPacket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.fine("Data: " + Utils.bytesToHex(data));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
+		
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 }

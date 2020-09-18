@@ -15,37 +15,29 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusSetGameListFilterZero extends MediusPacket {
 
 	private static final Logger logger = Logger.getLogger("");
 	
-	private byte[] responsePacketType = MediusPacketType.SetGameListFilterResponse0.getShortByte();
-
-	private byte[] messageID;
-	private byte[] filterField;
-	private byte[] mask;
-	private byte[] comparisonOperator;
-	private byte[] baselineValue;
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] filterField = new byte[4];
+	private byte[] mask = new byte[4];
+	private byte[] comparisonOperator = new byte[4];
+	private byte[] baselineValue = new byte[4];
 	
 	public MediusSetGameListFilterZero() {
-		super(MediusPacketType.SetGameListFilter0);
+		super(MediusPacketType.SetGameListFilter0, MediusPacketType.SetGameListFilterResponse0);
 	}
 	
 	@Override
-	public void read(byte[] packetData) {
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] buffer = new byte[3];
-		filterField = new byte[4];
-		mask = new byte[4];
-		comparisonOperator = new byte[4];
-		baselineValue = new byte[4];
+	public void read(MediusMessage mm) {
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
 		buf.get(messageID);
-		buf.get(buffer);
+		buf.get(new byte[3]);
 		buf.get(filterField);
 		buf.get(mask);
 		buf.get(comparisonOperator);
@@ -60,7 +52,7 @@ public class MediusSetGameListFilterZero extends MediusPacket {
 	}
 	
 	@Override
-	public void write(Client client, ChannelHandlerContext ctx) {
+	public MediusMessage write(Client client) {
 		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
 
 		logger.finest("Writing SetGameListFilter OUT:");
@@ -68,7 +60,6 @@ public class MediusSetGameListFilterZero extends MediusPacket {
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(responsePacketType);
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("B6FFBF"));
 			outputStream.write(callbackStatus);
@@ -77,22 +68,7 @@ public class MediusSetGameListFilterZero extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.finest("Final Payload Length: " + Integer.toString(data.length));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
-	}
-
-	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
-		read(packetData);
-		write(client, ctx);
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 

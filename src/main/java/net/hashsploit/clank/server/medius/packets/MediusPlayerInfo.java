@@ -15,26 +15,23 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusPlayerInfo extends MediusPacket {
 	
-	private static final Logger logger = Logger.getLogger("");
-    
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] accountID = new byte[4];
+	
     public MediusPlayerInfo() {
-        super(MediusPacketType.PlayerInfo);
+        super(MediusPacketType.PlayerInfo, MediusPacketType.PlayerInfoResponse);
     }
     
     @Override
-    public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) { 
+    public void read(MediusMessage mm) {
     	// Process the packet
-    	
-    	ByteBuffer buf = ByteBuffer.wrap(packetData);
-    	
-    	//byte[] finalPayload = Utils.hexStringToByteArray("0a1e00019731000000000000000000000000000000000000000000000000000000");
-    	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-    	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-    	byte[] accountID = new byte[4];
+    	ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
     	
     	buf.get(messageID);
     	buf.get(sessionKey);
@@ -43,20 +40,18 @@ public class MediusPlayerInfo extends MediusPacket {
     	logger.fine("Message ID : " + Utils.bytesToHex(messageID));
     	logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
     	logger.fine("Account ID: " + Utils.bytesToHex(accountID));
-    	
+    }
+    
+    @Override
+    public MediusMessage write(Client client) { 
+
     	byte[] accountName = Utils.buildByteArrayFromString("Account Name", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
        	byte[] applicationID = Utils.intToBytes(1);
        	byte[] playerStatus = Utils.intToBytes(0);
        	byte[] connectionClass = Utils.intToBytes(1);
-       	
-//       	byte[] leaderAccountID = Utils.intToBytes(1);
-//    	byte[] stats = Utils.buildByteArrayFromString("0", MediusConstants.CLANSTATS_MAXLEN.getValue());
-//    	byte[] clanStatus = Utils.intToBytes(0);
-//    	byte[] endOfList = Utils.hexStringToByteArray("00");
-    	
+
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
-			outputStream.write(MediusPacketType.PlayerInfoResponse.getShortByte());
 			outputStream.write(messageID);
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));			
 			outputStream.write(accountName);
@@ -68,16 +63,7 @@ public class MediusPlayerInfo extends MediusPacket {
 			e.printStackTrace();
 		}
 		
-		byte[] response = outputStream.toByteArray();
-	    
-		// Combine RT id and len
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, response);
-		
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-        ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-        ctx.write(msg); // (1)
-        ctx.flush(); // (2)
+		return new MediusMessage(responseType, outputStream.toByteArray());	    
     }
 
 }

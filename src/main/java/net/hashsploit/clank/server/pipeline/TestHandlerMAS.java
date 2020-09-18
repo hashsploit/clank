@@ -128,13 +128,13 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("Payload: " + bytesToHex(payload));
 			
 			DataPacket dataPacket = new DataPacket(resultrtid, payload);
-			ByteBuffer dataPacketBuffer = dataPacket.toData();
+			byte[] dataPacketBuffer = dataPacket.toBytes();
 			
 			byte[] extraPacket = hexStringToByteArray("1A02000100");
 			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			try {
-				outputStream.write(dataPacketBuffer.array());
+				outputStream.write(dataPacketBuffer);
 				outputStream.write(extraPacket);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -197,7 +197,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 				}
 				byte[] dataPayload = outputStream.toByteArray();
 				DataPacket mlsDataPacket = new DataPacket(resultPacketId, dataPayload);
-				finalPayload = mlsDataPacket.toData().array();
+				finalPayload = mlsDataPacket.toBytes();
 			}
 			
 			

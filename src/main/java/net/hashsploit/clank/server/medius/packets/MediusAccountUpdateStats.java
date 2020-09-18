@@ -14,52 +14,40 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusAccountUpdateStats extends MediusPacket {
-
-	private static final Logger logger = Logger.getLogger("");
-
+	
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] stats = new byte[MediusConstants.ACCOUNTSTATS_MAXLEN.getValue()];
+	
 	public MediusAccountUpdateStats() {
-		super(MediusPacketType.AccountUpdateStats);
+		super(MediusPacketType.AccountUpdateStats, MediusPacketType.AccountUpdateStatsResponse);
 	}
-
-	@Override
-	public void process(Client client, ChannelHandlerContext ctx, byte[] packetData) {
+	
+	@Override 
+	public void read(MediusMessage mm) {
 		// Process the packet
-		ByteBuffer buf = ByteBuffer.wrap(packetData);
-
-		// byte[] finalPayload = Utils.hexStringToByteArray("0a1e00019731000000000000000000000000000000000000000000000000000000");
-		byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-		byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-		byte[] stats = new byte[MediusConstants.ACCOUNTSTATS_MAXLEN.getValue()];
-
+		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
 		buf.get(sessionKey);
 		buf.get(stats);
-
-		byte[] statsResponse = Utils.buildByteArrayFromString("0000000", 7); // empty 7 byte array
-
+	}
+	
+	@Override
+	public MediusMessage write(Client client) {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(MediusPacketType.AccountUpdateStatsResponse.getShortByte());
 			outputStream.write(messageID);
-			outputStream.write(statsResponse);
+			outputStream.write(Utils.buildByteArrayFromString("0000000", 7));// empty 7 byte array
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// Combine RT id and len
-		byte[] data = outputStream.toByteArray();
-		logger.fine("Data: " + Utils.bytesToHex(data));
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, data);
-
-		byte[] finalPayload = packet.toData().array();
-		logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
+		
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
-
+	
 }
