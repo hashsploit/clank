@@ -95,6 +95,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			// TODO: Don't hard code the player ID (0x33 in this example)
 			logger.fine(Utils.bytesToHex(data));
 			byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
+			logger.severe(client.getIPAddress());
 			byte[] ipAddr = client.getIPAddressAsBytes();
 			int numZeros = 16 - client.getIPAddress().length();
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
@@ -211,7 +212,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		
 		else if (rtid == RTPacketId.CLIENT_ECHO) {
 			// Combine RT id and len
-			DataPacket packet = new DataPacket(RTPacketId.SERVER_ECHO, data);
+			DataPacket packet = new DataPacket(RTPacketId.CLIENT_ECHO, data);
 			byte[] payload = packet.toData().array();
 			ByteBuf msg = Unpooled.copiedBuffer(payload);
 			ctx.write(msg);

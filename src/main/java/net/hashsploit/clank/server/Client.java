@@ -81,11 +81,11 @@ public class Client {
 	}
 	
 	public String getIPAddress() {
-		return socketChannel.remoteAddress().getAddress().toString();
+		return socketChannel.remoteAddress().getAddress().getHostAddress();
 	}
 	
 	public byte[] getIPAddressAsBytes() {
-		return socketChannel.remoteAddress().getAddress().getAddress();
+		return getIPAddress().getBytes();
 	}
 	
 	public int getPort() {
