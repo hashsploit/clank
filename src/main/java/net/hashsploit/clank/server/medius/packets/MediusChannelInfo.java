@@ -47,6 +47,7 @@ public class MediusChannelInfo extends MediusPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
+
     	byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.LOBBYNAME_MAXLEN.getValue());
 		byte[] activePlayerCount = Utils.intToBytesLittle(1);
 		byte[] maxPlayers = Utils.intToBytesLittle(224);

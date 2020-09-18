@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.Client;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
@@ -47,8 +48,8 @@ public class MediusJoinChannel extends MediusPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
-		byte[] ipAddr = "192.168.1.99".getBytes();
-		int numZeros = 16 - "192.168.1.99".length();
+		byte[] ipAddr = Clank.getInstance().getConfig().getAddress().getBytes();
+		int numZeros = 16 - Clank.getInstance().getConfig().getAddress().toString().length();
 		String zeroString = new String(new char[numZeros]).replace("\0", "00");
 		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 

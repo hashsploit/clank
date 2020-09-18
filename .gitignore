@@ -3,6 +3,10 @@
 .project
 .settings/
 
+# Configs
+configs/
+!configs/*.conf.example
+
 # Bins
 target/
 bin/

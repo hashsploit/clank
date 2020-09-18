@@ -2,14 +2,13 @@ package net.hashsploit.clank.server.pipeline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.util.ReferenceCountUtil;
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.Client;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
@@ -150,7 +149,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			// =============================================
 			if (data[1] == 0x1e) {
 				logger.fine("0x1e auth");
-		        Random rand = new Random(); 
+		        //Random rand = new Random(); 
 				byte[] firstPart = hexStringToByteArray("0a320001043100000000000000000000000000000000000000000000000000000031");
 				//byte[] playerID = hexStringToByteArray(Integer.toString(rand.nextInt(32000))); // TODO: make this non-random. save player ID
 				byte[] playerID = hexStringToByteArray("33"); // TODO: make this non-random. save player ID
@@ -173,19 +172,30 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 				// For now, just send success, and the IP of the MLS/NAT
 				// we don't know what this contains really, it just works
 				logger.fine("0x52 auth");
+				
 				RTPacketId resultPacketId = RTPacketId.SERVER_APP;
-				int numZeros = 16 - "192.168.1.99".length(); // TODO: replace with server IP
-				String zeroString = new String(new char[numZeros]).replace("\0", "00");
-				byte[] zeroTrail = hexStringToByteArray(zeroString);
+				
+				byte[] mlsAddress = Clank.getInstance().getConfig().getProperties().get("MlsIpAddress").toString().getBytes();
+				int mlsNumZeros = 16 - Clank.getInstance().getConfig().getProperties().get("MlsIpAddress").toString().length();
+				String mlsZeroString = new String(new char[mlsNumZeros]).replace("\0", "00");
+				byte[] mlsZeroTrail = hexStringToByteArray(mlsZeroString);
+				
+				byte[] natAddress = Clank.getInstance().getConfig().getProperties().get("NatIpAddress").toString().getBytes();
+				int natNumZeros = 16 - Clank.getInstance().getConfig().getProperties().get("NatIpAddress").toString().length();
+				String natZeroString = new String(new char[natNumZeros]).replace("\0", "00");
+				byte[] natZeroTrail = hexStringToByteArray(natZeroString);
+				
+				
 				
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 				try {
 					outputStream.write(hexStringToByteArray("0108310000000000000000000000000000000000000000000000000000000e00000001000000580000000100000001000000")); // First part of the packet: unknown
-					outputStream.write("192.168.1.99".getBytes()); // MLS Server Addr TODO: replace with server IP
-					outputStream.write(zeroTrail); // Zero padding based on server IP size 
+					outputStream.write(mlsAddress); // MLS Server Addr TODO: replace with server IP
+					outputStream.write(mlsZeroTrail); // Zero padding based on server IP size 
 					outputStream.write(hexStringToByteArray("5e27000003000000")); // MLS Port + padding
-					outputStream.write("192.168.1.99".getBytes()); // NAT server Addr
-					outputStream.write(zeroTrail); // Padding for address
+					
+					outputStream.write(natAddress); // NAT server Addr
+					outputStream.write(natZeroTrail); // Padding for address
 					outputStream.write(hexStringToByteArray("5627000005000000")); // NAT Port + padding
 					outputStream.write(hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
 					outputStream.write(hexStringToByteArray("3133")); // World ID and Player ID

@@ -75,6 +75,7 @@ public class Server implements IServer {
 			final ServerBootstrap bootstrap = new ServerBootstrap();
 			bootstrap.group(eventParentGroup, eventChildGroup)
 				.channel(socketChannelClass)
+				.option(ChannelOption.SO_BACKLOG, 100)
 				.childHandler(clientChannelInit)
 				.childOption(ChannelOption.AUTO_CLOSE, true)
 				.childOption(ChannelOption.SO_KEEPALIVE, false);

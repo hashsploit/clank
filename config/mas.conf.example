@@ -98,6 +98,15 @@ MaxLoginAttempts=20
 MlsIpAddress=172.16.222.31
 
 
+######################
+# NAT Server Address #
+######################
+# This is the IP address of The Medius NAT server is used to send back the
+# client's IP Address over UDP.
+#
+NatIpAddress=172.16.222.31
+
+
 #############
 # Whitelist #
 #############
