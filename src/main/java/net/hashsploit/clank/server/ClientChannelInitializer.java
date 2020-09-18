@@ -2,6 +2,7 @@ package net.hashsploit.clank.server;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.ReadTimeoutException;
 import net.hashsploit.clank.Clank;
@@ -17,6 +18,8 @@ public class ClientChannelInitializer extends ChannelInitializer<SocketChannel> 
 	
 	@Override
 	protected void initChannel(SocketChannel ch) {
+		// We might need this later...
+        ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(2048)); //set  buf size here
 		final Client client = new Client(server, ch);
 		server.addClient(client);
 	}
