@@ -60,6 +60,9 @@ public class MediusChannelInfo extends MediusPacket {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
 		//byte[] lobbyNamePart1 = Utils.hexStringToByteArray("435930303030303030302d303000000000000000000000000000000000000000");
 		//byte[] lobbyNamePart2 = Utils.hexStringToByteArray("0000000000000000000000000000000000000000000000000000000000000000");
+		// CY00000000-00
+		//   ^------------ City     [Aquatos (1)]
+		//            ^--- Sub-city [Aquatos (2)]
     	byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.LOBBYNAME_MAXLEN.getValue());
 		byte[] activePlayerCount = Utils.intToBytesLittle(1);
 		byte[] maxPlayers = Utils.intToBytesLittle(224);
