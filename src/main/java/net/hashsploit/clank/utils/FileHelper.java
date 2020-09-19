@@ -19,7 +19,7 @@ public class FileHelper {
 	 * @return
 	 */
 	public static final String readAsset(String filename) {
-		return readFromInputStream(Clank.getInstance().getClass().getResourceAsStream("/assets/" + filename));
+		return readFromInputStream(Clank.getInstance().getClass().getResourceAsStream(filename));
 	}
 
 	/**
