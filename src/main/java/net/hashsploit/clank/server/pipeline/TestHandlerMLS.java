@@ -53,8 +53,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     	logger.fine("======================================================");
     	logger.fine("======================================================");
     	logger.fine("======================================================");
-    	
-    	// Read in the data
+    
     	final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
 
 		final byte[] data = new byte[buffer.remaining()];
@@ -78,6 +77,9 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	    logger.fine("Packet ID: " + packet.getId().toString());
 	    logger.fine("Packet ID: " + packet.getId().getByte());
 		
+	    // Check echo
+	    checkEcho(ctx, packet);
+	    
 	    // Check initial connection TODO: take it out of here!
 	    checkInitialConnect(ctx, packet);
 	    
@@ -95,7 +97,14 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     	if (mm == null) 
     		return;
     	
-		DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
+//    	try {
+//			Thread.sleep(4000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		
+    	DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
 
 		byte[] finalPayload = packet.toBytes();
 		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
@@ -280,6 +289,18 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		}
 
 		return packets;
+	}
+	
+	public void checkEcho(ChannelHandlerContext ctx, DataPacket packet) {
+			 if (packet.getId() == RTPacketId.CLIENT_ECHO) {
+				// Combine RT id and len
+				DataPacket packetResponse = new DataPacket(RTPacketId.CLIENT_ECHO, packet.getPayload());
+				byte[] payload = packetResponse.toBytes();
+				logger.fine("Final payload: " + Utils.bytesToHex(payload));
+				ByteBuf msg = Unpooled.copiedBuffer(payload);
+				ctx.write(msg);
+				ctx.flush();
+		}
 	}
 
 }
