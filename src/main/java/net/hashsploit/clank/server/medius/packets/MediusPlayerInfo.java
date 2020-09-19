@@ -53,11 +53,13 @@ public class MediusPlayerInfo extends MediusPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
 			outputStream.write(messageID);
+			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));			
 			outputStream.write(accountName);
 			outputStream.write(applicationID);
 			outputStream.write(playerStatus);
 			outputStream.write(connectionClass);
+			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue()));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
