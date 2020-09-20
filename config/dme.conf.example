@@ -25,8 +25,8 @@ LogLevel=INFO
 # - MEDIUS_AUTHENTICATION_SERVER
 # - MEDIUS_LOBBY_SERVER
 # - MEDIUS_PROXY_SERVER
-# - MEDIUS_NAT_SERVER
 # - MEDIUS_UNIVERSE_INFORMATION_SERVER
+# - NAT_SERVER
 # - DME_SERVER
 #
 EmulationMode=DME_SERVER
@@ -36,7 +36,8 @@ EmulationMode=DME_SERVER
 # Server Bindings #
 ###################
 # The server address and port to bind to. Leave address empty to bind
-# to any address.
+# to any address. The UDP port is the starting UDP port and will
+# increment by x number of games currently in session.
 #
 TcpAddress=
 TcpPort=10079
@@ -86,12 +87,8 @@ ApplicationId=10684
 # Server Threads #
 ##################
 # Number of socket handlers and async handlers for handling incoming data.
-# The child threads should always be greater than the parent threads. By
-# default parent threads are 2, child threads are 8. Adjust these values
-# accordingly to better optimize for a test or production environment.
 #
-ServerParentThreads=1
-ServerChildThreads=4
+ServerThreads=4
 
 
 ####################
