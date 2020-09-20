@@ -4,7 +4,7 @@
 .settings/
 
 # Configs
-configs/
+configs/*
 !configs/*.conf.example
 
 # Bins
