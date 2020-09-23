@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.packets.MediusAccountLogout;
 import net.hashsploit.clank.server.medius.packets.MediusAccountUpdateStats;
 import net.hashsploit.clank.server.medius.packets.MediusChannelInfo;
 import net.hashsploit.clank.server.medius.packets.MediusChannelList_ExtraInfoOne;
@@ -11,6 +12,7 @@ import net.hashsploit.clank.server.medius.packets.MediusChatMessage;
 import net.hashsploit.clank.server.medius.packets.MediusChatToggle;
 import net.hashsploit.clank.server.medius.packets.MediusClearGameListFilterZero;
 import net.hashsploit.clank.server.medius.packets.MediusCreateGameOne;
+import net.hashsploit.clank.server.medius.packets.MediusDnasSignaturePost;
 import net.hashsploit.clank.server.medius.packets.MediusGameList_ExtraInfoZero;
 import net.hashsploit.clank.server.medius.packets.MediusGetAllAnnouncements;
 import net.hashsploit.clank.server.medius.packets.MediusGetBuddyList_ExtraInfo;
@@ -26,8 +28,11 @@ import net.hashsploit.clank.server.medius.packets.MediusJoinChannel;
 import net.hashsploit.clank.server.medius.packets.MediusJoinGame;
 import net.hashsploit.clank.server.medius.packets.MediusPlayerInfo;
 import net.hashsploit.clank.server.medius.packets.MediusPolicy;
+import net.hashsploit.clank.server.medius.packets.MediusSessionBegin;
+import net.hashsploit.clank.server.medius.packets.MediusSessionEnd;
 import net.hashsploit.clank.server.medius.packets.MediusSetGameListFilterZero;
 import net.hashsploit.clank.server.medius.packets.MediusSetLobbyWorldFilter;
+import net.hashsploit.clank.server.medius.packets.MediusSetLocalizationParams;
 import net.hashsploit.clank.server.medius.packets.MediusTextFilter;
 import net.hashsploit.clank.server.medius.packets.MediusUpdateLadderStatsWide;
 import net.hashsploit.clank.server.medius.packets.MediusUpdateUserState;
@@ -36,6 +41,9 @@ public class MediusPacketMapInitializer {
 	
 	public static final HashMap<MediusPacketType, MediusPacket> getMap() {
 		HashMap<MediusPacketType, MediusPacket> mp = new HashMap<MediusPacketType, MediusPacket>();
+		
+		mp.put(MediusPacketType.AccountLogout, new MediusAccountLogout());
+		mp.put(MediusPacketType.SessionEnd, new MediusSessionEnd());
 		
 		mp.put(MediusPacketType.UpdateUserState, new MediusUpdateUserState()); // WORKING
 		mp.put(MediusPacketType.GetMyClans, new MediusGetMyClans()); // WORKING
@@ -74,6 +82,12 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.GetClanInvitationsSent, new MediusGetClanInvitationsSent());
 		mp.put(MediusPacketType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfo());
 	
+		// MAS stuff
+		mp.put(MediusPacketType.SessionBegin, new MediusSessionBegin());
+		mp.put(MediusPacketType.DnasSignaturePost, new MediusDnasSignaturePost());
+		mp.put(MediusPacketType.SetLocalizationParams, new MediusSetLocalizationParams());
+		
+		
 		
 		return mp;
 	}
