@@ -4,9 +4,8 @@
 .settings/
 
 # Configs
-configs/*.conf
-configs/*.json
-!configs/*.conf.example
+config/*
+!config/*.conf.example
 
 # Bins
 target/
