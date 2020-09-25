@@ -1,11 +1,17 @@
 package net.hashsploit.clank.server;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.Arrays;
+import java.util.logging.Logger;
+
+import net.hashsploit.clank.utils.Utils;
 
 public class DataPacket implements ISCERTMessage {
-	
+	private static final Logger logger = Logger.getLogger("");
+
 	private final RTPacketId id;
-	private final int length;
+	private final short length;
 	private final byte[] payload;
 	
 	/**
@@ -16,7 +22,8 @@ public class DataPacket implements ISCERTMessage {
 	 */
 	public DataPacket(RTPacketId id, byte[] payload) {
 		this.id = id;
-		this.length = payload.length;
+		this.length = (short) payload.length;
+	    // Remove RT-ID and length from the packet data
 		this.payload = payload;
 	}
 	
@@ -48,16 +55,17 @@ public class DataPacket implements ISCERTMessage {
 	 * Get the full representation of the data.
 	 * @return
 	 */
-	public ByteBuffer toData() {
-		ByteBuffer buffer = ByteBuffer.allocate(length + 1 + 2);
+	public byte[] toBytes() {
+		ByteBuffer buffer = ByteBuffer.allocate(length + 2 + 1); // Payload length + 3 for RT ID and RT Len
 		
+		buffer.order(ByteOrder.LITTLE_ENDIAN);
+
 		buffer.put(id.getByte());
-		buffer.putInt(length);
+		buffer.putShort(length);
 		buffer.put(payload);
 		
 		buffer.flip();
-		
-		return buffer;
+		return buffer.array();
 	}
 	
 }

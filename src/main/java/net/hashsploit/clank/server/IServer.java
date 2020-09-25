@@ -1,5 +1,7 @@
 package net.hashsploit.clank.server;
 
+import java.util.HashSet;
+
 public interface IServer {
 	
 	/**
@@ -13,15 +15,15 @@ public interface IServer {
 	public void stop();
 	
 	/**
-	 * Get the number of parent threads.
-	 * @return
+	 * Add a client to the current server.
+	 * @param client
 	 */
-	public int getParentThreads();
+	public void addClient(IClient client);
 	
 	/**
-	 * Get the number of child threads.
-	 * @return
+	 * Remove a client from the current server.
+	 * @param client
 	 */
-	public int getChildThreads();
+	public void removeClient(IClient client);
 	
 }

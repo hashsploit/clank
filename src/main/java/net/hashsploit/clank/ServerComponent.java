@@ -1,6 +1,6 @@
 package net.hashsploit.clank;
 
-public enum MediusComponent {
+public enum ServerComponent {
 	
 	/**
 	 * Handles player login and token authentication.
@@ -21,15 +21,20 @@ public enum MediusComponent {
 	 * Handles universe information synchronization component.
 	 */
 	MEDIUS_UNIVERSE_INFORMATION_SERVER(8),
+	
+	/**
+	 * NAT server component.
+	 */
+	NAT_SERVER(16),
 
 	/**
-	 * DME Proxy server component.
+	 * DME server component.
 	 */
-	DME_PROXY(16);
+	DME_SERVER(32);
 	
 	private final int modeId;
 	
-	private MediusComponent(int modeId) {
+	private ServerComponent(int modeId) {
 		this.modeId = modeId;
 	}
 	

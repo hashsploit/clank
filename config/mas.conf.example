@@ -26,7 +26,8 @@ LogLevel=INFO
 # - MEDIUS_LOBBY_SERVER
 # - MEDIUS_PROXY_SERVER
 # - MEDIUS_UNIVERSE_INFORMATION_SERVER
-# - DME_PROXY
+# - NAT_SERVER
+# - DME_SERVER
 #
 EmulationMode=MEDIUS_AUTHENTICATION_SERVER
 
@@ -87,6 +88,18 @@ ServerChildThreads=4
 MaxLoginAttempts=20
 
 
+##################
+# Application ID #
+##################
+# The game's App Id located in the ISO.
+#
+# NTSC UYA Application Id = 10684
+# PAL UYA Application Id = 10683
+# NSTC DL Application Id = 24802
+#
+ApplicationId=10684
+
+
 ######################
 # MLS Server Address #
 ######################
@@ -96,6 +109,15 @@ MaxLoginAttempts=20
 # your public IP address.
 #
 MlsIpAddress=172.16.222.31
+
+
+######################
+# NAT Server Address #
+######################
+# This is the IP address of The Medius NAT server is used to send back the
+# client's IP Address over UDP.
+#
+NatIpAddress=172.16.222.31
 
 
 #############

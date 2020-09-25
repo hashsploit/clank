@@ -1,5 +1,8 @@
 package net.hashsploit.clank.server.medius;
 
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+
 /**
  * "Medius App" datagram on top of SCE-RT (RTIME) from the SERVER_APP (0x0a) and CLIENT_APP_TOSERVER (0x0b) RTPacketId class.
  */
@@ -357,8 +360,28 @@ public enum MediusPacketType {
 	 * Get the value of the id as a int (unsigned short)
 	 * @return
 	 */
-	public final int getValue() {
+	public final int getInt() {
 		return id;
+	}
+	
+	public final short getShort() {
+		return (short) id;
+	}
+	
+	public final byte[] getShortByte() {
+		ByteBuffer buffer = ByteBuffer.allocate(2);
+		buffer.order(ByteOrder.LITTLE_ENDIAN);
+		buffer.putShort(getShort());
+		return buffer.array();
+	}
+	
+	public final byte[] getBytes() {
+	    return new byte[] {
+	            (byte)((id) & 0xff),
+	            (byte)((id >> 16) & 0xff),
+	            (byte)((id >> 8) & 0xff),
+	            (byte)((id >> 0) & 0xff),
+	        };
 	}
 	
 }
