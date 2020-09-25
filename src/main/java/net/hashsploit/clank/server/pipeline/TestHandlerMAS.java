@@ -9,7 +9,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.Client;
+import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.utils.Utils;
@@ -20,9 +20,9 @@ import net.hashsploit.clank.utils.Utils;
 public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 	
 	private static final Logger logger = Logger.getLogger("");
-	private final Client client;
+	private final MediusClient client;
 	
-	public TestHandlerMAS(final Client client) {
+	public TestHandlerMAS(final MediusClient client) {
 		super();
 		this.client = client;
 	}

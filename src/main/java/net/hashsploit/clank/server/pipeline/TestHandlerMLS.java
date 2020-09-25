@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -13,11 +12,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hashsploit.clank.server.Client;
 import net.hashsploit.clank.server.DataPacket;
+import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusPacket;
-import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
@@ -27,13 +25,11 @@ import net.hashsploit.clank.utils.Utils;
 public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 
 	private static final Logger logger = Logger.getLogger("");
-	private final Client client;
-	private final PacketReplayMLS replayMap;
+	private final MediusClient client;
 
-	public TestHandlerMLS(final Client client) {
+	public TestHandlerMLS(final MediusClient client) {
 		super();
 		this.client = client;
-		this.replayMap = new PacketReplayMLS();
 	}
 
 	@Override
