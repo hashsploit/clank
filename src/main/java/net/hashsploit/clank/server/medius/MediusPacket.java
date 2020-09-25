@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 import java.util.logging.Logger;
 
 import io.netty.channel.ChannelHandlerContext;
-import net.hashsploit.clank.server.Client;
+import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.ISCERTMessage;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
@@ -31,7 +31,7 @@ public abstract class MediusPacket {
     	
     }
     
-    public MediusMessage write(Client client) {
+    public MediusMessage write(MediusClient client) {
     	return null;
     }
     
