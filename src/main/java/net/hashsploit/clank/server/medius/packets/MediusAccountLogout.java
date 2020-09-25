@@ -1,13 +1,6 @@
 package net.hashsploit.clank.server.medius.packets;
 
-import java.util.logging.Logger;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
-import net.hashsploit.clank.server.Client;
-import net.hashsploit.clank.server.DataPacket;
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
@@ -24,7 +17,7 @@ public class MediusAccountLogout extends MediusPacket {
 	}
 
 	@Override
-	public MediusMessage write(Client client) {
+	public MediusMessage write(MediusClient client) {
 		return null;
 	}
 
