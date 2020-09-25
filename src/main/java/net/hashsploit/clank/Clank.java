@@ -12,7 +12,11 @@ import net.hashsploit.clank.cli.ICLIEvent;
 import net.hashsploit.clank.cli.commands.CLIClientsCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
-import net.hashsploit.clank.server.Server;
+import net.hashsploit.clank.server.IServer;
+import net.hashsploit.clank.server.MediusClientChannelInitializer;
+import net.hashsploit.clank.server.dme.DmeServer;
+import net.hashsploit.clank.server.medius.MediusServer;
+import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {
 	
@@ -24,7 +28,7 @@ public class Clank {
 	private boolean running;
 	private ClankConfig config;
 	private Terminal terminal;
-	private Server server;
+	private IServer server;
 	private EventBus eventBus;
 	private HashMap<String, DiscordWebhook> discordWebhooks;
 	
@@ -71,11 +75,11 @@ public class Clank {
 		});
 		
 		terminal.init();
-		logger.info("Initializing " + NAME + " v" + VERSION + " ...");
+		logger.info(String.format("Initializing %s v%s ...", NAME, VERSION));
 		
 		String prompt;
 		
-		switch (config.getMediusComponent()) {
+		switch (config.getServerComponent()) {
 		case MEDIUS_AUTHENTICATION_SERVER:
 			prompt = "MAS>";
 			break;
@@ -88,8 +92,10 @@ public class Clank {
 		case MEDIUS_UNIVERSE_INFORMATION_SERVER:
 			prompt = "MUIS>";
 			break;
-		case DME_PROXY:
-			prompt = AnsiColor.GREEN + "DME_PROXY>";
+		case NAT_SERVER:
+			prompt = "NAT>";
+		case DME_SERVER:
+			prompt = AnsiColor.GREEN + "DME>";
 			break;
 		default:
 			prompt = ">";
@@ -119,8 +125,46 @@ public class Clank {
 			}
 		}
 		
+		// Create the server
+		switch (config.getServerComponent()) {
+			case MEDIUS_AUTHENTICATION_SERVER:
+			case MEDIUS_LOBBY_SERVER:
+			case MEDIUS_PROXY_SERVER:
+			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
+				server = new MediusServer(
+					config.getServerComponent(),
+					config.getAddress(),
+					config.getPort(),
+					config.getParentThreads(),
+					config.getChildThreads()
+				);
+				break;
+			case NAT_SERVER:
+				server = new NatServer(
+					config.getAddress(),
+					config.getPort(),
+					Integer.parseInt(config.getProperties().getProperty("Threads"))
+				);
+				break;
+			case DME_SERVER:
+				server = new DmeServer(
+					config.getAddress(),
+					config.getPort(),
+					config.getParentThreads(),
+					config.getChildThreads(),
+					config.getProperties().getProperty("UdpAddress"),
+					Integer.parseInt(config.getProperties().getProperty("UdpStartingPort")),
+					Integer.parseInt(config.getProperties().getProperty("UdpThreads"))
+				);
+				break;
+			default:
+				logger.warning("No valid server component provided.");
+				shutdown();
+				return;
+		}
+		
 		// Start server
-		server = new Server(config.getMediusComponent(), config.getAddress(), config.getPort(), config.getParentThreads(), config.getChildThreads());
+		//server = new Server(config.getMediusComponent(), config.getAddress(), config.getPort(), config.getParentThreads(), config.getChildThreads());
 		server.start();
 		
 		// Tick
@@ -129,7 +173,7 @@ public class Clank {
 			update();
 			
 			try {
-				Thread.sleep(250);
+				Thread.sleep(300);
 			} catch (InterruptedException e) {
 				// Discard
 			}
@@ -153,7 +197,9 @@ public class Clank {
 	public void shutdown() {
 		running = false;
 		terminal.print(Level.INFO, "Shutting down ...");
-		server.stop();
+		if (server != null) {
+			server.stop();
+		}
 		terminal.shutdown();
 		System.exit(0);
 	}
@@ -186,7 +232,7 @@ public class Clank {
 	 * Get the current server instance.
 	 * @return
 	 */
-	public Server getServer() {
+	public IServer getServer() {
 		return server;
 	}
 	
