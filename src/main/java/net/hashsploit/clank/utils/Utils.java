@@ -2,13 +2,67 @@ package net.hashsploit.clank.utils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.ArrayList;
+import java.util.List;
 
+import net.hashsploit.clank.server.DataPacket;
+import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 
 public class Utils {
 	
 	// Prevent instantiation
 	private Utils() {}
+
+	public static List<DataPacket> splitMediusPackets(byte[] data) {
+		final List<DataPacket> packets = new ArrayList<DataPacket>();
+
+		int index = 0;
+
+		try {
+			while (index < data.length) {
+				final byte id = data[index + 0];
+
+				ByteBuffer bb = ByteBuffer.allocate(2);
+				bb.order(ByteOrder.LITTLE_ENDIAN);
+				bb.put(data[index + 1]);
+				bb.put(data[index + 2]);
+				short length = bb.getShort(0);
+
+				//logger.fine("Length: " + Integer.toString(length));
+				byte[] finalData = new byte[length];
+				int offset = 0;
+
+				if (length > 0) {
+					// ID(1) + Length(2)
+					offset += 1 + 2;
+				}
+
+				// logger.warning("PLAIN DATA PACKET");
+				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
+
+				RTPacketId rtid = null;
+
+				for (RTPacketId p : RTPacketId.values()) {
+					if (p.getByte() == id) {
+						rtid = p;
+						break;
+					}
+				}
+
+				packets.add(new DataPacket(rtid, finalData));
+
+				index += length + 3;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
+
+		return packets;
+	}
+	
+	
 	
 	public static short bytesToShortLittle(final byte byte1, final byte byte2) {
 	    ByteBuffer bb = ByteBuffer.allocate(2);

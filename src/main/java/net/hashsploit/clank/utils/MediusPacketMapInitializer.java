@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.packets.MediusAccountLogin;
 import net.hashsploit.clank.server.medius.packets.MediusAccountLogout;
 import net.hashsploit.clank.server.medius.packets.MediusAccountUpdateStats;
 import net.hashsploit.clank.server.medius.packets.MediusChannelInfo;
@@ -86,7 +87,7 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.SessionBegin, new MediusSessionBegin());
 		mp.put(MediusPacketType.DnasSignaturePost, new MediusDnasSignaturePost());
 		mp.put(MediusPacketType.SetLocalizationParams, new MediusSetLocalizationParams());
-		
+		mp.put(MediusPacketType.AccountLogin, new MediusAccountLogin());
 		
 		
 		return mp;

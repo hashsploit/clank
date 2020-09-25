@@ -2,6 +2,7 @@ package net.hashsploit.clank.server.pipeline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.logging.Logger;
 
 import org.bouncycastle.util.Arrays;
@@ -71,7 +72,6 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		final byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
 
-		logger.finest("RAW: " + Utils.bytesToString(data));
 
 		// No valid packet is < 3 or > 2048 bytes, drop the connection
 		if (data.length < 3 || data.length > 2048) {
@@ -88,88 +88,25 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 				break;
 			}
 		}
-		DataPacket packet = new DataPacket(rtid, Arrays.copyOfRange(data, 3, data.length));
-	    logger.fine("Packet ID: " + rtid.toString());
-	    logger.fine("Packet ID: " + rtid.getByte());
-		// =============================================
-		//              IF STATEMENTS
-		// =============================================	  	    
-	    checkRTConnect(ctx, packet);
 		
-	    checkMediusPackets(ctx, packet);
-		
-//		
-//		if (rtid.getByte() == (byte) 0x0b) {
-//			// =============================================
-//			// CLIENT_APP_TOSERVER (0x0b)
-//			// =============================================
-//			if (data[1] == 0x1e) {
-//				logger.fine("0x1e auth");
-//		        //Random rand = new Random(); 
-//				byte[] firstPart = hexStringToByteArray("0a320001043100000000000000000000000000000000000000000000000000000031");
-//				//byte[] playerID = hexStringToByteArray(Integer.toString(rand.nextInt(32000))); // TODO: make this non-random. save player ID
-//				byte[] playerID = hexStringToByteArray("33"); // TODO: make this non-random. save player ID
-//				byte[] lastPart = hexStringToByteArray("000000000000000000000000000000000000");
-//				ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-//				try {
-//					outputStream.write(firstPart);
-//					outputStream.write(playerID);
-//					outputStream.write(lastPart);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				
-//				finalPayload = outputStream.toByteArray();
-//			} else if (data[1] == 0x32) { // Second 0x0b response. Seems static
-//				logger.fine("0x32 auth");
-//				finalPayload = hexStringToByteArray("0a1e0001a400000000000000000000000000000000000000000000000000000000");		
-//			} else if (data[1] == 0x52) { // Username and password passed to server. TODO: check with database and don't respond if not valid login
-//				// For now, just send success, and the IP of the MLS/NAT
-//				// we don't know what this contains really, it just works
-//				logger.fine("0x52 auth");
-//				
-//				RTPacketId resultPacketId = RTPacketId.SERVER_APP;
-//				
-//				byte[] mlsAddress = Clank.getInstance().getConfig().getProperties().get("MlsIpAddress").toString().getBytes();
-//				int mlsNumZeros = 16 - Clank.getInstance().getConfig().getProperties().get("MlsIpAddress").toString().length();
-//				String mlsZeroString = new String(new char[mlsNumZeros]).replace("\0", "00");
-//				byte[] mlsZeroTrail = hexStringToByteArray(mlsZeroString);
-//				
-//				byte[] natAddress = Clank.getInstance().getConfig().getProperties().get("NatIpAddress").toString().getBytes();
-//				int natNumZeros = 16 - Clank.getInstance().getConfig().getProperties().get("NatIpAddress").toString().length();
-//				String natZeroString = new String(new char[natNumZeros]).replace("\0", "00");
-//				byte[] natZeroTrail = hexStringToByteArray(natZeroString);
-//				
-//				
-//				
-//				ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
-//				try {
-//					outputStream.write(hexStringToByteArray("0108310000000000000000000000000000000000000000000000000000000e00000001000000580000000100000001000000")); // First part of the packet: unknown
-//					outputStream.write(mlsAddress); // MLS Server Addr TODO: replace with server IP
-//					outputStream.write(mlsZeroTrail); // Zero padding based on server IP size 
-//					outputStream.write(hexStringToByteArray("5e27000003000000")); // MLS Port + padding
-//					
-//					outputStream.write(natAddress); // NAT server Addr
-//					outputStream.write(natZeroTrail); // Padding for address
-//					outputStream.write(hexStringToByteArray("5627000005000000")); // NAT Port + padding
-//					outputStream.write(hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
-//					outputStream.write(hexStringToByteArray("3133")); // World ID and Player ID
-//					outputStream.write(hexStringToByteArray("000000000000000000000000000000")); // Padding 
-//					outputStream.write(hexStringToByteArray("5a657138626b494b77704d6632444f50000000")); // MLS Acess Token
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				byte[] dataPayload = outputStream.toByteArray();
-//				DataPacket mlsDataPacket = new DataPacket(resultPacketId, dataPayload);
-//				finalPayload = mlsDataPacket.toBytes();
-//			}
-//			
-//			
-//
-//		}
-		
+		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
+
+		// Get the packets
+		List<DataPacket> packets = Utils.splitMediusPackets(data);
+
+		for (DataPacket packet: packets) {
+			//DataPacket packet = new DataPacket(rtid, Arrays.copyOfRange(data, 3, data.length));
+			logger.finest("RAW: " + Utils.bytesToString(packet.toBytes()));
+
+		    logger.fine("Packet ID: " + rtid.toString());
+		    logger.fine("Packet ID: " + rtid.getByte());
+			// =============================================
+			//              IF STATEMENTS
+			// =============================================	  	    
+		    checkRTConnect(ctx, packet);
+			
+		    checkMediusPackets(ctx, packet);
+		}
 
     }
     
@@ -189,13 +126,15 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		    // Process this medius packet
 		    mediusPacket.read(incomingMessage);
 		    mm = mediusPacket.write(client);	    
-	    	DataPacket responsepacket = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
-
-			byte[] finalPayload = responsepacket.toBytes();
-			logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
-			ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-			ctx.write(msg);
-			ctx.flush();	
+		    if (mm != null) {
+		    	DataPacket responsepacket = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
+	
+				byte[] finalPayload = responsepacket.toBytes();
+				logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
+				ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
+				ctx.write(msg);
+				ctx.flush();	
+		    }
 	    }
     }
     

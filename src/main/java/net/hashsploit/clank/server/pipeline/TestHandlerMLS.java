@@ -58,7 +58,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<DataPacket> packets = processData(ctx, data);
+		List<DataPacket> packets = Utils.splitMediusPackets(data);
 
 		for (DataPacket packet: packets) {
 			processSinglePacket(ctx, packet);
@@ -92,14 +92,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     private void passOnToHandler(ChannelHandlerContext ctx, MediusMessage mm) {
     	if (mm == null) 
     		return;
-    	
-//    	try {
-//			Thread.sleep(4000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		
+
     	DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
 
 		byte[] finalPayload = packet.toBytes();
@@ -239,53 +232,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		return ByteBuffer.wrap(bytes);
 	}
 
-	private static List<DataPacket> processData(ChannelHandlerContext ctx, byte[] data) {
-		final List<DataPacket> packets = new ArrayList<DataPacket>();
 
-		int index = 0;
-
-		try {
-			while (index < data.length) {
-				final byte id = data[index + 0];
-
-				ByteBuffer bb = ByteBuffer.allocate(2);
-				bb.order(ByteOrder.LITTLE_ENDIAN);
-				bb.put(data[index + 1]);
-				bb.put(data[index + 2]);
-				short length = bb.getShort(0);
-
-				logger.fine("Length: " + Integer.toString(length));
-				byte[] finalData = new byte[length];
-				int offset = 0;
-
-				if (length > 0) {
-					// ID(1) + Length(2)
-					offset += 1 + 2;
-				}
-
-				// logger.warning("PLAIN DATA PACKET");
-				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
-
-				RTPacketId rtid = null;
-
-				for (RTPacketId p : RTPacketId.values()) {
-					if (p.getByte() == id) {
-						rtid = p;
-						break;
-					}
-				}
-
-				packets.add(new DataPacket(rtid, finalData));
-
-				index += length + 3;
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-			return null;
-		}
-
-		return packets;
-	}
 	
 	public void checkEcho(ChannelHandlerContext ctx, DataPacket packet) {
 			 if (packet.getId() == RTPacketId.CLIENT_ECHO) {
