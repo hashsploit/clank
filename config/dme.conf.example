@@ -42,7 +42,7 @@ EmulationMode=DME_SERVER
 TcpAddress=
 TcpPort=10079
 UdpAddress=
-UdpPort=50000
+UdpStartingPort=50000
 
 
 #####################
@@ -88,7 +88,9 @@ ApplicationId=10684
 ##################
 # Number of socket handlers and async handlers for handling incoming data.
 #
-ServerThreads=4
+ServerParentThreads=1
+ServerChildThreads=4
+UdpThreads=4
 
 
 ####################

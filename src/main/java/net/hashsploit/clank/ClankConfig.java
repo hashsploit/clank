@@ -35,8 +35,8 @@ public class ClankConfig {
 	 * Get the MediusComponent
 	 * @return
 	 */
-	public MediusComponent getMediusComponent() {
-		return MediusComponent.valueOf(properties.getProperty("EmulationMode"));
+	public ServerComponent getServerComponent() {
+		return ServerComponent.valueOf(properties.getProperty("EmulationMode"));
 	}
 	
 	/**
