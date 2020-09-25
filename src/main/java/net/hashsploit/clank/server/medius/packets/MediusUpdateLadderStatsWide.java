@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import net.hashsploit.clank.server.Client;
+import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
@@ -37,7 +37,7 @@ public class MediusUpdateLadderStatsWide extends MediusPacket {
 	}
 
 	@Override
-	public MediusMessage write(Client client) {
+	public MediusMessage write(MediusClient client) {
 		byte[] statsResponse = Utils.buildByteArrayFromString("0000000", 7); // empty 7 byte array
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
