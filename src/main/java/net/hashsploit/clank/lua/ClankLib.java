@@ -12,7 +12,7 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 
-import net.hashsploit.clank.server.Client;
+import net.hashsploit.clank.server.MediusClient;
 
 public class ClankLib extends TwoArgFunction {
 	
@@ -90,7 +90,7 @@ public class ClankLib extends TwoArgFunction {
 	 * Callback for newly connected clients.
 	 * @param clank client object
 	 */
-	public synchronized void onConnectCallback(Client client) {
+	public synchronized void onConnectCallback(MediusClient client) {
 		if (onConnectCallback != null && !onConnectCallback.isnil()) {
 			luaExecutor.execute(() -> {
 				onConnectCallback.call(LuaValue.userdataOf(client));
