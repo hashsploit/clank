@@ -13,6 +13,16 @@ public class Utils {
 	
 	// Prevent instantiation
 	private Utils() {}
+	
+	public static String bytesToStringClean(byte[] data) {
+		String result = "";
+		for (byte b: data) {
+			if (b == 0x00)
+				break;
+			result += (char) b;
+		}
+		return result;
+	}
 
 	public static List<DataPacket> splitMediusPackets(byte[] data) {
 		final List<DataPacket> packets = new ArrayList<DataPacket>();
