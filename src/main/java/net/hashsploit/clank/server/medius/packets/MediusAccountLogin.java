@@ -41,7 +41,13 @@ public class MediusAccountLogin extends MediusPacket {
 	public MediusMessage write(MediusClient client) {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		
-		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
+		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusLoginFailed.getValue()));
+		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
+		if (client.getDbManager().verifyAccount(Utils.bytesToStringClean(username), Utils.bytesToStringClean(password))) {
+			callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
+			mlsToken = Utils.hexStringToByteArray("5a657138626b494b77704d6632444f50000000");
+		}
+		
 		byte[] accountID = Utils.intToBytesLittle(50);
 		byte[] accountType = Utils.intToBytesLittle(1);
 		byte[] worldID = Utils.intToBytesLittle(123);
@@ -57,7 +63,6 @@ public class MediusAccountLogin extends MediusPacket {
 		byte[] natZeroTrail = Utils.hexStringToByteArray(natZeroString);
 		
 		try {
-			//outputStream.write(Utils.hexStringToByteArray("0108310000000000000000000000000000000000000000000000000000000e00000001000000580000000100000001000000")); // First part of the packet: unknown
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(callbackStatus); 
@@ -77,7 +82,7 @@ public class MediusAccountLogin extends MediusPacket {
 			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
 			outputStream.write(Utils.hexStringToByteArray("3133")); // World ID and Player ID
 			outputStream.write(Utils.hexStringToByteArray("000000000000000000000000000000")); // Padding 
-			outputStream.write(Utils.hexStringToByteArray("5a657138626b494b77704d6632444f50000000")); // MLS Acess Token
+			outputStream.write(mlsToken); // MLS Acess Token
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

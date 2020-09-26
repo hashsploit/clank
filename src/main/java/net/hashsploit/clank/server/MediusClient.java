@@ -7,6 +7,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.MediusServer;
@@ -29,6 +30,8 @@ public class MediusClient implements IClient {
 	private long unixConnectTime;
 	private long txPacketCount;
 	private long rxPacketCount;
+	
+	private DbManager dbMgr= new DbManager();
 
 	public MediusClient(MediusServer server, SocketChannel channel) {
 		this.server = server;
@@ -71,6 +74,10 @@ public class MediusClient implements IClient {
 			}
 		});
 
+	}
+	
+	public DbManager getDbManager() {
+		return dbMgr;
 	}
 
 	protected SocketChannel getSocketChannel() {
