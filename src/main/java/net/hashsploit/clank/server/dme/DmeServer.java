@@ -23,8 +23,7 @@ public class DmeServer extends TcpServer {
 		this.udpThreads = udpThreads;
 		this.gameServers = new HashSet<UdpServer>();
 		
-		
-		
+		setChannelInitializer(new DmeTcpClientInitializer(this));
 	}
 	
 	@Override
