@@ -177,7 +177,7 @@ public class ClankConfig {
 	 * @return
 	 */
 	public String[] getWhitelistedPlayers() {
-		return properties.getProperty("WhitelistEnabled").split(",");
+		return properties.getProperty("WhitelistPlayers").split(",");
 	}
 
 }

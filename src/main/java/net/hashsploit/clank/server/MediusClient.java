@@ -30,8 +30,6 @@ public class MediusClient implements IClient {
 	private long unixConnectTime;
 	private long txPacketCount;
 	private long rxPacketCount;
-	
-	private DbManager dbMgr= new DbManager();
 
 	public MediusClient(MediusServer server, SocketChannel channel) {
 		this.server = server;
@@ -74,10 +72,6 @@ public class MediusClient implements IClient {
 			}
 		});
 
-	}
-	
-	public DbManager getDbManager() {
-		return dbMgr;
 	}
 
 	protected SocketChannel getSocketChannel() {
