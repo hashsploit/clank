@@ -164,5 +164,20 @@ public class ClankConfig {
 		return Integer.parseInt(properties.getProperty("ServerChildThreads"));
 	}
 
+	/**
+	 * Check if the MAS whitelist is enabled.
+	 * @return
+	 */
+	public boolean isWhitelistEnabled() {
+		return Boolean.parseBoolean(properties.getProperty("WhitelistEnabled"));
+	}
 	
+	/**
+	 * Get an array of whitelisted players.
+	 * @return
+	 */
+	public String[] getWhitelistedPlayers() {
+		return properties.getProperty("WhitelistEnabled").split(",");
+	}
+
 }
