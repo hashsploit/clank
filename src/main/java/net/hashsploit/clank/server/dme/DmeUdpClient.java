@@ -1,19 +1,18 @@
 package net.hashsploit.clank.server.dme;
 
-import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.DatagramChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.IServer;
 
-public class DmeClient implements IClient {
+public class DmeUdpClient implements IClient {
 
 	private final IServer server;
-	private final SocketChannel channel;
+	private final DatagramChannel channel;
 	
-	public DmeClient(IServer server, SocketChannel ch) {
+	public DmeUdpClient(IServer server, DatagramChannel ch) {
 		this.server = server;
 		this.channel = ch;
-		
 		
 		
 	}
@@ -32,5 +31,5 @@ public class DmeClient implements IClient {
 	public ClientState getClientState() {
 		return null;
 	}
-	
+
 }
