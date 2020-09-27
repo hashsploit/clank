@@ -14,6 +14,7 @@ import net.hashsploit.clank.server.medius.packets.MediusChatToggle;
 import net.hashsploit.clank.server.medius.packets.MediusClearGameListFilterZero;
 import net.hashsploit.clank.server.medius.packets.MediusCreateGameOne;
 import net.hashsploit.clank.server.medius.packets.MediusDnasSignaturePost;
+import net.hashsploit.clank.server.medius.packets.MediusGameInfoZero;
 import net.hashsploit.clank.server.medius.packets.MediusGameList_ExtraInfoZero;
 import net.hashsploit.clank.server.medius.packets.MediusGetAllAnnouncements;
 import net.hashsploit.clank.server.medius.packets.MediusGetBuddyList_ExtraInfo;
@@ -77,7 +78,7 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.JoinGame, new MediusJoinGame());
 		mp.put(MediusPacketType.PlayerReport, new MediusPlayerReport());
 		mp.put(MediusPacketType.WorldReport0, new MediusWorldReportZero());
-		
+		mp.put(MediusPacketType.GameInfo0, new MediusGameInfoZero());
 		
 		// Chat
 		mp.put(MediusPacketType.TextFilter,  new MediusTextFilter());

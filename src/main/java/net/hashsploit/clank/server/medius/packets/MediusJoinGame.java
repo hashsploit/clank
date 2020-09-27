@@ -64,6 +64,8 @@ public class MediusJoinGame extends MediusPacket {
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
 
+			outputStream.write(Utils.hexStringToByteArray("03000000")); //// gamehosttype
+			
 			outputStream.write(Utils.hexStringToByteArray("01000000")); // net connection type (int/little endian)
 
 			outputStream.write(Utils.hexStringToByteArray("01000000")); // net address type (int/little endian)
@@ -85,6 +87,7 @@ public class MediusJoinGame extends MediusPacket {
 
 			outputStream.write(Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E00")); // aAccessKey
 
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

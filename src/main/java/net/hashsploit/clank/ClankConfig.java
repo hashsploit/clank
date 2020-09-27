@@ -148,6 +148,15 @@ public class ClankConfig {
 		return Integer.parseInt(properties.getProperty("Port"));
 	}
 	
+	public int getTcpPort() {
+		return Integer.parseInt(properties.getProperty("TcpPort"));
+
+	}
+	
+	public String getTcpAddress() {
+		return properties.getProperty("TcpAddress");
+	}
+	
 	/**
 	 * Get the number of parent threads the server should use.
 	 * @return

@@ -154,8 +154,8 @@ public class Clank {
 				break;
 			case DME_SERVER:
 				server = new DmeServer(
-					config.getAddress(),
-					config.getPort(),
+					config.getTcpAddress(),
+					config.getTcpPort(),
 					config.getParentThreads(),
 					config.getChildThreads(),
 					config.getProperties().getProperty("UdpAddress"),
