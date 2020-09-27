@@ -58,7 +58,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<DataPacket> packets = Utils.splitMediusPackets(data);
+		List<DataPacket> packets = Utils.decodeRTMessageFrames(data);
 
 		for (DataPacket packet: packets) {
 			processSinglePacket(ctx, packet);
@@ -186,6 +186,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	public void checkInitialConnect(ChannelHandlerContext ctx, DataPacket packet) {
 		byte[] data = packet.toBytes();
 
+		// RT ID 00, Length 6b00
 	    if (Utils.bytesToHex(data).equals("006b000108010500bc2900000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000031330000000000000000000000000000005a657138626b494b77704d6632444f5000")) {
 	    	// TODO: Don't hard code the player ID (0x33 in this example)
 	    	logger.fine(Utils.bytesToHex(data));

@@ -7,9 +7,10 @@ import java.util.List;
 
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
-import net.hashsploit.clank.server.medius.MediusConstants;
 
 public class Utils {
+	
+	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 	
 	// Prevent instantiation
 	private Utils() {}
@@ -24,7 +25,7 @@ public class Utils {
 		return result;
 	}
 
-	public static List<DataPacket> splitMediusPackets(byte[] data) {
+	public static List<DataPacket> decodeRTMessageFrames(byte[] data) {
 		final List<DataPacket> packets = new ArrayList<DataPacket>();
 
 		int index = 0;
@@ -162,7 +163,6 @@ public class Utils {
 		return sb.toString();
 	}
 	
-	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 	public static String bytesToHex(byte[] bytes) {
 	    char[] hexChars = new char[bytes.length * 2];
 	    for (int j = 0; j < bytes.length; j++) {

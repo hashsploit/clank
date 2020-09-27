@@ -92,7 +92,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<DataPacket> packets = Utils.splitMediusPackets(data);
+		List<DataPacket> packets = Utils.decodeRTMessageFrames(data);
 
 		for (DataPacket packet: packets) {
 			//DataPacket packet = new DataPacket(rtid, Arrays.copyOfRange(data, 3, data.length));
