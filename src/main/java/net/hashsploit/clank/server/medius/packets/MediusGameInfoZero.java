@@ -60,15 +60,16 @@ public class MediusGameInfoZero extends MediusPacket {
 			outputStream.write(Utils.hexStringToByteArray("08000000")); // maxplayers
 			//outputStream.write(worldID); //gamelevel
 			outputStream.write(Utils.hexStringToByteArray("45070000")); // gameLevel (aquatos channel id)
-			outputStream.write(Utils.hexStringToByteArray("00000000")); // playerSkillLevel
-			outputStream.write(Utils.hexStringToByteArray("00000000")); // playerCount
+			outputStream.write(Utils.hexStringToByteArray("00000000")); // playerSkillLevel -- SETTING THIS TO 01000000 TURNS FLUX OFF
+			outputStream.write(Utils.hexStringToByteArray("01000000")); // playerCount
 			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue()));
-			outputStream.write(Utils.buildByteArrayFromString("Test game name", MediusConstants.GAMENAME_MAXLEN.getValue()));
-			outputStream.write(Utils.hexStringToByteArray("00000000")); // rulesset
-			outputStream.write(Utils.hexStringToByteArray("28000000")); // genericField1
-			outputStream.write(Utils.hexStringToByteArray("00000000")); // genericField2
-			outputStream.write(Utils.hexStringToByteArray("0800e411")); // genericField3
-			outputStream.write(Utils.hexStringToByteArray("05000000")); // worldStatus (staging) // 0 to 5
+			outputStream.write(Utils.buildByteArrayFromString("Smily's", MediusConstants.GAMENAME_MAXLEN.getValue()));
+			outputStream.write(Utils.hexStringToByteArray("00000000")); // rulesset -- weapons
+			outputStream.write(Utils.hexStringToByteArray("28000000")); // genericField1 -- cities location ID
+			outputStream.write(Utils.hexStringToByteArray("01000000")); // genericField2
+			outputStream.write(Utils.hexStringToByteArray("0800e411")); // genericField3	
+			
+			outputStream.write(Utils.hexStringToByteArray("01000000")); // worldStatus (staging) // 0 to 5
 			outputStream.write(Utils.hexStringToByteArray("04000000")); // gameHostType // 0 to 4
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
