@@ -55,7 +55,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		final byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
 
-		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
+		logger.fine("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
 		List<DataPacket> packets = Utils.decodeRTMessageFrames(data);
@@ -68,7 +68,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     
     private void processSinglePacket(ChannelHandlerContext ctx, DataPacket packet) {
     	// Get the raw data    	
-		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
+		logger.fine("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
 		
 	    logger.fine("Packet ID: " + packet.getId().toString());
 	    logger.fine("Packet ID: " + packet.getId().getByte());
@@ -94,8 +94,9 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     		return;
 
     	DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
-
 		byte[] finalPayload = packet.toBytes();
+
+    	logger.finest(mm.toString());
 		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
 		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
 		ctx.write(msg);

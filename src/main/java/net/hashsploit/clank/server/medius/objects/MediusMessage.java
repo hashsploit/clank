@@ -33,6 +33,10 @@ public class MediusMessage {
 	    this.data = data;
 	}
 	
+	public MediusMessage(MediusPacketType type) {
+	    this.packetType = type;
+	}
+	
 	public byte[] getPayload() {
 		return data;
 	}
@@ -42,9 +46,9 @@ public class MediusMessage {
 	}
 	
 	public byte[] toBytes() {
-		ByteBuffer bb = ByteBuffer.allocate(2+data.length);
+		ByteBuffer bb = ByteBuffer.allocate(2+getPayload().length);
 		bb.put(packetType.getShortByte());
-		bb.put(data);
+		bb.put(getPayload());
 		bb.flip();
 		return bb.array();
 	}
