@@ -19,11 +19,13 @@ import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.server.medius.packets.serializers.GameList_ExtraInfoZeroRequest;
+import net.hashsploit.clank.server.medius.packets.serializers.GameList_ExtraInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGameList_ExtraInfoZeroHandler extends MediusPacket {
 	
 	private GameList_ExtraInfoZeroRequest reqPacket;
+	private GameList_ExtraInfoZeroResponse respPacket;
 	
 	public MediusGameList_ExtraInfoZeroHandler() {
 		super(MediusPacketType.GameList_ExtraInfo0,MediusPacketType.GameList_ExtraInfoResponse0);
@@ -38,18 +40,27 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacket {
 	@Override
 	public MediusMessage write(MediusClient client) {
 
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try {
-			outputStream.write(reqPacket.getMessageID());
-			outputStream.write(Utils.hexStringToByteArray("0000000000000065EB0000020000000800000045070000000000040000000028000000000000000800E41100000000010000000400000031763120662e6f20646f7820202020202020303030303030323830303030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000"));
-		} catch (IOException e) {
-			
-			
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return new MediusMessage(responseType, outputStream.toByteArray());
-	}
+		byte[] mediusWorldID = Utils.hexStringToByteArray("65eb0000");
+		byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
+		byte[] playerCount = Utils.shortToBytesLittle((short) 1);
+		byte[] minPlayers = Utils.shortToBytesLittle((short) 0);
+		byte[] maxPlayers = Utils.shortToBytesLittle((short) 8);
+		byte[] gameLevel = Utils.hexStringToByteArray("45070000");
+		byte[] playerSkillLevel = Utils.hexStringToByteArray("00000004");
+		byte[] rulesSet = Utils.intToBytesLittle(0);
+		byte[] genericField1 = Utils.intToBytesLittle(28);// Generic field 1 (Location Id (city id; aquatos))
+		byte[] genericField2 = Utils.intToBytesLittle(0);
+		byte[] genericField3 = Utils.hexStringToByteArray("0800e411");
+		byte[] worldSecurityLevelType = Utils.hexStringToByteArray("00000000");
+		byte[] worldStatus = Utils.intToBytesLittle(MediusWorldStatus.WORLD_STAGING.getValue());
+		byte[] gameHostType = Utils.intToBytesLittle(MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue());
+		byte[] gameName = Utils.hexStringToByteArray("31763120662e6f20646f782020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
+		byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
+		byte[] endOfList = Utils.hexStringToByteArray("01000000");
+
+		respPacket = new GameList_ExtraInfoZeroResponse(reqPacket.getMessageID(), mediusWorldID, callbackStatus, playerCount, minPlayers, maxPlayers,
+				gameLevel, playerSkillLevel, rulesSet, genericField1, genericField2, genericField3, worldSecurityLevelType, worldStatus,
+				gameHostType, gameName, gameStats, endOfList);
+		return respPacket;	}
 
 }
