@@ -15,7 +15,9 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGameList_ExtraInfoZero extends MediusPacket {
@@ -64,31 +66,35 @@ public class MediusGameList_ExtraInfoZero extends MediusPacket {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageID);
-//			outputStream.write(Utils.hexStringToByteArray("000000"));
-//			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
-//			outputStream.write(mediusWorldID);
-//			outputStream.write(playerCount);
-//			outputStream.write(minPlayers);
-//			outputStream.write(maxPlayers);
-//			outputStream.write(gameLevel);
-//			outputStream.write(playerSkillLevel);
-//			outputStream.write(rulesSet);
-//			outputStream.write(genericField1);
-//			outputStream.write(genericField2);
-//			outputStream.write(genericField3);
-//			outputStream.write(genericField4);
-//			outputStream.write(genericField5);
-//			outputStream.write(genericField6);
-//			outputStream.write(genericField7);
-//			outputStream.write(genericField8);
-//			outputStream.write(worldSecurityLevelType);
-//			outputStream.write(worldStatus);
-//			outputStream.write(gameHostType);
-//			outputStream.write(gameName);
-//			outputStream.write(gameStats);
-//			outputStream.write(endOfList);
-			//outputStream.write(Utils.hexStringToByteArray("00000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000"));
-			outputStream.write(Utils.hexStringToByteArray("0000000000000065EB0000020000000800000045070000000000040000000028000000000000000800E41100000000010000000400000031763120662e6f20646f7820202020202020303030303030323830303030000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000"));
+			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
+			
+			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue())); // Callback status (int)
+			outputStream.write(Utils.hexStringToByteArray("65eb0000")); // MediusWorldId (lobby/channel Id)
+			
+			outputStream.write(Utils.shortToBytesLittle((short) 2)); // Player count
+			outputStream.write(Utils.shortToBytesLittle((short) 0)); // Min players
+			outputStream.write(Utils.shortToBytesLittle((short) 8)); // Max players
+			outputStream.write(Utils.hexStringToByteArray("0000")); // Padding
+			
+			outputStream.write(Utils.hexStringToByteArray("45070000")); // Game level
+			outputStream.write(Utils.hexStringToByteArray("00000004")); // Player skill level (first 3 bytes are disabled weapons, last byte = bolt skill)
+			
+			outputStream.write(Utils.intToBytesLittle(0)); // Rules set (might be used as team colors or skins)
+			outputStream.write(Utils.intToBytesLittle(28)); // Generic field 1 (Location Id (city id; aquatos))
+			outputStream.write(Utils.intToBytesLittle(0)); // Generic field 2
+			outputStream.write(Utils.hexStringToByteArray("0800e411")); // Generic field 3 (map type, game settings)
+			outputStream.write(Utils.hexStringToByteArray("00000000")); // Security level
+			outputStream.write(Utils.intToBytesLittle(MediusWorldStatus.WORLD_STAGING.getValue())); // World status
+			outputStream.write(Utils.intToBytesLittle(MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue())); // Game Host Type
+			
+			// GameName (contains some ID in it, remainder of the name string buffer is 0x20 [space character]) 
+			outputStream.write(Utils.hexStringToByteArray("31763120662e6f20646f782020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000"));
+			
+			// GameStats
+			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue()));
+			
+			// End of list
+			outputStream.write(Utils.intToBytesLittle(1));
 		} catch (IOException e) {
 			
 			
