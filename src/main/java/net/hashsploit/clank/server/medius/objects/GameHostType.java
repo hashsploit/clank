@@ -1,6 +1,6 @@
 package net.hashsploit.clank.server.medius.objects;
 
-public enum MediusGameHostType {
+public enum GameHostType {
 	
 	HOST_CLIENT_SERVER(0),
 	
@@ -14,7 +14,7 @@ public enum MediusGameHostType {
 	
 	private final int value;
 
-	private MediusGameHostType(int value) {
+	private GameHostType(int value) {
 		this.value = value;
 	}
 

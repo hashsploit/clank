@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.scert.objects;
+package net.hashsploit.clank.server.medius.objects;
 
 import java.nio.ByteBuffer;
 
@@ -8,17 +8,17 @@ import net.hashsploit.clank.utils.Utils;
 
 public class NetAddress extends SCERTObject {
 	
-	public final NetConnectionType type;
+	public final NetAddressType type;
 	public final String address;
 	public final int port;
 	
-	public NetAddress(final NetConnectionType type, final String address, final int port) {
+	public NetAddress(final NetAddressType type, final String address, final int port) {
 		this.type = type;
 		this.address = address;
 		this.port = port;
 	}
 
-	public NetConnectionType getType() {
+	public NetAddressType getType() {
 		return type;
 	}
 

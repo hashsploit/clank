@@ -71,7 +71,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
 		
 	    logger.fine("Packet ID: " + packet.getId().toString());
-	    logger.fine("Packet ID: " + packet.getId().getByte());
+	    logger.fine("Packet ID: " + packet.getId().getValue());
 		
 	    // Check echo
 	    checkEcho(ctx, packet);
@@ -137,7 +137,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 				// byte[] p14 =
 				// Utils.hexStringToByteArray("BE2F79946D8FFFCA8D08671D329ACDB89A488F33ABEDD83C278E8C6F4FA68CBA0A66CEEC21EB8EE6C841B725FAA913E3A6982ECAF76B85977C36C1B4538C8850");
 				final byte[] p14 = Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-				outputStream.write(RTPacketId.SERVER_CRYPTKEY_GAME.getByte());
+				outputStream.write(RTPacketId.SERVER_CRYPTKEY_GAME.getValue());
 				outputStream.write(Utils.shortToBytesLittle((short) p14.length));
 				outputStream.write(p14);
 
@@ -157,14 +157,14 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 				baos.write(zeroTrail);
 				baos.write(Utils.hexStringToByteArray("00"));
 
-				outputStream.write(RTPacketId.SERVER_CONNECT_ACCEPT_TCP.getByte());
+				outputStream.write(RTPacketId.SERVER_CONNECT_ACCEPT_TCP.getValue());
 				outputStream.write(Utils.shortToBytesLittle((short) baos.size()));
 				outputStream.write(baos.toByteArray());
 
 				// ID_1a
 				// outputStream.write(Utils.hexStringToByteArray("0100"));
 				final byte[] p1a = Utils.hexStringToByteArray("0100");
-				outputStream.write(RTPacketId.SERVER_CONNECT_COMPLETE.getByte());
+				outputStream.write(RTPacketId.SERVER_CONNECT_COMPLETE.getValue());
 				outputStream.write(Utils.shortToBytesLittle((short) p1a.length));
 				outputStream.write(p1a);
 

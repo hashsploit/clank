@@ -15,7 +15,7 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacket;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
+import net.hashsploit.clank.server.medius.objects.GameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.utils.Utils;
@@ -85,7 +85,7 @@ public class MediusGameList_ExtraInfoZero extends MediusPacket {
 			outputStream.write(Utils.hexStringToByteArray("0800e411")); // Generic field 3 (map type, game settings)
 			outputStream.write(Utils.hexStringToByteArray("00000000")); // Security level
 			outputStream.write(Utils.intToBytesLittle(MediusWorldStatus.WORLD_STAGING.getValue())); // World status
-			outputStream.write(Utils.intToBytesLittle(MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue())); // Game Host Type
+			outputStream.write(Utils.intToBytesLittle(GameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue())); // Game Host Type
 			
 			// GameName (contains some ID in it, remainder of the name string buffer is 0x20 [space character]) 
 			outputStream.write(Utils.hexStringToByteArray("31763120662e6f20646f782020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000"));

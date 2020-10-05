@@ -481,12 +481,17 @@ public enum MediusConstants {
 	/**
 	 * Number of bytes needed to support the medius chat filter.
 	 */
-	MEDIUS_GENERIC_CHAT_FILTER_BYTES_LEN((MEDIUS_GENERIC_CHAT_FILTER_BITFIELD_LEN.value + 7) / 8);
+	MEDIUS_GENERIC_CHAT_FILTER_BYTES_LEN((MEDIUS_GENERIC_CHAT_FILTER_BITFIELD_LEN.value + 7) / 8),
+	
+	/**
+	 * World status represented as an integer
+	 */
+	MEDIUS_WORLD_STATUS(4);
 	
 	private final int value;
 
 	private MediusConstants(int value) {
-		this.value = (short) value;
+		this.value = value;
 	}
 
 	public final int getValue() {

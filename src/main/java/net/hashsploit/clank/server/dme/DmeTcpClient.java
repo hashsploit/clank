@@ -6,11 +6,7 @@ import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.IServer;
-import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.pipeline.TestHandlerDmeTcp;
-import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
-import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
 
 public class DmeTcpClient implements IClient {
 	private static final Logger logger = Logger.getLogger(DmeTcpClient.class.getName());
@@ -25,7 +21,7 @@ public class DmeTcpClient implements IClient {
 		
 		logger.info("Client connected: " + getIPAddress());
 
-		channel.pipeline().addLast("MediusTestHandlerMAS", new TestHandlerDmeTcp(this));
+		channel.pipeline().addLast("MediusTestHandlerDME", new TestHandlerDmeTcp(this));
 	}
 
 	@Override

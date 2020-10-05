@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.scert.objects;
+package net.hashsploit.clank.server.medius.objects;
 
 public enum NetAddressType {
 

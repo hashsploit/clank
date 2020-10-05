@@ -60,7 +60,7 @@ public class DataPacket implements ISCERTMessage {
 		
 		buffer.order(ByteOrder.LITTLE_ENDIAN);
 
-		buffer.put(id.getByte());
+		buffer.put(id.getValue());
 		buffer.putShort(length);
 		buffer.put(payload);
 		

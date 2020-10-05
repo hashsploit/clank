@@ -48,7 +48,7 @@ public class EncryptedDataPacket extends DataPacket implements ISCERTMessage {
 	public ByteBuffer toData() {
 		ByteBuffer buffer = ByteBuffer.allocate(super.getLength() + 1 + 2 + checksum.length);
 		
-		buffer.put(super.getId().getByte());
+		buffer.put(super.getId().getValue());
 		buffer.putInt(super.getLength());
 		buffer.put(checksum);
 		buffer.put(super.getPayload());
