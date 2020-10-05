@@ -129,7 +129,7 @@ public enum RTPacketId {
 		this.id = (byte) id;
 	}
 	
-	public final byte getByte() {
+	public final byte getValue() {
 		return id;
 	}
 	

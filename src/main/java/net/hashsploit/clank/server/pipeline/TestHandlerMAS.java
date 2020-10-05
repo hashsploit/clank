@@ -83,7 +83,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		RTPacketId rtid = null;
 		
 		for (RTPacketId p : RTPacketId.values()) {
-			if (p.getByte() == data[0]) {
+			if (p.getValue() == data[0]) {
 				rtid = p;
 				break;
 			}
@@ -99,7 +99,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			logger.finest("RAW: " + Utils.bytesToString(packet.toBytes()));
 
 		    logger.fine("Packet ID: " + rtid.toString());
-		    logger.fine("Packet ID: " + rtid.getByte());
+		    logger.fine("Packet ID: " + rtid.getValue());
 			// =============================================
 			//              IF STATEMENTS
 			// =============================================	  	    
@@ -139,7 +139,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
     }
     
     private void checkRTConnect(ChannelHandlerContext ctx, DataPacket packet) {
-		if (packet.getId().getByte() == (byte) 0x00) {
+		if (packet.getId().getValue() == (byte) 0x00) {
 			// =============================================
 			// CLIENT_CONNECT_TCP (0x00)
 			// =============================================

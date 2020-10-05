@@ -55,7 +55,7 @@ public class Utils {
 				RTPacketId rtid = null;
 
 				for (RTPacketId p : RTPacketId.values()) {
-					if (p.getByte() == id) {
+					if (p.getValue() == id) {
 						rtid = p;
 						break;
 					}

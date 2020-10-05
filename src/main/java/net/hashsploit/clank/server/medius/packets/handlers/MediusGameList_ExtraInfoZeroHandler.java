@@ -15,7 +15,7 @@ import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
+import net.hashsploit.clank.server.medius.objects.GameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
@@ -55,7 +55,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 		byte[] genericField3 = Utils.hexStringToByteArray("0800e411");
 		byte[] worldSecurityLevelType = Utils.hexStringToByteArray("00000000");
 		byte[] worldStatus = Utils.intToBytesLittle(MediusWorldStatus.WORLD_STAGING.getValue());
-		byte[] gameHostType = Utils.intToBytesLittle(MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue());
+		byte[] gameHostType = Utils.intToBytesLittle(GameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue());
 		byte[] gameName = Utils.hexStringToByteArray("31763120662e6f20646f782020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
 		byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
