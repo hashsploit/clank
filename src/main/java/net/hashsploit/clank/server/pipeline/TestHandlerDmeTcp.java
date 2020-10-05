@@ -16,8 +16,8 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
-import net.hashsploit.clank.server.medius.MediusPacket;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -64,6 +64,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 		for (DataPacket packet: packets) {
 			processSinglePacket(ctx, packet);
 		}
+		
 
     }
     
@@ -79,8 +80,11 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     }
     
     private void checkForBroadcast(ChannelHandlerContext ctx, DataPacket packet) {
-    	
-    
+    	DataPacket d = new DataPacket(RTPacketId.CLIENT_APP_SINGLE, packet.getPayload());
+		logger.fine("Broadcast rally: " + Utils.bytesToHex(d.toBytes()));
+		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
+		ctx.write(msg); // (1)
+		ctx.flush(); // (2)
     }
     
     
@@ -142,7 +146,6 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 			ctx.flush(); // (2)
 		}
 	}    
-
     
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
