@@ -7,12 +7,12 @@ import java.nio.ByteBuffer;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusJoinGameHandler extends MediusPacket {
+public class MediusJoinGameHandler extends MediusPacketHandler {
 
 	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
@@ -27,7 +27,7 @@ public class MediusJoinGameHandler extends MediusPacket {
 		
 	}
 	
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		// Process the packet
 		logger.fine("Get my clans: " + Utils.bytesToHex(mm.getPayload()));
 
@@ -48,7 +48,7 @@ public class MediusJoinGameHandler extends MediusPacket {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		// RESPONSE
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -92,7 +92,7 @@ public class MediusJoinGameHandler extends MediusPacket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		return new MediusPacket(responseType, outputStream.toByteArray());
 
 	}
 

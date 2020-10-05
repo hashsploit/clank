@@ -12,12 +12,12 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacket {
+public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacketHandler {
 
 	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 
@@ -26,13 +26,13 @@ public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		byte[] testResp = Utils.hexStringToByteArray("00000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000");
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -43,6 +43,6 @@ public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacket {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		return new MediusPacket(responseType, outputStream.toByteArray());
 	}
 }

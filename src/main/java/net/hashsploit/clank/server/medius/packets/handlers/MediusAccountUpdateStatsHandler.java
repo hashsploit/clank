@@ -12,16 +12,16 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.packets.serializers.AccountUpdateStatsRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.AccountUpdateStatsResponse;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusAccountUpdateStatsHandler extends MediusPacket {
+public class MediusAccountUpdateStatsHandler extends MediusPacketHandler {
 	
 	private AccountUpdateStatsRequest reqPacket;
 	private AccountUpdateStatsResponse respPacket;
@@ -32,13 +32,13 @@ public class MediusAccountUpdateStatsHandler extends MediusPacket {
 	}
 	
 	@Override 
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		reqPacket = new AccountUpdateStatsRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
 		respPacket = new AccountUpdateStatsResponse(reqPacket.getMessageID(), callbackStatus);

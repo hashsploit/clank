@@ -13,16 +13,16 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.packets.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.CreateGameResponse;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusCreateGameOneHandler extends MediusPacket {
+public class MediusCreateGameOneHandler extends MediusPacketHandler {
 	
 	private CreateGameOneRequest reqPacket;
 	private CreateGameResponse respPacket;
@@ -32,13 +32,13 @@ public class MediusCreateGameOneHandler extends MediusPacket {
     }
     
     @Override
-    public void read(MediusMessage mm) {
+    public void read(MediusPacket mm) {
 		reqPacket = new CreateGameOneRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
     }
     
     @Override
-    public MediusMessage write(MediusClient client) {
+    public MediusPacket write(MediusClient client) {
     	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
     	byte[] newWorldID = Utils.intToBytesLittle(123);
 

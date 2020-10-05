@@ -13,12 +13,12 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGetMyClansHandler extends MediusPacket {
+public class MediusGetMyClansHandler extends MediusPacketHandler {
 
 	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
@@ -27,7 +27,7 @@ public class MediusGetMyClansHandler extends MediusPacket {
 		super(MediusPacketType.GetMyClans, MediusPacketType.GetMyClansResponse);
 	}
 	
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		// Process the packet
 		logger.fine("Get my clans: " + Utils.bytesToHex(mm.getPayload()));
 
@@ -37,7 +37,7 @@ public class MediusGetMyClansHandler extends MediusPacket {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
 		logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
 
@@ -70,7 +70,7 @@ public class MediusGetMyClansHandler extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		return new MediusPacket(responseType, outputStream.toByteArray());
 	}
 
 }

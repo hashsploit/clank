@@ -12,12 +12,12 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusUpdateLadderStatsWideHandler extends MediusPacket {
+public class MediusUpdateLadderStatsWideHandler extends MediusPacketHandler {
 
 	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	private byte[] ladderType = new byte[4];
@@ -28,7 +28,7 @@ public class MediusUpdateLadderStatsWideHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		// Process the packet
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
@@ -37,7 +37,7 @@ public class MediusUpdateLadderStatsWideHandler extends MediusPacket {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		byte[] statsResponse = Utils.buildByteArrayFromString("0000000", 7); // empty 7 byte array
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
@@ -48,7 +48,7 @@ public class MediusUpdateLadderStatsWideHandler extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		return new MediusPacket(responseType, outputStream.toByteArray());
 	}
 
 }

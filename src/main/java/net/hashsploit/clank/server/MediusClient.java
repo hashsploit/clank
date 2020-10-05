@@ -8,7 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.database.DbManager;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
@@ -20,7 +20,7 @@ public class MediusClient implements IClient {
 
 	private static final Logger logger = Logger.getLogger(MediusClient.class.getName());
 
-	private HashMap<MediusPacketType, MediusPacket> mediusPacketMap;
+	private HashMap<MediusPacketType, MediusPacketHandler> mediusPacketMap;
 
 	private AbstractServer server;
 	private SocketChannel socketChannel;
@@ -174,7 +174,7 @@ public class MediusClient implements IClient {
 		}
 	}
 
-	public final HashMap<MediusPacketType, MediusPacket> getMediusMap() {
+	public final HashMap<MediusPacketType, MediusPacketHandler> getMediusMap() {
 		return mediusPacketMap;
 	}
 

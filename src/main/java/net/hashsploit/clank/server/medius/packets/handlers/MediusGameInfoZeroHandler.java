@@ -13,14 +13,14 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGameInfoZeroHandler extends MediusPacket {
+public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 
 	private GameInfoZeroRequest reqPacket;
 	private GameInfoZeroResponse respPacket;
@@ -30,13 +30,13 @@ public class MediusGameInfoZeroHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		reqPacket = new GameInfoZeroRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {		
+	public MediusPacket write(MediusClient client) {		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
 		byte[] appID = Utils.hexStringToByteArray("bc290000");
 		byte[] minPlayers = Utils.hexStringToByteArray("00000000");

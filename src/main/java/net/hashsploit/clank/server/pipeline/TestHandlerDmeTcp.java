@@ -16,8 +16,8 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
-import net.hashsploit.clank.server.medius.MediusPacket;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
 /**

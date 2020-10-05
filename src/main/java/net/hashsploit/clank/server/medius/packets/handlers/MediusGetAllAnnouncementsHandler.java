@@ -13,16 +13,16 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.server.medius.packets.serializers.GetAllAnnouncementsRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GetAnnouncementsResponse;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGetAllAnnouncementsHandler extends MediusPacket {
+public class MediusGetAllAnnouncementsHandler extends MediusPacketHandler {
 
 	private GetAllAnnouncementsRequest reqPacket;
 	private GetAnnouncementsResponse respPacket;
@@ -32,13 +32,13 @@ public class MediusGetAllAnnouncementsHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		reqPacket = new GetAllAnnouncementsRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
 		byte[] announcementID = Utils.intToBytesLittle(10);
 		byte[] announcement = Utils.buildByteArrayFromString("Announcment TEST", MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());

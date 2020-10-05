@@ -2,7 +2,7 @@ package net.hashsploit.clank.utils;
 
 import java.util.HashMap;
 
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusAccountLoginHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusAccountLogoutHandler;
@@ -45,8 +45,8 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusWorldReportZero
 
 public class MediusPacketMapInitializer {
 	
-	public static final HashMap<MediusPacketType, MediusPacket> getMap() {
-		HashMap<MediusPacketType, MediusPacket> mp = new HashMap<MediusPacketType, MediusPacket>();
+	public static final HashMap<MediusPacketType, MediusPacketHandler> getMap() {
+		HashMap<MediusPacketType, MediusPacketHandler> mp = new HashMap<MediusPacketType, MediusPacketHandler>();
 		
 		mp.put(MediusPacketType.AccountLogout, new MediusAccountLogoutHandler());
 		mp.put(MediusPacketType.SessionEnd, new MediusSessionEndHandler());

@@ -15,8 +15,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTPacketId;
-import net.hashsploit.clank.server.medius.MediusPacket;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -83,13 +83,13 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	    checkForCitiesReconnect(ctx, packet);
 	    
 	    // Medius packets
-	    MediusMessage response = checkMediusPackets(packet);
+	    MediusPacket response = checkMediusPackets(packet);
 	    
 	    // If there is a response, pass it onto the next handler
 	    passOnToHandler(ctx, response);
     }
     
-    private void passOnToHandler(ChannelHandlerContext ctx, MediusMessage mm) {
+    private void passOnToHandler(ChannelHandlerContext ctx, MediusPacket mm) {
     	if (mm == null) 
     		return;
 
@@ -104,18 +104,18 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     }
     
     
-    private MediusMessage checkMediusPackets(DataPacket packet) {
+    private MediusPacket checkMediusPackets(DataPacket packet) {
 	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
-    	MediusMessage mm = null;
+    	MediusPacket mm = null;
 	    if (packet.getId().toString().contains("APP")) {
 	    	
-	    	MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
+	    	MediusPacket incomingMessage = new MediusPacket(packet.getPayload());
 
 			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
 			
 			// Detect which medius packet is being parsed
-		    MediusPacket mediusPacket = client.getMediusMap().get(incomingMessage.getMediusPacketType());
+		    MediusPacketHandler mediusPacket = client.getMediusMap().get(incomingMessage.getMediusPacketType());
 		    
 		    // Process this medius packet
 		    mediusPacket.read(incomingMessage);

@@ -4,10 +4,10 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class PlayerReportRequest extends MediusMessage {
+public class PlayerReportRequest extends MediusPacket {
 
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
 	private byte[] mediusWorldID = new byte[4];

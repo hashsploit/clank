@@ -13,12 +13,12 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusPolicyHandler extends MediusPacket {
+public class MediusPolicyHandler extends MediusPacketHandler {
 
 	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
@@ -30,7 +30,7 @@ public class MediusPolicyHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		// Process the packet
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
@@ -38,7 +38,7 @@ public class MediusPolicyHandler extends MediusPacket {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 
 		byte[] policy = Utils.buildByteArrayFromString("POLICY TEST", MediusConstants.POLICY_MAXLEN.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
@@ -55,6 +55,6 @@ public class MediusPolicyHandler extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());	    
+		return new MediusPacket(responseType, outputStream.toByteArray());	    
 	}
 }

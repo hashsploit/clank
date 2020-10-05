@@ -7,13 +7,13 @@ import java.util.logging.Logger;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusMessage {
+public class MediusPacket {
 
 	private MediusPacketType packetType;
 	private byte[] data;
 	private static final Logger logger = Logger.getLogger("");
 
-	public MediusMessage(byte[] incomingData) {
+	public MediusPacket(byte[] incomingData) {
 		// Get medius packet type
 	    short testingShortVal = Utils.bytesToShortLittle(incomingData[0], incomingData[1]);
 
@@ -27,13 +27,13 @@ public class MediusMessage {
 		data = Arrays.copyOfRange(incomingData,2,incomingData.length);
 	}
 	
-	public MediusMessage(MediusPacketType type, byte[] data) {
+	public MediusPacket(MediusPacketType type, byte[] data) {
 		// Get medius packet type
 	    this.packetType = type;
 	    this.data = data;
 	}
 	
-	public MediusMessage(MediusPacketType type) {
+	public MediusPacket(MediusPacketType type) {
 	    this.packetType = type;
 	}
 	

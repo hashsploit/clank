@@ -1,18 +1,18 @@
 package net.hashsploit.clank.server.medius.packets.handlers;
 
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 
-public class MediusUpdateUserStateHandler extends MediusPacket {
+public class MediusUpdateUserStateHandler extends MediusPacketHandler {
 
 	public MediusUpdateUserStateHandler() {
 		super(MediusPacketType.UpdateUserState, null);
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		// Process the packet
 		return null;
 	}

@@ -4,10 +4,10 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class ChatToggleRequest extends MediusMessage {
+public class ChatToggleRequest extends MediusPacket {
 	
 	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 

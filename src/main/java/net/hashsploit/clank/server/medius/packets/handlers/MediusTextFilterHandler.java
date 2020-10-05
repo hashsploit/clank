@@ -7,12 +7,12 @@ import java.nio.ByteBuffer;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusTextFilterHandler extends MediusPacket {
+public class MediusTextFilterHandler extends MediusPacketHandler {
 	
 	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
@@ -24,7 +24,7 @@ public class MediusTextFilterHandler extends MediusPacket {
     }
     
     @Override
-    public void read(MediusMessage mm) {
+    public void read(MediusPacket mm) {
     	// Process the packet
     	ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
     	
@@ -41,7 +41,7 @@ public class MediusTextFilterHandler extends MediusPacket {
     }
     
     @Override
-    public MediusMessage write(MediusClient client) { 
+    public MediusPacket write(MediusClient client) { 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
 			outputStream.write(messageID);
@@ -52,7 +52,7 @@ public class MediusTextFilterHandler extends MediusPacket {
 			e.printStackTrace();
 		}
 		
-		return new MediusMessage(responseType, outputStream.toByteArray());	    
+		return new MediusPacket(responseType, outputStream.toByteArray());	    
     }
 
 }

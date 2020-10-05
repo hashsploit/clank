@@ -13,12 +13,12 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusJoinChannelHandler extends MediusPacket {
+public class MediusJoinChannelHandler extends MediusPacketHandler {
 
 	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
@@ -31,7 +31,7 @@ public class MediusJoinChannelHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
 		buf.get(messageID);
@@ -42,7 +42,7 @@ public class MediusJoinChannelHandler extends MediusPacket {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		// RESPONSE
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -116,7 +116,7 @@ public class MediusJoinChannelHandler extends MediusPacket {
 //			e.printStackTrace();
 //		}
 		
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		return new MediusPacket(responseType, outputStream.toByteArray());
 	}
 
 }

@@ -13,15 +13,15 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.server.medius.packets.serializers.WorldReportZeroRequest;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusWorldReportZeroHandler extends MediusPacket {
+public class MediusWorldReportZeroHandler extends MediusPacketHandler {
 	
 	private WorldReportZeroRequest reqPacket;	
 	
@@ -30,13 +30,13 @@ public class MediusWorldReportZeroHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		reqPacket = new WorldReportZeroRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		return null;
 	}
 

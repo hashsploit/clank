@@ -8,16 +8,16 @@ import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.ISCERTMessage;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 
-public abstract class MediusPacket {
+public abstract class MediusPacketHandler {
 	
 	public static final Logger logger = Logger.getLogger("");
 
     public final MediusPacketType type;
     public final MediusPacketType responseType;
 
-    public MediusPacket(MediusPacketType type, MediusPacketType responseType) {
+    public MediusPacketHandler(MediusPacketType type, MediusPacketType responseType) {
         this.type = type;    
         this.responseType = responseType;
     }
@@ -27,11 +27,11 @@ public abstract class MediusPacket {
     }
     
     
-    public void read(MediusMessage mm) {
+    public void read(MediusPacket mm) {
     	
     }
     
-    public MediusMessage write(MediusClient client) {
+    public MediusPacket write(MediusClient client) {
     	return null;
     }
     

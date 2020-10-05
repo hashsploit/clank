@@ -13,12 +13,12 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusSetGameListFilterZeroHandler extends MediusPacket {
+public class MediusSetGameListFilterZeroHandler extends MediusPacketHandler {
 
 	private static final Logger logger = Logger.getLogger("");
 	
@@ -33,7 +33,7 @@ public class MediusSetGameListFilterZeroHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
 		buf.get(messageID);
@@ -52,7 +52,7 @@ public class MediusSetGameListFilterZeroHandler extends MediusPacket {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
 
 		logger.finest("Writing SetGameListFilter OUT:");
@@ -68,7 +68,7 @@ public class MediusSetGameListFilterZeroHandler extends MediusPacket {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		return new MediusPacket(responseType, outputStream.toByteArray());
 	}
 
 

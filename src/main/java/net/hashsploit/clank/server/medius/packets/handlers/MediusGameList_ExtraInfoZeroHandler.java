@@ -13,10 +13,10 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusPacket;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
@@ -24,7 +24,7 @@ import net.hashsploit.clank.server.medius.packets.serializers.GameList_ExtraInfo
 import net.hashsploit.clank.server.medius.packets.serializers.GameList_ExtraInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusGameList_ExtraInfoZeroHandler extends MediusPacket {
+public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 	
 	private GameList_ExtraInfoZeroRequest reqPacket;
 	private GameList_ExtraInfoZeroResponse respPacket;
@@ -34,13 +34,13 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacket {
 	}
 	
 	@Override
-	public void read(MediusMessage mm) {
+	public void read(MediusPacket mm) {
 		reqPacket = new GameList_ExtraInfoZeroRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public MediusPacket write(MediusClient client) {
 
 		byte[] mediusWorldID = Utils.hexStringToByteArray("65eb0000");
 		byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
@@ -63,6 +63,8 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacket {
 		respPacket = new GameList_ExtraInfoZeroResponse(reqPacket.getMessageID(), mediusWorldID, callbackStatus, playerCount, minPlayers, maxPlayers,
 				gameLevel, playerSkillLevel, rulesSet, genericField1, genericField2, genericField3, worldSecurityLevelType, worldStatus,
 				gameHostType, gameName, gameStats, endOfList);
-		return respPacket;	}
+		return respPacket;	
+		
+	}
 
 }
