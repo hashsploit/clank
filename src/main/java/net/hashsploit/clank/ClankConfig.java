@@ -148,6 +148,15 @@ public class ClankConfig {
 		return Integer.parseInt(properties.getProperty("Port"));
 	}
 	
+	public int getTcpPort() {
+		return Integer.parseInt(properties.getProperty("TcpPort"));
+
+	}
+	
+	public String getTcpAddress() {
+		return properties.getProperty("TcpAddress");
+	}
+	
 	/**
 	 * Get the number of parent threads the server should use.
 	 * @return
@@ -164,5 +173,20 @@ public class ClankConfig {
 		return Integer.parseInt(properties.getProperty("ServerChildThreads"));
 	}
 
+	/**
+	 * Check if the MAS whitelist is enabled.
+	 * @return
+	 */
+	public boolean isWhitelistEnabled() {
+		return Boolean.parseBoolean(properties.getProperty("WhitelistEnabled"));
+	}
 	
+	/**
+	 * Get an array of whitelisted players.
+	 * @return
+	 */
+	public String[] getWhitelistedPlayers() {
+		return properties.getProperty("WhitelistPlayers").split(",");
+	}
+
 }

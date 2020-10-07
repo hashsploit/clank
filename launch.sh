@@ -1,5 +1,4 @@
 #!/bin/bash
-
 INIT_MEM="512m"
 MAX_MEM="1024m"
 JAR="clank.jar"

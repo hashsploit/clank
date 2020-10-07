@@ -12,8 +12,9 @@ import net.hashsploit.clank.cli.ICLIEvent;
 import net.hashsploit.clank.cli.commands.CLIClientsCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
+import net.hashsploit.clank.database.DbManager;
+import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
-import net.hashsploit.clank.server.MediusClientChannelInitializer;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.nat.NatServer;
@@ -29,6 +30,7 @@ public class Clank {
 	private ClankConfig config;
 	private Terminal terminal;
 	private IServer server;
+	private DbManager db;
 	private EventBus eventBus;
 	private HashMap<String, DiscordWebhook> discordWebhooks;
 	
@@ -103,6 +105,10 @@ public class Clank {
 		
 		terminal.setPrompt(Terminal.colorize(prompt + AnsiColor.RESET) + " ");
 		
+		// Initialize database
+		// TODO: Make SimDb a config option in each component (minus DME of course)
+		db = new DbManager(this, new SimDb());
+		
 		// Set up Event Bus
 		eventBus = new EventBus(this);
 		
@@ -148,8 +154,8 @@ public class Clank {
 				break;
 			case DME_SERVER:
 				server = new DmeServer(
-					config.getAddress(),
-					config.getPort(),
+					config.getTcpAddress(),
+					config.getTcpPort(),
 					config.getParentThreads(),
 					config.getChildThreads(),
 					config.getProperties().getProperty("UdpAddress"),
@@ -226,6 +232,14 @@ public class Clank {
 	 */
 	public Terminal getTerminal() {
 		return terminal;
+	}
+	
+	/**
+	 * Get the current database instance.
+	 * @return
+	 */
+	public DbManager getDatabase() {
+		return db;
 	}
 	
 	/**

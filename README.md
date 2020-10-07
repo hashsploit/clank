@@ -19,20 +19,23 @@ Emulator features that are complete will be checked, features that are still in 
 
 - [x] Modular design.
 - [x] Inbound handlers for incoming packets.
-- [ ] Oubound handlers for outgoing packets.
+- [x] Oubound handlers for outgoing packets.
 - [ ] SCE-RT encryption/decryption.
 - [ ] SCE-RT packet fragmentation/defragmentation.
-- [ ] Medius packet handling (Medius structs).
+- [x] Medius packet handling (Medius structs).
 - [ ] Lua sandbox.
 - [ ] Lua scripting API.
 - [ ] Send server "system messages" to clients.
-- [ ] Emulates Medius Authentication Server (MAS).
+- [x] Emulates Medius Authentication Server (MAS).
 - [ ] Emulates Medius Lobby Server (MLS).
-- [ ] Database and API integration.
+- [ ] Emulates Medius Proxy Server (MPS).
+- [ ] Emulates DME Server (DME).
+- [ ] Emulates Medius Universe Information Server (MUIS).
+- [ ] Emulates NAT Server (NAT).
+- [ ] Database integration (MySQL/MariaDB).
+- [ ] Simulated database integration.
 - [ ] Server operator chat commands.
 - [ ] Configurable player server operators.
-- [ ] MPS+DME integrated server.
-- [ ] DME Proxy integration for P2P titles anti-cheat and in-game modifications.
 - [x] Discord Webhook message queue.
 - [x] Non-blocking async handling of incoming data. 
 
@@ -57,7 +60,7 @@ The server emulator will act as an authentication server for handling user login
 
 ### MLS (Medius Lobby Server)
 
-OpenMedius will act as a lobby server for handling out-of game
+Clank will act as a lobby server for handling out-of game
 events, learderboards, chat rooms, game creation, clans and more.
 
 
@@ -90,9 +93,9 @@ How it works:
   Proxy will signal to the MLS of the host-player cheating, prematurely end the game, and ban the host-player.
 
 
-## Commands
+## CLI Commands
 
-Each component of OpenMedius has different built-in commands as
+Each component of Clank has different built-in commands as
 they differ per context and implementation, however you can
 always use the `help` command to view all commands available in
 the current component being run.
