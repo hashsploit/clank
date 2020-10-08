@@ -25,7 +25,7 @@ public class NetConnectionInfo {
 	
 	public String toString() {
 		return "NetConnectionInfo: \n" + 
-				"netConnectionType: " + Utils.intToBytesLittle(netConnectionType.getValue()) + '\n' + 
+				"netConnectionType: " + Utils.bytesToHex(Utils.intToBytesLittle(netConnectionType.getValue())) + '\n' + 
 				"addressList.getFirst() : " + Utils.bytesToHex(addressList.getFirst().serialize()) + '\n' + 
 				"addressList.getSecond(): " + Utils.bytesToHex(addressList.getSecond().serialize()) + '\n' +
 				"worldId: " + Utils.bytesToHex(Utils.intToBytesLittle(worldId)) + '\n' + 
