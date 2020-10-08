@@ -74,10 +74,27 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	    logger.fine("Packet ID: " + packet.getId().toString());
 	    logger.fine("Packet ID: " + packet.getId().getValue());
 	    
-	    checkForBroadcast(ctx, packet);
 	    
-    	checkForCitiesReconnect(ctx, packet);
+	    checkForTcpAuxUdpConnect(ctx, packet);
+	    
+	    //checkForBroadcast(ctx, packet);
+	    
+    	//checkForCitiesReconnect(ctx, packet);
     }
+    
+    private void checkForTcpAuxUdpConnect(ChannelHandlerContext ctx, DataPacket packet) {
+    	
+    	if (packet.getId() == RTPacketId.CLIENT_CONNECT_TCP_AUX_UDP) {
+    		logger.info("Detected TCP AUX UDP CONNECT");
+    		DataPacket d = new DataPacket(RTPacketId.SERVER_CONNECT_REQUIRE, Utils.hexStringToByteArray("0648024802"));
+    		logger.finest("Final Payload: " + Utils.bytesToHex(d.toBytes()));
+    		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
+    		ctx.write(msg); // (1)
+    		ctx.flush(); // (2)
+    	}
+    	
+    }
+    
     
     private void checkForBroadcast(ChannelHandlerContext ctx, DataPacket packet) {
     	DataPacket d = new DataPacket(RTPacketId.CLIENT_APP_SINGLE, packet.getPayload());
