@@ -7,12 +7,13 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.handler.timeout.ReadTimeoutException;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.IServer;
+import net.hashsploit.clank.server.UdpServer;
 
 public class DmeUdpClientInitializer extends ChannelInitializer<DatagramChannel> {
 	
 	private final IServer server;
 	
-	public DmeUdpClientInitializer(IServer server) {
+	public DmeUdpClientInitializer(UdpServer server) {
 		super();
 		this.server = server;
 	}

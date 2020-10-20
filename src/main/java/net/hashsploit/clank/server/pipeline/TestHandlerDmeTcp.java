@@ -106,9 +106,9 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		buf.put(ipAddr);
     		buf.put(Utils.hexStringToByteArray("51C3"));
     		
-    		DataPacket da = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
+    		DataPacket da = new DataPacket(RTPacketId.SERVER_INFO_AUX_UDP, buf.array());
     		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
-    		ByteBuf msg2 = Unpooled.copiedBuffer(d.toBytes());
+    		ByteBuf msg2 = Unpooled.copiedBuffer(da.toBytes());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
     	}

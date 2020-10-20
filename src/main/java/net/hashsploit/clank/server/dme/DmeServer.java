@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server.dme;
 
 import java.util.HashSet;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
 import io.netty.channel.EventLoopGroup;
@@ -29,11 +30,12 @@ public class DmeServer extends TcpServer {
 		int udpServerPort = 50001;
 		EventLoopGroup udpEventLoopGroup =  new EpollEventLoopGroup(2);
 
-		UdpServer udpDmeServer = new UdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup);
-		gameServers.add(udpDmeServer);
-		udpDmeServer.setChannelInitializer(new DmeUdpClientInitializer(this));
-		udpDmeServer.start();
-		
+		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super tempoarary
+			UdpServer udpDmeServer = new UdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup);
+			gameServers.add(udpDmeServer);
+			udpDmeServer.setChannelInitializer(new DmeUdpClientInitializer(udpDmeServer));
+			udpDmeServer.start();
+		});
 		
 		setChannelInitializer(new DmeTcpClientInitializer(this));
 	}
