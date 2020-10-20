@@ -18,6 +18,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusPacket;
+import net.hashsploit.clank.server.scert.SCERTConstants;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -31,6 +32,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	public TestHandlerDmeTcp(final DmeTcpClient client) {
 		super();
 		this.client = client;
+		
 	}
 
 	@Override
@@ -86,11 +88,29 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     	
     	if (packet.getId() == RTPacketId.CLIENT_CONNECT_TCP_AUX_UDP) {
     		logger.info("Detected TCP AUX UDP CONNECT");
-    		DataPacket d = new DataPacket(RTPacketId.SERVER_CONNECT_REQUIRE, Utils.hexStringToByteArray("0648024802"));
+    		ByteBuffer buffer = ByteBuffer.allocate(23);
+    		buffer.put(Utils.hexStringToByteArray("0108D301000300"));
+    		
+    		
+    		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);
+    		buffer.put(ipAddr);
+    		DataPacket d = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
     		logger.finest("Final Payload: " + Utils.bytesToHex(d.toBytes()));
     		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
     		ctx.write(msg); // (1)
-    		ctx.flush(); // (2)
+    		ctx.flush(); // 
+    		
+    		
+    		ByteBuffer buf = ByteBuffer.allocate(18);
+    		final byte[] udpAddr = Utils.buildByteArrayFromString("192.168.1.99", 16);
+    		buf.put(ipAddr);
+    		buf.put(Utils.hexStringToByteArray("51C3"));
+    		
+    		DataPacket da = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
+    		ByteBuf msg2 = Unpooled.copiedBuffer(d.toBytes());
+    		ctx.write(msg2); // (1)
+    		ctx.flush(); // 
     	}
     	
     }
