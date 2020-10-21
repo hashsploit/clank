@@ -73,7 +73,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	    	logger.info("Client port: " + port); 
     		ByteBuffer buffer = ByteBuffer.allocate(26);
     		buffer.put(Utils.hexStringToByteArray("0000"));
-    		buffer.put(Utils.hexStringToByteArray("BC29"));
+    		buffer.put(Utils.hexStringToByteArray("D452"));
     		buffer.put(Utils.hexStringToByteArray("00000100"));
     		byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
     		buffer.put(ad);
