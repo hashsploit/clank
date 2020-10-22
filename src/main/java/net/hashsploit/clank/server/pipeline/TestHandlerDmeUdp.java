@@ -2,6 +2,10 @@ package net.hashsploit.clank.server.pipeline;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
@@ -21,6 +25,7 @@ import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.scert.SCERTConstants;
+import net.hashsploit.clank.utils.NetUtils;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -62,13 +67,14 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
     	
 		logger.finest("TOTAL RAW UDP INCOMING DATA: " + Utils.bytesToHex(buff));
 
-		checkFirstPacket(ctx, buff, datagram.sender().getPort(), datagram.sender().getAddress().toString());
+		checkFirstPacket(ctx, datagram, buff, datagram.sender().getPort(), datagram.sender().getAddress().toString());
 
     }
     
-    private void checkFirstPacket(ChannelHandlerContext ctx, byte[] data, int port, String clientAddr) {
-    	if (Utils.bytesToHex(data).equals("161d000108017b00bc2900003139322e3136382e312e3939000000005f270100")) {		  // this is UDP trying to connect	
+    private void checkFirstPacket(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data, int port, String clientAddr) {
+    	if (Utils.bytesToHex(data).equals("161d000108017b00bc2900003139322e3136382e312e3939000000005f270100")) {		  // this is UDP trying to connect
 	    	logger.info("UDP CONNECT REQ DETECTED!:");
+	    	clientAddr = clientAddr.substring(1);
 	    	logger.info("Client Addr: " + clientAddr);
 	    	logger.info("Client port: " + port); 
     		ByteBuffer buffer = ByteBuffer.allocate(26);
@@ -82,10 +88,8 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
     		DataPacket packetResponse = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
 			byte[] payload = packetResponse.toBytes();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
-			ByteBuf msg = Unpooled.copiedBuffer(payload);
-			ctx.write(msg);
-			ctx.flush();
-			//00 00 D4 52 00 00 01 00 32 34 2E 32 31 34 2E 34 35 2E 31 31 35 00 00 00 45 1B 
+	        ctx.write(new DatagramPacket(
+	                Unpooled.copiedBuffer(payload), requestDatagram.sender()));    	
     	}
     }
     
