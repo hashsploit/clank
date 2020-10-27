@@ -26,7 +26,7 @@ public class DmeServer extends TcpServer {
 		this.udpThreads = udpThreads;
 		this.gameServers = new HashSet<UdpServer>();
 		
-		String udpServerAddress = "192.168.1.99";
+		String udpServerAddress = "172.16.222.5";
 		int udpServerPort = 50001;
 		EventLoopGroup udpEventLoopGroup =  new EpollEventLoopGroup(2);
 
