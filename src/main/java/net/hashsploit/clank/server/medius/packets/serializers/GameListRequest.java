@@ -30,7 +30,7 @@ public class GameListRequest extends MediusPacket {
 		return messageId;
 	}
 
-	public synchronized void setMessageId(byte[] messageId) {
+	public void setMessageId(byte[] messageId) {
 		this.messageId = messageId;
 	}
 
@@ -38,7 +38,7 @@ public class GameListRequest extends MediusPacket {
 		return sessionKey;
 	}
 
-	public synchronized void setSessionKey(byte[] sessionKey) {
+	public void setSessionKey(byte[] sessionKey) {
 		this.sessionKey = sessionKey;
 	}
 	
