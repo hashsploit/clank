@@ -9,14 +9,14 @@ import net.hashsploit.clank.server.medius.packets.serializers.AccountRegistratio
 import net.hashsploit.clank.server.medius.packets.serializers.LadderPositionRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.LadderPositionResponse;
 
-public class MediusLadderPosition extends MediusPacketHandler {
+public class MediusLadderPositionHandler extends MediusPacketHandler {
 	
 	private LadderPositionRequest reqPacket;
 	private LadderPositionResponse respPacket;
 	
 	private byte[] messageId;
 	
-	public MediusLadderPosition() {
+	public MediusLadderPositionHandler() {
 		super(MediusPacketType.LadderPosition, MediusPacketType.LadderPositionResponse);
 	}
 	
