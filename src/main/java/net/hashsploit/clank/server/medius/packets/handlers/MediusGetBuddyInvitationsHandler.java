@@ -32,7 +32,7 @@ public class MediusGetBuddyInvitationsHandler extends MediusPacketHandler {
 		int accountId = 0;
 		String accountName = "";
 		MediusBuddyAddType addType = MediusBuddyAddType.ADD_SINGLE;
-		boolean endOfList = true;
+		boolean endOfList = false;
 		
 		
 		respPacket = new GetBuddyInvitationsResponse(reqPacket.getMessageId(), callbackStatus, accountId, accountName, addType, endOfList);

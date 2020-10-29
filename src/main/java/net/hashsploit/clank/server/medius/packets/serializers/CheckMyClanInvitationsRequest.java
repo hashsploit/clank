@@ -11,8 +11,8 @@ public class CheckMyClanInvitationsRequest extends MediusPacket {
 
 	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-	private int start;
-	private int pageSize;
+	private byte[] start = new byte[4];
+	private byte[] pageSize = new byte[4];
 	
 	public CheckMyClanInvitationsRequest(byte[] data) {
 		super(MediusPacketType.CheckMyClanInvitations, data);
@@ -29,8 +29,8 @@ public class CheckMyClanInvitationsRequest extends MediusPacket {
 	public String toString() {
 		return "Message Id: " + Utils.bytesToHex(messageId) + "\n"
 				+ "Session Key: " + Utils.bytesToHex(sessionKey) + "\n"
-				+ "Start: " + start + "\n"
-				+ "Page Size: " + pageSize;
+				+ "Start: " + Utils.bytesToHex(start) + "\n"
+				+ "Page Size: " + Utils.bytesToHex(start);
 	}
 	
 	public byte[] getMessageId() {
@@ -49,19 +49,19 @@ public class CheckMyClanInvitationsRequest extends MediusPacket {
 		this.sessionKey = sessionKey;
 	}
 	
-	public void setStart(int start) {
+	public void setStart(byte[] start) {
 		this.start = start;
 	}
 	
-	public int getStart() {
+	public byte[] getStart() {
 		return start;
 	}
 	
-	public void setPageSize(int pageSize) {
+	public void setPageSize(byte[] pageSize) {
 		this.pageSize = pageSize;
 	}
 	
-	public int getPageSize() {
+	public byte[] getPageSize() {
 		return pageSize;
 	}
 	
