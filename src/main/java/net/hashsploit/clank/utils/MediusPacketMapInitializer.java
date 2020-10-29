@@ -32,6 +32,7 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusGetLobbyPlayerN
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetLocationsHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetMyClanMessagesHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetMyClansHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusGetMyIPHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusJoinChannelHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusJoinGameHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusLadderPositionHandler;
@@ -47,6 +48,7 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusSetLocalization
 import net.hashsploit.clank.server.medius.packets.handlers.MediusTextFilterHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusUpdateLadderStatsWideHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusUpdateUserStateHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusVersionServerHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusWorldReportZeroHandler;
 
 public class MediusPacketMapInitializer {
@@ -112,6 +114,8 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.GameList, new MediusGameListHandler());
 		mp.put(MediusPacketType.LobbyWorldPlayerList, new MediusLobbyWorldPlayerListHandler());
 		mp.put(MediusPacketType.ChannelList, new MediusChannelListHandler());
+		mp.put(MediusPacketType.GetMyIP, new MediusGetMyIPHandler());
+		mp.put(MediusPacketType.VersionServer, new MediusVersionServerHandler());
 		
 		return mp;
 	}
