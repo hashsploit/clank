@@ -49,6 +49,7 @@ public class MediusTextFilterHandler extends MediusPacketHandler {
 			outputStream.write(text);
 			
 			// TODO: this is is set to always pass, add logic
+			// check the mediusTextFilterType (this should be using the object instead (TextFilterType)
 			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.MediusPass.getValue()));
 			
 		} catch (IOException e) {
