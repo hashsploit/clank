@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.objects.MediusPacket;
+import net.hashsploit.clank.utils.Utils;
 
 public class CheckMyClanInvitationsRequest extends MediusPacket {
 
@@ -22,6 +23,14 @@ public class CheckMyClanInvitationsRequest extends MediusPacket {
 		buf.get(new byte[2]); // padding
 		buf.get(start);
 		buf.get(pageSize);
+	}
+	
+	@Override
+	public String toString() {
+		return "Message Id: " + Utils.bytesToHex(messageId) + "\n"
+				+ "Session Key: " + Utils.bytesToHex(sessionKey) + "\n"
+				+ "Start: " + start + "\n"
+				+ "Page Size: " + pageSize;
 	}
 	
 	public byte[] getMessageId() {

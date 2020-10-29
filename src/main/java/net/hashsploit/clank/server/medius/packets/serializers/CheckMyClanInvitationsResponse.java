@@ -46,9 +46,9 @@ public class CheckMyClanInvitationsResponse extends MediusPacket {
 			outputStream.write(Utils.intToBytesLittle(clanInvitationId));
 			outputStream.write(Utils.intToBytesLittle(clanId));
 			outputStream.write(Utils.intToBytesLittle(clanInvitationStatus.getValue()));
-			outputStream.write(Utils.buildByteArrayFromString(message, MediusConstants.CLANINVITEMSG_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(message, MediusConstants.CLANMSG_MAXLEN.getValue()));
 			outputStream.write(Utils.intToBytesLittle(leaderAccountId));
-			outputStream.write(Utils.buildByteArrayFromString(leaderAccountName, MediusConstants.USERNAME_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(leaderAccountName, MediusConstants.ACCOUNTNAME_MAXLEN.getValue()));
 			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00")); // EndOfList (char) 00 or 01
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
 		} catch (IOException e) {

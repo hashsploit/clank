@@ -9,12 +9,12 @@ import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.packets.serializers.CheckMyClanInvitationsRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.CheckMyClanInvitationsResponse;
 
-public class MediusCheckMyClanInvitations extends MediusPacketHandler {
+public class MediusCheckMyClanInvitationsHandler extends MediusPacketHandler {
 
 	private CheckMyClanInvitationsRequest reqPacket;
 	private CheckMyClanInvitationsResponse respPacket;
 	
-	public MediusCheckMyClanInvitations() {
+	public MediusCheckMyClanInvitationsHandler() {
 		super(MediusPacketType.CheckMyClanInvitations, MediusPacketType.CheckMyClanInvitationsResponse);
 	}
 	
@@ -27,13 +27,13 @@ public class MediusCheckMyClanInvitations extends MediusPacketHandler {
 	@Override
 	public MediusPacket write(MediusClient client) {
 		
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusNoResult;
-		int clanInvitationId = 0;
-		int clanId = 0;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		int clanInvitationId = 1;
+		int clanId = 1;
 		MediusClanInvitationResponseStatus clanInvitationResponseStatus = MediusClanInvitationResponseStatus.CLAN_INVITATION_UNDECIDED;
-		String message = "Welcome to the club!";
-		int leaderAccountId = 0;
-		String leaderAccountName = "Squidward";
+		String message = "yo join us.";
+		int leaderAccountId = 1;
+		String leaderAccountName = "SCEA";
 		boolean endOfList = true;
 		
 		respPacket = new CheckMyClanInvitationsResponse(reqPacket.getMessageId(), callbackStatus, clanInvitationId, clanId, clanInvitationResponseStatus, message, leaderAccountId, leaderAccountName, endOfList);

@@ -29,8 +29,8 @@ public class MediusGetBuddyInvitationsHandler extends MediusPacketHandler {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusNoResult;
 		
-		int accountId = 100;
-		String accountName = "Badger41";
+		int accountId = 0;
+		String accountName = "";
 		MediusBuddyAddType addType = MediusBuddyAddType.ADD_SINGLE;
 		boolean endOfList = true;
 		
