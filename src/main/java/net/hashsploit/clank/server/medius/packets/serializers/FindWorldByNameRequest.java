@@ -14,7 +14,7 @@ public class FindWorldByNameRequest extends MediusPacket {
 	private int worldType;
 	
 	public FindWorldByNameRequest(byte[] data) {
-		super(MediusPacketType.ChannelList, data);
+		super(MediusPacketType.FindWorldByName, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageId);
