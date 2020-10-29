@@ -122,8 +122,7 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.VersionServer, new MediusVersionServerHandler());
 		mp.put(MediusPacketType.PickLocation, new MediusPickLocationHandler());
 		mp.put(MediusPacketType.FindWorldByName, new MediusFindWorldByNameHandler());
-		
-		
+		mp.put(MediusPacketType.GetBuddyInvitations, new MediusFindWorldByNameHandler());
 		
 		return mp;
 	}
