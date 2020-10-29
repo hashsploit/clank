@@ -36,6 +36,7 @@ public class MediusTextFilterHandler extends MediusPacketHandler {
     	
     	logger.fine("Message ID : " + Utils.bytesToHex(messageID));
     	logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
+    	logger.fine("Text Filter Type: " + Utils.bytesToHex(mediusTextFilterType));
     	logger.fine("Text: " + Utils.bytesToHex(text));
     	
     }
@@ -46,7 +47,7 @@ public class MediusTextFilterHandler extends MediusPacketHandler {
 		try {
 			outputStream.write(messageID);
 			outputStream.write(text);
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));			
+			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue()));			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
