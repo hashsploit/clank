@@ -29,11 +29,11 @@ public class MediusFindWorldByNameHandler extends MediusPacketHandler {
 	public MediusPacket write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
-		int appId = 0;
-		String appName = "App Name";
+		int appId = 10411;
+		String appName = "Syphon Filter";
 		MediusApplicationType appType = MediusApplicationType.LOBBY_CHAT_CHANNEL;
-		int worldId = 2;
-		String worldName = "hash's world";
+		int worldId = 40;
+		String worldName = new String(reqPacket.getName());
 		MediusWorldStatus worldStatus = MediusWorldStatus.WORLD_STAGING;
 		boolean endOfList = true;
 		
