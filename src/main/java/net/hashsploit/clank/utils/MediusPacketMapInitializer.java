@@ -37,6 +37,7 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusJoinChannelHand
 import net.hashsploit.clank.server.medius.packets.handlers.MediusJoinGameHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusLadderPositionHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusLobbyWorldPlayerListHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusPickLocationHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusPlayerInfoHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusPlayerReportHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusPolicyHandler;
@@ -114,8 +115,13 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.GameList, new MediusGameListHandler());
 		mp.put(MediusPacketType.LobbyWorldPlayerList, new MediusLobbyWorldPlayerListHandler());
 		mp.put(MediusPacketType.ChannelList, new MediusChannelListHandler());
+		
+		// added for Syphon Filter
 		mp.put(MediusPacketType.GetMyIP, new MediusGetMyIPHandler());
 		mp.put(MediusPacketType.VersionServer, new MediusVersionServerHandler());
+		mp.put(MediusPacketType.PickLocation, new MediusPickLocationHandler());
+		
+		
 		
 		return mp;
 	}
