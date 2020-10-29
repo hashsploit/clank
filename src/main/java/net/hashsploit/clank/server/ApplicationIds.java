@@ -14,7 +14,7 @@ public enum ApplicationIds {
 	 * Medius 1.08
 	 * NTSC
 	 */
-	SYPHON_FILTER_THE_OMEGA_STRAIN_NTSC(0),
+	SYPHON_FILTER_THE_OMEGA_STRAIN_NTSC(10411),
 	
 	/**
 	 * Ratchet & Clank: Up Your Arsenal (November 3, 2004)
