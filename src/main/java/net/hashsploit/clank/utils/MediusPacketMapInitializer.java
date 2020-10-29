@@ -24,6 +24,7 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusGameList_ExtraI
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGameWorldPlayerListHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetAllAnnouncementsHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetAnnouncementsHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusGetBuddyInvitationsHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetBuddyList_ExtraInfoHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetClanInvitationsSentHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetClanMemberList_ExtraInfoHandler;
@@ -122,7 +123,7 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.VersionServer, new MediusVersionServerHandler());
 		mp.put(MediusPacketType.PickLocation, new MediusPickLocationHandler());
 		mp.put(MediusPacketType.FindWorldByName, new MediusFindWorldByNameHandler());
-		mp.put(MediusPacketType.GetBuddyInvitations, new MediusFindWorldByNameHandler());
+		mp.put(MediusPacketType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
 		
 		return mp;
 	}
