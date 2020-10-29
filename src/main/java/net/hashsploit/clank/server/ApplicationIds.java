@@ -10,6 +10,13 @@ public enum ApplicationIds {
 	AMPLITUDE_NTSC(0),
 	
 	/**
+	 * Syphon Filter: The Omega Strain (May 4, 2004)
+	 * Medius 1.08
+	 * NTSC
+	 */
+	SYPHON_FILTER_THE_OMEGA_STRAIN_NTSC(0),
+	
+	/**
 	 * Ratchet & Clank: Up Your Arsenal (November 3, 2004)
 	 * Medius 1.08
 	 * PAL
