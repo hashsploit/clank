@@ -17,6 +17,7 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusClearGameListFi
 import net.hashsploit.clank.server.medius.packets.handlers.MediusCreateGameOneHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusDnasSignaturePostHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusEndGameReportHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusFindWorldByNameHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGameInfoZeroHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGameListHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGameList_ExtraInfoZeroHandler;
@@ -120,6 +121,7 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.GetMyIP, new MediusGetMyIPHandler());
 		mp.put(MediusPacketType.VersionServer, new MediusVersionServerHandler());
 		mp.put(MediusPacketType.PickLocation, new MediusPickLocationHandler());
+		mp.put(MediusPacketType.FindWorldByName, new MediusFindWorldByNameHandler());
 		
 		
 		
