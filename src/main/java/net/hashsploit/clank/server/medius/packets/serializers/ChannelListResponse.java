@@ -11,17 +11,17 @@ import net.hashsploit.clank.utils.Utils;
 
 public class ChannelListResponse extends MediusPacket {
 
-	private byte[] messageID;
+	private byte[] messageId;
 	private MediusCallbackStatus callbackStatus;
 	private int mediusWorldId;
 	private String lobbyName;
 	private int playerCount;
 	private boolean endOfList;
 
-	public ChannelListResponse(byte[] messageID, MediusCallbackStatus callbackStatus, int mediusWorldId, String lobbyName, int playerCount, boolean endOfList) {
+	public ChannelListResponse(byte[] messageId, MediusCallbackStatus callbackStatus, int mediusWorldId, String lobbyName, int playerCount, boolean endOfList) {
 		super(MediusPacketType.ChannelListResponse);
 
-		this.messageID = messageID;
+		this.messageId = messageId;
 		this.callbackStatus = callbackStatus;
 		this.mediusWorldId = mediusWorldId;
 		this.lobbyName = lobbyName;
@@ -33,7 +33,7 @@ public class ChannelListResponse extends MediusPacket {
 	public byte[] getPayload() {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(messageID);
+			outputStream.write(messageId);
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(mediusWorldId));
