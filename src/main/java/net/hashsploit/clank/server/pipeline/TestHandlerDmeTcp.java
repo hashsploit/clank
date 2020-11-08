@@ -18,6 +18,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusPacket;
+import net.hashsploit.clank.server.scert.SCERTConstants;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -31,6 +32,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	public TestHandlerDmeTcp(final DmeTcpClient client) {
 		super();
 		this.client = client;
+		
 	}
 
 	@Override
@@ -74,10 +76,90 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	    logger.fine("Packet ID: " + packet.getId().toString());
 	    logger.fine("Packet ID: " + packet.getId().getValue());
 	    
-	    checkForBroadcast(ctx, packet);
 	    
-    	checkForCitiesReconnect(ctx, packet);
+	    checkForTcpAuxUdpConnect(ctx, packet);
+	    	    
+		checkClientReady(ctx, packet.toBytes());
     }
+    
+    private void checkClientReady(ChannelHandlerContext ctx, byte[] data) {
+    	if (Utils.bytesToHex(data).equals("170000")) {		  // this is UDP trying to connect
+    		// SERVER CONNECT COMPLETE
+    		byte [] t1 = Utils.hexStringToByteArray("0300");
+    		DataPacket c1 = new DataPacket(RTPacketId.SERVER_CONNECT_COMPLETE, t1);
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
+    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
+    		ctx.write(msg1); // (1)
+    		ctx.flush(); // 
+    		
+    		// DME ID THING
+    		byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");
+    		DataPacket c2 = new DataPacket(RTPacketId.SERVER_APP, t2);
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
+    		ByteBuf msg2 = Unpooled.copiedBuffer(c2.toBytes());
+    		ctx.write(msg2); // (1)
+    		ctx.flush(); // 
+
+    		// tnw game settings
+    		byte[] t3 = Utils.hexStringToByteArray("00160500030001006CD501000000000000000009D771090006000000001703000000000400010000046E000000000000740D020000000000744E575F47616D6553657474696E6700506A00000000000000000000000000004433244B207B5257247D000000000000006576696E005F536D61736865720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080460000000000000E4D6E4C00000000003C3300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003001300FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000200FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000000002000000FFFFFFFFFFFFFFFF2800000000000000000000000101010101010001010000010101001403FF000000010501097D0F009C7C1000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5881DA44AEF8D744000080BF000080BF000080BF000080BF000080BF000080BF0000C8420000DC42000080BF000080BF000080BF000080BF000080BF000080BF");
+    		DataPacket c3 = new DataPacket(RTPacketId.SERVER_APP, t3);
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c3.toBytes()));
+    		ByteBuf msg3 = Unpooled.copiedBuffer(c3.toBytes());
+    		ctx.write(msg3); // (1)
+    		ctx.flush(); // 
+    	}
+    }
+    
+    private void checkForTcpAuxUdpConnect(ChannelHandlerContext ctx, DataPacket packet) {
+    	
+    	if (packet.getId() == RTPacketId.CLIENT_CONNECT_TCP_AUX_UDP) {
+    		logger.info("Detected TCP AUX UDP CONNECT");
+
+    		
+    		// First crypto leave empty
+    		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
+    		DataPacket c1 = new DataPacket(RTPacketId.SERVER_CRYPTKEY_GAME, emptyCrypto1);
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
+    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
+    		ctx.write(msg1); // (1)
+    		ctx.flush(); // 
+    		
+    		// Second crypto leave empty
+    		DataPacket c2 = new DataPacket(RTPacketId.SERVER_CRYPTKEY_PEER, emptyCrypto1);
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
+    		ByteBuf msg3 = Unpooled.copiedBuffer(c2.toBytes());
+    		ctx.write(msg3); // (1)
+    		ctx.flush(); // 
+
+    		// Server Accept TCP
+    		ByteBuffer buffer = ByteBuffer.allocate(23);
+    		//buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
+    		buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
+    		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);
+    		buffer.put(ipAddr);
+    		DataPacket d = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(d.toBytes()));
+    		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
+    		ctx.write(msg); // (1)
+    		ctx.flush(); // 
+    		
+    		// Server AUX UDP Info (IP and port)
+    		ByteBuffer buf = ByteBuffer.allocate(18);
+    		final byte[] udpAddr = Utils.buildByteArrayFromString("192.168.1.99", 16);
+    		buf.put(ipAddr);
+    		buf.put(Utils.hexStringToByteArray("51C3"));
+    		
+    		DataPacket da = new DataPacket(RTPacketId.SERVER_INFO_AUX_UDP, buf.array());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
+    		ByteBuf msg2 = Unpooled.copiedBuffer(da.toBytes());
+    		ctx.write(msg2); // (1)
+    		ctx.flush(); // 
+    		
+    	}
+    	
+    }
+   
+    
     
     private void checkForBroadcast(ChannelHandlerContext ctx, DataPacket packet) {
     	DataPacket d = new DataPacket(RTPacketId.CLIENT_APP_SINGLE, packet.getPayload());

@@ -129,7 +129,9 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		// TODO Auto-generated method stub
 		byte[] data = packet.toBytes();
 
-    	if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
+    	//if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
+		if (Utils.bytesToHex(data).startsWith("00490001")) {
+			
 	    	
 	    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {

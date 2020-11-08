@@ -23,6 +23,17 @@ public class NetConnectionInfo {
 		this.accessKey = accessKey;
 	}
 	
+	public String toString() {
+		return "NetConnectionInfo: \n" + 
+				"netConnectionType: " + Utils.bytesToHex(Utils.intToBytesLittle(netConnectionType.getValue())) + '\n' + 
+				"addressList.getFirst() : " + Utils.bytesToHex(addressList.getFirst().serialize()) + '\n' + 
+				"addressList.getSecond(): " + Utils.bytesToHex(addressList.getSecond().serialize()) + '\n' +
+				"worldId: " + Utils.bytesToHex(Utils.intToBytesLittle(worldId)) + '\n' + 
+				"serverKey: " + Utils.bytesToHex(serverKey) + '\n' + 
+				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
+				"accessKey: " + Utils.bytesToHex(accessKey);
+	}
+	
 	/**
 	 * Get the Net Connection Type.
 	 * @return

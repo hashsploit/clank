@@ -1,0 +1,58 @@
+package net.hashsploit.clank.server.medius.packets.serializers;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
+import net.hashsploit.clank.server.medius.MediusCallbackStatus;
+import net.hashsploit.clank.server.medius.MediusConstants;
+import net.hashsploit.clank.server.medius.MediusPacketType;
+import net.hashsploit.clank.server.medius.objects.GameHostType;
+import net.hashsploit.clank.server.medius.objects.MediusPacket;
+import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
+import net.hashsploit.clank.utils.Utils;
+
+public class GameListResponse extends MediusPacket {
+
+	private byte[] messageID;
+	private MediusCallbackStatus callbackStatus;
+	private int mediusWorldId;
+	private String gameName;
+	private MediusWorldStatus worldStatus;
+	private GameHostType gameHostType;
+	private int playerCount;
+	private boolean endOfList;
+
+	public GameListResponse(byte[] messageID, MediusCallbackStatus callbackStatus, int mediusWorldId, String gameName, MediusWorldStatus worldStatus, GameHostType gameHostType, int playerCount, boolean endOfList) {
+		super(MediusPacketType.GameListResponse);
+
+		this.messageID = messageID;
+		this.callbackStatus = callbackStatus;
+		this.mediusWorldId = mediusWorldId;
+		this.gameName = gameName;
+		this.worldStatus = worldStatus;
+		this.gameHostType = gameHostType;
+		this.playerCount = playerCount;
+		this.endOfList = endOfList;
+	}
+
+	@Override
+	public byte[] getPayload() {
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		try {
+			outputStream.write(messageID);
+			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
+			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
+			outputStream.write(Utils.intToBytesLittle(mediusWorldId));
+			outputStream.write(Utils.buildByteArrayFromString(gameName, MediusConstants.GAMENAME_MAXLEN.getValue()));
+			outputStream.write(Utils.intToBytesLittle(worldStatus.getValue()));
+			outputStream.write(Utils.intToBytesLittle(gameHostType.getValue()));
+			outputStream.write(Utils.intToBytesLittle(playerCount));
+			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00")); // EndOfList (char) 00 or 01
+			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return outputStream.toByteArray();
+	}
+	
+}

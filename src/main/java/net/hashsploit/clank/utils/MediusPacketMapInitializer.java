@@ -6,19 +6,26 @@ import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusAccountLoginHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusAccountLogoutHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusAccountRegistrationHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusAccountUpdateStatsHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusChannelInfoHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusChannelListHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusChannelList_ExtraInfoOneHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusChatMessageHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusChatToggleHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusCheckMyClanInvitationsHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusClearGameListFilterZeroHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusCreateGameOneHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusDnasSignaturePostHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusEndGameReportHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusFindWorldByNameHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGameInfoZeroHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusGameListHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGameList_ExtraInfoZeroHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGameWorldPlayerListHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetAllAnnouncementsHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusGetAnnouncementsHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusGetBuddyInvitationsHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetBuddyList_ExtraInfoHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetClanInvitationsSentHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetClanMemberList_ExtraInfoHandler;
@@ -28,8 +35,12 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusGetLobbyPlayerN
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetLocationsHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetMyClanMessagesHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusGetMyClansHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusGetMyIPHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusJoinChannelHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusJoinGameHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusLadderPositionHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusLobbyWorldPlayerListHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusPickLocationHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusPlayerInfoHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusPlayerReportHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusPolicyHandler;
@@ -41,6 +52,7 @@ import net.hashsploit.clank.server.medius.packets.handlers.MediusSetLocalization
 import net.hashsploit.clank.server.medius.packets.handlers.MediusTextFilterHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusUpdateLadderStatsWideHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusUpdateUserStateHandler;
+import net.hashsploit.clank.server.medius.packets.handlers.MediusVersionServerHandler;
 import net.hashsploit.clank.server.medius.packets.handlers.MediusWorldReportZeroHandler;
 
 public class MediusPacketMapInitializer {
@@ -99,6 +111,21 @@ public class MediusPacketMapInitializer {
 		mp.put(MediusPacketType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
 		mp.put(MediusPacketType.AccountLogin, new MediusAccountLoginHandler());
 		
+		// added for Amplitude
+		mp.put(MediusPacketType.AccountRegistration, new MediusAccountRegistrationHandler());
+		mp.put(MediusPacketType.LadderPosition, new MediusLadderPositionHandler());
+		mp.put(MediusPacketType.GetAnnouncements, new MediusGetAnnouncementsHandler());
+		mp.put(MediusPacketType.GameList, new MediusGameListHandler());
+		mp.put(MediusPacketType.LobbyWorldPlayerList, new MediusLobbyWorldPlayerListHandler());
+		mp.put(MediusPacketType.ChannelList, new MediusChannelListHandler());
+		
+		// added for Syphon Filter
+		mp.put(MediusPacketType.GetMyIP, new MediusGetMyIPHandler());
+		mp.put(MediusPacketType.VersionServer, new MediusVersionServerHandler());
+		mp.put(MediusPacketType.PickLocation, new MediusPickLocationHandler());
+		mp.put(MediusPacketType.FindWorldByName, new MediusFindWorldByNameHandler());
+		mp.put(MediusPacketType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
+		mp.put(MediusPacketType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
 		
 		return mp;
 	}

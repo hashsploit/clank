@@ -20,7 +20,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusJoinChannelHandler extends MediusPacketHandler {
 
-	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
 	byte[] buffer = new byte[2];
 	byte[] worldId = new byte[4];
@@ -34,7 +34,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 	public void read(MediusPacket mm) {
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
-		buf.get(messageID);
+		buf.get(messageId);
 		buf.get(sessionKey);
 		buf.get(buffer);
 		buf.get(worldId);
@@ -54,7 +54,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
 		try {
-			outputStream.write(messageID);
+			outputStream.write(messageId);
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
 

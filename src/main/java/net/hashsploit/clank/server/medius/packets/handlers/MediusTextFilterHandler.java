@@ -36,6 +36,7 @@ public class MediusTextFilterHandler extends MediusPacketHandler {
     	
     	logger.fine("Message ID : " + Utils.bytesToHex(messageID));
     	logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
+    	logger.fine("Text Filter Type: " + Utils.bytesToHex(mediusTextFilterType));
     	logger.fine("Text: " + Utils.bytesToHex(text));
     	
     }
@@ -46,7 +47,11 @@ public class MediusTextFilterHandler extends MediusPacketHandler {
 		try {
 			outputStream.write(messageID);
 			outputStream.write(text);
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));			
+			outputStream.write(new byte[3]);
+			// TODO: this is is set to always pass, add logic
+			// check the mediusTextFilterType (this should be using the object instead (TextFilterType)
+			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.MediusPass.getValue()));
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

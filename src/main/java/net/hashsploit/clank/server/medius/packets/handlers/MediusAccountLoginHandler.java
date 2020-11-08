@@ -1,21 +1,15 @@
 package net.hashsploit.clank.server.medius.packets.handlers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Random;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
-import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusPacketType;
 import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.medius.packets.serializers.AccountLoginRequest;
 import net.hashsploit.clank.server.medius.packets.serializers.AccountLoginResponse;
-import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroRequest;
-import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusAccountLoginHandler extends MediusPacketHandler {
