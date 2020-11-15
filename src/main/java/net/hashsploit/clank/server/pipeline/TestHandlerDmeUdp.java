@@ -73,13 +73,31 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
     
     private void checkFirstPacket(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data, int port, String clientAddr) {
-    	if (Utils.bytesToHex(data).equals("161d000108017b00bc2900003139322e3136382e312e3939000000005f270100")) {		  // this is UDP trying to connect
+    	if (Utils.bytesToHex(data).equals("161d000108017b00bc2900003139322e3136382e312e3939000000005f270100") || Utils.bytesToHex(data).equals("161d0001080165ebbc2900003139322e3136382e312e3939000000005f270100")) {		  // this is UDP trying to connect
+    		
+    		// ----------------------------------------- DL VERSION. 1 packet larger for DL than UYA (also different format)
+//	    	logger.info("UDP CONNECT REQ DETECTED!:");
+//	    	clientAddr = clientAddr.substring(1);
+//	    	logger.info("Client Addr: " + clientAddr);
+//	    	logger.info("Client port: " + port); 
+//    		ByteBuffer buffer = ByteBuffer.allocate(26);
+//    		buffer.put(Utils.hexStringToByteArray("0108D3010003"));
+//    		byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
+//    		buffer.put(ad);
+//    		buffer.put(Utils.shortToBytesLittle((short) port));
+//    		
+//    		DataPacket packetResponse = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
+//			byte[] payload = packetResponse.toBytes();
+//			logger.fine("Final payload: " + Utils.bytesToHex(payload));
+//	        ctx.writeAndFlush(new DatagramPacket(
+//	                Unpooled.copiedBuffer(payload), requestDatagram.sender()));    	
+    		
 	    	logger.info("UDP CONNECT REQ DETECTED!:");
 	    	clientAddr = clientAddr.substring(1);
 	    	logger.info("Client Addr: " + clientAddr);
 	    	logger.info("Client port: " + port); 
-    		ByteBuffer buffer = ByteBuffer.allocate(26);
-    		buffer.put(Utils.hexStringToByteArray("0108D3010003"));
+    		ByteBuffer buffer = ByteBuffer.allocate(25);
+    		buffer.put(Utils.hexStringToByteArray("0108D301000300"));
     		byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
     		buffer.put(ad);
     		buffer.put(Utils.shortToBytesLittle((short) port));

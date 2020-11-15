@@ -41,8 +41,8 @@ public class MediusPlayerInfoHandler extends MediusPacketHandler {
     public MediusPacket write(MediusClient client) { 
     	
     	byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
-    	byte[] accountName = Utils.buildByteArrayFromString("Account Name", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-       	byte[] appID = Utils.intToBytesLittle(1);
+    	byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+       	byte[] appID = Utils.hexStringToByteArray("bc290000");
        	byte[] playerStatus = Utils.intToBytesLittle(3);
        	byte[] connectionClass = Utils.intToBytesLittle(1);
        	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());
