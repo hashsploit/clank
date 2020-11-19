@@ -41,16 +41,17 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		byte[] appID = Utils.hexStringToByteArray("bc290000");
 		byte[] minPlayers = Utils.hexStringToByteArray("00000000");
 		byte[] maxPlayers = Utils.hexStringToByteArray("08000000");
+		//byte[] gameLevel = Utils.hexStringToByteArray("45070000");
 		byte[] gameLevel = Utils.hexStringToByteArray("45070000");
 		byte[] playerSkillLevel = Utils.hexStringToByteArray("00000000");
-		byte[] playerCount = Utils.hexStringToByteArray("01000000");
+		byte[] playerCount = Utils.hexStringToByteArray("00000000");
 		byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
 		byte[] gameName = Utils.hexStringToByteArray("536d696c792773202020202020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
 		byte[] rulesSet = Utils.hexStringToByteArray("00000000");
 		byte[] genField1 = Utils.hexStringToByteArray("28000000");
 		byte[] genField2 = Utils.hexStringToByteArray("00000000");
 		byte[] genField3 = Utils.hexStringToByteArray("0800e411");
-		byte[] worldStatus = Utils.hexStringToByteArray("01000000"); // when set to 4, it will continue to request gameinfo0 until world is created
+		byte[] worldStatus = Utils.hexStringToByteArray("01000000");
 		byte[] gameHostType = Utils.hexStringToByteArray("04000000");
 		
 		respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, appID, minPlayers, maxPlayers, gameLevel, 

@@ -94,11 +94,19 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		
     		// DME VERSION ID THING
     		byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");
+    		//byte[] t2 = Utils.hexStringToByteArray("000000000000000000000000000000000000");
     		DataPacket c2 = new DataPacket(RTPacketId.SERVER_APP, t2);
     		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
     		ByteBuf msg2 = Unpooled.copiedBuffer(c2.toBytes());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
+    		
+//    		byte[] t3 = Utils.hexStringToByteArray("A5");
+//    		DataPacket c3 = new DataPacket(RTPacketId.CLIENT_ECHO, t3);
+//    		logger.finest("Final Payload: " + Utils.bytesToHex(c3.toBytes()));
+//    		ByteBuf msg3 = Unpooled.copiedBuffer(c3.toBytes());
+//    		ctx.write(msg3); // (1)
+//    		ctx.flush(); // 
     		
     		// send temporary thing to try to work
 //    		byte[] temp1 = Utils.hexStringToByteArray("00180200000000000000C0A801429A1800004B14BC139A18000001000000001002004B14BC1300006B8F99EC1BAF06D2674284B5305EE6E38B1DE7331F2FBF31DE497228B7C52162F18DAE8913C40C43C0E890D14EEE16AD07C64FD9281D8B972D78BE78D1B290CE001605000300010000000100000000000000");
@@ -157,11 +165,16 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		buf.put(ipAddr);
     		buf.put(Utils.hexStringToByteArray("51C3"));
     		
+
+    		
+    		
     		DataPacket da = new DataPacket(RTPacketId.SERVER_INFO_AUX_UDP, buf.array());
     		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
     		ByteBuf msg2 = Unpooled.copiedBuffer(da.toBytes());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
+    		
+
     		
     	}
     	
