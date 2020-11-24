@@ -41,9 +41,10 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		byte[] appID = Utils.hexStringToByteArray("bc290000");
 		byte[] minPlayers = Utils.hexStringToByteArray("00000000");
 		byte[] maxPlayers = Utils.hexStringToByteArray("08000000");
+		//byte[] gameLevel = Utils.hexStringToByteArray("45070000");
 		byte[] gameLevel = Utils.hexStringToByteArray("45070000");
-		byte[] playerSkillLevel = Utils.hexStringToByteArray("00000001");
-		byte[] playerCount = Utils.hexStringToByteArray("01000000");
+		byte[] playerSkillLevel = Utils.hexStringToByteArray("00000000");
+		byte[] playerCount = Utils.hexStringToByteArray("00000000");
 		byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
 		byte[] gameName = Utils.hexStringToByteArray("536d696c792773202020202020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
 		byte[] rulesSet = Utils.hexStringToByteArray("00000000");

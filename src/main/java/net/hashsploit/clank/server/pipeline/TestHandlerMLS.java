@@ -92,7 +92,12 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     private void passOnToHandler(ChannelHandlerContext ctx, MediusPacket mm) {
     	if (mm == null) 
     		return;
-
+//    	try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
     	DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
 		byte[] finalPayload = packet.toBytes();
 
