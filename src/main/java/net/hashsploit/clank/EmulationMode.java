@@ -38,7 +38,7 @@ public enum EmulationMode {
 		this.modeId = modeId;
 	}
 	
-	public final int getModeId() {
+	public final int getValue() {
 		return modeId;
 	}
 	

@@ -52,7 +52,6 @@ public class Clank {
 		terminal.setLevel(config.getLogLevel());
 		terminal.registerCommand(new CLIExitCommand());
 		terminal.registerCommand(new CLIHelpCommand());
-		terminal.registerCommand(new CLIClientsCommand());
 		
 		terminal.registerEvent(new ICLIEvent() {
 			
@@ -83,40 +82,8 @@ public class Clank {
 		Logger.getLogger("javax.net").setLevel(Level.OFF);
 		
 		terminal.init();
-		logger.info(String.format("Initializing %s v%s ...", NAME, VERSION));
+		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
-		String prompt;
-		
-		switch (config.getEmulationMode()) {
-		case MEDIUS_AUTHENTICATION_SERVER:
-			prompt = "MAS>";
-			break;
-		case MEDIUS_LOBBY_SERVER:
-			prompt = "MLS>";
-			break;
-		case MEDIUS_PROXY_SERVER:
-			prompt = "MPS>";
-			break;
-		case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-			prompt = "MUIS>";
-			break;
-		case NAT_SERVER:
-			prompt = "NAT>";
-		case DME_SERVER:
-			prompt = AnsiColor.GREEN + "DME>";
-			break;
-		default:
-			prompt = ">";
-		}
-		
-		terminal.setPrompt(Terminal.colorize(prompt + AnsiColor.RESET) + " ");
-		
-		// Initialize database
-		// TODO: Make SimDb a config option in each component (minus DME of course)
-		db = new DbManager(this, new SimDb());
-		
-		// Set up Event Bus
-		eventBus = new EventBus(this);
 		
 		// FIXME: Configure Discord Webhook callbacks
 		/*
@@ -139,24 +106,48 @@ public class Clank {
 		}
 		*/
 		
+		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_PROXY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
 		
+		// This is a *Medius server, set up the generic Medius components
+		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
+			
+			// Register generic *Medius CLI commands
+			terminal.registerCommand(new CLIClientsCommand());
+			
+			// Set up the basic configuration for *Medius servers
+			MediusConfig mediusConfig = (MediusConfig) config;
+			server = new MediusServer(
+				mediusConfig.getEmulationMode(),
+				mediusConfig.getAddress(),
+				mediusConfig.getPort(),
+				mediusConfig.getParentThreads(),
+				mediusConfig.getChildThreads()
+			);
+			
+			// Initialize the database for generic Medius servers
+			// TODO: check if the database config value is null, if so
+			// this shouild use the SimDb object instead of the regular MySQL object.
+			db = new DbManager(this, new SimDb());
+		}
 		
-		// Create the server
+		String terminalPrompt = ">";
+		
+		// Configure the server specifics
 		switch (config.getEmulationMode()) {
 			case MEDIUS_AUTHENTICATION_SERVER:
+				terminalPrompt = "MAS>";
+				break;
 			case MEDIUS_LOBBY_SERVER:
+				terminalPrompt = "MLS>";
+				break;
 			case MEDIUS_PROXY_SERVER:
+				terminalPrompt = "MPS>";
+				break;
 			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-				MediusConfig mediusConfig = (MediusConfig) config;
-				server = new MediusServer(
-					mediusConfig.getEmulationMode(),
-					mediusConfig.getAddress(),
-					mediusConfig.getPort(),
-					mediusConfig.getParentThreads(),
-					mediusConfig.getChildThreads()
-				);
+				terminalPrompt = "MUIS>";
 				break;
 			case NAT_SERVER:
+				terminalPrompt = "NAT>";
 				NatConfig natConfig = (NatConfig) config;
 				server = new NatServer(
 					natConfig.getAddress(),
@@ -165,6 +156,7 @@ public class Clank {
 				);
 				break;
 			case DME_SERVER:
+				terminalPrompt = AnsiColor.GREEN + "DME>";
 				DmeConfig dmeConfig = (DmeConfig) config;
 				server = new DmeServer(
 					dmeConfig.getTcpAddress(),
@@ -182,15 +174,16 @@ public class Clank {
 				return;
 		}
 		
+		// Set up the event bus
+		eventBus = new EventBus(this);
+		
 		// Start server
-		//server = new Server(config.getMediusComponent(), config.getAddress(), config.getPort(), config.getParentThreads(), config.getChildThreads());
+		terminal.setPrompt(Terminal.colorize(terminalPrompt + AnsiColor.RESET) + " ");
 		server.start();
 		
 		// Tick
 		while (running) {
-			
 			update();
-			
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
@@ -201,7 +194,7 @@ public class Clank {
 	
 	
 	/**
-	 * Tick the server for event updates.
+	 * Tick the server for internal event updates.
 	 */
 	public void update() {
 		
