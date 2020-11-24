@@ -1,25 +1,29 @@
 package net.hashsploit.clank.cli.commands;
 
-import net.hashsploit.clank.EmulationMode;
+import java.util.logging.Logger;
+
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
 
-public class CLIExitCommand implements ICLICommand {
+public class CLIVersionCommand implements ICLICommand {
 
-	@Override
-	public void invoke(Terminal term, String[] params) {
-		Clank.getInstance().shutdown();
-	}
+	private static final Logger logger = Logger.getLogger("");
 	
 	@Override
+	public void invoke(Terminal term, String[] params) {
+		logger.info(String.format("This server is running %s v%s (implementing %s)", Clank.NAME, Clank.VERSION, Clank.getInstance().getConfig().getEmulationMode().name()));
+	}
+
+	@Override
 	public String commandName() {
-		return "exit";
+		return "version";
 	}
 
 	@Override
 	public String commandDescription() {
-		return "Shutdown the server.";
+		return "Show the current server version.";
 	}
 
 	@Override

@@ -11,6 +11,8 @@ import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusPacketType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.NetAddressType;
+import net.hashsploit.clank.server.common.objects.NetConnectionType;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusJoinChannelHandler extends MediusPacketHandler {
@@ -54,9 +56,9 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
 			outputStream.write(callbackStatus);
 
-			outputStream.write(Utils.hexStringToByteArray("01000000")); // net connection type (int/little endian)
+			outputStream.write(Utils.intToBytesLittle(NetConnectionType.NET_CONNECTION_TYPE_CLIENT_SERVER_TCP.getValue())); // net connection type (int/little endian)
 
-			outputStream.write(Utils.hexStringToByteArray("01000000")); // net address type (int/little endian)
+			outputStream.write(Utils.intToBytesLittle(NetAddressType.NET_ADDRESS_TYPE_EXTERNAL.getValue())); // net address type (int/little endian)
 
 			outputStream.write(ipAddr); // ip address
 			outputStream.write(zeroTrail); // zero padding for ip address

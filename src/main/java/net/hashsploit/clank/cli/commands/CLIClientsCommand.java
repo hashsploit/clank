@@ -29,7 +29,7 @@ public class CLIClientsCommand implements ICLICommand {
 	public int enabledMediusModes() {
 		int value = 0;
 		for (EmulationMode m : EmulationMode.values()) {
-			value |= m.getModeId();
+			value |= m.getValue();
 		}
 		return value;
 	}
