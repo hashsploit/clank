@@ -15,9 +15,9 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
-import net.hashsploit.clank.server.medius.MediusPacketHandler;
-import net.hashsploit.clank.server.medius.objects.MediusPacket;
 import net.hashsploit.clank.server.scert.SCERTConstants;
 import net.hashsploit.clank.utils.Utils;
 

@@ -1,7 +1,5 @@
 package net.hashsploit.clank;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,29 +10,33 @@ import net.hashsploit.clank.cli.ICLIEvent;
 import net.hashsploit.clank.cli.commands.CLIClientsCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
+import net.hashsploit.clank.config.AbstractConfig;
+import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.NatConfig;
 import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
+import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.dme.DmeServer;
-import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {
 	
 	public static final String NAME = "Clank";
-	public static final String VERSION = "0.1.3";
+	public static final String VERSION = "0.1.5";
 	public static Clank instance;
 	private static final Logger logger = Logger.getLogger("");
 	
 	private boolean running;
-	private ClankConfig config;
+	private AbstractConfig config;
 	private Terminal terminal;
 	private IServer server;
 	private DbManager db;
 	private EventBus eventBus;
 	private HashMap<String, DiscordWebhook> discordWebhooks;
 	
-	public Clank(ClankConfig config) {
+	public Clank(AbstractConfig config) {
 		
 		if (instance != null) {
 			return;
@@ -76,12 +78,16 @@ public class Clank {
 			}
 		});
 		
+		// Disable other framework logging from clogging up the console logs.
+		Logger.getLogger("io.netty").setLevel(Level.OFF);
+		Logger.getLogger("javax.net").setLevel(Level.OFF);
+		
 		terminal.init();
 		logger.info(String.format("Initializing %s v%s ...", NAME, VERSION));
 		
 		String prompt;
 		
-		switch (config.getServerComponent()) {
+		switch (config.getEmulationMode()) {
 		case MEDIUS_AUTHENTICATION_SERVER:
 			prompt = "MAS>";
 			break;
@@ -112,7 +118,8 @@ public class Clank {
 		// Set up Event Bus
 		eventBus = new EventBus(this);
 		
-		// Configure Discord Webhook callbacks
+		// FIXME: Configure Discord Webhook callbacks
+		/*
 		for (final Object objectKey : config.getProperties().keySet()) {
 			final String key = objectKey.toString();
 			if (key.startsWith("DiscordWebhook_")) {
@@ -130,37 +137,43 @@ public class Clank {
 				}
 			}
 		}
+		*/
+		
+		
 		
 		// Create the server
-		switch (config.getServerComponent()) {
+		switch (config.getEmulationMode()) {
 			case MEDIUS_AUTHENTICATION_SERVER:
 			case MEDIUS_LOBBY_SERVER:
 			case MEDIUS_PROXY_SERVER:
 			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
+				MediusConfig mediusConfig = (MediusConfig) config;
 				server = new MediusServer(
-					config.getServerComponent(),
-					config.getAddress(),
-					config.getPort(),
-					config.getParentThreads(),
-					config.getChildThreads()
+					mediusConfig.getEmulationMode(),
+					mediusConfig.getAddress(),
+					mediusConfig.getPort(),
+					mediusConfig.getParentThreads(),
+					mediusConfig.getChildThreads()
 				);
 				break;
 			case NAT_SERVER:
+				NatConfig natConfig = (NatConfig) config;
 				server = new NatServer(
-					config.getAddress(),
-					config.getPort(),
-					Integer.parseInt(config.getProperties().getProperty("Threads"))
+					natConfig.getAddress(),
+					natConfig.getPort(),
+					natConfig.getUdpThreads()
 				);
 				break;
 			case DME_SERVER:
+				DmeConfig dmeConfig = (DmeConfig) config;
 				server = new DmeServer(
-					config.getTcpAddress(),
-					config.getTcpPort(),
-					config.getParentThreads(),
-					config.getChildThreads(),
-					config.getProperties().getProperty("UdpAddress"),
-					Integer.parseInt(config.getProperties().getProperty("UdpStartingPort")),
-					Integer.parseInt(config.getProperties().getProperty("UdpThreads"))
+					dmeConfig.getTcpAddress(),
+					dmeConfig.getTcpPort(),
+					dmeConfig.getParentThreads(),
+					dmeConfig.getChildThreads(),
+					dmeConfig.getUdpAddress(),
+					dmeConfig.getUdpStartingPort(),
+					dmeConfig.getUdpThreads()
 				);
 				break;
 			default:
@@ -192,9 +205,6 @@ public class Clank {
 	 */
 	public void update() {
 		
-		
-		
-		
 	}
 	
 	/**
@@ -222,7 +232,7 @@ public class Clank {
 	 * Get the Clank configuration class.
 	 * @return
 	 */
-	public ClankConfig getConfig() {
+	public AbstractConfig getConfig() {
 		return config;
 	}
 	

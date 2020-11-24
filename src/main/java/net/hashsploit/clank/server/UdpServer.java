@@ -32,10 +32,7 @@ public class UdpServer extends AbstractServer {
 		this.threads = -1;
 		this.eventLoopGroup = eventLoopGroup;
 		
-		// Disable Netty from clogging up the console logs.
-		Logger.getLogger("io.netty").setLevel(Level.OFF);
-		
-		
+		// Use Linux epoll if available.
 		if (Epoll.isAvailable()) {
 			logger.fine("Linux epoll is available. Using epoll for datagram channels.");
 			datagramChannelClass = EpollDatagramChannel.class;

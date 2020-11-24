@@ -1,6 +1,6 @@
 package net.hashsploit.clank.cli.commands;
 
-import net.hashsploit.clank.ServerComponent;
+import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
@@ -25,7 +25,7 @@ public class CLIExitCommand implements ICLICommand {
 	@Override
 	public int enabledMediusModes() {
 		int value = 0;
-		for (ServerComponent m : ServerComponent.values()) {
+		for (EmulationMode m : EmulationMode.values()) {
 			value |= m.getModeId();
 		}
 		return value;
