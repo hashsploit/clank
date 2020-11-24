@@ -1,0 +1,17 @@
+{
+	"mode": "DME_SERVER",
+	"log_level": "INFO",
+	"address": "172.16.221.250",
+	"port": 10097,
+	"encryption": false,
+	"capacity": 200,
+	"timeout": 15000,
+	"parent_threads": 1,
+	"child_threads": 4,
+	"udp_threads": 8,
+	"application_id": 10684,
+	"discord_webhooks": {
+		"start": "",
+		"shutdown": ""
+	}
+}

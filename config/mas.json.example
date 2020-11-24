@@ -1,0 +1,47 @@
+{
+	"mode": "MEDIUS_AUTHENTICATION_SERVER",
+	"log_level": "INFO",
+	"address": "172.16.221.250",
+	"port": 10075,
+	"encryption": false,
+	"capacity": 200,
+	"timeout": 15000,
+	"parent_threads": 1,
+	"child_threads": 4,
+	"max_login_attempts": 20,
+	"application_id": 10684,
+	"mls": {
+		"address": "172.16.221.250",
+		"port": 10078
+	},
+	"nat": {
+		"address": "172.16.221.250",
+		"port": 10077
+	},
+	"whitelist": {
+		"enabled": true,
+		"players": [
+			"hashsploit",
+			"fourbolt"
+		]
+	},
+	"database": {
+		"host": "",
+		"database": "",
+		"username": "",
+		"password": ""
+	},
+	"system_message": {
+		"enabled": false,
+		"severity": 200,
+		"message": ""
+	},
+	"discord_webhooks": {
+		"start": "",
+		"shutdown": "",
+		"login": "",
+		"register": "",
+		"ban": ""
+	}
+}
+
