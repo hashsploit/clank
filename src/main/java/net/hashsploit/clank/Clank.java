@@ -1,15 +1,15 @@
 package net.hashsploit.clank;
 
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
 import net.hashsploit.clank.cli.ICLIEvent;
-import net.hashsploit.clank.cli.commands.CLIClientsCommand;
+import net.hashsploit.clank.cli.commands.CLIPlayersCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
+import net.hashsploit.clank.cli.commands.CLIVersionCommand;
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
@@ -34,7 +34,7 @@ public class Clank {
 	private IServer server;
 	private DbManager db;
 	private EventBus eventBus;
-	private HashMap<String, DiscordWebhook> discordWebhooks;
+	//private HashMap<String, DiscordWebhook> discordWebhooks;
 	
 	public Clank(AbstractConfig config) {
 		
@@ -52,6 +52,7 @@ public class Clank {
 		terminal.setLevel(config.getLogLevel());
 		terminal.registerCommand(new CLIExitCommand());
 		terminal.registerCommand(new CLIHelpCommand());
+		terminal.registerCommand(new CLIVersionCommand());
 		
 		terminal.registerEvent(new ICLIEvent() {
 			
@@ -112,7 +113,7 @@ public class Clank {
 		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
 			
 			// Register generic *Medius CLI commands
-			terminal.registerCommand(new CLIClientsCommand());
+			terminal.registerCommand(new CLIPlayersCommand());
 			
 			// Set up the basic configuration for *Medius servers
 			MediusConfig mediusConfig = (MediusConfig) config;
@@ -169,7 +170,7 @@ public class Clank {
 				);
 				break;
 			default:
-				logger.warning("No valid server component provided.");
+				logger.severe("No valid server component provided.");
 				shutdown();
 				return;
 		}

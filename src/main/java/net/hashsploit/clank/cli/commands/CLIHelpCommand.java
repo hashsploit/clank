@@ -2,7 +2,6 @@ package net.hashsploit.clank.cli.commands;
 
 import java.util.logging.Logger;
 
-import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
@@ -36,15 +35,6 @@ public class CLIHelpCommand implements ICLICommand {
 	@Override
 	public String commandDescription() {
 		return "Show a list of commands.";
-	}
-
-	@Override
-	public int enabledMediusModes() {
-		int value = 0;
-		for (EmulationMode m : EmulationMode.values()) {
-			value |= m.getValue();
-		}
-		return value;
 	}
 
 }
