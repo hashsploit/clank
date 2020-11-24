@@ -37,7 +37,7 @@ public class MediusSessionBeginHandler extends MediusPacketHandler {
 	public MediusPacket write(MediusClient client) {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		
-		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
+		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
     	byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
     	
 				

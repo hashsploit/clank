@@ -5,357 +5,357 @@ public enum MediusCallbackStatus {
 	/**
 	 * Session begin failed.
 	 */
-	MediusBeginSessionFailed(-1000),
+	BEGIN_SESSION_FAILED(-1000),
 
 	/**
 	 * Account already exists, can not register with the same account name.
 	 */
-	MediusAccountAlreadyExists(-999),
+	ACCOUNT_ALREADY_EXISTS(-999),
 
 	/**
 	 * Account name was not found.
 	 */
-	MediusAccountNotFound(-998),
+	ACCOUNT_NOT_FOUND(-998),
 
 	/**
 	 * The account is marked as already being logged in to the system.
 	 */
-	MediusAccountLoggedIn(-997),
+	ACCOUNT_LOGGED_IN(-997),
 
 	/**
 	 * Unable to properly end the session.
 	 */
-	MediusEndSessionFailed(-996),
+	END_SESSION_FAILED(-996),
 	
 	/**
 	 * Login failed.
 	 */
-	MediusLoginFailed(-995),
+	LOGIN_FAILED(-995),
 	
 	/**
 	 * Registration failed.
 	 */
-	MediusRegistrationFailed(-994),
+	REGISTRATION_FAILED(-994),
 	
 	/**
 	 * The login step was incorrect. For example, login without having a session.
 	 */
-	MediusIncorrectLoginStep(-993),
+	INCORRECT_LOGIN_STEP(-993),
 	
 	/**
 	 * The user is already the leader of a clan, and can not be the leader of multiple clans.
 	 */
-	MediusAlreadyLeaderOfClan(-992),
+	ALREADY_LEADER_OF_CLAN(-992),
 	
 	/**
 	 * World Manager error.
 	 */
-	MediusWMError(-991),
+	WORLD_MANAGER_ERROR(-991),
 	
 	/**
 	 * The player attempted some request that requires being the leader of the clan.
 	 */
-	MediusNotClanLeader(-990),
+	NOT_CLAN_LEADER(-990),
 	
 	/**
 	 * The player is not privileged to make the request. Typically, the user's session has been destroyed, but is still connected to the server.
 	 */
-	MediusPlayerNotPrivileged(-989),
+	PLAYER_NOT_PRIVILEGED(-989),
 	
 	/**
 	 * An internal database error occurred.
 	 */
-	MediusDBError(-988),
+	DATABASE_ERROR(-988),
 	
 	/**
 	 * A DME layer error.
 	 */
-	MediusDMEError(-987),
+	DME_ERROR(-987),
 	
 	/**
 	 * The maximum number of worlds has been exceeded.
 	 */
-	MediusExceedsMaxWorlds(-986),
+	EXCEEDS_MAX_WORLDS(-986),
 	
 	/**
 	 * The request has been denied.
 	 */
-	MediusRequestDenied(-985),
+	REQUEST_DENIED(-985),
 	
 	/**
 	 * Setting the game list filter failed.
 	 */
-	MediusSetGameListFilterFailed(-984),
+	SET_GAME_FILTER_FAILED(-984),
 	
 	/**
 	 * Clearing the game list filter failed.
 	 */
-	MediusClearGameListFilterFailed(-983),
+	CLEAR_GAME_LIST_FILTER_FAILED(-983),
 	
 	/**
 	 * Getting the game list filter failed.
 	 */
-	MediusGetGameListFilterFailed(-982),
+	GET_GAME_LIST_FILTER_FAILED(-982),
 	
 	/**
 	 * The number of filters is at the maximum.
 	 */
-	MediusNumFiltersAtMax(-981),
+	NUM_FILTERS_AT_MAX(-981),
 	
 	/**
 	 * The filter being referenced does not exist.
 	 */
-	MediusFilterNotFound(-980),
+	FILTER_NOT_FOUND(-980),
 	
 	/**
 	 * The request message was invalid.
 	 */
-	MediusInvalidRequestMsg(-979),
+	INVALID_REQUEST_MESSAGE(-979),
 	
 	/**
 	 * The specified password was invalid.
 	 */
-	MediusInvalidPassword(-978),
+	INVALID_PASSWORD(-978),
 	
 	/**
 	 * The game was not found.
 	 */
-	MediusGameNotFound(-977),
+	GAME_NOT_FOUND(-977),
 	
 	/**
 	 * The channel was not found.
 	 */
-	MediusChannelNotFound(-976),
+	CHANNEL_NOT_FOUND(-976),
 	
 	/**
 	 * The game name already exists.
 	 */
-	MediusGameNameExists(-975),
+	GAME_NAME_EXISTS(-975),
 	
 	/**
 	 * The channel name already exists.
 	 */
-	MediusChannelNameExists(-974),
+	CHANNEL_NAME_EXISTS(-974),
 	
 	/**
 	 * The game name was not found.
 	 */
-	MediusGameNameNotFound(-973),
+	GAME_NAME_NOT_FOUND(-973),
 	
 	/**
 	 * The player has been banned.
 	 */
-	MediusPlayerBanned(-972),
+	PLAYER_BANNED(-972),
 	
 	/**
 	 * The clan was not found.
 	 */
-	MediusClanNotFound(-971),
+	CLAN_NOT_FOUND(-971),
 	
 	/**
 	 * The clan name already exists.
 	 */
-	MediusClanNameInUse(-970),
+	CLAN_NAME_IN_USE(-970),
 	
 	/**
 	 * Session key is invalid.
 	 */
-	MediusSessionKeyInvalid(-969),
+	SESSION_KEY_INVALID(-969),
 	
 	/**
 	 * The text string is invalid.
 	 */
-	MediusTextStringInvalid(-968),
+	TEXT_STRING_INVALID(-968),
 	
 	/**
 	 * The filtering failed.
 	 */
-	MediusFilterFailed(-967),
+	FILTER_FAILED(-967),
 	
 	/**
 	 * General fail message.
 	 */
-	MediusFail(-966),
+	FAILURE(-966),
 	
 	/**
 	 * Medius File Services (MFS) Internal error.
 	 */
-	MediusFileInternalAccessError(-965),
+	FILE_INTERNAL_ACCESS_ERROR(-965),
 	
 	/**
-	 * Insufficient permissions for the  MFS request.
+	 * Insufficient permissions for the MFS request.
 	 */
-	MediusFileNoPermissions(-964),
+	FILE_NO_PERMISSIONS(-964),
 	
 	/**
 	 * The file requested in MFS does not exist.
 	 */
-	MediusFileDoesNotExist(-963),
+	FILE_DOES_NOT_EXIST(-963),
 	
 	/**
 	 * The file requested in MFS already exists.
 	 */
-	MediusFileAlreadyExists(-962),
+	FILE_ALREADY_EXISTS(-962),
 	
 	/**
 	 * The filename is not valid in MFS.
 	 */
-	MediusFileInvalidFilename(-961),
+	FILE_INVALID_FILENAME(-961),
 	
 	/**
 	 * The user's quota has been exceeded.
 	 */
-	MediusFileQuotaExceeded(-960),
+	FILE_QUOTA_EXCEEDED(-960),
 	
 	/**
 	 * The cache system had an internal failure.
 	 */
-	MediusCacheFailure(-959),
+	CACHE_FAILURE(-959),
 	
 	/**
 	 * The data already exists.
 	 */
-	MediusDataAlreadyExists(-958),
+	DATA_ALREADY_EXISTS(-958),
 	
 	/**
 	 * The data does not exist.
 	 */
-	MediusDataDoesNotExist(-957),
+	DATA_DOES_NOT_EXIST(-957),
 	
 	/**
 	 * A maximum count has been exceeded.
 	 */
-	MediusMaxExceeded(-956),
+	MAX_EXCEEDED(-956),
 	
 	/**
 	 * The key used is incorrect.
 	 */
-	MediusKeyError(-955),
+	KEY_ERROR(-955),
 	
 	/**
 	 * The application ID is not compatible.
 	 */
-	MediusIncompatibleAppID(-954),
+	INCOMPATIBLE_APP_ID(-954),
 	
 	/**
 	 * The account has been banned.
 	 */
-	MediusAccountBanned(-953),
+	ACCOUNT_BANNED(-953),
 	
 	/**
 	 * The machine has been banned.
 	 */
-	MediusMachineBanned(-952),
+	MACHINE_BANNED(-952),
 	
 	/**
-	 * The leader of the clan can not leave.  Must disband instead.
+	 * The leader of the clan can not leave. Must disband instead.
 	 */
-	MediusLeaderCannotLeaveClan(-951),
+	LEADER_CANNOT_LEAVE_CLAN(-951),
 	
 	/**
 	 * The feature requested is not enabled.
 	 */
-	MediusFeatureNotEnabled(-950),
+	FEATURE_NOT_ENABLED(-950),
 	
 	/**
 	 * The same DNAS signature is already logged in.
 	 */
-	MediusDNASSignatureLoggedIn(-949),
+	DNAS_SIGNATURE_LOGGED_IN(-949),
 	
 	/**
 	 * The world is full. Unable to join.
 	 */
-	MediusWorldIsFull(-948),
+	WORLD_IS_FULL(-948),
 	
 	/**
 	 * The user is not a member of the clan.
 	 */
-	MediusNotClanMember(-947),
+	NOT_CLAN_MEMBER(-947),
 	
 	/**
 	 * The server is busy. Try again later.
 	 */
-	MediusServerBusy(-946),
+	SERVER_BUSY(-946),
 	
 	/**
 	 * The maximum number of game worlds per lobby world has been exceeded.
 	 */
-	MediusNumGameWorldsPerLobbyWorldExceeded(-945),
+	NUM_GAME_WORLDS_PER_LOBBY_EXCEEDED(-945),
 	
 	/**
 	 * The account name is not UC compliant.
 	 */
-	MediusAccountNotUCCompliant(-944),
+	ACCOUNT_NOT_UC_COMPLIANT(-944),
 	
 	/**
 	 * The password is not UC compliant.
 	 */
-	MediusPasswordNotUCCompliant(-943),
+	PASSWORD_NOT_UC_COMPLIANT(-943),
 	
 	/**
 	 * There is an internal gateway error.
 	 */
-	MediusGatewayError(-942),
+	GATEWAY_ERROR(-942),
 	
 	/**
 	 * The transaction has been cancelled.
 	 */
-	MediusTransactionCanceled(-941),
+	TRANSACTION_CANCELLED(-941),
 	
 	/**
 	 * The session has failed.
 	 */
-	MediusSessionFail(-940),
+	SESSION_FAILURE(-940),
 	
 	/**
 	 * The token is already in use.
 	 */
-	MediusTokenAlreadyTaken(-939),
+	TOKEN_ALREADY_TAKEN(-939),
 	
 	/**
 	 * The token being referenced does not exist.
 	 */
-	MediusTokenDoesNotExist(-938),
+	TOKEN_DOES_NOT_EXIST(-938),
 	
 	/**
 	 * The subscription has been aborted.
 	 */
-	MediusSubscriptionAborted(-937),
+	SUBSCRIPTION_ABORTED(-937),
 	
 	/**
 	 * The subscription is invalid.
 	 */
-	MediusSubscriptionInvalid(-936),
+	SUBSCRIPTION_INVALID(-936),
 	
 	/**
 	 * The user is not a member of an list.
 	 */
-	MediusNotAMember(-935),
+	NOT_A_MEMBER(-935),
 	
 	/**
 	 * Success.
 	 */
-	MediusSuccess(0),
+	SUCCESS(0),
 	
 	/**
 	 * No results. This is a valid state.
 	 */
-	MediusNoResult(1),
+	NO_RESULT(1),
 	
 	/**
 	 * The request has been accepted.
 	 */
-	MediusRequestAccepted(2),
+	REQUEST_ACCEPTED(2),
 	
 	/**
 	 * The world has been created with reduced size.
 	 */
-	MediusWorldCreatedSizeReduced(3),
+	WORLD_CREATED_SIZE_REDUCED(3),
 	
 	/**
 	 * The criteria has been met.
 	 */
-	MediusPass(4);
+	PASS(4);
 	
 	private final int value;
 

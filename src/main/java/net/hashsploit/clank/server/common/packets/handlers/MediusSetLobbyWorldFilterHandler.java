@@ -52,7 +52,7 @@ public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 		try {
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue()));
 			outputStream.write(filter1);
 			outputStream.write(filter2);
 			outputStream.write(filter3);

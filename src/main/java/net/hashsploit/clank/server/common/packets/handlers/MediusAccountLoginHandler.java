@@ -32,7 +32,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 	@Override
 	public MediusPacket write(MediusClient client) {
 
-		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusLoginFailed.getValue()));
+		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.LOGIN_FAILED.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
 
 		// TODO: handle logic elsewhere (controller/model design)
@@ -41,7 +41,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 
 		if (Clank.getInstance().getDatabase().accountExists(username)) {
 			if (Clank.getInstance().getDatabase().validateAccount(username, password)) {
-				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusSuccess.getValue()));
+				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
 				// TODO: Generate random auth token each connection, save in db for MLS to use.
 				// db should have a expiration UNIX time-stamp as well that needs to be updated
@@ -52,7 +52,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 				mlsToken[mlsToken.length - 3] = (byte) 0x00;
 
 			} else {
-				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.MediusInvalidPassword.getValue()));
+				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.INVALID_PASSWORD.getValue()));
 			}
 		}
 

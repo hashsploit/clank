@@ -27,7 +27,7 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     
     @Override
     public MediusPacket write(MediusClient client) {
-    	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
+    	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
     	byte[] accountID = Utils.intToBytesLittle(5);
     	byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
     	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());

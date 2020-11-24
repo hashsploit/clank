@@ -52,7 +52,7 @@ public class MediusGetMyClanMessagesHandler extends MediusPacketHandler {
 		try {
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));		
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue()));		
 			outputStream.write(clanID);
 			outputStream.write(message);
 			outputStream.write(endOfList);

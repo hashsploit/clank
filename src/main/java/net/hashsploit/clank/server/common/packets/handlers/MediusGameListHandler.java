@@ -28,7 +28,7 @@ public class MediusGameListHandler extends MediusPacketHandler {
 	@Override
 	public MediusPacket write(MediusClient client) {
 		
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		int mediusWorldId = 1;
 		String gameName = "AEQLITUDE";
 		MediusWorldStatus worldStatus = MediusWorldStatus.WORLD_STAGING;

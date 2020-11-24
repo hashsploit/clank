@@ -44,7 +44,7 @@ public class MediusGetClanMemberList_ExtraInfoHandler extends MediusPacketHandle
 		try {
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusNoResult.getValue()));	 // give no result for now		
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.NO_RESULT.getValue()));	 // give no result for now		
 			outputStream.write(Utils.intToBytesLittle(0)); // accountID
 			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue())); // 
 			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue())); // 

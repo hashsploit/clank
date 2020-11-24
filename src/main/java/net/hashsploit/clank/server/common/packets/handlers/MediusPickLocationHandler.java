@@ -27,7 +27,7 @@ public class MediusPickLocationHandler extends MediusPacketHandler {
 	public MediusPacket write(MediusClient client) {
 		
 		// TODO: return a valid callback status
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		
 		respPacket = new PickLocationResponse(reqPacket.getMessageId(), callbackStatus);
 		

@@ -26,7 +26,7 @@ public class MediusChannelListHandler extends MediusPacketHandler {
 	@Override
 	public MediusPacket write(MediusClient client) {
 		
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		int mediusWorldId = 1;
 		String lobbyName = "AEQLITUDE";
 		int playerCount = 3;

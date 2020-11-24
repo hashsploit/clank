@@ -28,7 +28,7 @@ public class MediusFindWorldByNameHandler extends MediusPacketHandler {
 	@Override
 	public MediusPacket write(MediusClient client) {
 		
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		int appId = 10411;
 		String appName = "Syphon Filter";
 		MediusApplicationType appType = MediusApplicationType.LOBBY_CHAT_CHANNEL;

@@ -25,7 +25,7 @@ public class AccountRegistrationResponse extends MediusPacket {
 		try {
 			outputStream.write(messageId);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue()));
+			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue()));
 			outputStream.write(Utils.intToBytesLittle(1));
 		} catch (IOException e) {
 			e.printStackTrace();

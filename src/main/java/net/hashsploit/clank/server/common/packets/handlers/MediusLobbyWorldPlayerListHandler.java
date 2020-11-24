@@ -29,7 +29,7 @@ public class MediusLobbyWorldPlayerListHandler extends MediusPacketHandler {
 	@Override
 	public MediusPacket write(MediusClient client) {
 		
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		MediusPlayerStatus playerStatus = MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD;
 		int accountId = 21;
 		String accountName = "Aeq";

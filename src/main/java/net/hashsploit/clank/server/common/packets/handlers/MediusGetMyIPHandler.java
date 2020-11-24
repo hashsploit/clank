@@ -27,7 +27,7 @@ public class MediusGetMyIPHandler extends MediusPacketHandler {
 	public MediusPacket write(MediusClient client) {
 		
 		String ipAddress = client.getIPAddress();
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		
 		respPacket = new GetMyIPResponse(reqPacket.getMessageId(), ipAddress, callbackStatus);
 		

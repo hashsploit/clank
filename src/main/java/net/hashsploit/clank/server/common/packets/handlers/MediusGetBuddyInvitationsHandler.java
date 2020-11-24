@@ -27,7 +27,7 @@ public class MediusGetBuddyInvitationsHandler extends MediusPacketHandler {
 	@Override
 	public MediusPacket write(MediusClient client) {
 		
-		MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusNoResult;
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.NO_RESULT;
 		
 		int accountId = 0;
 		String accountName = "";

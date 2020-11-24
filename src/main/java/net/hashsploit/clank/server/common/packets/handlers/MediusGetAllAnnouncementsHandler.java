@@ -39,7 +39,7 @@ public class MediusGetAllAnnouncementsHandler extends MediusPacketHandler {
 	
 	@Override
 	public MediusPacket write(MediusClient client) {
-		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
+		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] announcementID = Utils.intToBytesLittle(10);
 		byte[] announcement = Utils.buildByteArrayFromString("Announcment TEST", MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");

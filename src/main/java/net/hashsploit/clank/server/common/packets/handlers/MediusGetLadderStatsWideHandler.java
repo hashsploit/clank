@@ -45,7 +45,7 @@ public class MediusGetLadderStatsWideHandler extends MediusPacketHandler {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageID);
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue()));
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue()));
 			outputStream.write(accountOrClanID);
 			outputStream.write(stats);
 		} catch (IOException e) {

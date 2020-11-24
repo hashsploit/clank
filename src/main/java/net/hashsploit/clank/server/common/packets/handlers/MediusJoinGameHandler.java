@@ -35,7 +35,7 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 	public MediusPacket write(MediusClient client) {
 		// RESPONSE
 
-		final MediusCallbackStatus callbackStatus = MediusCallbackStatus.MediusSuccess;
+		final MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 
 		final GameHostType gameHostType = GameHostType.HOST_CLIENT_SERVER_AUX_UDP;
 		

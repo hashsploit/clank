@@ -43,7 +43,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 	public MediusPacket write(MediusClient client) {
 
 		byte[] mediusWorldID = Utils.hexStringToByteArray("65eb0000");
-		byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
+		byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] playerCount = Utils.shortToBytesLittle((short) 1);
 		byte[] minPlayers = Utils.shortToBytesLittle((short) 0);
 		byte[] maxPlayers = Utils.shortToBytesLittle((short) 8);

@@ -39,7 +39,7 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
     
     @Override
     public MediusPacket write(MediusClient client) {
-    	byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
+    	byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
     	byte[] mediusWorldID = Utils.hexStringToByteArray("45070000");
     	byte[] playerCount = Utils.shortToBytesLittle((short) 1);
     	byte[] maxPlayers = Utils.shortToBytesLittle((short) 224);

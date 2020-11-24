@@ -42,7 +42,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 
 		byte[] locationID = Utils.intToBytesLittle(40);// random location
 		byte[] locationName = Utils.buildByteArrayFromString("Aquatos", MediusConstants.LOCATIONNAME_MAXLEN.getValue());
-		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
+		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 
 		logger.fine("Message ID: " + Utils.bytesToHex(messageID));

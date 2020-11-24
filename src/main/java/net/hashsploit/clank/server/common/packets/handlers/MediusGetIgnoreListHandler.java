@@ -45,7 +45,7 @@ public class MediusGetIgnoreListHandler extends MediusPacketHandler {
 		try {
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(Utils.intToBytes(MediusCallbackStatus.MediusNoResult.getValue()));	 // give no result for now		
+			outputStream.write(Utils.intToBytes(MediusCallbackStatus.NO_RESULT.getValue()));	 // give no result for now		
 			outputStream.write(Utils.intToBytesLittle(0)); // ignoreAccountID
 			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue())); // IgnoreAccountName
 			outputStream.write(Utils.hexStringToByteArray("01000000")); // end of list

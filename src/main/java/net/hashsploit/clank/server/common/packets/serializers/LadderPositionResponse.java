@@ -26,7 +26,7 @@ public class LadderPositionResponse extends MediusPacket {
 			outputStream.write(messageId);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytesLittle(1));
-			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue()));
+			outputStream.write(Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
