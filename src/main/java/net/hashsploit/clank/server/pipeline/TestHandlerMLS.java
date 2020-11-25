@@ -15,8 +15,8 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTPacketId;
-import net.hashsploit.clank.server.medius.MediusPacketHandler;
-import net.hashsploit.clank.server.medius.objects.MediusPacket;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -92,7 +92,12 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
     private void passOnToHandler(ChannelHandlerContext ctx, MediusPacket mm) {
     	if (mm == null) 
     		return;
-
+//    	try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
     	DataPacket packet = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
 		byte[] finalPayload = packet.toBytes();
 
@@ -129,7 +134,9 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		// TODO Auto-generated method stub
 		byte[] data = packet.toBytes();
 
-    	if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
+    	//if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
+		if (Utils.bytesToHex(data).startsWith("00490001")) {
+			
 	    	
 	    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {

@@ -15,11 +15,6 @@ public interface ICLICommand {
 	public String commandDescription();
 
 	/**
-	 * Bitmask of modes that OpenMedius enables this command on.
-	 */
-	public int enabledMediusModes();
-
-	/**
 	 * This method is a callback from when the command name gets invoked
 	 * 
 	 * @param command parameters

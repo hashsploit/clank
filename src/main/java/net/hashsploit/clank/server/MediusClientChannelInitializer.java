@@ -6,7 +6,7 @@ import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.ReadTimeoutException;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.medius.MediusServer;
+import net.hashsploit.clank.server.common.MediusServer;
 
 public class MediusClientChannelInitializer extends ChannelInitializer<SocketChannel> {
 	
