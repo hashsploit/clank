@@ -1,18 +1,20 @@
 package net.hashsploit.clank;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.ConfigNames;
+import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.config.configs.MpsConfig;
 import net.hashsploit.clank.config.configs.MuisConfig;
-
 public class Main {
 	
 	public static void main(String[] args) {
@@ -22,13 +24,21 @@ public class Main {
 			return;
 		}
 		
+		AbstractConfig config = null;
+		
 		try {
-			if (!new File(args[0]).isFile()) {
-				System.err.println("File not found: " + args[0]);
+			final File file = new File(args[0]);
+			
+			if (!file.isFile()) {
+				System.err.println(String.format("File not found: %s", args[0]));
 				return;
 			}
 			
-			AbstractConfig config = null;
+			if (!file.getName().endsWith(".json")) {
+				System.err.println(String.format("The configuration file '%s' must be a .json file. ", args[0]));
+				return;
+			}
+			
 			JSONTokener jsonTokener = new JSONTokener(new FileReader(new File(args[0])));
 			JSONObject jsonConfig = new JSONObject(jsonTokener);
 			EmulationMode mode = EmulationMode.valueOf(jsonConfig.getString(ConfigNames.EMULATION_MODE.toString()));
@@ -46,17 +56,26 @@ public class Main {
 				case MEDIUS_PROXY_SERVER:
 					config = new MpsConfig(jsonConfig);
 					break;
-				
+				case DME_SERVER:
+					config = new DmeConfig(jsonConfig);
+					break;
 				default:
 					System.err.println(String.format("Invalid 'emulation_mode' provided in the config file %s", args[0]));
-					break;
+					return;
 			}
-
-			new Clank(config);
 			
-		} catch (Throwable e) {
-			e.printStackTrace();
+		} catch (JSONException e) {
+			System.err.println(String.format("Failed to start server, failed to parse JSON config error: %s", e.getMessage()));
+			return;
+		} catch (FileNotFoundException e) {
+			System.err.println(String.format("File not found: %s", args[0]));
+			return;
+		} catch (Throwable t) {
+			// Invalid config values or something else when loading the config
+			t.printStackTrace();
+			return;
 		}
 		
+		new Clank(config);
 	}
 }
