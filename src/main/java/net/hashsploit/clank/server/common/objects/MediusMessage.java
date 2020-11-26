@@ -7,52 +7,59 @@ import java.util.logging.Logger;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.utils.Utils;
 
-public class MediusPacket {
+public class MediusMessage {
 
 	private MediusMessageType packetType;
 	private byte[] data;
-	private static final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger(MediusMessage.class.getName());
 
-	public MediusPacket(byte[] incomingData) {
+	public MediusMessage(byte[] incomingData) {
 		// Get medius packet type
-	    short testingShortVal = Utils.bytesToShortLittle(incomingData[0], incomingData[1]);
+		short testingShortVal = Utils.bytesToShortLittle(incomingData[0], incomingData[1]);
 
-	    // TODO: Make this not O(n)
+		// TODO: Make this not O(n)
 		for (MediusMessageType p : MediusMessageType.values()) {
 			if (p.getShort() == testingShortVal) {
 				packetType = p;
 				break;
 			}
-		}	
-		data = Arrays.copyOfRange(incomingData,2,incomingData.length);
+		}
+		data = Arrays.copyOfRange(incomingData, 2, incomingData.length);
 	}
-	
-	public MediusPacket(MediusMessageType type, byte[] data) {
+
+	public MediusMessage(MediusMessageType type, byte[] data) {
 		// Get medius packet type
-	    this.packetType = type;
-	    this.data = data;
+		this.packetType = type;
+		this.data = data;
 	}
-	
-	public MediusPacket(MediusMessageType type) {
-	    this.packetType = type;
+
+	public MediusMessage(MediusMessageType type) {
+		this.packetType = type;
 	}
-	
+
 	public byte[] getPayload() {
 		return data;
 	}
-	
+
 	public MediusMessageType getMediusPacketType() {
 		return packetType;
 	}
-	
+
 	public byte[] toBytes() {
-		ByteBuffer bb = ByteBuffer.allocate(2+getPayload().length);
+		ByteBuffer bb = ByteBuffer.allocate(2 + getPayload().length);
 		bb.put(packetType.getShortByte());
 		bb.put(getPayload());
 		bb.flip();
 		return bb.array();
 	}
+	
+	public String getDebugString() {
+		return null;
+	}
+	
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 
-	
-	
 }

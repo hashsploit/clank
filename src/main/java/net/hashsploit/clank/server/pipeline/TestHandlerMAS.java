@@ -9,11 +9,11 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hashsploit.clank.server.DataPacket;
+import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -77,9 +77,9 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		}
 
 		// Get RT Packet ID
-		RTPacketId rtid = null;
+		RTMessageId rtid = null;
 		
-		for (RTPacketId p : RTPacketId.values()) {
+		for (RTMessageId p : RTMessageId.values()) {
 			if (p.getValue() == data[0]) {
 				rtid = p;
 				break;
@@ -89,9 +89,9 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<DataPacket> packets = Utils.decodeRTMessageFrames(data);
+		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
 
-		for (DataPacket packet: packets) {
+		for (RTMessage packet: packets) {
 			//DataPacket packet = new DataPacket(rtid, Arrays.copyOfRange(data, 3, data.length));
 			logger.finest("RAW: " + Utils.bytesToString(packet.toBytes()));
 
@@ -107,12 +107,12 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 
     }
     
-    private void checkMediusPackets(ChannelHandlerContext ctx, DataPacket packet) {
+    private void checkMediusPackets(ChannelHandlerContext ctx, RTMessage packet) {
 	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
-    	MediusPacket mm = null;
+    	MediusMessage mm = null;
 	    if (packet.getId().toString().contains("APP")) {
 	    	
-	    	MediusPacket incomingMessage = new MediusPacket(packet.getPayload());
+	    	MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
 
 			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
@@ -124,7 +124,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		    mediusPacket.read(incomingMessage);
 		    mm = mediusPacket.write(client);	    
 		    if (mm != null) {
-		    	DataPacket responsepacket = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
+		    	RTMessage responsepacket = new RTMessage(RTMessageId.SERVER_APP, mm.toBytes());
 	
 				byte[] finalPayload = responsepacket.toBytes();
 				logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
@@ -135,14 +135,14 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 	    }
     }
     
-    private void checkRTConnect(ChannelHandlerContext ctx, DataPacket packet) {
+    private void checkRTConnect(ChannelHandlerContext ctx, RTMessage packet) {
 		if (packet.getId().getValue() == (byte) 0x00) {
 			// =============================================
 			// CLIENT_CONNECT_TCP (0x00)
 			// =============================================
 			String clientIP = client.getIPAddress().substring(1);
 			logger.fine(clientIP);
-			RTPacketId resultrtid = RTPacketId.SERVER_CONNECT_ACCEPT_TCP;
+			RTMessageId resultrtid = RTMessageId.SERVER_CONNECT_ACCEPT_TCP;
 			
 			byte[] header = hexStringToByteArray("01081000000100");
 			byte[] ipAddr = clientIP.getBytes();
@@ -163,7 +163,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			
 			logger.fine("Payload: " + bytesToHex(payload));
 			
-			DataPacket dataPacket = new DataPacket(resultrtid, payload);
+			RTMessage dataPacket = new RTMessage(resultrtid, payload);
 			byte[] dataPacketBuffer = dataPacket.toBytes();
 			
 			byte[] extraPacket = hexStringToByteArray("1A02000100");

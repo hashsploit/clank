@@ -9,13 +9,13 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.DataPacket;
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.RTMessage;
+import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
@@ -32,7 +32,7 @@ public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 		super(MediusMessageType.SetLobbyWorldFilter,MediusMessageType.SetLobbyWorldFilterResponse);
 	}
 	
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		// Process the packet
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
@@ -46,7 +46,7 @@ public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
@@ -65,7 +65,7 @@ public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new MediusPacket(responseType, outputStream.toByteArray());
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 }

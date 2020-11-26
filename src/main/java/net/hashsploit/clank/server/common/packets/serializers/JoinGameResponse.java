@@ -9,7 +9,7 @@ import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.GameHostType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.NetAddress;
 import net.hashsploit.clank.server.common.objects.NetAddressList;
 import net.hashsploit.clank.server.common.objects.NetAddressType;
@@ -17,7 +17,7 @@ import net.hashsploit.clank.server.common.objects.NetConnectionInfo;
 import net.hashsploit.clank.server.common.objects.NetConnectionType;
 import net.hashsploit.clank.utils.Utils;
 
-public class JoinGameResponse extends MediusPacket {
+public class JoinGameResponse extends MediusMessage {
 
 	private byte[] messageID;
 	private byte[] callbackStatus;

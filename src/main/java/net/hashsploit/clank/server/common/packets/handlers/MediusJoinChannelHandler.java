@@ -10,7 +10,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.NetAddressType;
 import net.hashsploit.clank.server.common.objects.NetConnectionType;
 import net.hashsploit.clank.utils.Utils;
@@ -28,7 +28,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
 		buf.get(messageId);
@@ -39,7 +39,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 		// RESPONSE
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -117,7 +117,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 //			e.printStackTrace();
 //		}
 
-		return new MediusPacket(responseType, outputStream.toByteArray());
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 }

@@ -5,7 +5,7 @@ import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.GameWorldPlayerListRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameWorldPlayerListResponse;
 import net.hashsploit.clank.utils.Utils;
@@ -20,13 +20,13 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     }
     
     @Override
-    public void read(MediusPacket mm) {
+    public void read(MediusMessage mm) {
 		reqPacket = new GameWorldPlayerListRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
     }
     
     @Override
-    public MediusPacket write(MediusClient client) {
+    public MediusMessage write(MediusClient client) {
     	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
     	byte[] accountID = Utils.intToBytesLittle(5);
     	byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());

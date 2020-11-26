@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.handlers;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.AccountRegistrationRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountRegistrationResponse;
 import net.hashsploit.clank.server.common.packets.serializers.LadderPositionRequest;
@@ -21,7 +21,7 @@ public class MediusLadderPositionHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		reqPacket = new LadderPositionRequest(mm.getPayload());
 		
 		
@@ -29,7 +29,7 @@ public class MediusLadderPositionHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 		
 		respPacket = new LadderPositionResponse(messageId);
 		

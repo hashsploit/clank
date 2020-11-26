@@ -4,7 +4,7 @@ package net.hashsploit.clank.server;
  * The SCE-RT (RTIME) packet id's.
  * All encrypted packets have +0x80 added to their id value.
  */
-public enum RTPacketId {
+public enum RTMessageId {
 	
 	/**
 	 * Client-bound connect request packet.
@@ -125,7 +125,7 @@ public enum RTPacketId {
 	
 	private final byte id;
 	
-	private RTPacketId(int id) {
+	private RTMessageId(int id) {
 		this.id = (byte) id;
 	}
 	

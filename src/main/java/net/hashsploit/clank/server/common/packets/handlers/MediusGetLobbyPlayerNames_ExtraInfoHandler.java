@@ -9,12 +9,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.DataPacket;
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.RTMessage;
+import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusPlayerOnlineState;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
@@ -29,7 +29,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 		super(MediusMessageType.GetLobbyPlayerNames_ExtraInfo, MediusMessageType.GetLobbyPlayerNames_ExtraInfoResponse);
 	}
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 
 		buf.get(messageID);
@@ -38,7 +38,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 	}
 	
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 		// RESPONSE
 		
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
@@ -79,7 +79,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 			e.printStackTrace();
 		}
 
-		return new MediusPacket(responseType, outputStream.toByteArray());
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 	
 

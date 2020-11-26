@@ -7,10 +7,10 @@ import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusClanInvitationResponseStatus;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
-public class CheckMyClanInvitationsResponse extends MediusPacket {
+public class CheckMyClanInvitationsResponse extends MediusMessage {
 
 	private byte[] messageId;
 	private MediusCallbackStatus callbackStatus;

@@ -18,8 +18,8 @@ import java.util.stream.Collectors;
 import javax.net.ssl.HttpsURLConnection;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.DataPacket;
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.RTMessage;
+import net.hashsploit.clank.server.RTMessageId;
 
 public class Utils {
 
@@ -42,8 +42,8 @@ public class Utils {
 		return result;
 	}
 
-	public static List<DataPacket> decodeRTMessageFrames(byte[] data) {
-		final List<DataPacket> packets = new ArrayList<DataPacket>();
+	public static List<RTMessage> decodeRTMessageFrames(byte[] data) {
+		final List<RTMessage> packets = new ArrayList<RTMessage>();
 
 		int index = 0;
 
@@ -70,16 +70,16 @@ public class Utils {
 				// logger.warning("PLAIN DATA PACKET");
 				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
 
-				RTPacketId rtid = null;
+				RTMessageId rtid = null;
 
-				for (RTPacketId p : RTPacketId.values()) {
+				for (RTMessageId p : RTMessageId.values()) {
 					if (p.getValue() == id) {
 						rtid = p;
 						break;
 					}
 				}
 
-				packets.add(new DataPacket(rtid, finalData));
+				packets.add(new RTMessage(rtid, finalData));
 
 				index += length + 3;
 			}
@@ -252,6 +252,10 @@ public class Utils {
 		return false;
 	}
 	
+	/**
+	 * Get the server's current public IP Address.
+	 * @return
+	 */
 	public static String getPublicIpAddress() {
 
 		// Cache the IP for a little while.
@@ -282,6 +286,98 @@ public class Utils {
 		}
 		
 		return null;
+	}
+	
+	/**
+	 * Generate a pretty Key-Value pair table to display packet disassembly.
+	 *  
+	 * @param title
+	 * @param keys
+	 * @param values
+	 * @return
+	 */
+	public static String generateDebugPacketString(String title, String[] keys, String[] values) {
+		final StringBuilder sb = new StringBuilder();
+		final String cornerSeparator = "+";
+		final String horizSeparator = "-";
+		final String vertSeparator = "|";
+		
+		int maxKeyLength = 0;
+		int maxValueLength = 0;
+		
+		for (final String k : keys) {
+			if (k.length() > maxKeyLength) {
+				maxKeyLength = k.length() + 1;
+			}
+		}
+		
+		for (final String v : values) {
+			if (v.length() > maxValueLength) {
+				maxValueLength = v.length() + 1;
+			}
+		}
+		
+		sb.append("PACKET DISASSEMBLY: ").append(title).append("\n");
+		
+		sb.append(cornerSeparator);
+		for (int i=0; i<maxKeyLength+1; i++) {
+			sb.append(horizSeparator);
+		}
+		sb.append(cornerSeparator);
+		for (int i=0; i<maxValueLength+1; i++) {
+			sb.append(horizSeparator);
+		}
+		sb.append(cornerSeparator).append("\n");
+		
+		sb.append(vertSeparator).append(" ").append("Key");
+		for (int i=0; i<maxKeyLength - 3; i++) {
+			sb.append(" ");
+		}
+		sb.append(vertSeparator).append(" ").append("Value");
+		for (int i=0; i<maxValueLength - 5; i++) {
+			sb.append(" ");
+		}
+		sb.append(vertSeparator).append("\n");
+		
+		sb.append(cornerSeparator);
+		for (int i=0; i<maxKeyLength+1; i++) {
+			sb.append(horizSeparator);
+		}
+		sb.append(cornerSeparator);
+		for (int i=0; i<maxValueLength+1; i++) {
+			sb.append(horizSeparator);
+		}
+		sb.append(cornerSeparator).append("\n");
+		
+		for (int i=0; i<keys.length; i++) {
+			final String key = keys[i];
+			final String value = values[i];
+			sb.append(vertSeparator).append(" ").append(key);
+			
+			for (int j=0; j<maxKeyLength - key.length(); j++) {
+				sb.append(" ");
+			}
+			
+			sb.append(vertSeparator).append(" ").append(value);
+			
+			for (int j=0; j<maxValueLength - value.length(); j++) {
+				sb.append(" ");
+			}
+			
+			sb.append(vertSeparator).append("\n");
+		}
+		
+		sb.append(cornerSeparator);
+		for (int i=0; i<maxKeyLength+1; i++) {
+			sb.append(horizSeparator);
+		}
+		sb.append(cornerSeparator);
+		for (int i=0; i<maxValueLength+1; i++) {
+			sb.append(horizSeparator);
+		}
+		sb.append(cornerSeparator).append("\n");
+		
+		return sb.toString();
 	}
 
 }

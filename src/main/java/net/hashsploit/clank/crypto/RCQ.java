@@ -2,7 +2,7 @@ package net.hashsploit.clank.crypto;
 
 import java.nio.ByteBuffer;
 
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.utils.Utils;
 
 /**

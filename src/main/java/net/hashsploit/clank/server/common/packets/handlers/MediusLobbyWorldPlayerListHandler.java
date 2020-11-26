@@ -6,7 +6,7 @@ import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusConnectionType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.packets.serializers.LobbyWorldPlayerListRequest;
 import net.hashsploit.clank.server.common.packets.serializers.LobbyWorldPlayerListResponse;
@@ -21,13 +21,13 @@ public class MediusLobbyWorldPlayerListHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		reqPacket = new LobbyWorldPlayerListRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 	
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		MediusPlayerStatus playerStatus = MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD;

@@ -1,15 +1,14 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
 import java.util.Random;
-import java.util.logging.Level;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginResponse;
 import net.hashsploit.clank.utils.Utils;
@@ -24,13 +23,13 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		reqPacket = new AccountLoginRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.LOGIN_FAILED.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
@@ -61,15 +60,15 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		byte[] worldID = Utils.intToBytesLittle(123);
 		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress() : null;
 		String natIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getNatAddress() : null;
-		
+
 		if (mlsIpAddress == null) {
 			mlsIpAddress = Utils.getPublicIpAddress();
 		}
-		
+
 		if (natIpAddress == null) {
 			mlsIpAddress = Utils.getPublicIpAddress();
 		}
-		
+
 		byte[] mlsAddress = mlsIpAddress.getBytes();
 		int mlsNumZeros = 16 - mlsIpAddress.length();
 		String mlsZeroString = new String(new char[mlsNumZeros]).replace("\0", "00");

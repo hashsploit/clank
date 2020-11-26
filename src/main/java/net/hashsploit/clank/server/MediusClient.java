@@ -2,6 +2,8 @@ package net.hashsploit.clank.server;
 
 import java.util.logging.Logger;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
@@ -9,7 +11,6 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
-import net.hashsploit.clank.utils.Utils;
 
 public class MediusClient implements IClient {
 
@@ -171,15 +172,25 @@ public class MediusClient implements IClient {
 	 * @param data
 	 */
 	public void sendRaw(byte[] data) {
-		socketChannel.writeAndFlush(data).awaitUninterruptibly();
+		ByteBuf msg = Unpooled.copiedBuffer(data);
+		socketChannel.pipeline().write(msg);
+		socketChannel.pipeline().flush();
 		txPacketCount++;
+	}
+	
+	/**
+	 * Send a data packet to the client.
+	 * 
+	 * @param msg
+	 */
+	public void sendMessage(RTMessage msg) {
+		sendRaw(msg.toBytes());
 	}
 
 	/**
 	 * Disconnect this client.
 	 */
 	public void disconnect() {
-		
 		socketChannel.flush();
 		socketChannel.disconnect();
 		socketChannel.close();
@@ -191,25 +202,6 @@ public class MediusClient implements IClient {
 	private void onDisconnect() {
 		logger.info("Client disconnect: " + socketChannel.remoteAddress());
 		server.removeClient(this);
-	}
-
-	/**
-	 * Send a data packet to the client.
-	 * 
-	 * @param msg
-	 */
-	public void sendMessage(DataPacket msg) {
-		if (msg instanceof EncryptedDataPacket) {
-
-			// TODO: handle encryption
-			// final EncryptedDataPacket edp = (EncryptedDataPacket) msg;
-
-		} else {
-			final DataPacket pdp = (DataPacket) msg;
-			final byte[] data = pdp.toBytes();
-			logger.fine("Sending: " + Utils.bytesToString(data));
-			sendRaw(data);
-		}
 	}
 
 }

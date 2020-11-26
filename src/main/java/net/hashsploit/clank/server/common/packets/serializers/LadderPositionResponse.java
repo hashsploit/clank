@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
-public class LadderPositionResponse extends MediusPacket {
+public class LadderPositionResponse extends MediusMessage {
 	
 	private final byte[] messageId;
 

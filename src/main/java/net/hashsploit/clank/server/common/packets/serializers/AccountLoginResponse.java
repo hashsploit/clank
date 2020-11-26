@@ -6,10 +6,10 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
-public class AccountLoginResponse extends MediusPacket {
+public class AccountLoginResponse extends MediusMessage {
 
 	private byte[] messageID;
 	private byte[] callbackStatus;

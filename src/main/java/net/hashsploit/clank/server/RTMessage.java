@@ -7,10 +7,10 @@ import java.util.logging.Logger;
 
 import net.hashsploit.clank.utils.Utils;
 
-public class DataPacket implements ISCERTMessage {
+public class RTMessage implements IRTMessage {
 	private static final Logger logger = Logger.getLogger("");
 
-	private final RTPacketId id;
+	private final RTMessageId id;
 	private final short length;
 	private final byte[] payload;
 	
@@ -20,7 +20,7 @@ public class DataPacket implements ISCERTMessage {
 	 * @param checksum
 	 * @param payload
 	 */
-	public DataPacket(RTPacketId id, byte[] payload) {
+	public RTMessage(RTMessageId id, byte[] payload) {
 		this.id = id;
 		this.length = (short) payload.length;
 	    // Remove RT-ID and length from the packet data
@@ -31,7 +31,7 @@ public class DataPacket implements ISCERTMessage {
 	 * Get the packet id.
 	 * @return
 	 */
-	public RTPacketId getId() {
+	public RTMessageId getId() {
 		return id;
 	}
 	

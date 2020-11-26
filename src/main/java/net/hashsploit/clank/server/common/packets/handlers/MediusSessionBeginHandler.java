@@ -9,7 +9,7 @@ import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusSessionBeginHandler extends MediusPacketHandler {
@@ -22,7 +22,7 @@ public class MediusSessionBeginHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
 		buf.get(3);// buffer
@@ -34,7 +34,7 @@ public class MediusSessionBeginHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
@@ -52,7 +52,7 @@ public class MediusSessionBeginHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 	
-		return new MediusPacket(responseType, outputStream.toByteArray());
+		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
 

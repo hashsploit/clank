@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.handlers;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.AccountRegistrationRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountRegistrationResponse;
 
@@ -19,7 +19,7 @@ public class MediusAccountRegistrationHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		reqPacket = new AccountRegistrationRequest(mm.getPayload());
 		
 		
@@ -27,7 +27,7 @@ public class MediusAccountRegistrationHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 		
 		respPacket = new AccountRegistrationResponse(messageId);
 		

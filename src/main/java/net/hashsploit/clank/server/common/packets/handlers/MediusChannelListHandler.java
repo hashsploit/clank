@@ -4,7 +4,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.ChannelListRequest;
 import net.hashsploit.clank.server.common.packets.serializers.ChannelListResponse;
 
@@ -18,13 +18,13 @@ public class MediusChannelListHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public void read(MediusPacket mm) {
+	public void read(MediusMessage mm) {
 		reqPacket = new ChannelListRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
 	}
 	
 	@Override
-	public MediusPacket write(MediusClient client) {
+	public MediusMessage write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		int mediusWorldId = 1;

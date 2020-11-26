@@ -1,12 +1,12 @@
 package net.hashsploit.clank.server;
 
-public interface ISCERTMessage {
+public interface IRTMessage {
 	
 	/**
 	 * Get the SCE-RT/RTIME packet ID.
 	 * @return
 	 */
-	public RTPacketId getId();
+	public RTMessageId getId();
 	
 	/**
 	 * Get the data length.

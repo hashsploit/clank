@@ -17,11 +17,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.DatagramPacket;
-import net.hashsploit.clank.server.DataPacket;
+import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.server.scert.SCERTConstants;
@@ -102,7 +102,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
     		buffer.put(ad);
     		buffer.put(Utils.shortToBytesLittle((short) port));
     		
-    		DataPacket packetResponse = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
+    		RTMessage packetResponse = new RTMessage(RTMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
 			byte[] payload = packetResponse.toBytes();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 	        ctx.writeAndFlush(new DatagramPacket(
@@ -110,7 +110,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
     	}
     }
     
-    private void processSinglePacket(ChannelHandlerContext ctx, DataPacket packet) {
+    private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
 		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
 		
 	    logger.fine("Packet ID: " + packet.getId().toString());
@@ -126,10 +126,10 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
     }
     
 	
-	public void checkEcho(ChannelHandlerContext ctx, DataPacket packet) {
-			 if (packet.getId() == RTPacketId.CLIENT_ECHO) {
+	public void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
+			 if (packet.getId() == RTMessageId.CLIENT_ECHO) {
 				// Combine RT id and len
-				DataPacket packetResponse = new DataPacket(RTPacketId.CLIENT_ECHO, packet.getPayload());
+				RTMessage packetResponse = new RTMessage(RTMessageId.CLIENT_ECHO, packet.getPayload());
 				byte[] payload = packetResponse.toBytes();
 				logger.fine("Final payload: " + Utils.bytesToHex(payload));
 				ByteBuf msg = Unpooled.copiedBuffer(payload);

@@ -4,10 +4,10 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
-public class ClearGameListFilterZeroRequest extends MediusPacket {
+public class ClearGameListFilterZeroRequest extends MediusMessage {
 
 	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	

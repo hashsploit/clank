@@ -7,11 +7,11 @@ import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusConnectionType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
-public class LobbyWorldPlayerListResponse extends MediusPacket {
+public class LobbyWorldPlayerListResponse extends MediusMessage {
 
 	private byte[] messageId;
 	private MediusCallbackStatus callbackStatus;

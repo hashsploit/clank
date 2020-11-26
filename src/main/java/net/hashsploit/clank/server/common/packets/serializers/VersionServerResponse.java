@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
-public class VersionServerResponse extends MediusPacket {
+public class VersionServerResponse extends MediusMessage {
 
 	private byte[] messageId;
 	private String serverVersion;

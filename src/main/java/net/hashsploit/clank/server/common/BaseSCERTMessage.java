@@ -3,10 +3,10 @@ package net.hashsploit.clank.server.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.hashsploit.clank.server.ISCERTMessage;
+import net.hashsploit.clank.server.IRTMessage;
 import net.hashsploit.clank.utils.Utils;
 
-public abstract class BaseSCERTMessage implements ISCERTMessage {
+public abstract class BaseSCERTMessage implements IRTMessage {
 	
 	public static final int HEADER_SIZE = 3;
 	public static final int CHECKSUM_SIZE = 4;

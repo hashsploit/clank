@@ -6,7 +6,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.ChatMessageRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
@@ -23,13 +23,13 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
     }
     
     @Override
-    public void read(MediusPacket mm) {
+    public void read(MediusMessage mm) {
 		reqPacket = new ChatMessageRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
     }
     
     @Override
-    public MediusPacket write(MediusClient client) { 
+    public MediusMessage write(MediusClient client) { 
     	// TODO: Send to other clients
     	return null;
     }

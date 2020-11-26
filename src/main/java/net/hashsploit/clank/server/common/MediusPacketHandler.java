@@ -6,9 +6,9 @@ import java.util.logging.Logger;
 
 import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.common.objects.MediusPacket;
-import net.hashsploit.clank.server.DataPacket;
-import net.hashsploit.clank.server.ISCERTMessage;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
+import net.hashsploit.clank.server.RTMessage;
+import net.hashsploit.clank.server.IRTMessage;
 
 public abstract class MediusPacketHandler {
 	
@@ -27,11 +27,11 @@ public abstract class MediusPacketHandler {
     }
     
     
-    public void read(MediusPacket mm) {
+    public void read(MediusMessage mm) {
     	
     }
     
-    public MediusPacket write(MediusClient client) {
+    public MediusMessage write(MediusClient client) {
     	return null;
     }
     
