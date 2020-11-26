@@ -14,7 +14,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -27,7 +27,7 @@ public class MediusGetMyClanMessagesHandler extends MediusPacketHandler {
 	private byte[] pageSize= new byte[4];    
     
 	public MediusGetMyClanMessagesHandler() {
-        super(MediusPacketType.GetMyClanMessages,MediusPacketType.GetMyClanMessagesResponse);
+        super(MediusMessageType.GetMyClanMessages,MediusMessageType.GetMyClanMessagesResponse);
     }
     
     @Override

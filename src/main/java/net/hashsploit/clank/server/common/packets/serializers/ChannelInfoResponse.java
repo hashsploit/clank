@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -18,7 +18,7 @@ public class ChannelInfoResponse extends MediusPacket {
 	private byte[] maxPlayers;
 	
 	public ChannelInfoResponse(byte[] messageID, byte[] callbackStatus, byte[] lobbyName, byte[] activePlayerCount, byte[] maxPlayers) {
-		super(MediusPacketType.ChannelInfoResponse);
+		super(MediusMessageType.ChannelInfoResponse);
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;
 		this.lobbyName = lobbyName;

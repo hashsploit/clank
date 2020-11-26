@@ -4,7 +4,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusConnectionType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
@@ -17,7 +17,7 @@ public class MediusLobbyWorldPlayerListHandler extends MediusPacketHandler {
 	private LobbyWorldPlayerListResponse respPacket;
 	
 	public MediusLobbyWorldPlayerListHandler() {
-		super(MediusPacketType.AccountLogin, MediusPacketType.AccountLoginResponse);
+		super(MediusMessageType.AccountLogin, MediusMessageType.AccountLoginResponse);
 	}
 	
 	@Override

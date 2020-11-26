@@ -9,7 +9,7 @@ import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.objects.NetAddressType;
 import net.hashsploit.clank.server.common.objects.NetConnectionType;
@@ -24,7 +24,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 	byte[] lobbyChannelPassword = new byte[MediusConstants.LOBBYPASSWORD_MAXLEN.getValue()];
 
 	public MediusJoinChannelHandler() {
-		super(MediusPacketType.JoinChannel, MediusPacketType.JoinChannelResponse);
+		super(MediusMessageType.JoinChannel, MediusMessageType.JoinChannelResponse);
 	}
 
 	@Override

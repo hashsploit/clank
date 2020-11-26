@@ -3,7 +3,7 @@ package net.hashsploit.clank.utils;
 import java.util.HashMap;
 
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLoginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLogoutHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountRegistrationHandler;
@@ -55,77 +55,77 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusUpdateUserState
 import net.hashsploit.clank.server.common.packets.handlers.MediusVersionServerHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusWorldReportZeroHandler;
 
-public class MediusPacketMapInitializer {
+public class MediusMessageMapInitializer {
 	
-	public static final HashMap<MediusPacketType, MediusPacketHandler> getMap() {
-		HashMap<MediusPacketType, MediusPacketHandler> mp = new HashMap<MediusPacketType, MediusPacketHandler>();
+	public static final HashMap<MediusMessageType, MediusPacketHandler> getMap() {
+		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
 		
-		mp.put(MediusPacketType.AccountLogout, new MediusAccountLogoutHandler());
-		mp.put(MediusPacketType.SessionEnd, new MediusSessionEndHandler());
+		mp.put(MediusMessageType.AccountLogout, new MediusAccountLogoutHandler());
+		mp.put(MediusMessageType.SessionEnd, new MediusSessionEndHandler());
 		
-		mp.put(MediusPacketType.UpdateUserState, new MediusUpdateUserStateHandler()); // WORKING
-		mp.put(MediusPacketType.GetMyClans, new MediusGetMyClansHandler()); // WORKING
-		mp.put(MediusPacketType.ChatToggle, new MediusChatToggleHandler()); // WORKING
-		mp.put(MediusPacketType.GetLadderStatsWide, new MediusGetLadderStatsWideHandler());
-		mp.put(MediusPacketType.AccountUpdateStats, new MediusAccountUpdateStatsHandler());
-		mp.put(MediusPacketType.UpdateLadderStatsWide, new MediusUpdateLadderStatsWideHandler());
-		mp.put(MediusPacketType.PlayerInfo, new MediusPlayerInfoHandler());
-		mp.put(MediusPacketType.GetLocations, new MediusGetLocationsHandler()); // WORKING
-		mp.put(MediusPacketType.Policy, new MediusPolicyHandler()); // WORKING
-		mp.put(MediusPacketType.GetAllAnnouncements, new MediusGetAllAnnouncementsHandler()); // WORKING
-		mp.put(MediusPacketType.GetBuddyList_ExtraInfo, new MediusGetBuddyList_ExtraInfoHandler()); 
-		mp.put(MediusPacketType.GetMyClanMessages, new MediusGetMyClanMessagesHandler()); // WORKING
-		mp.put(MediusPacketType.ClearGameListFilter0, new MediusClearGameListFilterZeroHandler()); // not sure if working...
-		mp.put(MediusPacketType.SetGameListFilter0, new MediusSetGameListFilterZeroHandler()); // not sure if working...
-		mp.put(MediusPacketType.SetLobbyWorldFilter, new MediusSetLobbyWorldFilterHandler()); 
+		mp.put(MediusMessageType.UpdateUserState, new MediusUpdateUserStateHandler()); // WORKING
+		mp.put(MediusMessageType.GetMyClans, new MediusGetMyClansHandler()); // WORKING
+		mp.put(MediusMessageType.ChatToggle, new MediusChatToggleHandler()); // WORKING
+		mp.put(MediusMessageType.GetLadderStatsWide, new MediusGetLadderStatsWideHandler());
+		mp.put(MediusMessageType.AccountUpdateStats, new MediusAccountUpdateStatsHandler());
+		mp.put(MediusMessageType.UpdateLadderStatsWide, new MediusUpdateLadderStatsWideHandler());
+		mp.put(MediusMessageType.PlayerInfo, new MediusPlayerInfoHandler());
+		mp.put(MediusMessageType.GetLocations, new MediusGetLocationsHandler()); // WORKING
+		mp.put(MediusMessageType.Policy, new MediusPolicyHandler()); // WORKING
+		mp.put(MediusMessageType.GetAllAnnouncements, new MediusGetAllAnnouncementsHandler()); // WORKING
+		mp.put(MediusMessageType.GetBuddyList_ExtraInfo, new MediusGetBuddyList_ExtraInfoHandler()); 
+		mp.put(MediusMessageType.GetMyClanMessages, new MediusGetMyClanMessagesHandler()); // WORKING
+		mp.put(MediusMessageType.ClearGameListFilter0, new MediusClearGameListFilterZeroHandler()); // not sure if working...
+		mp.put(MediusMessageType.SetGameListFilter0, new MediusSetGameListFilterZeroHandler()); // not sure if working...
+		mp.put(MediusMessageType.SetLobbyWorldFilter, new MediusSetLobbyWorldFilterHandler()); 
 		
-		mp.put(MediusPacketType.GameList_ExtraInfo0, new MediusGameList_ExtraInfoZeroHandler()); // not working
+		mp.put(MediusMessageType.GameList_ExtraInfo0, new MediusGameList_ExtraInfoZeroHandler()); // not working
 		
-		mp.put(MediusPacketType.ChannelList_ExtraInfo1, new MediusChannelList_ExtraInfoOneHandler());  // hard coded
+		mp.put(MediusMessageType.ChannelList_ExtraInfo1, new MediusChannelList_ExtraInfoOneHandler());  // hard coded
 
-		mp.put(MediusPacketType.JoinChannel, new MediusJoinChannelHandler());  // vvvv
-		mp.put(MediusPacketType.ChannelInfo, new MediusChannelInfoHandler());  // vvvv
-		mp.put(MediusPacketType.GetLobbyPlayerNames_ExtraInfo, new MediusGetLobbyPlayerNames_ExtraInfoHandler());  // vvvv
+		mp.put(MediusMessageType.JoinChannel, new MediusJoinChannelHandler());  // vvvv
+		mp.put(MediusMessageType.ChannelInfo, new MediusChannelInfoHandler());  // vvvv
+		mp.put(MediusMessageType.GetLobbyPlayerNames_ExtraInfo, new MediusGetLobbyPlayerNames_ExtraInfoHandler());  // vvvv
 	
 		// Creating games
-		mp.put(MediusPacketType.CreateGame1, new MediusCreateGameOneHandler());
-		mp.put(MediusPacketType.JoinGame, new MediusJoinGameHandler());
-		mp.put(MediusPacketType.PlayerReport, new MediusPlayerReportHandler());
-		mp.put(MediusPacketType.WorldReport0, new MediusWorldReportZeroHandler());
-		mp.put(MediusPacketType.GameInfo0, new MediusGameInfoZeroHandler());
-		mp.put(MediusPacketType.EndGameReport, new MediusEndGameReportHandler());
-		mp.put(MediusPacketType.GameWorldPlayerList, new MediusGameWorldPlayerListHandler());
+		mp.put(MediusMessageType.CreateGame1, new MediusCreateGameOneHandler());
+		mp.put(MediusMessageType.JoinGame, new MediusJoinGameHandler());
+		mp.put(MediusMessageType.PlayerReport, new MediusPlayerReportHandler());
+		mp.put(MediusMessageType.WorldReport0, new MediusWorldReportZeroHandler());
+		mp.put(MediusMessageType.GameInfo0, new MediusGameInfoZeroHandler());
+		mp.put(MediusMessageType.EndGameReport, new MediusEndGameReportHandler());
+		mp.put(MediusMessageType.GameWorldPlayerList, new MediusGameWorldPlayerListHandler());
 		
 		// Chat
-		mp.put(MediusPacketType.TextFilter,  new MediusTextFilterHandler());
-		mp.put(MediusPacketType.ChatMessage, new MediusChatMessageHandler());
+		mp.put(MediusMessageType.TextFilter,  new MediusTextFilterHandler());
+		mp.put(MediusMessageType.ChatMessage, new MediusChatMessageHandler());
 		
 		// Inspecting player profile
-		mp.put(MediusPacketType.GetIgnoreList, new MediusGetIgnoreListHandler());
-		mp.put(MediusPacketType.GetClanInvitationsSent, new MediusGetClanInvitationsSentHandler());
-		mp.put(MediusPacketType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
+		mp.put(MediusMessageType.GetIgnoreList, new MediusGetIgnoreListHandler());
+		mp.put(MediusMessageType.GetClanInvitationsSent, new MediusGetClanInvitationsSentHandler());
+		mp.put(MediusMessageType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
 	
 		// MAS stuff
-		mp.put(MediusPacketType.SessionBegin, new MediusSessionBeginHandler());
-		mp.put(MediusPacketType.DnasSignaturePost, new MediusDnasSignaturePostHandler());
-		mp.put(MediusPacketType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
-		mp.put(MediusPacketType.AccountLogin, new MediusAccountLoginHandler());
+		mp.put(MediusMessageType.SessionBegin, new MediusSessionBeginHandler());
+		mp.put(MediusMessageType.DnasSignaturePost, new MediusDnasSignaturePostHandler());
+		mp.put(MediusMessageType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
+		mp.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
 		
 		// added for Amplitude
-		mp.put(MediusPacketType.AccountRegistration, new MediusAccountRegistrationHandler());
-		mp.put(MediusPacketType.LadderPosition, new MediusLadderPositionHandler());
-		mp.put(MediusPacketType.GetAnnouncements, new MediusGetAnnouncementsHandler());
-		mp.put(MediusPacketType.GameList, new MediusGameListHandler());
-		mp.put(MediusPacketType.LobbyWorldPlayerList, new MediusLobbyWorldPlayerListHandler());
-		mp.put(MediusPacketType.ChannelList, new MediusChannelListHandler());
+		mp.put(MediusMessageType.AccountRegistration, new MediusAccountRegistrationHandler());
+		mp.put(MediusMessageType.LadderPosition, new MediusLadderPositionHandler());
+		mp.put(MediusMessageType.GetAnnouncements, new MediusGetAnnouncementsHandler());
+		mp.put(MediusMessageType.GameList, new MediusGameListHandler());
+		mp.put(MediusMessageType.LobbyWorldPlayerList, new MediusLobbyWorldPlayerListHandler());
+		mp.put(MediusMessageType.ChannelList, new MediusChannelListHandler());
 		
 		// added for Syphon Filter
-		mp.put(MediusPacketType.GetMyIP, new MediusGetMyIPHandler());
-		mp.put(MediusPacketType.VersionServer, new MediusVersionServerHandler());
-		mp.put(MediusPacketType.PickLocation, new MediusPickLocationHandler());
-		mp.put(MediusPacketType.FindWorldByName, new MediusFindWorldByNameHandler());
-		mp.put(MediusPacketType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
-		mp.put(MediusPacketType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
+		mp.put(MediusMessageType.GetMyIP, new MediusGetMyIPHandler());
+		mp.put(MediusMessageType.VersionServer, new MediusVersionServerHandler());
+		mp.put(MediusMessageType.PickLocation, new MediusPickLocationHandler());
+		mp.put(MediusMessageType.FindWorldByName, new MediusFindWorldByNameHandler());
+		mp.put(MediusMessageType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
+		mp.put(MediusMessageType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
 		
 		return mp;
 	}

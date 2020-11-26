@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -18,7 +18,7 @@ public class JoinGameRequest extends MediusPacket {
 	byte[] RSApubKey = new byte[10];
 	
 	public JoinGameRequest(byte[] data) {
-		super(MediusPacketType.JoinGame, data);
+		super(MediusMessageType.JoinGame, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 

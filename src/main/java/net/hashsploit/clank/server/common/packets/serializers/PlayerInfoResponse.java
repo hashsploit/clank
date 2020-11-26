@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -22,7 +22,7 @@ public class PlayerInfoResponse extends MediusPacket {
 	
 
 	public PlayerInfoResponse(byte[] messageID, byte[] callbackStatus, byte[] appID, byte[] accountName, byte[] playerStatus, byte[] connectionClass, byte[] stats) {
-		super(MediusPacketType.PlayerInfoResponse);
+		super(MediusMessageType.PlayerInfoResponse);
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;
 		this.appID = appID;

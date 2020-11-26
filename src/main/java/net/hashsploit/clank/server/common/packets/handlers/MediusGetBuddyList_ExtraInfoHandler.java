@@ -13,7 +13,7 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -22,7 +22,7 @@ public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacketHandler {
 	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 
 	public MediusGetBuddyList_ExtraInfoHandler() {
-		super(MediusPacketType.GetBuddyList_ExtraInfo, MediusPacketType.GetBuddyList_ExtraInfoResponse);
+		super(MediusMessageType.GetBuddyList_ExtraInfo, MediusMessageType.GetBuddyList_ExtraInfoResponse);
 	}
 	
 	@Override

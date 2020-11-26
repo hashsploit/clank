@@ -1,16 +1,27 @@
 package net.hashsploit.clank.server.common;
 
+import java.util.HashMap;
+
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.server.MediusClientChannelInitializer;
 import net.hashsploit.clank.server.TcpServer;
+import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 
+/**
+ * A generic Medius Server (TCP)
+ * 
+ * @author hashsploit
+ *
+ */
 public class MediusServer extends TcpServer {
 	
-	private final EmulationMode component;
+	private final EmulationMode emulationMode;
+	private final HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
 	
-	public MediusServer(final EmulationMode component, final String address, final int port, final int parentThreads, final int childThreads) {
+	public MediusServer(final EmulationMode emulationMode, final String address, final int port, final int parentThreads, final int childThreads) {
 		super(address, port, parentThreads, childThreads);
-		this.component = component;
+		this.emulationMode = emulationMode;
+		this.mediusMessageMap = MediusMessageMapInitializer.getMap();
 		
 		setChannelInitializer(new MediusClientChannelInitializer(this));
 	}
@@ -27,11 +38,15 @@ public class MediusServer extends TcpServer {
 	}
 	
 	/**
-	 * Get the server's component type.
+	 * Get the server's emulation mode type.
 	 * @return
 	 */
-	public EmulationMode getComponent() {
-		return component;
+	public EmulationMode getEmulationMode() {
+		return emulationMode;
+	}
+	
+	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
+		return mediusMessageMap;
 	}
 	
 }

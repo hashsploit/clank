@@ -7,7 +7,7 @@ import java.nio.ByteBuffer;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.GameHostType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.objects.NetAddress;
@@ -25,7 +25,7 @@ public class JoinGameResponse extends MediusPacket {
 	private NetConnectionInfo netConnectionInfo;
 
 	public JoinGameResponse(byte[] messageID, byte[]  callbackStatus, byte[] gameHostType, NetConnectionInfo netConnectionInfo) {
-		super(MediusPacketType.JoinGameResponse);
+		super(MediusMessageType.JoinGameResponse);
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;
 		this.gameHostType = gameHostType;

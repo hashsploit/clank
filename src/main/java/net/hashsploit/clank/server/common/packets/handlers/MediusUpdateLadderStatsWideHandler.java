@@ -13,7 +13,7 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -24,7 +24,7 @@ public class MediusUpdateLadderStatsWideHandler extends MediusPacketHandler {
 	private byte[] stats = new byte[MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue()];
 	
 	public MediusUpdateLadderStatsWideHandler() {
-		super(MediusPacketType.UpdateLadderStatsWide,MediusPacketType.UpdateLadderStatsWideResponse);
+		super(MediusMessageType.UpdateLadderStatsWide,MediusMessageType.UpdateLadderStatsWideResponse);
 	}
 	
 	@Override

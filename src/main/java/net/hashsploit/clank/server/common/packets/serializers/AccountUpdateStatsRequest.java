@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -14,7 +14,7 @@ public class AccountUpdateStatsRequest extends MediusPacket {
 	private byte[] stats = new byte[MediusConstants.ACCOUNTSTATS_MAXLEN.getValue()];
 	
 	public AccountUpdateStatsRequest(byte[] data) {
-		super(MediusPacketType.AccountUpdateStats, data);
+		super(MediusMessageType.AccountUpdateStats, data);
 		// Process the packet
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageID);

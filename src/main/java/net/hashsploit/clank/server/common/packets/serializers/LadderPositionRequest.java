@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -16,7 +16,7 @@ public class LadderPositionRequest extends MediusPacket {
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
 
 	public LadderPositionRequest(byte[] data) {
-		super(MediusPacketType.LadderPosition);
+		super(MediusMessageType.LadderPosition);
 		
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);

@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 
 public class FindWorldByNameRequest extends MediusPacket {
@@ -14,7 +14,7 @@ public class FindWorldByNameRequest extends MediusPacket {
 	private int worldType;
 	
 	public FindWorldByNameRequest(byte[] data) {
-		super(MediusPacketType.FindWorldByName, data);
+		super(MediusMessageType.FindWorldByName, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageId);

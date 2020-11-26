@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -14,7 +14,7 @@ public class ChannelList_ExtraInfoOneRequest extends MediusPacket {
 	private byte[] pageSize = new byte[2];
 	
 	public ChannelList_ExtraInfoOneRequest(byte[] data) {
-		super(MediusPacketType.ChannelList_ExtraInfo1, data);
+		super(MediusMessageType.ChannelList_ExtraInfo1, data);
 		
     	ByteBuffer buf = ByteBuffer.wrap(data);
     	buf.get(messageID);

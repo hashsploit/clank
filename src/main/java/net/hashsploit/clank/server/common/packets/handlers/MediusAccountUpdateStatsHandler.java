@@ -13,7 +13,7 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.AccountUpdateStatsRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountUpdateStatsResponse;
@@ -28,7 +28,7 @@ public class MediusAccountUpdateStatsHandler extends MediusPacketHandler {
 
 	
 	public MediusAccountUpdateStatsHandler() {
-		super(MediusPacketType.AccountUpdateStats, MediusPacketType.AccountUpdateStatsResponse);
+		super(MediusMessageType.AccountUpdateStats, MediusMessageType.AccountUpdateStatsResponse);
 	}
 	
 	@Override 

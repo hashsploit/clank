@@ -14,7 +14,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameResponse;
@@ -28,7 +28,7 @@ public class MediusCreateGameOneHandler extends MediusPacketHandler {
 	private CreateGameResponse respPacket;
 	
     public MediusCreateGameOneHandler() {
-        super(MediusPacketType.CreateGame1,MediusPacketType.CreateGameResponse);
+        super(MediusMessageType.CreateGame1,MediusMessageType.CreateGameResponse);
     }
     
     @Override

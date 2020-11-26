@@ -4,7 +4,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.GameWorldPlayerListRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameWorldPlayerListResponse;
@@ -16,7 +16,7 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 	private GameWorldPlayerListResponse respPacket;
 
     public MediusGameWorldPlayerListHandler() {
-        super(MediusPacketType.GameWorldPlayerList,MediusPacketType.GameWorldPlayerListResponse);
+        super(MediusMessageType.GameWorldPlayerList,MediusMessageType.GameWorldPlayerListResponse);
     }
     
     @Override

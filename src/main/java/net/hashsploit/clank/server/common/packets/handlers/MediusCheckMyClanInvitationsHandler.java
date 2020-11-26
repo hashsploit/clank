@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.handlers;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusClanInvitationResponseStatus;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.CheckMyClanInvitationsRequest;
@@ -15,7 +15,7 @@ public class MediusCheckMyClanInvitationsHandler extends MediusPacketHandler {
 	private CheckMyClanInvitationsResponse respPacket;
 	
 	public MediusCheckMyClanInvitationsHandler() {
-		super(MediusPacketType.CheckMyClanInvitations, MediusPacketType.CheckMyClanInvitationsResponse);
+		super(MediusMessageType.CheckMyClanInvitations, MediusMessageType.CheckMyClanInvitationsResponse);
 	}
 	
 	@Override

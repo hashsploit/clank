@@ -8,7 +8,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -18,7 +18,7 @@ public class MediusSessionBeginHandler extends MediusPacketHandler {
 	private byte[] connectionType = new byte[4];
 	
 	public MediusSessionBeginHandler() {
-		super(MediusPacketType.SessionBegin, MediusPacketType.SessionBeginResponse);
+		super(MediusMessageType.SessionBegin, MediusMessageType.SessionBeginResponse);
 	}
 	
 	@Override

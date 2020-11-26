@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -30,7 +30,7 @@ public class ChannelList_ExtraInfoOneResponse extends MediusPacket {
 	public ChannelList_ExtraInfoOneResponse(byte[] messageID, byte[] callbackStatus, byte[] mediusWorldID, byte[] playerCount, byte[] maxPlayers, 
 				byte[] worldSecurityLevelType, byte[] genericField1, byte[] genericField2, byte[] genericField3, byte[] genericField4, 
 				byte[] genericFieldFilter, byte[] lobbyName, byte[] endOfList) {
-		super(MediusPacketType.ChannelList_ExtraInfoResponse);
+		super(MediusMessageType.ChannelList_ExtraInfoResponse);
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;
 		this.mediusWorldID = mediusWorldID;

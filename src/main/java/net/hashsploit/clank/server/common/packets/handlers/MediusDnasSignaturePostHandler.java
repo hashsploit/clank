@@ -9,7 +9,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.DnasSignaturePostRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
@@ -21,7 +21,7 @@ public class MediusDnasSignaturePostHandler extends MediusPacketHandler {
 	private DnasSignaturePostRequest reqPacket;
 	
 	public MediusDnasSignaturePostHandler() {
-		super(MediusPacketType.DnasSignaturePost, null);
+		super(MediusMessageType.DnasSignaturePost, null);
 	}
 	
 	@Override

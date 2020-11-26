@@ -8,7 +8,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -20,7 +20,7 @@ public class MediusGetClanMemberList_ExtraInfoHandler extends MediusPacketHandle
 	private byte[] sortOrder = new byte[4];
 	
     public MediusGetClanMemberList_ExtraInfoHandler() {
-        super(MediusPacketType.GetClanMemberList_ExtraInfo, MediusPacketType.GetClanMemberList_ExtraInfoResponse);
+        super(MediusMessageType.GetClanMemberList_ExtraInfo, MediusMessageType.GetClanMemberList_ExtraInfoResponse);
     }
     
     @Override

@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -15,7 +15,7 @@ public class ChatToggleResponse extends MediusPacket {
 	private byte[] callbackStatus;
 	
 	public ChatToggleResponse(byte[] messageID, byte[] callbackStatus) {
-		super(MediusPacketType.ChatToggleResponse);
+		super(MediusMessageType.ChatToggleResponse);
 		
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;

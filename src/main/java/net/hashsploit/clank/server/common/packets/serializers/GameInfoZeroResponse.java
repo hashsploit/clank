@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -31,7 +31,7 @@ public class GameInfoZeroResponse extends MediusPacket {
 	public GameInfoZeroResponse(byte[] messageID, byte[] callbackStatus, byte[] appID, byte[] minPlayers, byte[] maxPlayers, byte[] gameLevel, 
 			byte[] playerSkillLevel, byte[] playerCount, byte[] gameStats, byte[] gameName, byte[] rulesSet, byte[] genField1, byte[] genField2, byte[] genField3,
 			byte[] worldStatus, byte[] gameHostType) {
-		super(MediusPacketType.GameInfoResponse0);
+		super(MediusMessageType.GameInfoResponse0);
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;
 		this.appID = appID;

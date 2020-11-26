@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 
 public class VersionServerRequest extends MediusPacket {
@@ -12,7 +12,7 @@ public class VersionServerRequest extends MediusPacket {
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
 	
 	public VersionServerRequest(byte[] data) {
-		super(MediusPacketType.VersionServer, data);
+		super(MediusMessageType.VersionServer, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageId);

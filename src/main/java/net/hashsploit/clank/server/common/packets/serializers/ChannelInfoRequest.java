@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -14,7 +14,7 @@ public class ChannelInfoRequest extends MediusPacket {
 	private byte[] worldID = new byte[4];
 	
 	public ChannelInfoRequest(byte[] data) {
-		super(MediusPacketType.ChannelInfo, data);
+		super(MediusMessageType.ChannelInfo, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageID);

@@ -2,7 +2,7 @@ package net.hashsploit.clank.server.common.packets.handlers;
 
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.AccountRegistrationRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountRegistrationResponse;
@@ -17,7 +17,7 @@ public class MediusLadderPositionHandler extends MediusPacketHandler {
 	private byte[] messageId;
 	
 	public MediusLadderPositionHandler() {
-		super(MediusPacketType.LadderPosition, MediusPacketType.LadderPositionResponse);
+		super(MediusMessageType.LadderPosition, MediusMessageType.LadderPositionResponse);
 	}
 	
 	@Override

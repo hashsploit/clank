@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -15,7 +15,7 @@ public class AccountLoginRequest extends MediusPacket {
 	private byte[] passwordBytes = new byte[14];
 	
 	public AccountLoginRequest(byte[] data) {
-		super(MediusPacketType.AccountLogin, data);
+		super(MediusMessageType.AccountLogin, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageID);

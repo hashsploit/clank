@@ -14,7 +14,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.ChannelList_ExtraInfoOneRequest;
 import net.hashsploit.clank.server.common.packets.serializers.ChannelList_ExtraInfoOneResponse;
@@ -28,7 +28,7 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 	private ChannelList_ExtraInfoOneResponse respPacket;
 	
     public MediusChannelList_ExtraInfoOneHandler() {
-        super(MediusPacketType.ChannelList_ExtraInfo1, MediusPacketType.ChannelList_ExtraInfoResponse);
+        super(MediusMessageType.ChannelList_ExtraInfo1, MediusMessageType.ChannelList_ExtraInfoResponse);
     }
     
     @Override

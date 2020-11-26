@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.handlers;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.GetMyIPRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GetMyIPResponse;
@@ -14,7 +14,7 @@ public class MediusGetMyIPHandler extends MediusPacketHandler {
 	private GetMyIPResponse respPacket;
 	
 	public MediusGetMyIPHandler() {
-		super(MediusPacketType.GetMyIP, MediusPacketType.GetMyIPResponse);
+		super(MediusMessageType.GetMyIP, MediusMessageType.GetMyIPResponse);
 	}
 	
 	@Override

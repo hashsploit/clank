@@ -1,5 +1,11 @@
 package net.hashsploit.clank;
 
+/**
+ * The server mode in which Clank is currently running as.
+ * 
+ * @author hashsploit
+ *
+ */
 public enum EmulationMode {
 	
 	/**
@@ -38,6 +44,10 @@ public enum EmulationMode {
 		this.modeId = modeId;
 	}
 	
+	/**
+	 * Get the integer of this bitmask.
+	 * @return
+	 */
 	public final int getValue() {
 		return modeId;
 	}

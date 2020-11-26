@@ -3,8 +3,6 @@ package net.hashsploit.clank.server.pipeline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -120,7 +118,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
 			
 			// Detect which medius packet is being parsed
-		    MediusPacketHandler mediusPacket = client.getMediusMap().get(incomingMessage.getMediusPacketType());
+		    MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
 		    
 		    // Process this medius packet
 		    mediusPacket.read(incomingMessage);
@@ -156,8 +154,8 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 
 				baos.write(Utils.hexStringToByteArray("0108D300000100"));
 
-				byte[] ipAddr = client.getIPAddressAsBytes();
-				int numZeros = 16 - client.getIPAddressAsBytes().length;
+				byte[] ipAddr = client.getIPAddress().getBytes();
+				int numZeros = 16 - client.getIPAddress().getBytes().length;
 				String zeroString = new String(new char[numZeros]).replace("\0", "00");
 				byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
@@ -202,8 +200,8 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	    	logger.fine(Utils.bytesToHex(data));
 	    	byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
 			logger.severe(client.getIPAddress());
-			byte[] ipAddr = client.getIPAddressAsBytes();
-			int numZeros = 16 - client.getIPAddress().length();
+			byte[] ipAddr = client.getIPAddress().getBytes();
+			int numZeros = 16 - client.getIPAddress().getBytes().length;
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
 			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 			byte[] lastPart = Utils.hexStringToByteArray("1a02000100");

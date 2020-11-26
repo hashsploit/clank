@@ -58,6 +58,7 @@ public abstract class AbstractServer implements IServer {
 	 * 
 	 * @return
 	 */
+	@Override
 	public HashSet<IClient> getClients() {
 		return clients;
 	}
@@ -67,6 +68,7 @@ public abstract class AbstractServer implements IServer {
 	 * 
 	 * @param client
 	 */
+	@Override
 	public void addClient(IClient client) {
 		clients.add(client);
 	}
@@ -76,6 +78,7 @@ public abstract class AbstractServer implements IServer {
 	 * 
 	 * @param client
 	 */
+	@Override
 	public void removeClient(IClient client) {
 		clients.remove(client);
 	}

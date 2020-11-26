@@ -14,7 +14,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -26,7 +26,7 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 	// WORKING !!!
 
 	public MediusPolicyHandler() {
-		super(MediusPacketType.Policy,MediusPacketType.PolicyResponse);
+		super(MediusMessageType.Policy,MediusMessageType.PolicyResponse);
 	}
 	
 	@Override

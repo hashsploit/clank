@@ -4,9 +4,9 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
 /**
- * "Medius App" datagram on top of SCE-RT (RTIME) from the SERVER_APP (0x0a) and CLIENT_APP_TOSERVER (0x0b) RTPacketId class.
+ * "Medius App" datagram on top of SCE-RT (RTIME) from the APP (0x02, 0x03, 0x04, 0x0a, 0x0b, 0x0c) messages.
  */
-public enum MediusPacketType {
+public enum MediusMessageType {
 	
 	DMEServerVersion(0x0000),
 	DMEPing(0x0100),
@@ -352,22 +352,30 @@ public enum MediusPacketType {
 	
 	private final int id;
 	
-	private MediusPacketType(int id) {
+	private MediusMessageType(int id) {
 		this.id = id;
 	}
 	
 	/**
-	 * Get the value of the id as a int (unsigned short)
+	 * Get the Medius Type as an int (unsigned short)
 	 * @return
 	 */
 	public final int getInt() {
 		return id;
 	}
 	
+	/**
+	 * Get the Medius Type as a short.
+	 * @return
+	 */
 	public final short getShort() {
 		return (short) id;
 	}
 	
+	/**
+	 * Get the Medius Type as a little-endian short.
+	 * @return
+	 */
 	public final byte[] getShortByte() {
 		ByteBuffer buffer = ByteBuffer.allocate(2);
 		buffer.order(ByteOrder.LITTLE_ENDIAN);
@@ -375,6 +383,10 @@ public enum MediusPacketType {
 		return buffer.array();
 	}
 	
+	/**
+	 * Get the Medius Type as a byte array.
+	 * @return
+	 */
 	public final byte[] getBytes() {
 	    return new byte[] {
 	            (byte)((id) & 0xff),

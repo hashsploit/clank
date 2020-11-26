@@ -5,15 +5,12 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.bouncycastle.util.Arrays;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.DataPacket;
+import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
@@ -121,7 +118,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
 			
 			// Detect which medius packet is being parsed
-		    MediusPacketHandler mediusPacket = client.getMediusMap().get(incomingMessage.getMediusPacketType());
+		    MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
 		    
 		    // Process this medius packet
 		    mediusPacket.read(incomingMessage);

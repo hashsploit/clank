@@ -14,7 +14,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -29,7 +29,7 @@ public class MediusSetGameListFilterZeroHandler extends MediusPacketHandler {
 	private byte[] baselineValue = new byte[4];
 	
 	public MediusSetGameListFilterZeroHandler() {
-		super(MediusPacketType.SetGameListFilter0, MediusPacketType.SetGameListFilterResponse0);
+		super(MediusMessageType.SetGameListFilter0, MediusMessageType.SetGameListFilterResponse0);
 	}
 	
 	@Override

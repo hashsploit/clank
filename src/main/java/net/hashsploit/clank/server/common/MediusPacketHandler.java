@@ -14,15 +14,15 @@ public abstract class MediusPacketHandler {
 	
 	public static final Logger logger = Logger.getLogger("");
 
-    public final MediusPacketType type;
-    public final MediusPacketType responseType;
+    public final MediusMessageType type;
+    public final MediusMessageType responseType;
 
-    public MediusPacketHandler(MediusPacketType type, MediusPacketType responseType) {
+    public MediusPacketHandler(MediusMessageType type, MediusMessageType responseType) {
         this.type = type;    
         this.responseType = responseType;
     }
     
-    public MediusPacketType getType() {
+    public MediusMessageType getType() {
         return type;
     }
     

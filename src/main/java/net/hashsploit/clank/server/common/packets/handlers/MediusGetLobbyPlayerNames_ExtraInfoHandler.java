@@ -13,7 +13,7 @@ import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.objects.MediusPlayerOnlineState;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
@@ -26,7 +26,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 	
 	
 	public MediusGetLobbyPlayerNames_ExtraInfoHandler() {
-		super(MediusPacketType.GetLobbyPlayerNames_ExtraInfo, MediusPacketType.GetLobbyPlayerNames_ExtraInfoResponse);
+		super(MediusMessageType.GetLobbyPlayerNames_ExtraInfo, MediusMessageType.GetLobbyPlayerNames_ExtraInfoResponse);
 	}
 	@Override
 	public void read(MediusPacket mm) {

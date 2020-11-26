@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -27,7 +27,7 @@ public class CreateGameOneRequest extends MediusPacket {
 	private byte[] attributes = new byte[4];
 	
 	public CreateGameOneRequest(byte[] data) {
-		super(MediusPacketType.CreateGame1, data);
+		super(MediusMessageType.CreateGame1, data);
     	ByteBuffer buf = ByteBuffer.wrap(data);
     	buf.get(messageID);
     	buf.get(sessionKey);

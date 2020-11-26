@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusConnectionType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
@@ -23,7 +23,7 @@ public class LobbyWorldPlayerListResponse extends MediusPacket {
 	private boolean endOfList;
 
 	public LobbyWorldPlayerListResponse(byte[] messageId, MediusCallbackStatus callbackStatus, MediusPlayerStatus playerStatus, int accountId, String accountName, byte[] stats, MediusConnectionType connectionType, boolean endOfList) {
-		super(MediusPacketType.LobbyWorldPlayerListResponse);
+		super(MediusMessageType.LobbyWorldPlayerListResponse);
 
 		this.messageId = messageId;
 		this.callbackStatus = callbackStatus;

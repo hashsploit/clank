@@ -14,7 +14,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
@@ -28,7 +28,7 @@ public class MediusGetAllAnnouncementsHandler extends MediusPacketHandler {
 	private GetAnnouncementsResponse respPacket;
 	
 	public MediusGetAllAnnouncementsHandler() {
-		super(MediusPacketType.GetAllAnnouncements,MediusPacketType.GetAnnouncementsResponse);
+		super(MediusMessageType.GetAllAnnouncements,MediusMessageType.GetAnnouncementsResponse);
 	}
 	
 	@Override

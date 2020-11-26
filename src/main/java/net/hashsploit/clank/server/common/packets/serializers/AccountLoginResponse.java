@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -24,7 +24,7 @@ public class AccountLoginResponse extends MediusPacket {
 	
 	public AccountLoginResponse(byte[] messageID, byte[] callbackStatus, byte[] accountID, byte[] accountType,
 			byte[] worldID, byte[] mlsAddress, byte[] mlsZeroTrail, byte[]natAddress, byte[] natZeroTrail, byte[] mlsToken) {
-		super(MediusPacketType.AccountLoginResponse);
+		super(MediusMessageType.AccountLoginResponse);
 		
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;

@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -15,7 +15,7 @@ public class CheckMyClanInvitationsRequest extends MediusPacket {
 	private byte[] pageSize = new byte[4];
 	
 	public CheckMyClanInvitationsRequest(byte[] data) {
-		super(MediusPacketType.CheckMyClanInvitations, data);
+		super(MediusMessageType.CheckMyClanInvitations, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageId);

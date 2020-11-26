@@ -4,7 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -14,7 +14,7 @@ public class VersionServerResponse extends MediusPacket {
 	private String serverVersion;
 
 	public VersionServerResponse(byte[] messageId, String serverVersion) {
-		super(MediusPacketType.VersionServerResponse);
+		super(MediusMessageType.VersionServerResponse);
 
 		this.messageId = messageId;
 		this.serverVersion = serverVersion;

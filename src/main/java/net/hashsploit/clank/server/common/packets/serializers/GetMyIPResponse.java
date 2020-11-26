@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -16,7 +16,7 @@ public class GetMyIPResponse extends MediusPacket {
 	private MediusCallbackStatus callbackStatus;
 
 	public GetMyIPResponse(byte[] messageID, String ipAddress, MediusCallbackStatus callbackStatus) {
-		super(MediusPacketType.GetMyIPResponse);
+		super(MediusMessageType.GetMyIPResponse);
 
 		this.messageID = messageID;
 		this.ipAddress = ipAddress;

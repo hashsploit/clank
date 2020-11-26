@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 
 public class PickLocationRequest extends MediusPacket {
@@ -13,7 +13,7 @@ public class PickLocationRequest extends MediusPacket {
 	private int locationId;
 	
 	public PickLocationRequest(byte[] data) {
-		super(MediusPacketType.PickLocation, data);
+		super(MediusMessageType.PickLocation, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageId);

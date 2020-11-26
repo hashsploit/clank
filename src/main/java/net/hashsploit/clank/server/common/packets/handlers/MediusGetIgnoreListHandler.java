@@ -8,7 +8,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -18,7 +18,7 @@ public class MediusGetIgnoreListHandler extends MediusPacketHandler {
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
 	
     public MediusGetIgnoreListHandler() {
-        super(MediusPacketType.GetIgnoreList, MediusPacketType.GetIgnoreListResponse);
+        super(MediusMessageType.GetIgnoreList, MediusMessageType.GetIgnoreListResponse);
     }
     
     @Override

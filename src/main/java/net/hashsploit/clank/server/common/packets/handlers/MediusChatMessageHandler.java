@@ -5,7 +5,7 @@ import java.nio.ByteBuffer;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.ChatMessageRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
@@ -19,7 +19,7 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 	private GenericChatFwdMessageResponse respPacket;
 
     public MediusChatMessageHandler() {
-        super(MediusPacketType.ChatMessage, MediusPacketType.GenericChatFwdMessage);
+        super(MediusMessageType.ChatMessage, MediusMessageType.GenericChatFwdMessage);
     }
     
     @Override

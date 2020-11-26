@@ -11,7 +11,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.ChatToggleRequest;
 import net.hashsploit.clank.server.common.packets.serializers.ChatToggleResponse;
@@ -25,7 +25,7 @@ public class MediusChatToggleHandler extends MediusPacketHandler {
 	private ChatToggleResponse respPacket;
 	
 	public MediusChatToggleHandler() {
-		super(MediusPacketType.ChatToggle, MediusPacketType.ChatToggleResponse);
+		super(MediusMessageType.ChatToggle, MediusMessageType.ChatToggleResponse);
 	}
 	@Override
 	public void read(MediusPacket mm) {

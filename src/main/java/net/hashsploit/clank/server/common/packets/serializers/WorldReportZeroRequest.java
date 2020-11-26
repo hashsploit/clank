@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -25,7 +25,7 @@ public class WorldReportZeroRequest extends MediusPacket {
 	private byte[] worldStatus = new byte[4];
 	
 	public WorldReportZeroRequest(byte[] data) {
-		super(MediusPacketType.WorldReport0, data);
+		super(MediusMessageType.WorldReport0, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(sessionKey);

@@ -6,7 +6,7 @@ import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -17,7 +17,7 @@ public class CreateGameResponse extends MediusPacket {
 	private byte[] newWorldID;
 	
 	public CreateGameResponse(byte[] messageID, byte[] callbackStatus, byte[] newWorldID) {
-		super(MediusPacketType.CreateGameResponse);
+		super(MediusMessageType.CreateGameResponse);
 		this.messageID = messageID;
 		this.callbackStatus = callbackStatus;
 		this.newWorldID = newWorldID;

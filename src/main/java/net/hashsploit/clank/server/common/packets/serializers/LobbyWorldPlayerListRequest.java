@@ -3,7 +3,7 @@ package net.hashsploit.clank.server.common.packets.serializers;
 import java.nio.ByteBuffer;
 
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 
 public class LobbyWorldPlayerListRequest extends MediusPacket {
@@ -13,7 +13,7 @@ public class LobbyWorldPlayerListRequest extends MediusPacket {
 	private int worldId;
 
 	public LobbyWorldPlayerListRequest(byte[] data) {
-		super(MediusPacketType.LobbyWorldPlayerList, data);
+		super(MediusMessageType.LobbyWorldPlayerList, data);
 
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageId);

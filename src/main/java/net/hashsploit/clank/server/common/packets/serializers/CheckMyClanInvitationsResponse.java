@@ -5,7 +5,7 @@ import java.io.IOException;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusClanInvitationResponseStatus;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
@@ -23,7 +23,7 @@ public class CheckMyClanInvitationsResponse extends MediusPacket {
 	private boolean endOfList;
 
 	public CheckMyClanInvitationsResponse(byte[] messageId, MediusCallbackStatus callbackStatus, int clanInvitationId, int clanId, MediusClanInvitationResponseStatus clanInvitationResponseStatus, String message, int leaderAccountId, String leaderAccountName, boolean endOfList) {
-		super(MediusPacketType.CheckMyClanInvitationsResponse);
+		super(MediusMessageType.CheckMyClanInvitationsResponse);
 
 		this.messageId = messageId;
 		this.callbackStatus = callbackStatus;

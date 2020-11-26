@@ -8,7 +8,7 @@ import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginResponse;
@@ -20,7 +20,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 	private AccountLoginResponse respPacket;
 
 	public MediusAccountLoginHandler() {
-		super(MediusPacketType.AccountLogin, MediusPacketType.AccountLoginResponse);
+		super(MediusMessageType.AccountLogin, MediusMessageType.AccountLoginResponse);
 	}
 
 	@Override

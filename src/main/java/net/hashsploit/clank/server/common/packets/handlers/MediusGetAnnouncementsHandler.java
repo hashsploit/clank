@@ -4,7 +4,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.server.common.packets.serializers.GetAnnouncementsRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GetAnnouncementsResponse;
@@ -16,7 +16,7 @@ public class MediusGetAnnouncementsHandler extends MediusPacketHandler {
 	private GetAnnouncementsResponse respPacket;
 	
 	public MediusGetAnnouncementsHandler() {
-		super(MediusPacketType.GetAnnouncements,MediusPacketType.GetAnnouncementsResponse);
+		super(MediusMessageType.GetAnnouncements,MediusMessageType.GetAnnouncementsResponse);
 	}
 	
 	@Override

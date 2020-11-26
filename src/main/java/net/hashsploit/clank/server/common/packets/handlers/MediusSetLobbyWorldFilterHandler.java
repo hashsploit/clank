@@ -14,7 +14,7 @@ import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusPacket;
 import net.hashsploit.clank.utils.Utils;
 
@@ -29,7 +29,7 @@ public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 	byte[] lobbyFilterMaskLevelType = new byte[4];
 	
 	public MediusSetLobbyWorldFilterHandler() {
-		super(MediusPacketType.SetLobbyWorldFilter,MediusPacketType.SetLobbyWorldFilterResponse);
+		super(MediusMessageType.SetLobbyWorldFilter,MediusMessageType.SetLobbyWorldFilterResponse);
 	}
 	
 	public void read(MediusPacket mm) {

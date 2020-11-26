@@ -4,12 +4,12 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.logging.Logger;
 
-import net.hashsploit.clank.server.common.MediusPacketType;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusPacket {
 
-	private MediusPacketType packetType;
+	private MediusMessageType packetType;
 	private byte[] data;
 	private static final Logger logger = Logger.getLogger("");
 
@@ -18,7 +18,7 @@ public class MediusPacket {
 	    short testingShortVal = Utils.bytesToShortLittle(incomingData[0], incomingData[1]);
 
 	    // TODO: Make this not O(n)
-		for (MediusPacketType p : MediusPacketType.values()) {
+		for (MediusMessageType p : MediusMessageType.values()) {
 			if (p.getShort() == testingShortVal) {
 				packetType = p;
 				break;
@@ -27,13 +27,13 @@ public class MediusPacket {
 		data = Arrays.copyOfRange(incomingData,2,incomingData.length);
 	}
 	
-	public MediusPacket(MediusPacketType type, byte[] data) {
+	public MediusPacket(MediusMessageType type, byte[] data) {
 		// Get medius packet type
 	    this.packetType = type;
 	    this.data = data;
 	}
 	
-	public MediusPacket(MediusPacketType type) {
+	public MediusPacket(MediusMessageType type) {
 	    this.packetType = type;
 	}
 	
@@ -41,7 +41,7 @@ public class MediusPacket {
 		return data;
 	}
 	
-	public MediusPacketType getMediusPacketType() {
+	public MediusMessageType getMediusPacketType() {
 		return packetType;
 	}
 	
