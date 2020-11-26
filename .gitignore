@@ -7,6 +7,10 @@
 config/*
 !config/*.json.example
 
+# Custom plugins (closed-source)
+plugins/uya/*
+plugins/dl/*
+
 # Bins
 target/
 bin/
