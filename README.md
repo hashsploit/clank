@@ -55,7 +55,17 @@ You can read more about these components [here](https://wiki.hashsploit.net/Play
 
 ### MAS (Medius Authentication Server)
 
-The server emulator will act as an authentication server for handling user logins.
+The component is an authentication server for handling player logins.
+
+**mas.conf:**
+| Name        | Type    | Description                                                     |
+|-------------|---------|-----------------------------------------------------------------|
+| name        | string  | A short string to represent this server, such as "dl" or "uya". |
+| description | string  | A full string representation of the server name.                |
+| address     | string  | The IP Address of the Medius Lobby Server JSON query API.       |
+| port        | integer | The port of the Medius Lobby Server JSON query API.             |
+| token       | string  | The pre-shared secret token used to access the JSON query API.  |
+| color       | integer | The color to use for embedded messages.                         |
 
 
 ### MLS (Medius Lobby Server)
@@ -126,3 +136,4 @@ SCE-RT (2001-2006):
 
 Read more about reverse-engineering the SCE-RT/Medius protocol here:
 [https://wiki.hashsploit.net/PlayStation_2#Medius](https://wiki.hashsploit.net/PlayStation_2#Medius)
+
