@@ -3,7 +3,11 @@ package net.hashsploit.clank.server.common;
 import java.util.HashMap;
 
 import net.hashsploit.clank.EmulationMode;
+import net.hashsploit.clank.server.DataPacket;
+import net.hashsploit.clank.server.IClient;
+import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.MediusClientChannelInitializer;
+import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 
@@ -34,6 +38,13 @@ public class MediusServer extends TcpServer {
 	
 	@Override
 	public void stop() {
+		for (IClient c : getClients()) {
+			if (c instanceof MediusClient) {
+				final MediusClient client = (MediusClient) c;
+				client.sendMessage(new DataPacket(RTPacketId.CLIENT_DISCONNECT, null));
+				client.disconnect();
+			}
+		}
 		super.stop();
 	}
 	

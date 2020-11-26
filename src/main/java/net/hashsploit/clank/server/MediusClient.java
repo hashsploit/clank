@@ -179,6 +179,7 @@ public class MediusClient implements IClient {
 	 * Disconnect this client.
 	 */
 	public void disconnect() {
+		
 		socketChannel.flush();
 		socketChannel.disconnect();
 		socketChannel.close();

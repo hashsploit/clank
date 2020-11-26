@@ -6,9 +6,10 @@ import java.util.logging.Logger;
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
 import net.hashsploit.clank.cli.ICLIEvent;
-import net.hashsploit.clank.cli.commands.CLIPlayersCommand;
+import net.hashsploit.clank.cli.commands.CLIBroadcastCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
+import net.hashsploit.clank.cli.commands.CLIPlayersCommand;
 import net.hashsploit.clank.cli.commands.CLIVersionCommand;
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.configs.DmeConfig;
@@ -140,6 +141,7 @@ public class Clank {
 				break;
 			case MEDIUS_LOBBY_SERVER:
 				terminalPrompt = "MLS>";
+				terminal.registerCommand(new CLIBroadcastCommand());
 				break;
 			case MEDIUS_PROXY_SERVER:
 				terminalPrompt = "MPS>";
@@ -158,6 +160,7 @@ public class Clank {
 				break;
 			case DME_SERVER:
 				terminalPrompt = AnsiColor.GREEN + "DME>";
+				terminal.registerCommand(new CLIBroadcastCommand());
 				DmeConfig dmeConfig = (DmeConfig) config;
 				server = new DmeServer(
 					dmeConfig.getTcpAddress(),
