@@ -126,54 +126,63 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     	}
     }
     
+    private void sendData(ChannelHandlerContext ctx, DataPacket packet) {
+		logger.finest("Final Payload: " + Utils.bytesToHex(packet.toBytes()));
+		ByteBuf msg1 = Unpooled.copiedBuffer(packet.toBytes());
+		ctx.write(msg1); // (1)
+		ctx.flush(); // 
+    }
+    
     private void checkForTcpAuxUdpConnect(ChannelHandlerContext ctx, DataPacket packet) {
     	
     	if (packet.getId() == RTPacketId.CLIENT_CONNECT_TCP_AUX_UDP) {
     		logger.info("Detected TCP AUX UDP CONNECT");
 
-    		
-    		// First crypto leave empty
-    		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
-    		DataPacket c1 = new DataPacket(RTPacketId.SERVER_CRYPTKEY_GAME, emptyCrypto1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
-    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
-    		ctx.write(msg1); // (1)
-    		ctx.flush(); // 
-    		
-    		// Second crypto leave empty
-    		DataPacket c2 = new DataPacket(RTPacketId.SERVER_CRYPTKEY_PEER, emptyCrypto1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
-    		ByteBuf msg3 = Unpooled.copiedBuffer(c2.toBytes());
-    		ctx.write(msg3); // (1)
-    		ctx.flush(); // 
+    		sendData(ctx, new DataPacket(RTPacketId.SERVER_CONNECT_REQUIRE, Utils.hexStringToByteArray("0648024802")));
+//    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
 
-    		// Server Accept TCP
-    		ByteBuffer buffer = ByteBuffer.allocate(23);
-    		//buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
-    		buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
-    		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);
-    		buffer.put(ipAddr);
-    		DataPacket d = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
-    		logger.finest("Final Payload: " + Utils.bytesToHex(d.toBytes()));
-    		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
-    		ctx.write(msg); // (1)
-    		ctx.flush(); // 
-    		
-    		// Server AUX UDP Info (IP and port)
-    		ByteBuffer buf = ByteBuffer.allocate(18);
-    		final byte[] udpAddr = Utils.buildByteArrayFromString("192.168.1.99", 16);
-    		buf.put(ipAddr);
-    		buf.put(Utils.hexStringToByteArray("51C3"));
-    		
-
-    		
-    		
-    		DataPacket da = new DataPacket(RTPacketId.SERVER_INFO_AUX_UDP, buf.array());
-    		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
-    		ByteBuf msg2 = Unpooled.copiedBuffer(da.toBytes());
-    		ctx.write(msg2); // (1)
-    		ctx.flush(); // 
-    		
+//    		// First crypto leave empty
+//    		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
+//    		DataPacket c1 = new DataPacket(RTPacketId.SERVER_CRYPTKEY_GAME, emptyCrypto1);
+//    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
+//    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
+//    		ctx.write(msg1); // (1)
+//    		ctx.flush(); // 
+//    		
+//    		// Second crypto leave empty
+//    		DataPacket c2 = new DataPacket(RTPacketId.SERVER_CRYPTKEY_PEER, emptyCrypto1);
+//    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
+//    		ByteBuf msg3 = Unpooled.copiedBuffer(c2.toBytes());
+//    		ctx.write(msg3); // (1)
+//    		ctx.flush(); // 
+//
+//    		// Server Accept TCP
+//    		ByteBuffer buffer = ByteBuffer.allocate(23);
+//    		//buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
+//    		buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
+//    		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);
+//    		buffer.put(ipAddr);
+//    		DataPacket d = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
+//    		logger.finest("Final Payload: " + Utils.bytesToHex(d.toBytes()));
+//    		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
+//    		ctx.write(msg); // (1)
+//    		ctx.flush(); // 
+//    		
+//    		// Server AUX UDP Info (IP and port)
+//    		ByteBuffer buf = ByteBuffer.allocate(18);
+//    		final byte[] udpAddr = Utils.buildByteArrayFromString("192.168.1.99", 16);
+//    		buf.put(ipAddr);
+//    		buf.put(Utils.hexStringToByteArray("51C3"));
+//    		
+//
+//    		
+//    		
+//    		DataPacket da = new DataPacket(RTPacketId.SERVER_INFO_AUX_UDP, buf.array());
+//    		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
+//    		ByteBuf msg2 = Unpooled.copiedBuffer(da.toBytes());
+//    		ctx.write(msg2); // (1)
+//    		ctx.flush(); // 
+//    		
 
     		
     	}
