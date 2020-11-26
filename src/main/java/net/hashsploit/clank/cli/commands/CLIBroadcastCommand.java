@@ -9,13 +9,12 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
 import net.hashsploit.clank.server.ChatColor;
-import net.hashsploit.clank.server.DataPacket;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTPacketId;
+import net.hashsploit.clank.server.RTMessage;
+import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.scert.objects.RTMsgEncodingType;
 import net.hashsploit.clank.server.scert.objects.RTMsgLanguageType;
-import net.hashsploit.clank.utils.Utils;
 
 public class CLIBroadcastCommand implements ICLICommand {
 	
@@ -28,8 +27,8 @@ public class CLIBroadcastCommand implements ICLICommand {
 		}
 		
 		try {
-			int severity = Integer.parseInt(params[0]);
-			String message = Arrays.toString(Arrays.copyOfRange(params, 1, params.length));
+			final int severity = Integer.parseInt(params[0]);
+			final String message = String.join(" ", Arrays.copyOfRange(params, 1, params.length));
 			
 			if (severity < 0 || severity > 255) {
 				throw new IllegalArgumentException();
@@ -40,16 +39,16 @@ public class CLIBroadcastCommand implements ICLICommand {
 			try {
 				baos.write((byte) severity); // Severity 255 (1 byte)
 				baos.write(RTMsgEncodingType.RT_MSG_ENCODING_UTF8.getValue()); // Encoding type (1 byte)
-				baos.write(RTMsgLanguageType.RT_MSG_LANGUAGE_UK_ENGLISH.getValue()); // Language type (1 byte)
-				baos.write(Utils.intToBytesLittle(1)); // EndOfList boolean (4 bytes)
-				baos.write(Utils.buildByteArrayFromString(ChatColor.convertColorCodes(message), message.length()));
+				baos.write(RTMsgLanguageType.RT_MSG_LANGUAGE_US_ENGLISH.getValue()); // Language type (1 byte)
+				baos.write((byte) 1); // EndOfList boolean (1 byte)
+				baos.write(ChatColor.parse(message));
 				baos.write((byte) 0x00);
 			} catch (IOException e) {}
 			
 			for (IClient c : Clank.getInstance().getServer().getClients()) {
 				if (c instanceof MediusClient) {
 					final MediusClient client = (MediusClient) c;
-					client.sendMessage(new DataPacket(RTPacketId.SERVER_SYSTEM_MESSAGE, baos.toByteArray()));
+					client.sendMessage(new RTMessage(RTMessageId.SERVER_SYSTEM_MESSAGE, baos.toByteArray()));
 				}
 			}
 			
