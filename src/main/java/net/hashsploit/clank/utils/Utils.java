@@ -34,7 +34,7 @@ public class Utils {
 	}
 
 	/**
-	 * Convert an array of bytes into a string (without null-bytes)
+	 * Convert an array of bytes into a string (without null-bytes) and convert line-endings to readable chars.
 	 * 
 	 * @param data
 	 * @return
@@ -57,6 +57,25 @@ public class Utils {
 			sb.append((char) b);
 		}
 
+		return sb.toString();
+	}
+	
+	/**
+	 * Reads a byte array up until a null-terminator and convert it to a string.
+	 * 
+	 * @param data
+	 * @return
+	 */
+	public static String bytesToStringEndNull(byte[] data) {
+		final StringBuilder sb = new StringBuilder();
+		
+		for (byte b : data) {
+			if (b == 0x00) {
+				break;
+			}
+			sb.append(b);
+		}
+		
 		return sb.toString();
 	}
 

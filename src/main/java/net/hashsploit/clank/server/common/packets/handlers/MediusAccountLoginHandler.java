@@ -33,10 +33,11 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.LOGIN_FAILED.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
-
+		
 		// TODO: handle logic elsewhere (controller/model design)
-		final String username = Utils.bytesToStringClean(reqPacket.getUsernameBytes());
-		final String password = Utils.bytesToStringClean(reqPacket.getPasswordBytes());
+		// TODO: Clean the username!!! add a utility to check if the username is valid, length, and characters in it.
+		final String username = Utils.bytesToStringEndNull(reqPacket.getUsernameBytes());
+		final String password = Utils.bytesToStringEndNull(reqPacket.getPasswordBytes());
 
 		if (Clank.getInstance().getDatabase().accountExists(username)) {
 			if (Clank.getInstance().getDatabase().validateAccount(username, password)) {
