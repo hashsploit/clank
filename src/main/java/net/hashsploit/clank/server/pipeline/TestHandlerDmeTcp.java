@@ -81,7 +81,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     private void checkClientReady(ChannelHandlerContext ctx, byte[] data) {
     	if (Utils.bytesToHex(data).equals("170000")) {		  // this is UDP trying to connect
     		// SERVER CONNECT COMPLETE
-    		byte [] t1 = Utils.hexStringToByteArray("0300");
+    		byte [] t1 = Utils.hexStringToByteArray("0100");
     		RTMessage c1 = new RTMessage(RTMessageId.SERVER_CONNECT_COMPLETE, t1);
     		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
     		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
