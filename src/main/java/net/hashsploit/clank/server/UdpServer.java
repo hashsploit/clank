@@ -97,9 +97,7 @@ public class UdpServer extends AbstractServer {
 
 	@Override
 	public void stop() {
-		if (threads != -1) {
-			eventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
-		}
+		eventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
 		channelFuture.channel().close();
 		super.stop();
 	}
