@@ -14,6 +14,8 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.utils.Utils;
 
@@ -76,21 +78,31 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	    checkForTcpAuxUdpConnect(ctx, packet);
 	    	    
 		checkClientReady(ctx, packet.toBytes());
+		
+		checkEcho(ctx, packet);
     }
     
     private void checkClientReady(ChannelHandlerContext ctx, byte[] data) {
     	if (Utils.bytesToHex(data).equals("170000")) {		  // this is UDP trying to connect
     		// SERVER CONNECT COMPLETE
-    		byte [] t1 = Utils.hexStringToByteArray("0100");
+    		byte [] t1 = Utils.hexStringToByteArray("0100"); // connect type?
     		RTMessage c1 = new RTMessage(RTMessageId.SERVER_CONNECT_COMPLETE, t1);
     		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
     		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
     		ctx.write(msg1); // (1)
     		ctx.flush(); // 
     		
-    		// DME ID THING
-    		byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");
-    		RTMessage c2 = new RTMessage(RTMessageId.SERVER_APP, t2);
+    		// DME Version (RT 00)
+    		//byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");
+    		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    		try {
+    			baos.write(MediusMessageType.DMEServerVersion.getShortByte());
+    			baos.write(Utils.buildByteArrayFromString(Clank.NAME + " v" + Clank.VERSION, MediusConstants.SERVERVERSION_MAXLEN.getValue()));
+    		} catch (IOException e) {
+    			e.printStackTrace();
+    		}
+    		
+    		RTMessage c2 = new RTMessage(RTMessageId.SERVER_APP, baos.toByteArray());
     		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
     		ByteBuf msg2 = Unpooled.copiedBuffer(c2.toBytes());
     		ctx.write(msg2); // (1)
@@ -249,7 +261,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
 
 	
-	public void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
+	private void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
 			 if (packet.getId() == RTMessageId.CLIENT_ECHO) {
 				// Combine RT id and len
 				 RTMessage packetResponse = new RTMessage(RTMessageId.CLIENT_ECHO, packet.getPayload());

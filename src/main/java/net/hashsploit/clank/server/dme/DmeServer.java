@@ -50,12 +50,23 @@ public class DmeServer extends TcpServer {
 
 	@Override
 	public void stop() {
+		/*
 		logger.fine("Shutting down DME UDP game servers ...");
 		for (final UdpServer server : gameServers) {
 			logger.finest("Shutting down DME UDP game server on port " + server.getPort());
 			server.stop();
 		}
+		*/
 		super.stop();
+	}
+	
+	/**
+	 * Get all the UDP game servers currently running.
+	 * 
+	 * @return
+	 */
+	public HashSet<UdpServer> getGameServers() {
+		return gameServers;
 	}
 
 }
