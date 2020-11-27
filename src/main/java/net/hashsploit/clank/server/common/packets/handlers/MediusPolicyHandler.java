@@ -140,9 +140,9 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 					new String[] {
 						"0x" + Utils.bytesToHex(messageId),
 						"0x" + Utils.bytesToHex(padding),
-						callbackStatus.name() + " (0x" + Integer.toHexString(callbackStatus.getValue() & 0xFF) + ")",
-						new String(policy).replaceAll(Pattern.quote("\n"), "\\\\n").replaceAll(Pattern.quote("\r"), "\\\\r"),
-						endOfList + " (0x" + Integer.toHexString(endOfList ? 1 : 0) + ")"
+						callbackStatus.name() + " (0x" + Utils.intToHex(callbackStatus.getValue() & 0xFF) + ")",
+						Utils.bytesToStringClean(policy),
+						endOfList + " (0x" + Utils.intToHex(endOfList ? 1 : 0) + ")"
 					}
 				));
 			

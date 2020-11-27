@@ -30,23 +30,33 @@ public class Utils {
 	private static long lastPublicIpUpdate = 0L;
 
 	// Prevent instantiation
-	private Utils() {}
+	private Utils() {
+	}
 
 	/**
 	 * Convert an array of bytes into a string (without null-bytes)
+	 * 
 	 * @param data
 	 * @return
 	 */
 	public static String bytesToStringClean(byte[] data) {
 		final StringBuilder sb = new StringBuilder();
-		
+
 		for (byte b : data) {
-			if (b == 0x00) {
-				break;
+			if (b == (byte) 0x00) {
+				continue;
+			}
+			if (b == '\r') {
+				sb.append("\\r");
+				continue;
+			}
+			if (b == '\n') {
+				sb.append("\\n");
+				continue;
 			}
 			sb.append((char) b);
 		}
-		
+
 		return sb.toString();
 	}
 
@@ -149,7 +159,7 @@ public class Utils {
 		}
 		return dst;
 	}
-	
+
 	public static byte[] padByteArray(byte[] input, int length) {
 		ByteBuffer buffer = ByteBuffer.allocate(length);
 		buffer.put(input);
@@ -195,7 +205,7 @@ public class Utils {
 	public static final String intToHex(int value) {
 		return String.format("%1$02X", value);
 	}
-	
+
 	/**
 	 * Convert an array of bytes to a hex string.
 	 * 
@@ -379,6 +389,11 @@ public class Utils {
 		final String cornerSeparator = "+";
 		final String horizSeparator = "-";
 		final String vertSeparator = "|";
+		int maxValuePrintLength = 64;
+
+		if (Clank.getInstance() != null && Clank.getInstance().getTerminal() != null && Clank.getInstance().getTerminal().getConsoleReader().getTerminal().isSupported()) {
+			maxValuePrintLength = Clank.getInstance().getTerminal().getConsoleReader().getTerminal().getWidth() - 10;
+		}
 
 		int maxKeyLength = 0;
 		int maxValueLength = 0;
@@ -393,6 +408,10 @@ public class Utils {
 			if (v.length() > maxValueLength) {
 				maxValueLength = v.length() + 1;
 			}
+		}
+
+		if (maxValueLength > maxValuePrintLength) {
+			maxValueLength = maxValuePrintLength + 1;
 		}
 
 		sb.append("PACKET DISASSEMBLY: ").append(title).append("\n");
@@ -428,21 +447,47 @@ public class Utils {
 		sb.append(cornerSeparator).append("\n");
 
 		for (int i = 0; i < keys.length; i++) {
-			final String key = keys[i];
-			final String value = values[i];
+			final String key = Utils.bytesToStringClean(keys[i].getBytes());
+			final String value = Utils.bytesToStringClean(values[i].getBytes());
+			
 			sb.append(vertSeparator).append(" ").append(key);
 
 			for (int j = 0; j < maxKeyLength - key.length(); j++) {
 				sb.append(" ");
 			}
 
-			sb.append(vertSeparator).append(" ").append(value);
+			if (value.length() > maxValuePrintLength) {
+				for (int j = 0; j < value.length(); j += maxValuePrintLength) {
+					int remaining = j + maxValuePrintLength;
+					if (remaining > value.length()) {
+						remaining = value.length();
+					}
 
-			for (int j = 0; j < maxValueLength - value.length(); j++) {
-				sb.append(" ");
+					final String segment = value.substring(j, remaining);
+
+					// Add key spacing
+					if (j > 0) {
+						sb.append(vertSeparator).append(" ");
+						for (int k = 0; k < maxKeyLength; k++) {
+							sb.append(" ");
+						}
+					}
+
+					sb.append(vertSeparator).append(" ").append(segment);
+					for (int k = 0; k < maxValueLength - segment.length(); k++) {
+						sb.append(" ");
+					}
+					sb.append(vertSeparator).append("\n");
+				}
+
+			} else {
+				sb.append(vertSeparator).append(" ").append(value);
+				for (int j = 0; j < maxValueLength - value.length(); j++) {
+					sb.append(" ");
+				}
+				sb.append(vertSeparator).append("\n");
 			}
 
-			sb.append(vertSeparator).append("\n");
 		}
 
 		sb.append(cornerSeparator);

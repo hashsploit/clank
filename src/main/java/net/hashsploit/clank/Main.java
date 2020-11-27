@@ -15,34 +15,35 @@ import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.config.configs.MpsConfig;
 import net.hashsploit.clank.config.configs.MuisConfig;
+
 public class Main {
-	
+
 	public static void main(String[] args) {
-		
+
 		if (args.length != 1) {
 			System.err.println("Required argument: 1 (config file)");
 			return;
 		}
-		
+
 		AbstractConfig config = null;
-		
+
 		try {
 			final File file = new File(args[0]);
-			
+
 			if (!file.isFile()) {
 				System.err.println(String.format("File not found: %s", args[0]));
 				return;
 			}
-			
+
 			if (!file.getName().endsWith(".json")) {
 				System.err.println(String.format("The configuration file '%s' must be a .json file. ", args[0]));
 				return;
 			}
-			
+
 			JSONTokener jsonTokener = new JSONTokener(new FileReader(new File(args[0])));
 			JSONObject jsonConfig = new JSONObject(jsonTokener);
 			EmulationMode mode = EmulationMode.valueOf(jsonConfig.getString(ConfigNames.EMULATION_MODE.toString()));
-			
+
 			switch (mode) {
 				case MEDIUS_UNIVERSE_INFORMATION_SERVER:
 					config = new MuisConfig(jsonConfig);
@@ -63,7 +64,7 @@ public class Main {
 					System.err.println(String.format("Invalid 'emulation_mode' provided in the config file %s", args[0]));
 					return;
 			}
-			
+
 		} catch (JSONException e) {
 			System.err.println(String.format("Failed to start server, failed to parse JSON config error: %s", e.getMessage()));
 			return;
@@ -75,7 +76,7 @@ public class Main {
 			t.printStackTrace();
 			return;
 		}
-		
+
 		new Clank(config);
 	}
 }

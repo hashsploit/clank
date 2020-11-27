@@ -2,7 +2,6 @@ package net.hashsploit.clank.server.common.packets.serializers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.regex.Pattern;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusMessageType;
@@ -67,7 +66,7 @@ public class GetAnnouncementsResponse extends MediusMessage {
 				"0x" + Utils.bytesToHex(padding),
 				callbackStatus.name() + " (0x" + Utils.intToHex(callbackStatus.getValue()) + ")",
 				"" + announcementId + "(0x" + Utils.intToHex(announcementId) + ")",
-				Utils.bytesToStringClean(announcement).replace(Pattern.quote("\n"), "\\\\n").replace(Pattern.quote("\r"), "\\\\r"),
+				Utils.bytesToStringClean(announcement),
 				"" + endOfList + " (0x" + Utils.intToHex(endOfList ? 1 : 0) + ")"
 			}
 		);
