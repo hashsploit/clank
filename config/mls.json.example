@@ -17,8 +17,10 @@
 		"address": "172.16.221.250",
 		"port": 10079
 	},
-	"policy": "End User License Agreement",
-	"announcements": "Welcome back players",
+	"policy": "Welcome, this is the default policy for the clank server emulator. \r\n\r\nhttps://github.com/hashsploit/clank",
+	"announcements": [
+		"This is an announcement."
+	],
 	"operators": [
 		"hashsploit",
 		"fourbolt"
