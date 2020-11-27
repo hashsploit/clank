@@ -73,7 +73,7 @@ public class Utils {
 			if (b == 0x00) {
 				break;
 			}
-			sb.append(b);
+			sb.append((char) b);
 		}
 		
 		return sb.toString();
