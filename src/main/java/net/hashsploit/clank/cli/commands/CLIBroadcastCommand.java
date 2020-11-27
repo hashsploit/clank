@@ -1,20 +1,14 @@
 package net.hashsploit.clank.cli.commands;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.logging.Level;
 
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
-import net.hashsploit.clank.server.ChatColor;
-import net.hashsploit.clank.server.IClient;
-import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.scert.objects.RTMsgEncodingType;
-import net.hashsploit.clank.server.scert.objects.RTMsgLanguageType;
+import net.hashsploit.clank.server.common.MediusServer;
+import net.hashsploit.clank.utils.Utils;
 
 public class CLIBroadcastCommand implements ICLICommand {
 	
@@ -34,22 +28,10 @@ public class CLIBroadcastCommand implements ICLICommand {
 				throw new IllegalArgumentException();
 			}
 			
-			// TODO: make this cleaner, add this functionality into the MediusClient itself.
-			ByteArrayOutputStream baos = new ByteArrayOutputStream();
-			try {
-				baos.write((byte) severity); // Severity 255 (1 byte)
-				baos.write(RTMsgEncodingType.RT_MSG_ENCODING_UTF8.getValue()); // Encoding type (1 byte)
-				baos.write(RTMsgLanguageType.RT_MSG_LANGUAGE_US_ENGLISH.getValue()); // Language type (1 byte)
-				baos.write((byte) 1); // EndOfList boolean (1 byte)
-				baos.write(ChatColor.parse(message));
-				baos.write((byte) 0x00);
-			} catch (IOException e) {}
+			final int mask = (EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue());
 			
-			for (IClient c : Clank.getInstance().getServer().getClients()) {
-				if (c instanceof MediusClient) {
-					final MediusClient client = (MediusClient) c;
-					client.sendMessage(new RTMessage(RTMessageId.SERVER_SYSTEM_MESSAGE, baos.toByteArray()));
-				}
+			if (Utils.isInBitmask(Clank.getInstance().getConfig().getEmulationMode().getValue(), mask)) {
+				((MediusServer) Clank.getInstance().getServer()).sendSystemBroadcastMessage(severity, message);
 			}
 			
 			term.print(Level.INFO, String.format("Sent system message '%s' to %d client(s).", message, Clank.getInstance().getServer().getClients().size()));
