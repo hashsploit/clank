@@ -10,6 +10,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
@@ -20,7 +22,7 @@ import net.hashsploit.clank.utils.Utils;
  */
 public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
-	private static final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger(TestHandlerDmeTcp.class.getName());
 	private final DmeTcpClient client;
 
 	public TestHandlerDmeTcp(final DmeTcpClient client) {
@@ -31,12 +33,12 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
-		logger.fine(ctx.channel().remoteAddress() + ": channel active");
+		logger.fine("[TCP]" + ctx.channel().remoteAddress() + ": channel active");
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) {
-		logger.fine(ctx.channel().remoteAddress() + ": channel inactive");
+		logger.fine("[TCP]" + ctx.channel().remoteAddress() + ": channel inactive");
 	}
 
 	
@@ -139,9 +141,15 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		
     		// Server AUX UDP Info (IP and port)
     		ByteBuffer buf = ByteBuffer.allocate(18);
-    		final byte[] udpAddr = Utils.buildByteArrayFromString("192.168.1.99", 16);
+    		String udpAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
+    		int udpPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
+    		
+    		logger.finest("DME config ip: " + udpAddress + ":" + udpPort);
+    		
+    		final byte[] udpAddr = Utils.buildByteArrayFromString(udpAddress, 16);
+    		
     		buf.put(ipAddr);
-    		buf.put(Utils.hexStringToByteArray("51C3"));
+    		buf.put(Utils.shortToBytesLittle((short) udpPort));
     		
     		RTMessage da = new RTMessage(RTMessageId.SERVER_INFO_AUX_UDP, buf.array());
     		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));

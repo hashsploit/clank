@@ -111,7 +111,7 @@ public class DmeConfig extends AbstractConfig {
 		final String key = ConfigNames.UDP_ADDRESS.toString();
 
 		if (getJson().isNull(key)) {
-			return "";
+			return null;
 		}
 
 		return getJson().getString(key);
