@@ -6,6 +6,8 @@ import java.util.logging.Logger;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.server.UdpServer;
 
@@ -26,7 +28,7 @@ public class DmeServer extends TcpServer {
 		this.udpThreads = udpThreads;
 		this.gameServers = new HashSet<UdpServer>();
 		
-		String udpServerAddress = "192.168.1.99";
+		String udpServerAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
 		int udpServerPort = 50001;
 		EventLoopGroup udpEventLoopGroup =  new EpollEventLoopGroup(2);
 
