@@ -36,8 +36,8 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		
 		// TODO: handle logic elsewhere (controller/model design)
 		// TODO: Clean the username!!! add a utility to check if the username is valid, length, and characters in it.
-		final String username = Utils.bytesToStringEndNull(reqPacket.getUsernameBytes());
-		final String password = Utils.bytesToStringEndNull(reqPacket.getPasswordBytes());
+		final String username = Utils.parseMediusString(reqPacket.getUsernameBytes());
+		final String password = Utils.parseMediusString(reqPacket.getPasswordBytes());
 
 		if (Clank.getInstance().getDatabase().accountExists(username)) {
 			if (Clank.getInstance().getDatabase().validateAccount(username, password)) {

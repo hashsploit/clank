@@ -66,7 +66,7 @@ public class Utils {
 	 * @param data
 	 * @return
 	 */
-	public static String bytesToStringEndNull(byte[] data) {
+	public static String parseMediusString(byte[] data) {
 		final StringBuilder sb = new StringBuilder();
 		
 		for (byte b : data) {
