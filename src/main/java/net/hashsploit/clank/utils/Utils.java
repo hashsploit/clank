@@ -411,7 +411,7 @@ public class Utils {
 		int maxValuePrintLength = 64;
 
 		if (Clank.getInstance() != null && Clank.getInstance().getTerminal() != null && Clank.getInstance().getTerminal().getConsoleReader().getTerminal().isSupported()) {
-			maxValuePrintLength = Clank.getInstance().getTerminal().getConsoleReader().getTerminal().getWidth() - 10;
+			maxValuePrintLength = Math.max(8, Clank.getInstance().getTerminal().getConsoleReader().getTerminal().getWidth() - 24);
 		}
 
 		int maxKeyLength = 0;
