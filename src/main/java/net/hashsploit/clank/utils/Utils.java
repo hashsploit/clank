@@ -25,23 +25,38 @@ public class Utils {
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
 	private static final int PUBLIC_IP_UPDATE_TRESHOLD = 60;
-	
+
 	private static String lastPublicIp = null;
 	private static long lastPublicIpUpdate = 0L;
 
 	// Prevent instantiation
 	private Utils() {}
 
+	/**
+	 * Convert an array of bytes into a string (without null-bytes)
+	 * @param data
+	 * @return
+	 */
 	public static String bytesToStringClean(byte[] data) {
-		String result = "";
+		final StringBuilder sb = new StringBuilder();
+		
 		for (byte b : data) {
-			if (b == 0x00)
+			if (b == 0x00) {
 				break;
-			result += (char) b;
+			}
+			sb.append((char) b);
 		}
-		return result;
+		
+		return sb.toString();
 	}
 
+	/**
+	 * Decode an array of bytes into RT message frames.
+	 * 
+	 * @deprecated
+	 * @param data
+	 * @return
+	 */
 	public static List<RTMessage> decodeRTMessageFrames(byte[] data) {
 		final List<RTMessage> packets = new ArrayList<RTMessage>();
 
@@ -66,7 +81,6 @@ public class Utils {
 					offset += 1 + 2;
 				}
 
-				
 				// logger.warning("PLAIN DATA PACKET");
 				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
 
@@ -135,6 +149,13 @@ public class Utils {
 		}
 		return dst;
 	}
+	
+	public static byte[] padByteArray(byte[] input, int length) {
+		ByteBuffer buffer = ByteBuffer.allocate(length);
+		buffer.put(input);
+		buffer.flip();
+		return buffer.array();
+	}
 
 	/**
 	 * Validate if a sequence of two byte arrays equal each other.
@@ -156,62 +177,80 @@ public class Utils {
 	}
 
 	/**
-	 * Represent a byte as a string.
+	 * Convert a byte to a hex string.
 	 * 
 	 * @param data
 	 * @return
 	 */
-	public static final String byteToString(byte data) {
+	public static final String byteToHex(byte data) {
 		return String.format("%02X", data);
 	}
 
 	/**
-	 * Represent an array of bytes as a string.
+	 * Convert an integer to a hex string.
 	 * 
-	 * @param buffer
+	 * @param value
 	 * @return
 	 */
-	public static final String bytesToString(byte[] buffer) {
-		final StringBuilder sb = new StringBuilder();
-		for (int i = 0; i < buffer.length; ++i) {
-			sb.append(byteToString(buffer[i]));
-		}
-		return sb.toString();
+	public static final String intToHex(int value) {
+		return String.format("%1$02X", value);
 	}
-
+	
+	/**
+	 * Convert an array of bytes to a hex string.
+	 * 
+	 * @param bytes
+	 * @return
+	 */
 	public static String bytesToHex(byte[] bytes) {
 		char[] hexChars = new char[bytes.length * 2];
+
 		for (int j = 0; j < bytes.length; j++) {
 			int v = bytes[j] & 0xFF;
 			hexChars[j * 2] = HEX_ARRAY[v >>> 4];
 			hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
 		}
+
 		return new String(hexChars).toLowerCase();
 	}
 
-	/* s must be an even-length string. */
-	public static byte[] hexStringToByteArray(String s) {
-		int len = s.length();
-		byte[] data = new byte[len / 2];
+	/**
+	 * Convert a hex string to a byte array. Must be full bytes! AE13 ... etc.
+	 * 
+	 * @param hexString
+	 * @return
+	 */
+	public static byte[] hexStringToByteArray(final String hexString) {
+		final int len = hexString.length();
+		final byte[] data = new byte[len / 2];
+
 		for (int i = 0; i < len; i += 2) {
-			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4) + Character.digit(s.charAt(i + 1), 16));
+			data[i / 2] = (byte) ((Character.digit(hexString.charAt(i), 16) << 4) + Character.digit(hexString.charAt(i + 1), 16));
 		}
+
 		return data;
 	}
 
+	/**
+	 * Convert an int to a byte array.
+	 * 
+	 * @param data
+	 * @return byteArray
+	 */
 	public static byte[] intToBytes(final int data) {
 		ByteBuffer b = ByteBuffer.allocate(4);
+
 		b.order(ByteOrder.BIG_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
 		b.putInt(data);
 
-		byte[] result = b.array();
-		return result;
+		return b.array();
 	}
 
 	/**
 	 * Check if a TCP port is already in use.
+	 * 
 	 * @param port
-	 * @return
+	 * @return boolean
 	 */
 	public static boolean tcpPortIsAvailable(String address, int port) {
 		ServerSocket ss = null;
@@ -225,16 +264,18 @@ public class Utils {
 			if (ss != null) {
 				try {
 					ss.close();
-				} catch (IOException e) {}
+				} catch (IOException e) {
+				}
 			}
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Check if a UDP port is already in use.
+	 * 
 	 * @param port
-	 * @return
+	 * @return boolean
 	 */
 	public static boolean udpPortIsAvailable(String address, int port) {
 		DatagramSocket ds = null;
@@ -251,10 +292,12 @@ public class Utils {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Get the server's current public IP Address.
-	 * @return
+	 * Get the server's current public IP Address. This will return null if it
+	 * cannot contact the remote service.
+	 * 
+	 * @return publicIpAddress
 	 */
 	public static String getPublicIpAddress() {
 
@@ -262,35 +305,70 @@ public class Utils {
 		if (lastPublicIpUpdate + (1000 * PUBLIC_IP_UPDATE_TRESHOLD) > new Date().getTime()) {
 			return lastPublicIp;
 		}
-		
+
 		try {
 			Clank.getInstance().getTerminal().print(Level.FINE, "Getting public IP Address from api.ipify.org ...");
 			URL url = new URL("https://api.ipify.org");
 			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
-			
+
 			if (connection.getResponseCode() == 200 || connection.getResponseCode() == 304) {
 				final String ipAddr = new BufferedReader(new InputStreamReader(connection.getInputStream())).lines().collect(Collectors.joining()).trim();
 				Clank.getInstance().getTerminal().print(Level.FINEST, String.format("Public IP address: %s", ipAddr));
-				
+
 				// Set cache.
 				lastPublicIp = ipAddr;
 				lastPublicIpUpdate = new Date().getTime();
-				
+
 				return ipAddr;
 			}
-			
+
 			Clank.getInstance().getTerminal().print(Level.SEVERE, "Got non-HTTP 200 status from ipify endpoint!");
 		} catch (IOException e) {
 			Clank.getInstance().getTerminal().print(Level.SEVERE, "Failed to get the public IP Address!");
 			e.printStackTrace();
 		}
-		
+
 		return null;
 	}
-	
+
+	/**
+	 * Add needle flag(s) to the haystack bitmask.
+	 * 
+	 * @param needle
+	 * @param haystack
+	 * @return
+	 */
+	public static int addToBitmask(int needle, int haystack) {
+		return needle | haystack;
+	}
+
+	/**
+	 * Remove needle flag(s) from the haystack bitmask.
+	 * 
+	 * @param needle
+	 * @param haystack
+	 * @return
+	 */
+	public static int removeFromBitmask(int needle, int haystack) {
+		return haystack &= ~needle;
+	}
+
+	/**
+	 * Check if the needle flag(s) are in the haystack mask. This is useful for
+	 * checking if a value is in a bitmask. For example
+	 * (MEDIUS_AUTHENTICATION_SERVER | MEDIUS_LOBBY_SERVER).
+	 * 
+	 * @param needle
+	 * @param haystack
+	 * @return
+	 */
+	public static boolean isInBitmask(int needle, int haystack) {
+		return (needle & haystack) != 0;
+	}
+
 	/**
 	 * Generate a pretty Key-Value pair table to display packet disassembly.
-	 *  
+	 * 
 	 * @param title
 	 * @param keys
 	 * @param values
@@ -301,82 +379,82 @@ public class Utils {
 		final String cornerSeparator = "+";
 		final String horizSeparator = "-";
 		final String vertSeparator = "|";
-		
+
 		int maxKeyLength = 0;
 		int maxValueLength = 0;
-		
+
 		for (final String k : keys) {
 			if (k.length() > maxKeyLength) {
 				maxKeyLength = k.length() + 1;
 			}
 		}
-		
+
 		for (final String v : values) {
 			if (v.length() > maxValueLength) {
 				maxValueLength = v.length() + 1;
 			}
 		}
-		
+
 		sb.append("PACKET DISASSEMBLY: ").append(title).append("\n");
-		
+
 		sb.append(cornerSeparator);
-		for (int i=0; i<maxKeyLength+1; i++) {
+		for (int i = 0; i < maxKeyLength + 1; i++) {
 			sb.append(horizSeparator);
 		}
 		sb.append(cornerSeparator);
-		for (int i=0; i<maxValueLength+1; i++) {
+		for (int i = 0; i < maxValueLength + 1; i++) {
 			sb.append(horizSeparator);
 		}
 		sb.append(cornerSeparator).append("\n");
-		
+
 		sb.append(vertSeparator).append(" ").append("Key");
-		for (int i=0; i<maxKeyLength - 3; i++) {
+		for (int i = 0; i < maxKeyLength - 3; i++) {
 			sb.append(" ");
 		}
 		sb.append(vertSeparator).append(" ").append("Value");
-		for (int i=0; i<maxValueLength - 5; i++) {
+		for (int i = 0; i < maxValueLength - 5; i++) {
 			sb.append(" ");
 		}
 		sb.append(vertSeparator).append("\n");
-		
+
 		sb.append(cornerSeparator);
-		for (int i=0; i<maxKeyLength+1; i++) {
+		for (int i = 0; i < maxKeyLength + 1; i++) {
 			sb.append(horizSeparator);
 		}
 		sb.append(cornerSeparator);
-		for (int i=0; i<maxValueLength+1; i++) {
+		for (int i = 0; i < maxValueLength + 1; i++) {
 			sb.append(horizSeparator);
 		}
 		sb.append(cornerSeparator).append("\n");
-		
-		for (int i=0; i<keys.length; i++) {
+
+		for (int i = 0; i < keys.length; i++) {
 			final String key = keys[i];
 			final String value = values[i];
 			sb.append(vertSeparator).append(" ").append(key);
-			
-			for (int j=0; j<maxKeyLength - key.length(); j++) {
+
+			for (int j = 0; j < maxKeyLength - key.length(); j++) {
 				sb.append(" ");
 			}
-			
+
 			sb.append(vertSeparator).append(" ").append(value);
-			
-			for (int j=0; j<maxValueLength - value.length(); j++) {
+
+			for (int j = 0; j < maxValueLength - value.length(); j++) {
 				sb.append(" ");
 			}
-			
+
 			sb.append(vertSeparator).append("\n");
 		}
-		
+
 		sb.append(cornerSeparator);
-		for (int i=0; i<maxKeyLength+1; i++) {
+		for (int i = 0; i < maxKeyLength + 1; i++) {
 			sb.append(horizSeparator);
 		}
 		sb.append(cornerSeparator);
-		for (int i=0; i<maxValueLength+1; i++) {
+		for (int i = 0; i < maxValueLength + 1; i++) {
 			sb.append(horizSeparator);
 		}
 		sb.append(cornerSeparator).append("\n");
-		
+
 		return sb.toString();
 	}
 

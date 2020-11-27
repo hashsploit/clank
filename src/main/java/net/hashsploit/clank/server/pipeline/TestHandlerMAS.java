@@ -9,8 +9,8 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -40,29 +40,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 	public void channelInactive(ChannelHandlerContext ctx) {
 		logger.fine(ctx.channel().remoteAddress() + ": channel inactive");
 	}
-	
-	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for (int j = 0; j < bytes.length; j++) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-	        hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
-	
-	/* s must be an even-length string. */
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
-	
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {      
 		final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
@@ -92,8 +70,6 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
 
 		for (RTMessage packet: packets) {
-			//DataPacket packet = new DataPacket(rtid, Arrays.copyOfRange(data, 3, data.length));
-			logger.finest("RAW: " + Utils.bytesToString(packet.toBytes()));
 
 		    logger.fine("Packet ID: " + rtid.toString());
 		    logger.fine("Packet ID: " + rtid.getValue());
@@ -144,29 +120,29 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine(clientIP);
 			RTMessageId resultrtid = RTMessageId.SERVER_CONNECT_ACCEPT_TCP;
 			
-			byte[] header = hexStringToByteArray("01081000000100");
+			byte[] header = Utils.hexStringToByteArray("01081000000100");
 			byte[] ipAddr = clientIP.getBytes();
 			int numZeros = 16 - client.getIPAddress().substring(1).length();
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
-			byte[] zeroTrail = hexStringToByteArray(zeroString);
+			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 			byte[] allByteArray = new byte[header.length + ipAddr.length + zeroTrail.length];
 			ByteBuffer buff = ByteBuffer.wrap(allByteArray);
 			buff.put(header);
 			buff.put(ipAddr);
 			buff.put(zeroTrail);
 			
-			logger.fine("Data header: " + bytesToHex(header));
-			logger.fine("IP: " + bytesToHex(ipAddr));
-			logger.fine("IP Padding encode/decode: " + bytesToHex(zeroTrail));
+			logger.fine("Data header: " + Utils.bytesToHex(header));
+			logger.fine("IP: " + Utils.bytesToHex(ipAddr));
+			logger.fine("IP Padding encode/decode: " + Utils.bytesToHex(zeroTrail));
 
 			byte[] payload = buff.array();
 			
-			logger.fine("Payload: " + bytesToHex(payload));
+			logger.fine("Payload: " + Utils.bytesToHex(payload));
 			
 			RTMessage dataPacket = new RTMessage(resultrtid, payload);
 			byte[] dataPacketBuffer = dataPacket.toBytes();
 			
-			byte[] extraPacket = hexStringToByteArray("1A02000100");
+			byte[] extraPacket = Utils.hexStringToByteArray("1A02000100");
 			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			try {
@@ -178,7 +154,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			}
 			
 			byte[] finalPayload = outputStream.toByteArray();
-			logger.fine("Final payload: " + bytesToHex(finalPayload));
+			logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
 	        ctx.write(Unpooled.copiedBuffer(finalPayload)); // (1)
 	        ctx.flush(); // (2)
 		}

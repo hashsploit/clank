@@ -2,7 +2,6 @@ package net.hashsploit.clank.server.common.objects;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.logging.Logger;
 
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.utils.Utils;
@@ -11,7 +10,6 @@ public class MediusMessage {
 
 	private MediusMessageType packetType;
 	private byte[] data;
-	private static final Logger logger = Logger.getLogger(MediusMessage.class.getName());
 
 	public MediusMessage(byte[] incomingData) {
 		// Get medius packet type

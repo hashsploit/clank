@@ -26,7 +26,7 @@ public class GetAllAnnouncementsRequest extends MediusMessage {
 				"sessionKey: " + Utils.bytesToHex(sessionKey);
 	}
 	
-	public synchronized byte[] getMessageID() {
+	public synchronized byte[] getMessageId() {
 		return messageID;
 	}
 	

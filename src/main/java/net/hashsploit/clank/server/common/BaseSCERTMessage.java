@@ -35,7 +35,7 @@ public abstract class BaseSCERTMessage implements IRTMessage {
 	
 	@Override
 	public String toString() {
-		return "BaseSCERTMessage[ID: " + this.getId().name() + " Len: " + this.getLength() + " Payload: " + Utils.bytesToString(this.getPayload()) + "]";
+		return "BaseSCERTMessage[ID: " + this.getId().name() + " Len: " + this.getLength() + " Payload: " + Utils.bytesToHex(this.getPayload()) + "]";
 	}
 	
 	

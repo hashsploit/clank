@@ -2,98 +2,79 @@ package net.hashsploit.clank.server.common.packets.serializers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
+import java.util.regex.Pattern;
 
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
-import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class GetAnnouncementsResponse extends MediusMessage {
 
-	private byte[] messageID;
-	private byte[] callbackStatus;
-	private byte[] announcementID;
-	private byte[] announcement;
-	private byte[] endOfList;
+	private final byte[] messageId;
+	private final byte[] padding;
+	private final MediusCallbackStatus callbackStatus;
+	private final int announcementId;
+	private final byte[] announcement;
+	private final boolean endOfList;
+	
+	private byte[] payload;
 
-	public GetAnnouncementsResponse(byte[] messageID, byte[] callbackStatus, byte[] announcementID, byte[] announcement, byte[] endOfList) {
+	public GetAnnouncementsResponse(byte[] messageId, MediusCallbackStatus callbackStatus, int announcementId, byte[] announcement, boolean endOfList) {
 		super(MediusMessageType.GetAnnouncementsResponse);
-		this.messageID = messageID;
+		this.messageId = messageId;
+		this.padding = new byte[3];
 		this.callbackStatus = callbackStatus;
-		this.announcementID = announcementID;
+		this.announcementId = announcementId;
 		this.announcement = announcement;
 		this.endOfList = endOfList;
+		
+		final ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		
+		try {
+			buffer.write(messageId);
+			buffer.write(padding);
+			buffer.write(Utils.intToBytesLittle(callbackStatus.getValue()));
+			buffer.write(Utils.intToBytesLittle(announcementId));
+			buffer.write(announcement);
+			buffer.write(Utils.intToBytesLittle(endOfList ? 1 : 0));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		payload = buffer.toByteArray();
+		
 	}
 
 	@Override
 	public byte[] getPayload() {
-		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-		try {
-			outputStream.write(messageID);
-			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(callbackStatus);
-			outputStream.write(announcementID);
-			outputStream.write(announcement);
-			outputStream.write(endOfList);
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return outputStream.toByteArray();
+		return payload;
 	}
 	
+	@Override
+	public String getDebugString() {
+		return Utils.generateDebugPacketString(GetAnnouncementsResponse.class.getName(),
+			new String[] {
+				"messageId",
+				"padding",
+				"callbackStatus",
+				"announcementId",
+				"announcement",
+				"endOfList",
+			},
+			new String[] {
+				"0x" + Utils.bytesToHex(messageId),
+				"0x" + Utils.bytesToHex(padding),
+				callbackStatus.name() + " (0x" + Utils.intToHex(callbackStatus.getValue()) + ")",
+				"" + announcementId + "(0x" + Utils.intToHex(announcementId) + ")",
+				Utils.bytesToStringClean(announcement).replace(Pattern.quote("\n"), "\\\\n").replace(Pattern.quote("\r"), "\\\\r"),
+				"" + endOfList + " (0x" + Utils.intToHex(endOfList ? 1 : 0) + ")"
+			}
+		);
+	}
 	
-	public String toString() {
-		return "GetAllAnnouncementsResponse: \n" + 
-				"messageID: " + Utils.bytesToHex(messageID) + '\n' + 
-				"callbackStatus: " + Utils.bytesToHex(callbackStatus) + '\n' + 
-				"announcementID: " + Utils.bytesToHex(announcementID) + '\n' + 
-				"announcement: " + Utils.bytesToHex(announcement) + '\n' + 
-				"endOfList: " + Utils.bytesToHex(endOfList);
+	public byte[] getMessageId() {
+		return messageId;
 	}
 
-	public synchronized byte[] getMessageID() {
-		return messageID;
-	}
-
-	public synchronized void setMessageID(byte[] messageID) {
-		this.messageID = messageID;
-	}
-
-	public synchronized byte[] getCallbackStatus() {
-		return callbackStatus;
-	}
-
-	public synchronized void setCallbackStatus(byte[] callbackStatus) {
-		this.callbackStatus = callbackStatus;
-	}
-
-	public synchronized byte[] getAnnouncementID() {
-		return announcementID;
-	}
-
-	public synchronized void setAnnouncementID(byte[] announcementID) {
-		this.announcementID = announcementID;
-	}
-
-	public synchronized byte[] getAnnouncement() {
-		return announcement;
-	}
-
-	public synchronized void setAnnouncement(byte[] announcement) {
-		this.announcement = announcement;
-	}
-
-	public synchronized byte[] getEndOfList() {
-		return endOfList;
-	}
-
-	public synchronized void setEndOfList(byte[] endOfList) {
-		this.endOfList = endOfList;
-	}
-		
-	
 }

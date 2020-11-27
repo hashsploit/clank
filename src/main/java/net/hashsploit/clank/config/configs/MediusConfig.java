@@ -23,8 +23,6 @@ public class MediusConfig extends AbstractConfig {
 		if (getJson().isNull(key)) {
 			return "";
 		}
-		
-		System.err.println("################################# " + getJson().getString(key));
 
 		return getJson().getString(key);
 	}

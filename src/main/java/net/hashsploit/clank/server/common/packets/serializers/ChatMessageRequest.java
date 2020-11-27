@@ -43,7 +43,7 @@ public class ChatMessageRequest extends MediusMessage {
 				Utils.bytesToHex(sessionKey),
 				Utils.bytesToHex(messageType),
 				Utils.bytesToHex(targetID),
-				Utils.bytesToString(text)
+				Utils.bytesToStringClean(text)
 			}
 		);
 	}

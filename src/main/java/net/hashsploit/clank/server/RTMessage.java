@@ -2,14 +2,9 @@ package net.hashsploit.clank.server;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
-import java.util.logging.Logger;
-
-import net.hashsploit.clank.utils.Utils;
 
 public class RTMessage implements IRTMessage {
-	private static final Logger logger = Logger.getLogger("");
-
+	
 	private final RTMessageId id;
 	private final short length;
 	private final byte[] payload;
@@ -22,7 +17,13 @@ public class RTMessage implements IRTMessage {
 	 */
 	public RTMessage(RTMessageId id, byte[] payload) {
 		this.id = id;
+		
+		if (payload == null) {
+			payload = new byte[0];
+		}
+		
 		this.length = (short) payload.length;
+		
 	    // Remove RT-ID and length from the packet data
 		this.payload = payload;
 	}

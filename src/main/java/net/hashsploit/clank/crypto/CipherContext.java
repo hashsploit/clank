@@ -1,5 +1,7 @@
 package net.hashsploit.clank.crypto;
 
+import net.hashsploit.clank.utils.Utils;
+
 /**
  * Highest 3 bits of the hash/checksum.
  * Denotes which key used to sign the message.
@@ -26,4 +28,10 @@ public enum CipherContext {
 	public final byte getByte() {
 		return id;
 	}
+	
+	@Override
+	public String toString() {
+		return "0x" + Utils.byteToHex(getByte());
+	}
+	
 }

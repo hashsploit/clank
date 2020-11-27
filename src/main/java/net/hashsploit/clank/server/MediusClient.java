@@ -60,17 +60,19 @@ public class MediusClient implements IClient {
 		});
 
 	}
-	
+
 	/**
 	 * Get the Medius Server associated with this client.
+	 * 
 	 * @return
 	 */
 	public MediusServer getServer() {
 		return server;
 	}
-	
+
 	/**
 	 * Get the Socket Channel associated with this client.
+	 * 
 	 * @return
 	 */
 	protected SocketChannel getSocketChannel() {
@@ -83,9 +85,9 @@ public class MediusClient implements IClient {
 	public String getIPAddress() {
 		return socketChannel.remoteAddress().getAddress().getHostAddress();
 	}
-	
+
 	/**
-	 * Get the client's socket port. 
+	 * Get the client's socket port.
 	 */
 	public int getPort() {
 		return socketChannel.remoteAddress().getPort();
@@ -100,6 +102,7 @@ public class MediusClient implements IClient {
 
 	/**
 	 * Set the client's state bitmask.
+	 * 
 	 * @param state
 	 */
 	protected void setClientState(final ClientState state) {
@@ -114,17 +117,19 @@ public class MediusClient implements IClient {
 	public boolean isEncrypted() {
 		return encrypted;
 	}
-	
+
 	/**
 	 * Set if this client is using encryption or not.
+	 * 
 	 * @param encrypted
 	 */
 	protected void setEncrypted(final boolean encrypted) {
 		this.encrypted = encrypted;
 	}
-	
+
 	/**
 	 * Get the player object associated with this client.
+	 * 
 	 * @return
 	 */
 	public Player getPlayer() {
@@ -133,6 +138,7 @@ public class MediusClient implements IClient {
 
 	/**
 	 * Set the player object to be associated with this client.
+	 * 
 	 * @param player
 	 */
 	protected void setPlayer(final Player player) {
@@ -173,11 +179,10 @@ public class MediusClient implements IClient {
 	 */
 	public void sendRaw(byte[] data) {
 		ByteBuf msg = Unpooled.copiedBuffer(data);
-		socketChannel.pipeline().write(msg);
-		socketChannel.pipeline().flush();
+		socketChannel.pipeline().writeAndFlush(msg);
 		txPacketCount++;
 	}
-	
+
 	/**
 	 * Send a data packet to the client.
 	 * 

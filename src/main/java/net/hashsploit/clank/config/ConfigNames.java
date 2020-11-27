@@ -158,6 +158,21 @@ public enum ConfigNames {
 	DME_PORT("port"),
 	
 	/**
+	 * EULA/Policy agreement.
+	 */
+	POLICY("policy"),
+	
+	/**
+	 * Announcements text.
+	 */
+	ANNOUNCEMENTS("announcements"),
+	
+	/**
+	 * Player operators string array.
+	 */
+	OPERATORS("operators"),
+	
+	/**
 	 * Discord Webhook URLs.
 	 */
 	DISCORD_WEBHOOKS("discord_webhooks");
