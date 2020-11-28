@@ -17,7 +17,7 @@ public class GetAnnouncementsResponse extends MediusMessage {
 	private final byte[] announcement;
 	private final boolean endOfList;
 	
-	private byte[] payload;
+	private final byte[] payload;
 
 	public GetAnnouncementsResponse(byte[] messageId, MediusCallbackStatus callbackStatus, int announcementId, byte[] announcement, boolean endOfList) {
 		super(MediusMessageType.GetAnnouncementsResponse);

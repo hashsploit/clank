@@ -1,20 +1,10 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.logging.Logger;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
@@ -46,7 +36,8 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		byte[] playerSkillLevel = Utils.hexStringToByteArray("00000000");
 		byte[] playerCount = Utils.hexStringToByteArray("00000000");
 		byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
-		byte[] gameName = Utils.hexStringToByteArray("536d696c792773202020202020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
+		// Contains "username's" game string in this case, 'hashsploits' with 0x20 for spaces
+		byte[] gameName = Utils.hexStringToByteArray("6861736873706c6f6974277320202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
 		byte[] rulesSet = Utils.hexStringToByteArray("00000000");
 		byte[] genField1 = Utils.hexStringToByteArray("28000000");
 		byte[] genField2 = Utils.hexStringToByteArray("00000000");

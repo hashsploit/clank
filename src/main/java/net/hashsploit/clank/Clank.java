@@ -9,7 +9,6 @@ import net.hashsploit.clank.cli.ICLIEvent;
 import net.hashsploit.clank.cli.commands.CLIBroadcastCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
-import net.hashsploit.clank.cli.commands.CLIKillDmeServerCommand;
 import net.hashsploit.clank.cli.commands.CLIPlayersCommand;
 import net.hashsploit.clank.cli.commands.CLIVersionCommand;
 import net.hashsploit.clank.config.AbstractConfig;
@@ -162,7 +161,6 @@ public class Clank {
 			case DME_SERVER:
 				terminalPrompt = AnsiColor.GREEN + "DME>";
 				terminal.registerCommand(new CLIBroadcastCommand());
-				terminal.registerCommand(new CLIKillDmeServerCommand());
 				DmeConfig dmeConfig = (DmeConfig) config;
 				server = new DmeServer(
 					dmeConfig.getTcpAddress(),
