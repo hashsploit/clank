@@ -2,7 +2,6 @@ package net.hashsploit.clank.crypto;
 
 import java.nio.ByteBuffer;
 
-import net.hashsploit.clank.server.RTPacketId;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -275,7 +274,7 @@ public class RCQ implements ICipher {
 
 	@Override
 	public String toString() {
-		return "PS3_RC(" + context + ", " + Utils.bytesToString(key) + ")";
+		return "PS3_RC(" + context + ", 0x" + Utils.bytesToHex(key) + ")";
 	}
 
 }

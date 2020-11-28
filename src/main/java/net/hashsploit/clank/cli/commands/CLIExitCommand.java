@@ -1,6 +1,5 @@
 package net.hashsploit.clank.cli.commands;
 
-import net.hashsploit.clank.ServerComponent;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
@@ -19,16 +18,7 @@ public class CLIExitCommand implements ICLICommand {
 
 	@Override
 	public String commandDescription() {
-		return "Shutdown " + Clank.NAME + " " + Clank.VERSION + ".";
-	}
-
-	@Override
-	public int enabledMediusModes() {
-		int value = 0;
-		for (ServerComponent m : ServerComponent.values()) {
-			value |= m.getModeId();
-		}
-		return value;
+		return "Shutdown the server.";
 	}
 
 }

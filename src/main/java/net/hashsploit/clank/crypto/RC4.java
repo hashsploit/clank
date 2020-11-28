@@ -222,7 +222,7 @@ public class RC4 implements ICipher {
 
 	@Override
 	public String toString() {
-		return "PS2_RC4(" + context + ", " + Utils.bytesToString(workingKey) + ")";
+		return "PS2_RC4(" + context + ", 0x" + Utils.bytesToHex(workingKey) + ")";
 	}
 	
 }

@@ -140,6 +140,10 @@ public final class Terminal {
 			}
 		});
 	}
+	
+	public ConsoleReader getConsoleReader() {
+		return reader;
+	}
 
 	/**
 	 * Initialize the terminal.

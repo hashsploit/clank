@@ -1,6 +1,5 @@
 package net.hashsploit.clank.server;
 
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import io.netty.bootstrap.ServerBootstrap;
@@ -15,6 +14,7 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.hashsploit.clank.utils.Utils;
 
 public class TcpServer extends AbstractServer {
 	
@@ -38,9 +38,6 @@ public class TcpServer extends AbstractServer {
 		this.parentThreads = parentThreads;
 		this.childThreads = childThreads;
 
-		// Disable Netty from clogging up the console logs.
-		Logger.getLogger("io.netty").setLevel(Level.OFF);
-
 		// Use Linux epoll if available.
 		if (Epoll.isAvailable()) {
 			logger.fine("Linux epoll is available. Using epoll for socket channels.");
@@ -60,6 +57,10 @@ public class TcpServer extends AbstractServer {
 		
 		logger.info(String.format("Starting TCP server with %d parent thread(s), and %d child thread(s) ...", parentThreads, childThreads));
 		
+		if (!Utils.tcpPortIsAvailable(this.getAddress(), this.getPort())) {
+			throw new IllegalStateException(String.format("Port %s is currently in use!", this.getPort()));
+		}
+		
 		try {
 			final ServerBootstrap bootstrap = new ServerBootstrap();
 			bootstrap.group(parentEventLoopGroup, childEventLoopGroup)
@@ -68,7 +69,7 @@ public class TcpServer extends AbstractServer {
 				.childHandler(channelInitializer)
 				.childOption(ChannelOption.AUTO_CLOSE, true)
 				.childOption(ChannelOption.SO_KEEPALIVE, false);
-
+			
 			channelFuture = bootstrap.bind(this.getAddress(), this.getPort()).sync();
 			
 			if (channelFuture.isSuccess()) {

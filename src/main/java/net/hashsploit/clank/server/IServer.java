@@ -14,6 +14,8 @@ public interface IServer {
 	 */
 	public void stop();
 	
+	public HashSet<IClient> getClients();
+	
 	/**
 	 * Add a client to the current server.
 	 * @param client

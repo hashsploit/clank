@@ -5,18 +5,15 @@ import java.nio.ByteBuffer;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.bouncycastle.util.Arrays;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.DataPacket;
-import net.hashsploit.clank.server.RTPacketId;
-import net.hashsploit.clank.server.medius.MediusPacketHandler;
-import net.hashsploit.clank.server.medius.objects.MediusPacket;
+import net.hashsploit.clank.server.RTMessage;
+import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -43,29 +40,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 	public void channelInactive(ChannelHandlerContext ctx) {
 		logger.fine(ctx.channel().remoteAddress() + ": channel inactive");
 	}
-	
-	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-	public static String bytesToHex(byte[] bytes) {
-	    char[] hexChars = new char[bytes.length * 2];
-	    for (int j = 0; j < bytes.length; j++) {
-	        int v = bytes[j] & 0xFF;
-	        hexChars[j * 2] = HEX_ARRAY[v >>> 4];
-	        hexChars[j * 2 + 1] = HEX_ARRAY[v & 0x0F];
-	    }
-	    return new String(hexChars);
-	}
-	
-	/* s must be an even-length string. */
-	public static byte[] hexStringToByteArray(String s) {
-	    int len = s.length();
-	    byte[] data = new byte[len / 2];
-	    for (int i = 0; i < len; i += 2) {
-	        data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
-	                             + Character.digit(s.charAt(i+1), 16));
-	    }
-	    return data;
-	}
-	
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {      
 		final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
@@ -80,9 +55,9 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		}
 
 		// Get RT Packet ID
-		RTPacketId rtid = null;
+		RTMessageId rtid = null;
 		
-		for (RTPacketId p : RTPacketId.values()) {
+		for (RTMessageId p : RTMessageId.values()) {
 			if (p.getValue() == data[0]) {
 				rtid = p;
 				break;
@@ -92,11 +67,9 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<DataPacket> packets = Utils.decodeRTMessageFrames(data);
+		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
 
-		for (DataPacket packet: packets) {
-			//DataPacket packet = new DataPacket(rtid, Arrays.copyOfRange(data, 3, data.length));
-			logger.finest("RAW: " + Utils.bytesToString(packet.toBytes()));
+		for (RTMessage packet: packets) {
 
 		    logger.fine("Packet ID: " + rtid.toString());
 		    logger.fine("Packet ID: " + rtid.getValue());
@@ -110,24 +83,24 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 
     }
     
-    private void checkMediusPackets(ChannelHandlerContext ctx, DataPacket packet) {
+    private void checkMediusPackets(ChannelHandlerContext ctx, RTMessage packet) {
 	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
-    	MediusPacket mm = null;
+    	MediusMessage mm = null;
 	    if (packet.getId().toString().contains("APP")) {
 	    	
-	    	MediusPacket incomingMessage = new MediusPacket(packet.getPayload());
+	    	MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
 
 			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
 			
 			// Detect which medius packet is being parsed
-		    MediusPacketHandler mediusPacket = client.getMediusMap().get(incomingMessage.getMediusPacketType());
+		    MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
 		    
 		    // Process this medius packet
 		    mediusPacket.read(incomingMessage);
 		    mm = mediusPacket.write(client);	    
 		    if (mm != null) {
-		    	DataPacket responsepacket = new DataPacket(RTPacketId.SERVER_APP, mm.toBytes());
+		    	RTMessage responsepacket = new RTMessage(RTMessageId.SERVER_APP, mm.toBytes());
 	
 				byte[] finalPayload = responsepacket.toBytes();
 				logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
@@ -138,38 +111,38 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 	    }
     }
     
-    private void checkRTConnect(ChannelHandlerContext ctx, DataPacket packet) {
+    private void checkRTConnect(ChannelHandlerContext ctx, RTMessage packet) {
 		if (packet.getId().getValue() == (byte) 0x00) {
 			// =============================================
 			// CLIENT_CONNECT_TCP (0x00)
 			// =============================================
 			String clientIP = client.getIPAddress().substring(1);
 			logger.fine(clientIP);
-			RTPacketId resultrtid = RTPacketId.SERVER_CONNECT_ACCEPT_TCP;
+			RTMessageId resultrtid = RTMessageId.SERVER_CONNECT_ACCEPT_TCP;
 			
-			byte[] header = hexStringToByteArray("01081000000100");
+			byte[] header = Utils.hexStringToByteArray("01081000000100");
 			byte[] ipAddr = clientIP.getBytes();
 			int numZeros = 16 - client.getIPAddress().substring(1).length();
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
-			byte[] zeroTrail = hexStringToByteArray(zeroString);
+			byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 			byte[] allByteArray = new byte[header.length + ipAddr.length + zeroTrail.length];
 			ByteBuffer buff = ByteBuffer.wrap(allByteArray);
 			buff.put(header);
 			buff.put(ipAddr);
 			buff.put(zeroTrail);
 			
-			logger.fine("Data header: " + bytesToHex(header));
-			logger.fine("IP: " + bytesToHex(ipAddr));
-			logger.fine("IP Padding encode/decode: " + bytesToHex(zeroTrail));
+			logger.fine("Data header: " + Utils.bytesToHex(header));
+			logger.fine("IP: " + Utils.bytesToHex(ipAddr));
+			logger.fine("IP Padding encode/decode: " + Utils.bytesToHex(zeroTrail));
 
 			byte[] payload = buff.array();
 			
-			logger.fine("Payload: " + bytesToHex(payload));
+			logger.fine("Payload: " + Utils.bytesToHex(payload));
 			
-			DataPacket dataPacket = new DataPacket(resultrtid, payload);
+			RTMessage dataPacket = new RTMessage(resultrtid, payload);
 			byte[] dataPacketBuffer = dataPacket.toBytes();
 			
-			byte[] extraPacket = hexStringToByteArray("1A02000100");
+			byte[] extraPacket = Utils.hexStringToByteArray("1A02000100");
 			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 			try {
@@ -181,7 +154,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			}
 			
 			byte[] finalPayload = outputStream.toByteArray();
-			logger.fine("Final payload: " + bytesToHex(finalPayload));
+			logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
 	        ctx.write(Unpooled.copiedBuffer(finalPayload)); // (1)
 	        ctx.flush(); // (2)
 		}

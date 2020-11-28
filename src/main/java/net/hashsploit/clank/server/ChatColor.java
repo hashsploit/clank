@@ -1,6 +1,6 @@
 package net.hashsploit.clank.server;
 
-import java.util.regex.Pattern;
+import java.io.ByteArrayOutputStream;
 
 public enum ChatColor {
 	
@@ -164,7 +164,7 @@ public enum ChatColor {
 	// 0x7C = |
 	// 0x7E = ~
 	
-	public static final String CONTROL_CHARACTER = "&";
+	public static final char CONTROL_CHARACTER = '&';
 	private final byte value;
 
 	private ChatColor(int value) {
@@ -185,16 +185,70 @@ public enum ChatColor {
 	 * @param text
 	 * @return
 	 */
-	public static String convertColorCodes(String text) {
+	public static byte[] parse(String text) {
+		final char[] textBytes = text.toCharArray();
+		final ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
-		text = text.replaceAll(Pattern.quote("&r"), COLOR_RESET.toString());
-		text = text.replaceAll(Pattern.quote("&0"), COLOR_BLACK_1.toString());
+		for (int i=0; i<textBytes.length; i++) {
+			if (textBytes[i] == CONTROL_CHARACTER && i < textBytes.length) {
+				final char colorCode = textBytes[i+1];
+				switch(colorCode) {
+					case 'r':
+						baos.write(COLOR_RESET.getValue());
+						i++;
+						continue;
+					case '0':
+						baos.write(COLOR_BLACK_1.getValue());
+						i++;
+						continue;
+					case '2':
+						baos.write(COLOR_GREEN.getValue());
+						i++;
+						continue;
+					case '9':
+						baos.write(COLOR_BLUE.getValue());
+						i++;
+						continue;
+					case 'd':
+						baos.write(COLOR_PINK.getValue());
+						i++;
+						continue;
+					case 'f':
+						baos.write(COLOR_WHITE.getValue());
+						i++;
+						continue;
+					case 'x':
+						baos.write(BUTTON_X.getValue());
+						i++;
+						continue;
+					case 's':
+						baos.write(BUTTON_SQUARE.getValue());
+						i++;
+						continue;
+					case 't':
+						baos.write(BUTTON_TRIANGLE.getValue());
+						i++;
+						continue;
+					case 'c':
+						baos.write(BUTTON_CIRCLE.getValue());
+						i++;
+						continue;
+				}
+			}
+			
+			baos.write(textBytes[i]);
+		}
+		
+		/*
+		text = text.replaceAll(Pattern.quote("&r"), COLOR_RESET.getValue());
+		text = text.replaceAll(Pattern.quote("&0"), COLOR_BLACK_1.getValue());
 		text = text.replaceAll(Pattern.quote("&9"), COLOR_BLUE.toString());
 		text = text.replaceAll(Pattern.quote("&2"), COLOR_GREEN.toString());
 		text = text.replaceAll(Pattern.quote("&d"), COLOR_PINK.toString());
-		text = text.replaceAll(Pattern.quote("&d"), COLOR_WHITE.toString());
+		text = text.replaceAll(Pattern.quote("&f"), COLOR_WHITE.toString());
+		*/
 		
-		return text;
+		return baos.toByteArray();
 	}
 	
 	/**

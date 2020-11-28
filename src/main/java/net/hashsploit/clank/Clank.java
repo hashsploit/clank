@@ -1,40 +1,43 @@
 package net.hashsploit.clank;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
 import net.hashsploit.clank.cli.ICLIEvent;
-import net.hashsploit.clank.cli.commands.CLIClientsCommand;
+import net.hashsploit.clank.cli.commands.CLIBroadcastCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
+import net.hashsploit.clank.cli.commands.CLIPlayersCommand;
+import net.hashsploit.clank.cli.commands.CLIVersionCommand;
+import net.hashsploit.clank.config.AbstractConfig;
+import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.NatConfig;
 import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
+import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.dme.DmeServer;
-import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {
 	
 	public static final String NAME = "Clank";
-	public static final String VERSION = "0.1.3";
+	public static final String VERSION = "0.1.5";
 	public static Clank instance;
 	private static final Logger logger = Logger.getLogger("");
 	
 	private boolean running;
-	private ClankConfig config;
+	private AbstractConfig config;
 	private Terminal terminal;
 	private IServer server;
 	private DbManager db;
 	private EventBus eventBus;
-	private HashMap<String, DiscordWebhook> discordWebhooks;
+	//private HashMap<String, DiscordWebhook> discordWebhooks;
 	
-	public Clank(ClankConfig config) {
+	public Clank(AbstractConfig config) {
 		
 		if (instance != null) {
 			return;
@@ -50,7 +53,7 @@ public class Clank {
 		terminal.setLevel(config.getLogLevel());
 		terminal.registerCommand(new CLIExitCommand());
 		terminal.registerCommand(new CLIHelpCommand());
-		terminal.registerCommand(new CLIClientsCommand());
+		terminal.registerCommand(new CLIVersionCommand());
 		
 		terminal.registerEvent(new ICLIEvent() {
 			
@@ -76,43 +79,16 @@ public class Clank {
 			}
 		});
 		
+		// Disable other framework logging from clogging up the console logs.
+		Logger.getLogger("io.netty").setLevel(Level.OFF);
+		Logger.getLogger("javax.net").setLevel(Level.OFF);
+		
 		terminal.init();
-		logger.info(String.format("Initializing %s v%s ...", NAME, VERSION));
+		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
-		String prompt;
 		
-		switch (config.getServerComponent()) {
-		case MEDIUS_AUTHENTICATION_SERVER:
-			prompt = "MAS>";
-			break;
-		case MEDIUS_LOBBY_SERVER:
-			prompt = "MLS>";
-			break;
-		case MEDIUS_PROXY_SERVER:
-			prompt = "MPS>";
-			break;
-		case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-			prompt = "MUIS>";
-			break;
-		case NAT_SERVER:
-			prompt = "NAT>";
-		case DME_SERVER:
-			prompt = AnsiColor.GREEN + "DME>";
-			break;
-		default:
-			prompt = ">";
-		}
-		
-		terminal.setPrompt(Terminal.colorize(prompt + AnsiColor.RESET) + " ");
-		
-		// Initialize database
-		// TODO: Make SimDb a config option in each component (minus DME of course)
-		db = new DbManager(this, new SimDb());
-		
-		// Set up Event Bus
-		eventBus = new EventBus(this);
-		
-		// Configure Discord Webhook callbacks
+		// FIXME: Configure Discord Webhook callbacks
+		/*
 		for (final Object objectKey : config.getProperties().keySet()) {
 			final String key = objectKey.toString();
 			if (key.startsWith("DiscordWebhook_")) {
@@ -130,54 +106,88 @@ public class Clank {
 				}
 			}
 		}
+		*/
 		
-		// Create the server
-		switch (config.getServerComponent()) {
+		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_PROXY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
+		
+		// This is a *Medius server, set up the generic Medius components
+		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
+			
+			// Register generic *Medius CLI commands
+			terminal.registerCommand(new CLIPlayersCommand());
+			
+			// Set up the basic configuration for *Medius servers
+			MediusConfig mediusConfig = (MediusConfig) config;
+			server = new MediusServer(
+				mediusConfig.getEmulationMode(),
+				mediusConfig.getAddress(),
+				mediusConfig.getPort(),
+				mediusConfig.getParentThreads(),
+				mediusConfig.getChildThreads()
+			);
+			
+			// Initialize the database for generic Medius servers
+			// TODO: check if the database config value is null, if so
+			// this shouild use the SimDb object instead of the regular MySQL object.
+			db = new DbManager(this, new SimDb());
+		}
+		
+		String terminalPrompt = ">";
+		
+		// Configure the server specifics
+		switch (config.getEmulationMode()) {
 			case MEDIUS_AUTHENTICATION_SERVER:
+				terminalPrompt = "MAS>";
+				break;
 			case MEDIUS_LOBBY_SERVER:
+				terminalPrompt = "MLS>";
+				terminal.registerCommand(new CLIBroadcastCommand());
+				break;
 			case MEDIUS_PROXY_SERVER:
+				terminalPrompt = "MPS>";
+				break;
 			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-				server = new MediusServer(
-					config.getServerComponent(),
-					config.getAddress(),
-					config.getPort(),
-					config.getParentThreads(),
-					config.getChildThreads()
-				);
+				terminalPrompt = "MUIS>";
 				break;
 			case NAT_SERVER:
+				terminalPrompt = "NAT>";
+				NatConfig natConfig = (NatConfig) config;
 				server = new NatServer(
-					config.getAddress(),
-					config.getPort(),
-					Integer.parseInt(config.getProperties().getProperty("Threads"))
+					natConfig.getAddress(),
+					natConfig.getPort(),
+					natConfig.getUdpThreads()
 				);
 				break;
 			case DME_SERVER:
+				terminalPrompt = AnsiColor.GREEN + "DME>";
+				terminal.registerCommand(new CLIBroadcastCommand());
+				DmeConfig dmeConfig = (DmeConfig) config;
 				server = new DmeServer(
-					config.getTcpAddress(),
-					config.getTcpPort(),
-					config.getParentThreads(),
-					config.getChildThreads(),
-					config.getProperties().getProperty("UdpAddress"),
-					Integer.parseInt(config.getProperties().getProperty("UdpStartingPort")),
-					Integer.parseInt(config.getProperties().getProperty("UdpThreads"))
+					dmeConfig.getTcpAddress(),
+					dmeConfig.getTcpPort(),
+					dmeConfig.getParentThreads(),
+					dmeConfig.getChildThreads(),
+					dmeConfig.getUdpAddress(),
+					dmeConfig.getUdpStartingPort(),
+					dmeConfig.getUdpThreads()
 				);
 				break;
 			default:
-				logger.warning("No valid server component provided.");
+				logger.severe("No valid server component provided.");
 				shutdown();
 				return;
 		}
 		
+		// Set up the event bus
+		eventBus = new EventBus(this);
+		
 		// Start server
-		//server = new Server(config.getMediusComponent(), config.getAddress(), config.getPort(), config.getParentThreads(), config.getChildThreads());
+		terminal.setPrompt(Terminal.colorize(terminalPrompt + AnsiColor.RESET) + " ");
 		server.start();
 		
 		// Tick
 		while (running) {
-			
 			update();
-			
 			try {
 				Thread.sleep(300);
 			} catch (InterruptedException e) {
@@ -188,12 +198,9 @@ public class Clank {
 	
 	
 	/**
-	 * Tick the server for event updates.
+	 * Tick the server for internal event updates.
 	 */
 	public void update() {
-		
-		
-		
 		
 	}
 	
@@ -222,7 +229,7 @@ public class Clank {
 	 * Get the Clank configuration class.
 	 * @return
 	 */
-	public ClankConfig getConfig() {
+	public AbstractConfig getConfig() {
 		return config;
 	}
 	

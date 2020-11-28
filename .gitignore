@@ -5,7 +5,11 @@
 
 # Configs
 config/*
-!config/*.conf.example
+!config/*.json.example
+
+# Custom plugins (closed-source)
+plugins/uya/*
+plugins/dl/*
 
 # Bins
 target/

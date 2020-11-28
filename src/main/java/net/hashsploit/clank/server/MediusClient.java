@@ -1,29 +1,24 @@
 package net.hashsploit.clank.server;
 
-import java.util.HashMap;
 import java.util.logging.Logger;
 
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import net.hashsploit.clank.database.DbManager;
-import net.hashsploit.clank.server.medius.MediusPacketHandler;
-import net.hashsploit.clank.server.medius.MediusPacketType;
-import net.hashsploit.clank.server.medius.MediusServer;
+import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
-import net.hashsploit.clank.utils.MediusPacketMapInitializer;
-import net.hashsploit.clank.utils.Utils;
 
 public class MediusClient implements IClient {
 
 	private static final Logger logger = Logger.getLogger(MediusClient.class.getName());
 
-	private HashMap<MediusPacketType, MediusPacketHandler> mediusPacketMap;
-
-	private AbstractServer server;
-	private SocketChannel socketChannel;
+	private final MediusServer server;
+	private final SocketChannel socketChannel;
+	private Player player;
 	private ClientState state;
 	private boolean encrypted;
 
@@ -34,22 +29,17 @@ public class MediusClient implements IClient {
 	public MediusClient(MediusServer server, SocketChannel channel) {
 		this.server = server;
 		this.socketChannel = channel;
-		this.state = ClientState.UNAUTHENTICATED_STAGE_1;
+		this.state = ClientState.UNAUTHENTICATED;
 		this.encrypted = true;
 		this.unixConnectTime = System.currentTimeMillis();
 		this.txPacketCount = 0L;
 		this.rxPacketCount = 0L;
-
-		this.mediusPacketMap = MediusPacketMapInitializer.getMap();
+		this.player = null;
 
 		logger.info("Client connected: " + getIPAddress());
 
-		// Check if the server is a Medius Server component.
-		if (server instanceof MediusServer) {
-			final MediusServer ms = (MediusServer) server;
-
-			// If so, initialize the correct pipeline for it.
-			switch (ms.getComponent()) {
+		// If so, initialize the correct pipeline for it.
+		switch (server.getEmulationMode()) {
 			case MEDIUS_AUTHENTICATION_SERVER:
 				channel.pipeline().addLast("MediusTestHandlerMAS", new TestHandlerMAS(this));
 				break;
@@ -58,9 +48,6 @@ public class MediusClient implements IClient {
 				break;
 			default:
 				break;
-
-			}
-
 		}
 
 		ChannelFuture closeFuture = channel.closeFuture();
@@ -74,32 +61,52 @@ public class MediusClient implements IClient {
 
 	}
 
+	/**
+	 * Get the Medius Server associated with this client.
+	 * 
+	 * @return
+	 */
+	public MediusServer getServer() {
+		return server;
+	}
+
+	/**
+	 * Get the Socket Channel associated with this client.
+	 * 
+	 * @return
+	 */
 	protected SocketChannel getSocketChannel() {
 		return socketChannel;
 	}
 
+	/**
+	 * Get the client's socket IP Address.
+	 */
 	public String getIPAddress() {
 		return socketChannel.remoteAddress().getAddress().getHostAddress();
 	}
 
-	public byte[] getIPAddressAsBytes() {
-		return getIPAddress().getBytes();
-	}
-
+	/**
+	 * Get the client's socket port.
+	 */
 	public int getPort() {
 		return socketChannel.remoteAddress().getPort();
 	}
 
+	/**
+	 * Get the client's state bitmask.
+	 */
 	public ClientState getClientState() {
 		return state;
 	}
 
-	protected void setClientState(ClientState state) {
+	/**
+	 * Set the client's state bitmask.
+	 * 
+	 * @param state
+	 */
+	protected void setClientState(final ClientState state) {
 		this.state = state;
-	}
-
-	protected void setEncrypted(boolean encrypted) {
-		this.encrypted = encrypted;
 	}
 
 	/**
@@ -109,6 +116,33 @@ public class MediusClient implements IClient {
 	 */
 	public boolean isEncrypted() {
 		return encrypted;
+	}
+
+	/**
+	 * Set if this client is using encryption or not.
+	 * 
+	 * @param encrypted
+	 */
+	protected void setEncrypted(final boolean encrypted) {
+		this.encrypted = encrypted;
+	}
+
+	/**
+	 * Get the player object associated with this client.
+	 * 
+	 * @return
+	 */
+	public Player getPlayer() {
+		return player;
+	}
+
+	/**
+	 * Set the player object to be associated with this client.
+	 * 
+	 * @param player
+	 */
+	protected void setPlayer(final Player player) {
+		this.player = player;
 	}
 
 	/**
@@ -138,13 +172,28 @@ public class MediusClient implements IClient {
 		return txPacketCount;
 	}
 
+	/**
+	 * Send a raw payload to the client.
+	 * 
+	 * @param data
+	 */
 	public void sendRaw(byte[] data) {
-		socketChannel.writeAndFlush(data).awaitUninterruptibly();
+		ByteBuf msg = Unpooled.copiedBuffer(data);
+		socketChannel.pipeline().writeAndFlush(msg);
 		txPacketCount++;
 	}
 
 	/**
-	 * Gracefully disconnect this client.
+	 * Send a data packet to the client.
+	 * 
+	 * @param msg
+	 */
+	public void sendMessage(RTMessage msg) {
+		sendRaw(msg.toBytes());
+	}
+
+	/**
+	 * Disconnect this client.
 	 */
 	public void disconnect() {
 		socketChannel.flush();
@@ -158,24 +207,6 @@ public class MediusClient implements IClient {
 	private void onDisconnect() {
 		logger.info("Client disconnect: " + socketChannel.remoteAddress());
 		server.removeClient(this);
-	}
-
-	public void sendMessage(DataPacket msg) {
-		if (msg instanceof EncryptedDataPacket) {
-
-			// TODO: handle encryption
-			final EncryptedDataPacket edp = (EncryptedDataPacket) msg;
-
-		} else {
-			final DataPacket pdp = (DataPacket) msg;
-			final byte[] data = pdp.toBytes();
-			logger.fine("Sending: " + Utils.bytesToString(data));
-			sendRaw(data);
-		}
-	}
-
-	public final HashMap<MediusPacketType, MediusPacketHandler> getMediusMap() {
-		return mediusPacketMap;
 	}
 
 }

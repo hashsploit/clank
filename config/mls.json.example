@@ -1,0 +1,52 @@
+{
+	"mode": "MEDIUS_LOBBY_SERVER",
+	"log_level": "INFO",
+	"address": "172.16.221.250",
+	"port": 10078,
+	"encryption": false,
+	"capacity": 200,
+	"timeout": 15000,
+	"parent_threads": 1,
+	"child_threads": 4,
+	"application_id": 10684,
+	"nat": {
+		"address": "172.16.221.250",
+		"port": 10077
+	},
+	"dme": {
+		"address": "172.16.221.250",
+		"port": 10079
+	},
+	"policy": "Welcome, this is the default policy for the clank server emulator. \r\n\r\nhttps://github.com/hashsploit/clank",
+	"announcements": [
+		"This is an announcement."
+	],
+	"operators": [
+		"hashsploit",
+		"fourbolt"
+	],
+	"chat": {
+		"enabled": true,
+		"blacklist": "blacklisted_words.txt",
+		"command_prefix": "/",
+		"strip_special_chars": true
+	},
+	"system_message": {
+		"enabled": false,
+		"severity": 200,
+		"message": ""
+	},
+	"database": {
+		"host": "",
+		"database": "",
+		"username": "",
+		"password": ""
+	},
+	"discord_webhooks": {
+		"start": null,
+		"shutdown": null,
+		"connect": null,
+		"disconnect": null,
+		"chat_message": null
+	}
+}
