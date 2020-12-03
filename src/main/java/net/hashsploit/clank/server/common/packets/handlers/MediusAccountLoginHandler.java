@@ -56,9 +56,9 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 			}
 		}
 
-		byte[] accountID = Utils.intToBytesLittle(50);
-		byte[] accountType = Utils.intToBytesLittle(1);
-		byte[] worldID = Utils.intToBytesLittle(123);
+		byte[] accountID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getAccountId(username));
+		byte[] accountType = Utils.intToBytesLittle(2);
+		byte[] worldID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getLocationId());
 		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress() : null;
 		String natIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getNatAddress() : null;
 

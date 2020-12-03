@@ -32,9 +32,9 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		byte[] minPlayers = Utils.hexStringToByteArray("00000000");
 		byte[] maxPlayers = Utils.hexStringToByteArray("08000000");
 		//byte[] gameLevel = Utils.hexStringToByteArray("45070000");
-		byte[] gameLevel = Utils.hexStringToByteArray("45070000");
+		byte[] gameLevel = Utils.hexStringToByteArray("7b000000");
 		byte[] playerSkillLevel = Utils.hexStringToByteArray("00000000");
-		byte[] playerCount = Utils.hexStringToByteArray("00000000");
+		byte[] playerCount = Utils.hexStringToByteArray("10000000");
 		byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
 		// Contains "username's" game string in this case, 'hashsploits' with 0x20 for spaces
 		byte[] gameName = Utils.hexStringToByteArray("6861736873706c6f6974277320202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");

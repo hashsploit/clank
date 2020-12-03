@@ -26,6 +26,7 @@ public class MediusServer extends TcpServer {
 	
 	private final EmulationMode emulationMode;
 	private final HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
+	private final MediusLogicHandler logicHandler = new MediusLogicHandler();
 	
 	public MediusServer(final EmulationMode emulationMode, final String address, final int port, final int parentThreads, final int childThreads) {
 		super(address, port, parentThreads, childThreads);
@@ -34,6 +35,7 @@ public class MediusServer extends TcpServer {
 		
 		setChannelInitializer(new MediusClientChannelInitializer(this));
 	}
+	
 	
 	@Override
 	public void start() {
@@ -92,6 +94,10 @@ public class MediusServer extends TcpServer {
 	
 	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
 		return mediusMessageMap;
+	}
+
+	public synchronized MediusLogicHandler getLogicHandler() {
+		return logicHandler;
 	}
 	
 }

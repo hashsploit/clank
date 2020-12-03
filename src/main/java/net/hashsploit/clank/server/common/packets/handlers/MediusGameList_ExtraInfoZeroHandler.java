@@ -47,7 +47,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 		byte[] playerCount = Utils.shortToBytesLittle((short) 1);
 		byte[] minPlayers = Utils.shortToBytesLittle((short) 0);
 		byte[] maxPlayers = Utils.shortToBytesLittle((short) 8);
-		byte[] gameLevel = Utils.hexStringToByteArray("45070000");
+		byte[] gameLevel = Utils.intToBytesLittle(client.getServer().getLogicHandler().getCityWorldId());
 		byte[] playerSkillLevel = Utils.hexStringToByteArray("00000004");
 		byte[] rulesSet = Utils.intToBytesLittle(0);
 		byte[] genericField1 = Utils.intToBytesLittle(28);// Generic field 1 (Location Id (city id; aquatos))
@@ -56,7 +56,8 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 		byte[] worldSecurityLevelType = Utils.hexStringToByteArray("00000000");
 		byte[] worldStatus = Utils.intToBytesLittle(MediusWorldStatus.WORLD_STAGING.getValue());
 		byte[] gameHostType = Utils.intToBytesLittle(GameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue());
-		byte[] gameName = Utils.hexStringToByteArray("31763120662e6f20646f782020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
+		//byte[] gameName = Utils.hexStringToByteArray("31763120662e6f20646f782020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
+		byte[] gameName = Utils.buildByteArrayFromString("1v1 f.o dox       000000280000",MediusConstants.GAMENAME_MAXLEN.getValue());
 		byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 

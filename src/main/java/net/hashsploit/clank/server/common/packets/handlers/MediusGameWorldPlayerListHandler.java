@@ -28,8 +28,8 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     @Override
     public MediusMessage write(MediusClient client) {
     	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
-    	byte[] accountID = Utils.intToBytesLittle(5);
-    	byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+    	byte[] accountID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getAccountId("hashsploit"));
+    	byte[] accountName = Utils.buildByteArrayFromString("hashsploit", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
     	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());
     	byte[] connectionClass = Utils.intToBytesLittle(1);
     	byte[] endOfList = Utils.hexStringToByteArray("01000000");

@@ -40,8 +40,8 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 	@Override
 	public MediusMessage write(MediusClient client) {
 
-		byte[] locationID = Utils.intToBytesLittle(40);// random location
-		byte[] locationName = Utils.buildByteArrayFromString("Aquatos", MediusConstants.LOCATIONNAME_MAXLEN.getValue());
+		byte[] locationID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getLocationId());// random location
+		byte[] locationName = Utils.buildByteArrayFromString(client.getServer().getLogicHandler().getLocation(), MediusConstants.LOCATIONNAME_MAXLEN.getValue());
 		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 
