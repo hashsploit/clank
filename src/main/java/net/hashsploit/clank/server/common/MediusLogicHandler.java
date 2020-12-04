@@ -1,10 +1,31 @@
 package net.hashsploit.clank.server.common;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
+import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
+
 public class MediusLogicHandler {
+	
+	private GameList gameList = new GameList();
+	
 	
 	private final String location = "Aquatos";
 	private final int locationId = 40;
-		
+	
+	public ArrayList<MediusGame> getGames() {		
+		return gameList.getGames();
+	}
+	
+	
+	public synchronized MediusGame getGame(int worldID) {
+		return gameList.getGame(worldID);
+	}
+	
+	public synchronized int getNewGameId(CreateGameOneRequest req) {
+		return gameList.getNewGameId(req);
+	}
+	
 	public synchronized int getLocationId() {
 		return locationId;
 	}
@@ -47,5 +68,6 @@ public class MediusLogicHandler {
 	public synchronized int getChannelActivePlayerCount(int cityWorldId) {
 		return 1;
 	}
-	
+
+
 }
