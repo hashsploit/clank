@@ -4,10 +4,12 @@ import java.util.HashMap;
 
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.packets.handlers.MediusAccountGetIDHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLoginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLogoutHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountRegistrationHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountUpdateStatsHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusAddToBuddyListHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusChannelInfoHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusChannelListHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusChannelList_ExtraInfoOneHandler;
@@ -95,6 +97,10 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GameInfo0, new MediusGameInfoZeroHandler());
 		mp.put(MediusMessageType.EndGameReport, new MediusEndGameReportHandler());
 		mp.put(MediusMessageType.GameWorldPlayerList, new MediusGameWorldPlayerListHandler());
+		
+		// Buddies
+		mp.put(MediusMessageType.AccountGetID,  new MediusAccountGetIDHandler());
+		mp.put(MediusMessageType.AddToBuddyList,  new MediusAddToBuddyListHandler());
 		
 		// Chat
 		mp.put(MediusMessageType.TextFilter,  new MediusTextFilterHandler());
