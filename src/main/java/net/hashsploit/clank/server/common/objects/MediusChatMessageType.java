@@ -1,5 +1,9 @@
 package net.hashsploit.clank.server.common.objects;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 public enum MediusChatMessageType {
 
 	BROADCAST(0),
@@ -14,6 +18,8 @@ public enum MediusChatMessageType {
 	
 	private final int value;
 	
+	private static final Map<Integer, MediusChatMessageType> ENUM_MAP;
+	
 	private MediusChatMessageType(int value) {
 		this.value = value;
 	}
@@ -22,5 +28,16 @@ public enum MediusChatMessageType {
 		return value;
 	}
 	
+    static {
+        Map<Integer, MediusChatMessageType> map = new ConcurrentHashMap<Integer, MediusChatMessageType>();
+        for (MediusChatMessageType instance : MediusChatMessageType.values()) {
+            map.put(instance.getValue(), instance);
+        }
+        ENUM_MAP = Collections.unmodifiableMap(map);
+    }
+    
+    public static MediusChatMessageType getByValue(int type) {
+    	return ENUM_MAP.get(type);
+    }
 	
 }
