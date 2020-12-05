@@ -6,7 +6,6 @@ import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.handler.timeout.ReadTimeoutException;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.dme.DmeUdpClient;
 
 public class NatClientInitializer extends ChannelInitializer<DatagramChannel> {
 	
@@ -24,7 +23,7 @@ public class NatClientInitializer extends ChannelInitializer<DatagramChannel> {
 		ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(2048));
 		
 		
-		final DmeUdpClient client = new DmeUdpClient(server, ch);
+		final NatClient client = new NatClient(server, ch);
 		server.addClient(client);
 	}
 	

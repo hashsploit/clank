@@ -5,9 +5,7 @@ import java.util.logging.Logger;
 import io.netty.channel.socket.DatagramChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
-import net.hashsploit.clank.server.IServer;
-import net.hashsploit.clank.server.dme.DmeTcpClient;
-import net.hashsploit.clank.server.pipeline.TestHandlerDmeUdp;
+import net.hashsploit.clank.server.pipeline.TestHandlerNATUdp;
 
 public class NatClient implements IClient {
 	
@@ -20,7 +18,7 @@ public class NatClient implements IClient {
 		this.server = server;
 		this.channel = ch;
 		
-		//channel.pipeline().addLast("NatPipelineHandler", new NatPipelineHandler(this));
+		channel.pipeline().addLast("NatPipelineHandler", new TestHandlerNATUdp(this));
 	}
 
 	@Override
