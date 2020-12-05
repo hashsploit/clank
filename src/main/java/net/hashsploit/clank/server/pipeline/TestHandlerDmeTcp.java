@@ -10,11 +10,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.DatagramPacket;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusDMEWorldHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.utils.Utils;
@@ -26,6 +29,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
 	private static final Logger logger = Logger.getLogger(TestHandlerDmeTcp.class.getName());
 	private final DmeTcpClient client;
+	
 
 	public TestHandlerDmeTcp(final DmeTcpClient client) {
 		super();
@@ -63,10 +67,24 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
 		for (RTMessage packet : packets) {
 			processSinglePacket(ctx, packet);
+			checkBroadcast(packet);
 		}
 		
 
     }
+    
+	private void checkBroadcast(RTMessage m) {
+			if (m.getId().toString().equals("CLIENT_APP_BROADCAST") || m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+				logger.fine("BROADCAST DETECTED!");
+				client.getSocket().writeAndFlush(m.toBytes());
+				for (IClient c : client.getServer().getClients()) {
+					DmeTcpClient dc = (DmeTcpClient) c;
+					if (dc != client) {
+						dc.getSocket().writeAndFlush(Unpooled.copiedBuffer(m.toBytes()));			
+					}
+				}
+			}
+	}
     
     private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
 		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
@@ -107,6 +125,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		ByteBuf msg2 = Unpooled.copiedBuffer(c2.toBytes());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
+    		
+    		
 
     		// tnw game settings
     		//byte[] t3 = Utils.hexStringToByteArray("00160500030001006CD501000000000000000009D771090006000000001703000000000400010000046E000000000000740D020000000000744E575F47616D6553657474696E6700506A00000000000000000000000000004433244B207B5257247D000000000000006576696E005F536D61736865720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080460000000000000E4D6E4C00000000003C3300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003001300FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000200FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000000002000000FFFFFFFFFFFFFFFF2800000000000000000000000101010101010001010000010101001403FF000000010501097D0F009C7C1000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5881DA44AEF8D744000080BF000080BF000080BF000080BF000080BF000080BF0000C8420000DC42000080BF000080BF000080BF000080BF000080BF000080BF");

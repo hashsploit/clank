@@ -1,5 +1,8 @@
 package net.hashsploit.clank.server;
 
+import io.netty.channel.socket.DatagramChannel;
+import io.netty.channel.socket.SocketChannel;
+
 public interface IClient {
 
 	/**
@@ -19,5 +22,10 @@ public interface IClient {
 	 * @return
 	 */
 	public ClientState getClientState();
+	
+	public SocketChannel getSocket();
+	
+	public DatagramChannel getDatagram();
+
 	
 }

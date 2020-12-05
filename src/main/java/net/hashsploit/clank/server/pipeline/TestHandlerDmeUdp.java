@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server.pipeline;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -8,8 +9,11 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.DatagramPacket;
+import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.common.MediusDMEWorldHandler;
+import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.utils.Utils;
 
@@ -20,7 +24,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 	private static final Logger logger = Logger.getLogger("");
 	private final DmeUdpClient client;
-
+	
 	public TestHandlerDmeUdp(final DmeUdpClient client) {
 		super();
 		this.client = client;
@@ -50,8 +54,10 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		datagram.content().readBytes(buff);
 
 		logger.finest("TOTAL RAW UDP INCOMING DATA: " + Utils.bytesToHex(buff));
-
+		
 		checkFirstPacket(ctx, datagram, buff, datagram.sender().getPort(), datagram.sender().getAddress().toString());
+		
+		checkBroadcast(datagram, buff);
 
 	}
 
@@ -86,7 +92,10 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
 			buffer.put(ad);
 			buffer.put(Utils.shortToBytesLittle((short) port));
-
+			
+			
+			
+			
 			RTMessage packetResponse = new RTMessage(RTMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
 			byte[] payload = packetResponse.toBytes();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
@@ -94,12 +103,22 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		}
 	}
 
-	private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
-		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
-
-		logger.fine("Packet ID: " + packet.getId().toString());
-		logger.fine("Packet ID: " + packet.getId().getValue());
-
+	private void checkBroadcast(DatagramPacket requestDatagram, byte[] data) {
+		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
+		for (RTMessage m: packets) {
+			logger.fine("UDP Packet ID: " + m.getId().toString());
+			logger.fine("UDP Packet ID: " + m.getId().getValue());
+			if (m.getId().toString().equals("CLIENT_APP_BROADCAST") || m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+				logger.fine("BROADCAST DETECTED!");
+				for (IClient c : client.getServer().getClients()) {
+					DmeUdpClient dc = (DmeUdpClient) c;
+					if (dc != client) {
+						logger.info("BYTE ARRAY: " + Utils.bytesToHex(m.toBytes()));
+						dc.getDatagram().writeAndFlush(Unpooled.copiedBuffer(m.toBytes()));				
+					}
+				}
+			}
+		}
 	}
 
 	@Override

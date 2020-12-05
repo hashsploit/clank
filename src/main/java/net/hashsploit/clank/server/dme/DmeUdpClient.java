@@ -3,6 +3,7 @@ package net.hashsploit.clank.server.dme;
 import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
+import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.IServer;
@@ -23,6 +24,15 @@ public class DmeUdpClient implements IClient {
 
 		channel.pipeline().addLast("MediusTestHandlerDMEudp", new TestHandlerDmeUdp(this));
 	}
+	
+	
+	public SocketChannel getSocket() {
+		return null;
+	}
+	
+	public DatagramChannel getDatagram() {
+		return channel;
+	}
 
 	@Override
 	public String getIPAddress() {
@@ -39,4 +49,8 @@ public class DmeUdpClient implements IClient {
 		return null;
 	}
 
+	public IServer getServer() {
+		// TODO Auto-generated method stub
+		return server;
+	}
 }

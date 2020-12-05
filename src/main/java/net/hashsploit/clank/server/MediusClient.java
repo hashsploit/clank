@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -68,6 +69,18 @@ public class MediusClient implements IClient {
 	 */
 	public MediusServer getServer() {
 		return server;
+	}
+	
+	/**
+	 * DELETE THIS LATER
+	 */
+	
+	public DatagramChannel getDatagram() {
+		return null;
+	}
+	
+	public SocketChannel getSocket() {
+		return socketChannel;
 	}
 
 	/**

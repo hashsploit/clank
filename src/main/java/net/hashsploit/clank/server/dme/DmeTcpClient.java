@@ -2,6 +2,8 @@ package net.hashsploit.clank.server.dme;
 
 import java.util.logging.Logger;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
@@ -14,6 +16,8 @@ public class DmeTcpClient implements IClient {
 	private final IServer server;
 	private final SocketChannel channel;
 	
+	
+	
 	public DmeTcpClient(IServer server, SocketChannel ch) {
 		this.server = server;
 		this.channel = ch;
@@ -22,6 +26,14 @@ public class DmeTcpClient implements IClient {
 		logger.info("Client connected: " + getIPAddress());
 
 		channel.pipeline().addLast("MediusTestHandlerDME", new TestHandlerDmeTcp(this));
+	}
+	
+	public SocketChannel getSocket() {
+		return channel;
+	}
+	
+	public DatagramChannel getDatagram() {
+		return null;
 	}
 
 	@Override
@@ -42,6 +54,11 @@ public class DmeTcpClient implements IClient {
 	public byte[] getIPAddressAsBytes() {
 		// TODO Auto-generated method stub
 		return getIPAddress().getBytes();
+	}
+
+	public IServer getServer() {
+		// TODO Auto-generated method stub
+		return server;
 	}
 	
 }
