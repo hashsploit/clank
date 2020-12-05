@@ -35,16 +35,15 @@ public class TestHandlerNATUdp extends ChannelInboundHandlerAdapter {
 
 		final DatagramPacket datagram = (DatagramPacket) msg;
 
-		//byte[] buff = new byte[datagram.content().readableBytes()];
-		//datagram.content().readBytes(buff);
+		byte[] buff = new byte[datagram.content().readableBytes()];
+		datagram.content().readBytes(buff);
 		
 		logger.finest(Utils.generateDebugPacketString("NAT UDP Payload",
 			new String[] {
 			"Payload"
 			},
 			new String[] {
-				""
-				//Utils.bytesToHex(datagram.content())
+				Utils.bytesToHex(buff)
 			}
 		));
 		
