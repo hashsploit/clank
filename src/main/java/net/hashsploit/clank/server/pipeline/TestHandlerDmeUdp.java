@@ -1,6 +1,9 @@
 package net.hashsploit.clank.server.pipeline;
 
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
+import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,6 +28,10 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	private static final Logger logger = Logger.getLogger("");
 	private final DmeUdpClient client;
 	
+	private static int udpConnId = 0;
+	
+	private static HashSet<InetSocketAddress> clients = new HashSet<InetSocketAddress>();
+		
 	public TestHandlerDmeUdp(final DmeUdpClient client) {
 		super();
 		this.client = client;
@@ -50,6 +57,8 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 		final DatagramPacket datagram = (DatagramPacket) msg;
 
+		clients.add(datagram.sender());
+		
 		byte[] buff = new byte[datagram.content().readableBytes()];
 		datagram.content().readBytes(buff);
 
@@ -57,14 +66,14 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		
 		checkFirstPacket(ctx, datagram, buff, datagram.sender().getPort(), datagram.sender().getAddress().toString());
 		
-		checkBroadcast(datagram, buff);
+		checkBroadcast(ctx, datagram, buff);
 
 	}
 
 	private void checkFirstPacket(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data, int port, String clientAddr) {
 //		if (Utils.bytesToHex(data).equals("161d000108017b00bc2900003139322e3136382e312e3939000000005f270100") || Utils.bytesToHex(data).equals("161d0001080165ebbc2900003139322e3136382e312e3939000000005f270100")
 //				|| Utils.bytesToHex(data).equals("161d000108017b00bc2900003137322e31362e3232312e32353000005f270100")) { // this is UDP trying to connect
-		if (Utils.bytesToHex(data).length() >= 56 && Utils.bytesToHex(data).substring(56).equals("5f270100")) { // 161d000108017b00bc2900003139322e3136382e312e3939000000005f270100
+		if (Utils.bytesToHex(data).length() >= 56 && (Utils.bytesToHex(data).substring(56).equals("5f270100") || Utils.bytesToHex(data).substring(56).equals("5f270000"))) { // 161d000108017b00bc2900003139322e3136382e312e3939000000005f270100
 			// ----------------------------------------- DL VERSION. 1 packet larger for DL
 			// than UYA (also different format)
 //	    	logger.info("UDP CONNECT REQ DETECTED!:");
@@ -88,13 +97,18 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			logger.info("Client Addr: " + clientAddr);
 			logger.info("Client port: " + port);
 			ByteBuffer buffer = ByteBuffer.allocate(25);
-			buffer.put(Utils.hexStringToByteArray("0108D301000300"));
+			
+			
+			
+			String hex = "010801" + 
+					Utils.bytesToHex(Utils.shortToBytesLittle((short) udpConnId)) + // DME PLAYER IN WORLD ID
+					Utils.bytesToHex(Utils.shortToBytesLittle((short) (udpConnId+1))); // PLAYER COUNT
+			udpConnId += 1;
+			//buffer.put(Utils.hexStringToByteArray("01080100000100"));
+			buffer.put(Utils.hexStringToByteArray(hex));
 			byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
 			buffer.put(ad);
 			buffer.put(Utils.shortToBytesLittle((short) port));
-			
-			
-			
 			
 			RTMessage packetResponse = new RTMessage(RTMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
 			byte[] payload = packetResponse.toBytes();
@@ -103,19 +117,20 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		}
 	}
 
-	private void checkBroadcast(DatagramPacket requestDatagram, byte[] data) {
+	private void checkBroadcast(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data) {
 		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
 		for (RTMessage m: packets) {
 			logger.fine("UDP Packet ID: " + m.getId().toString());
 			logger.fine("UDP Packet ID: " + m.getId().getValue());
 			if (m.getId().toString().equals("CLIENT_APP_BROADCAST") || m.getId().toString().equals("CLIENT_APP_SINGLE")) {
 				logger.fine("BROADCAST DETECTED!");
-				for (IClient c : client.getServer().getClients()) {
-					DmeUdpClient dc = (DmeUdpClient) c;
-					if (dc != client) {
+				for (InetSocketAddress addr : clients) {
 						logger.info("BYTE ARRAY: " + Utils.bytesToHex(m.toBytes()));
-						dc.getDatagram().writeAndFlush(Unpooled.copiedBuffer(m.toBytes()));				
-					}
+						//dc.getDatagram().writeAndFlush(Unpooled.copiedBuffer(m.toBytes()));				
+						//dc.getDatagram().writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(m.toBytes()), new InetAddress(dc.getIPAddress(), dc.getPort())));		
+						if (addr != requestDatagram.sender()) {
+							ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(m.toBytes()), addr));
+						}
 				}
 			}
 		}

@@ -10,11 +10,15 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.server.UdpServer;
+import net.hashsploit.clank.server.common.MediusLogicHandler;
 
 public class DmeServer extends TcpServer {
 
 	private static final Logger logger = Logger.getLogger(DmeServer.class.getName());
 
+	private final DmeWorld dmeWorld = new DmeWorld();
+
+	
 	private final String udpAddress;
 	private final int udpStartingPort;
 	private final int udpThreads;
@@ -67,6 +71,10 @@ public class DmeServer extends TcpServer {
 	 */
 	public HashSet<UdpServer> getGameServers() {
 		return gameServers;
+	}
+	
+	public DmeWorld getDmeWorld() {
+		return dmeWorld;
 	}
 
 }

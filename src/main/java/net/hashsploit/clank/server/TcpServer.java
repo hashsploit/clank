@@ -14,6 +14,7 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.utils.Utils;
 
 public class TcpServer extends AbstractServer {
@@ -94,6 +95,12 @@ public class TcpServer extends AbstractServer {
 	
 	public void setChannelInitializer(final ChannelInitializer<SocketChannel> channelInitializer) {
 		this.channelInitializer = channelInitializer;
+	}
+
+	@Override
+	public DmeWorld getDmeWorld() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
