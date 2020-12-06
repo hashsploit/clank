@@ -73,6 +73,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 		
     }
     
+    
+    
 	private void checkBroadcast(RTMessage m) {
 			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
 				client.getServer().getDmeWorld().broadcast(client, m.toBytes());
@@ -115,9 +117,10 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		//byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");
     		ByteArrayOutputStream baos = new ByteArrayOutputStream();
     		try {
-    			baos.write(MediusMessageType.DMEServerVersion.getShortByte());
+    			//baos.write(MediusMessageType.DMEServerVersion.getShortByte());
     			//baos.write(Utils.buildByteArrayFromString(Clank.NAME + " v" + Clank.VERSION, MediusConstants.SERVERVERSION_MAXLEN.getValue()));
-    			baos.write(Utils.hexStringToByteArray("0000312E32322E3031343100000000000000"));
+    			//baos.write(Utils.hexStringToByteArray("0000312E32322E3031343100000000000000"));
+    			baos.write(Utils.hexStringToByteArray("0000322e31302e3030303900000000000000"));
     		} catch (IOException e) {
     			e.printStackTrace();
     		}
