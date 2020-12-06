@@ -29,7 +29,7 @@ import net.hashsploit.clank.utils.Utils;
  */
 public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
-	private static final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger(TestHandlerDmeUdp.class.getName());
 	private final DmeUdpClient client;
 	
 	private static int udpConnId = 0;

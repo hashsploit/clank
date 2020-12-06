@@ -82,7 +82,6 @@ public class Utils {
 	/**
 	 * Decode an array of bytes into RT message frames.
 	 * 
-	 * @deprecated
 	 * @param data
 	 * @return
 	 */

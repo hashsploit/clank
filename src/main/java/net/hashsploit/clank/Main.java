@@ -15,6 +15,7 @@ import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.config.configs.MpsConfig;
 import net.hashsploit.clank.config.configs.MuisConfig;
+import net.hashsploit.clank.config.configs.NatConfig;
 
 public class Main {
 
@@ -59,6 +60,9 @@ public class Main {
 					break;
 				case DME_SERVER:
 					config = new DmeConfig(jsonConfig);
+					break;
+				case NAT_SERVER:
+					config = new NatConfig(jsonConfig);
 					break;
 				default:
 					System.err.println(String.format("Invalid 'emulation_mode' provided in the config file %s", args[0]));
