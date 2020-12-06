@@ -180,7 +180,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		
     		final byte[] udpAddr = Utils.buildByteArrayFromString(udpAddress, 16);
     		
-    		buf.put(ipAddr);
+    		buf.put(udpAddr);
     		buf.put(Utils.shortToBytesLittle((short) curUdpPort));
     		curUdpPort += 1;
 
