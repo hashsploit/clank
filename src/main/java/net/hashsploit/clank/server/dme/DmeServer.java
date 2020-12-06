@@ -33,7 +33,7 @@ public class DmeServer extends TcpServer {
 		this.gameServers = new HashSet<UdpServer>();
 
 		String udpServerAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
-		int udpServerPort = 50001;
+		int udpServerPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort() + 1;
 
 		EventLoopGroup udpEventLoopGroup = new EpollEventLoopGroup(2);
 		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super tempoarary
