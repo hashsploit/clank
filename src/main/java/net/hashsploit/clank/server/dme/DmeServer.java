@@ -16,7 +16,7 @@ public class DmeServer extends TcpServer {
 
 	private static final Logger logger = Logger.getLogger(DmeServer.class.getName());
 
-	private final DmeWorld dmeWorld = new DmeWorld();
+	private final DmeWorldManager dmeWorldManager = new DmeWorldManager();
 
 	private final String udpAddress;
 	private final int udpStartingPort;
@@ -70,8 +70,8 @@ public class DmeServer extends TcpServer {
 		return udpDmeServer;
 	}
 	
-	public DmeWorld getDmeWorld() {
-		return dmeWorld;
+	public DmeWorldManager getDmeWorldManager() {
+		return dmeWorldManager;
 	}
 
 }

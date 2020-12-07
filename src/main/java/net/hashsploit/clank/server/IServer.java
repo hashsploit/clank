@@ -29,7 +29,5 @@ public interface IServer {
 	 * @param client
 	 */
 	public void removeClient(IClient client);
-
-	public DmeWorld getDmeWorld();
 	
 }

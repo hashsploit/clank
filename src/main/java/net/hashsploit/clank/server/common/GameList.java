@@ -13,7 +13,7 @@ public class GameList {
 	private HashMap<Integer, MediusGame> gameSet = new HashMap<Integer, MediusGame>();
 	
 	public int getNewGameId(CreateGameOneRequest req) {
-		int id = 8;
+		int id = 9;
 		gameSet.put(id, new MediusGame(id, req));
 		return id;
 	}

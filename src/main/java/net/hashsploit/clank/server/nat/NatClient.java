@@ -36,17 +36,4 @@ public class NatClient implements IClient {
 	public ClientState getClientState() {
 		return null;
 	}
-
-	@Override
-	public SocketChannel getSocket() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public DatagramChannel getDatagram() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

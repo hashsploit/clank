@@ -16,8 +16,6 @@ public class DmeTcpClient implements IClient {
 	private final IServer server;
 	private final SocketChannel channel;
 	
-	
-	
 	public DmeTcpClient(IServer server, SocketChannel ch) {
 		this.server = server;
 		this.channel = ch;

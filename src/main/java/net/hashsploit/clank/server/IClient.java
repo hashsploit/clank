@@ -23,9 +23,4 @@ public interface IClient {
 	 */
 	public ClientState getClientState();
 	
-	public SocketChannel getSocket();
-	
-	public DatagramChannel getDatagram();
-
-	
 }

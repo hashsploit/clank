@@ -97,10 +97,5 @@ public class TcpServer extends AbstractServer {
 		this.channelInitializer = channelInitializer;
 	}
 
-	@Override
-	public DmeWorld getDmeWorld() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }

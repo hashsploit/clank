@@ -19,8 +19,10 @@ import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusDMEWorldHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeWorld;
+import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -76,13 +78,14 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     
     
 	private void checkBroadcast(RTMessage m) {
-			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
-				client.getServer().getDmeWorld().broadcast(client, m.toBytes());
-			}
-			else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
-				int targetId = (int) m.toBytes()[3];
-				client.getServer().getDmeWorld().clientAppSingle(client, targetId, m.toBytes());
-			}
+		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+
+		if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
+			dmeWorldManager.broadcast(client.getSocket(), m.toBytes());
+		}
+		else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+			dmeWorldManager.clientAppSingle(client.getSocket(), m.toBytes());
+		}
 	}
     
     private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
@@ -103,7 +106,12 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     	if (Utils.bytesToHex(data).equals("170000")) {		  //
     		// SERVER CONNECT COMPLETE
     		
-    		int playerId = client.getServer().getDmeWorld().add(client);
+    		//int playerId = client.getServer().getDmeWorldManager().add(client);
+    		// ---------- The player is now fully connected
+    		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+    		dmeWorldManager.playerFullyConnected(client.getSocket());
+    		int playerId = dmeWorldManager.getPlayerId(client.getSocket());
+
     		
     		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
@@ -138,7 +146,14 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     	
     	if (packet.getId() == RTMessageId.CLIENT_CONNECT_TCP_AUX_UDP) {
     		logger.info("Detected TCP AUX UDP CONNECT");
-
+    		short dmeWorldId = Utils.bytesToShortLittle(packet.getPayload()[4], packet.getPayload()[5]);
+    		logger.info("Dme world requested: " + Integer.toString((int) dmeWorldId));
+    		
+    		// ---------- Add the player to the world
+    		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+    		dmeWorldManager.addPlayer(dmeWorldId, client.getSocket());
+    		int dmePlayerId = dmeWorldManager.getPlayerId(client.getSocket());
+    		int playerCount = dmeWorldManager.getPlayerCount(client.getSocket());
     		
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
@@ -158,10 +173,9 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		// Server Accept TCP
     		ByteBuffer buffer = ByteBuffer.allocate(23);
     		//buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
-    		short newId = (short) client.getServer().getDmeWorld().getNewId();
     		String hex = "010810" + 
-    				Utils.bytesToHex(Utils.shortToBytesLittle((short) (newId))) + // DME WORLD PLAYER ID (0,1,2 etc)
-    				Utils.bytesToHex(Utils.shortToBytesLittle((short) (newId+1))); // PLAYER COUNT
+    				Utils.bytesToHex(Utils.shortToBytesLittle((short) dmePlayerId)) + // DME WORLD PLAYER ID (0,1,2 etc)
+    				Utils.bytesToHex(Utils.shortToBytesLittle((short) playerCount)); // PLAYER COUNT
     		
     		buffer.put(Utils.hexStringToByteArray(hex));    		
     		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);

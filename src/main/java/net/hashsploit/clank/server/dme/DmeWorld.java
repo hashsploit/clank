@@ -2,35 +2,105 @@ package net.hashsploit.clank.server.dme;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
 public class DmeWorld {
+		
+	// Lookup Player from Dme Id
+	HashMap<Integer, DmePlayer> players = new HashMap<Integer, DmePlayer>();
 	
-	int curId = 0;
-	HashMap<Integer, DmeTcpClient> clients = new HashMap<Integer, DmeTcpClient>();
-	HashMap<DmeTcpClient, Integer> revClients = new HashMap<DmeTcpClient, Integer>();
+	// Lookup Player from Socket
+	HashMap<SocketChannel, DmePlayer> playerSocketLookup = new HashMap<SocketChannel, DmePlayer>();
 
-	public int add(DmeTcpClient client) {
-		// Send server notify to existing clients
-		// then add our client
-		this.sendServerNotify(curId);
-		int thisId = curId;
-		clients.put(thisId, client);
-		revClients.put(client, thisId);
-		curId += 1;
-		return thisId;
+
+	public void addPlayer(SocketChannel socket) {
+		/*
+		 * Initial connect. Player has not finished connecting yet
+		 */
+		int newPlayerId = this.getNewId();
+		
+		// Game is full
+		if (newPlayerId == -1) {
+			return;
+		}
+		
+		DmePlayer player = new DmePlayer(newPlayerId, socket);
+		
+		// Otherwise, add the player
+		players.put(newPlayerId, player);
+		// Add reverse lookup
+		playerSocketLookup.put(socket, player);
 	}
 	
-	public void clientAppSingle(DmeTcpClient cli, int id, byte[] payload) {
-		int sourceId = revClients.get(cli);
+	public void playerFullyConnected(SocketChannel socket) {
+		/* 
+		 * Player is now fully connected. Send a broadcast notify
+		 */
+		DmePlayer player = playerSocketLookup.get(socket);
+		player.fullyConnected();
+		
+		// Broadcast this player is fully connected to everyone else
+		sendServerNotify(player);
+	}
+	
+	private int getNewId() {
+		/*
+		 * Get a new Id for the game world.
+		 */
+		int result = -1;
+		
+		HashSet<Integer> ids = new HashSet<Integer>();		
+				
+		for (DmePlayer player: players.values()) {
+			ids.add(player.getPlayerId());
+		}
+				
+		if (ids.size() == 0) {
+			return 0;
+		}
+		
+		for (int i = 0; i < 8; i++) {
+			if (!ids.contains(i)) {
+				return i;
+			}
+		}
+		return result;
+	}
+	
+	public void clientAppSingle(SocketChannel socket, byte[] payload) {
+		DmePlayer sourcePlayer = playerSocketLookup.get(socket);
+		int sourceId = sourcePlayer.getPlayerId();
+		int playerTargetId = (int) payload[3];
 		payload[3] = (byte) sourceId;
-		clients.get(id).getSocket().writeAndFlush(Unpooled.copiedBuffer(payload));
+		
+		DmePlayer targetPlayer = players.get(playerTargetId);
+		targetPlayer.sendData(payload);
+	}
+	
+	public void broadcast(SocketChannel socket, byte[] payload) {
+		DmePlayer sourcePlayer = playerSocketLookup.get(socket);
+		int sourceId = sourcePlayer.getPlayerId();
+		
+		// Insert the source id
+		payload = insertId(payload, (byte) sourceId);
+		
+		// Send to every player that is not the source id player
+		for (DmePlayer player: players.values()) {
+			if (player.getPlayerId() != sourceId) {
+				player.sendData(payload);
+			}
+		}
 	}
 	
 	private byte[] insertId(byte[] payload, byte id) {
@@ -58,30 +128,31 @@ public class DmeWorld {
 		result[2] = newLen[1];
 		return result;
 	}
-	
-	public void broadcast(DmeTcpClient cli, byte[] payload) {
-		payload = insertId(payload, revClients.get(cli).byteValue());
-		for (DmeTcpClient c: clients.values()) {
-			if (c != cli) {
-				c.getSocket().writeAndFlush(Unpooled.copiedBuffer(payload));			
+		
+	private void sendServerNotify(DmePlayer player) {
+		int playerId = player.getPlayerId();
+		
+		// build server notify packet
+		String p1 = "085200";
+		String p2 = Utils.bytesToHex(Utils.shortToBytesLittle((short) playerId));
+		String p3 = "3139322e3136382e302e39390000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+		String res = p1 + p2 + p3;
+		
+		for (DmePlayer playerToReceiveData: players.values()) {
+			if (player != playerToReceiveData && player.getStatus() == DmePlayerStatus.CONNECTED) {
+				playerToReceiveData.sendData(Utils.hexStringToByteArray(res));
 			}
 		}
 	}
-	
-	private void sendServerNotify(int id) {
-		// build server notify packet
-		String p1 = "085200";
-		String p2 = Utils.bytesToHex(Utils.shortToBytesLittle((short) id));
-		String p3 = "3139322e3136382e312e39390000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-		String res = p1 + p2 + p3;
-		
-		for (DmeTcpClient c: clients.values()) {
-			c.getSocket().writeAndFlush(Unpooled.copiedBuffer(Utils.hexStringToByteArray(res)));			
-		}
+
+	public int getPlayerId(SocketChannel socket) {
+		return playerSocketLookup.get(socket).getPlayerId();
 	}
 
-	public int getNewId() {
-		return curId;
+	public int getPlayerCount() {
+		return players.size();
 	}
+
+
 
 }
