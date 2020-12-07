@@ -18,11 +18,10 @@ public class DmeServer extends TcpServer {
 
 	private final DmeWorld dmeWorld = new DmeWorld();
 
-	
 	private final String udpAddress;
 	private final int udpStartingPort;
 	private final int udpThreads;
-	private HashSet<UdpServer> gameServers;
+	private UdpServer udpDmeServer;
 
 	public DmeServer(final String tcpAddress, final int tcpPort, final int tcpParentThreads, final int tcpChildThreads, final String udpAddress, final int udpStartingPort, final int udpThreads) {
 		super(tcpAddress, tcpPort, tcpParentThreads, tcpChildThreads);
@@ -30,15 +29,13 @@ public class DmeServer extends TcpServer {
 		this.udpAddress = udpAddress;
 		this.udpStartingPort = udpStartingPort;
 		this.udpThreads = udpThreads;
-		this.gameServers = new HashSet<UdpServer>();
 
 		String udpServerAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
 		int udpServerPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
 
 		EventLoopGroup udpEventLoopGroup = new EpollEventLoopGroup(2);
 		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super tempoarary
-			UdpServer udpDmeServer = new UdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup);
-			gameServers.add(udpDmeServer);
+			this.udpDmeServer = new UdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup);
 			udpDmeServer.setChannelInitializer(new DmeUdpClientInitializer(udpDmeServer));
 			udpDmeServer.start();
 		});
@@ -65,12 +62,12 @@ public class DmeServer extends TcpServer {
 	}
 	
 	/**
-	 * Get all the UDP game servers currently running.
+	 * Get the currently running gameserver
 	 * 
 	 * @return
 	 */
-	public HashSet<UdpServer> getGameServers() {
-		return gameServers;
+	public UdpServer getUdpServer() {
+		return udpDmeServer;
 	}
 	
 	public DmeWorld getDmeWorld() {

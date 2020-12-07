@@ -3,6 +3,7 @@ package net.hashsploit.clank.server.nat;
 import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
+import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.pipeline.TestHandlerNATUdp;
@@ -33,6 +34,18 @@ public class NatClient implements IClient {
 
 	@Override
 	public ClientState getClientState() {
+		return null;
+	}
+
+	@Override
+	public SocketChannel getSocket() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public DatagramChannel getDatagram() {
+		// TODO Auto-generated method stub
 		return null;
 	}
 

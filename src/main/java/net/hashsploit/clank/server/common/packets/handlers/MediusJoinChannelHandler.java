@@ -45,7 +45,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 		final String ipAddrStr = ((MediusConfig) Clank.getInstance().getConfig()).getAddress();
-		
+		logger.finest("Joining addr: " + ipAddrStr);
 		byte[] ipAddr = ipAddrStr.getBytes();
 		int numZeros = 16 - ipAddrStr.length();
 		String zeroString = new String(new char[numZeros]).replace("\0", "00");
