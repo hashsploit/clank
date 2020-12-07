@@ -21,7 +21,7 @@ public class DmeServer extends TcpServer {
 	private final String udpAddress;
 	private final int udpStartingPort;
 	private final int udpThreads;
-	private UdpServer udpDmeServer;
+	private DmeUdpServer udpDmeServer;
 
 	public DmeServer(final String tcpAddress, final int tcpPort, final int tcpParentThreads, final int tcpChildThreads, final String udpAddress, final int udpStartingPort, final int udpThreads) {
 		super(tcpAddress, tcpPort, tcpParentThreads, tcpChildThreads);
@@ -35,7 +35,7 @@ public class DmeServer extends TcpServer {
 
 		EventLoopGroup udpEventLoopGroup = new EpollEventLoopGroup(2);
 		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super tempoarary
-			this.udpDmeServer = new UdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup);
+			this.udpDmeServer = new DmeUdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup, dmeWorldManager);
 			udpDmeServer.setChannelInitializer(new DmeUdpClientInitializer(udpDmeServer));
 			udpDmeServer.start();
 		});

@@ -20,8 +20,11 @@ import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusDMEWorldHandler;
+import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeUdpClient;
+import net.hashsploit.clank.server.dme.DmeUdpServer;
+import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -32,12 +35,6 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	private static final Logger logger = Logger.getLogger(TestHandlerDmeUdp.class.getName());
 	private final DmeUdpClient client;
 	
-	private static int udpConnId = 0;
-	private static HashMap<Integer,InetSocketAddress> idMap = new HashMap<Integer,InetSocketAddress>();
-	private static HashMap<InetSocketAddress,Integer> revidMap = new HashMap<InetSocketAddress,Integer>();
-	
-	private static HashSet<InetSocketAddress> clients = new HashSet<InetSocketAddress>();
-		
 	public TestHandlerDmeUdp(final DmeUdpClient client) {
 		super();
 		this.client = client;
@@ -62,8 +59,6 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		logger.fine("======================================================");
 
 		final DatagramPacket datagram = (DatagramPacket) msg;
-
-		clients.add(datagram.sender());
 		
 		byte[] buff = new byte[datagram.content().readableBytes()];
 		datagram.content().readBytes(buff);
@@ -108,13 +103,20 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			logger.info("Client port: " + port);
 			ByteBuffer buffer = ByteBuffer.allocate(25);
 			
-			idMap.put(udpConnId, requestDatagram.sender());
-			revidMap.put(requestDatagram.sender(), udpConnId);
+    		DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
+			int dmeWorldId = (int) Utils.bytesToShortLittle(data[6], data[7]);
+    		int playerId = (int) Utils.bytesToShortLittle(data[30], data[31]);
+    		
+			logger.info("Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)));
+			logger.info("playerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
+
+    		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, requestDatagram.sender());
+			
+			short playerCount = (short) dmeWorldManager.getPlayerCount(dmeWorldId);
 			
 			String hex = "010801" + 
-					Utils.bytesToHex(Utils.shortToBytesLittle((short) udpConnId)) + // DME PLAYER IN WORLD ID
-					Utils.bytesToHex(Utils.shortToBytesLittle((short) (udpConnId+1))); // PLAYER COUNT
-			udpConnId += 1;
+					Utils.bytesToHex(Utils.shortToBytesLittle((short) playerId)) + // DME PLAYER IN WORLD ID
+					Utils.bytesToHex(Utils.shortToBytesLittle(playerCount)); // PLAYER COUNT
 
 			buffer.put(Utils.hexStringToByteArray(hex));
 			byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
@@ -160,22 +162,26 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("UDP Packet ID: " + m.getId().toString());
 			logger.fine("UDP Packet ID: " + m.getId().getValue());
 			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
-				byte[] t = m.toBytes();
-				t = insertId(t, revidMap.get(requestDatagram.sender()).byteValue());
-				
-				for (InetSocketAddress addr : clients) {	
-					if (addr != requestDatagram.sender()) {
-						ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(t), addr));
-					}
-				}	
+				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
+				dmeWorldManager.broadcastUdp(ctx, requestDatagram.sender(), m.toBytes());
+//
+//				t = insertId(t, revidMap.get(requestDatagram.sender()).byteValue());
+//				
+//				for (InetSocketAddress addr : clients) {	
+//					if (addr != requestDatagram.sender()) {
+//						ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(t), addr));
+//					}
+//				}	
 			}
 			else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
-				int targetId = (int) data[3];
-				InetSocketAddress target = idMap.get(targetId);
-				
-				data[3] = revidMap.get(requestDatagram.sender()).byteValue();
-				
-				ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), target));
+//				int targetId = (int) data[3];
+//				InetSocketAddress target = idMap.get(targetId);
+//				
+//				data[3] = revidMap.get(requestDatagram.sender()).byteValue();
+//				
+//				ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(data), target));
+				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
+				dmeWorldManager.clientAppSingleUdp(ctx, requestDatagram.sender(), m.toBytes());
 			}
 		}
 	}

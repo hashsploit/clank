@@ -2,27 +2,47 @@ package net.hashsploit.clank.server.dme;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 import io.netty.buffer.Unpooled;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
+import net.hashsploit.clank.server.pipeline.TestHandlerDmeUdp;
 import net.hashsploit.clank.utils.Utils;
 
 public class DmeWorld {
+
+	
+	private int worldId;
 		
 	// Lookup Player from Dme Id
 	HashMap<Integer, DmePlayer> players = new HashMap<Integer, DmePlayer>();
 	
 	// Lookup Player from Socket
 	HashMap<SocketChannel, DmePlayer> playerSocketLookup = new HashMap<SocketChannel, DmePlayer>();
+	
+	// Lookup Player from Udp Packet
+	HashMap<InetSocketAddress, DmePlayer> playerUdpLookup = new HashMap<InetSocketAddress, DmePlayer>();
 
+	public DmeWorld(int dmeWorldId) {
+		worldId = dmeWorldId;
+	}
+
+	public String toString() {
+		return "DmeWorld: \n" + 
+				"worldId: " + Integer.toString(worldId) + "\n" +
+				"numPlayers: " + Integer.toString(players.size()) + "\n"
+				;
+	}
 
 	public void addPlayer(SocketChannel socket) {
 		/*
@@ -153,6 +173,39 @@ public class DmeWorld {
 		return players.size();
 	}
 
+	public void setPlayerUdpConnection(int playerId, InetSocketAddress inetSocketAddress) {
+		DmePlayer player = players.get(playerId);
+		playerUdpLookup.put(inetSocketAddress, player);
+		player.setUdpConnection(inetSocketAddress);
+	}
+	
+	/*
+	 *  UDP Methods =================================================================
+	 */
 
+	public void broadcastUdp(ChannelHandlerContext ctx, InetSocketAddress sender, byte[] payload) {
+		DmePlayer sourcePlayer = playerUdpLookup.get(sender);
+		int sourceId = sourcePlayer.getPlayerId();
+		
+		// Insert the source id
+		payload = insertId(payload, (byte) sourceId);
+		
+		// Send to every player that is not the source id player
+		for (DmePlayer player: players.values()) {
+			if (player.getPlayerId() != sourceId) {
+				player.sendUdpData(ctx, payload);
+			}
+		}		
+	}
+
+	public void clientAppSingleUdp(ChannelHandlerContext ctx, InetSocketAddress sender, byte[] payload) {
+		DmePlayer sourcePlayer = playerUdpLookup.get(sender);
+		int sourceId = sourcePlayer.getPlayerId();
+		int playerTargetId = (int) payload[3];
+		payload[3] = (byte) sourceId;
+		
+		DmePlayer targetPlayer = players.get(playerTargetId);
+		targetPlayer.sendUdpData(ctx, payload);		
+	}
 
 }
