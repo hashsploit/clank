@@ -77,8 +77,8 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 	private void checkFirstPacket(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data, int port, String clientAddr) {
 //		if (Utils.bytesToHex(data).equals("161d000108017b00bc2900003139322e3136382e312e3939000000005f270100") || Utils.bytesToHex(data).equals("161d0001080165ebbc2900003139322e3136382e312e3939000000005f270100")
-//				|| Utils.bytesToHex(data).equals("161d000108017b00bc2900003137322e31362e3232312e32353000005f270100")) { // this is UDP trying to connect
-		if (Utils.bytesToHex(data).length() >= 56 && (Utils.bytesToHex(data).substring(56).equals("5f270100") || Utils.bytesToHex(data).substring(56).equals("5f270000"))) { // 161d000108017b00bc2900003139322e3136382e312e3939000000005f270100
+//				|| Utils.bytesToHex(data).equals("161d000108017b00bc2900003137322e31362e3232312e32353000005f270100")) { // this is UDP trying to connect		
+		if (Utils.bytesToHex(data).length() >= 56 && (Utils.bytesToHex(data).substring(56,60).equals("5f27"))) { // 161d000108017b00bc2900003139322e3136382e312e3939000000005f270100
 			// ----------------------------------------- DL VERSION. 1 packet larger for DL
 			// than UYA (also different format)
 //	    	logger.info("UDP CONNECT REQ DETECTED!:");
