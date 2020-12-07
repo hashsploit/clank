@@ -104,6 +104,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			ByteBuffer buffer = ByteBuffer.allocate(25);
 			
     		DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
+    		logger.info(dmeWorldManager.toString());
 			int dmeWorldId = (int) Utils.bytesToShortLittle(data[6], data[7]);
     		int playerId = (int) Utils.bytesToShortLittle(data[30], data[31]);
     		

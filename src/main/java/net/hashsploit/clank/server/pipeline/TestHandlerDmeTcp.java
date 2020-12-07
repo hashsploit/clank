@@ -112,6 +112,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		dmeWorldManager.playerFullyConnected(client.getSocket());
     		int playerId = dmeWorldManager.getPlayerId(client.getSocket());
 
+    		logger.info(dmeWorldManager.toString());
     		
     		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
@@ -146,7 +147,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     	
     	if (packet.getId() == RTMessageId.CLIENT_CONNECT_TCP_AUX_UDP) {
     		logger.info("Detected TCP AUX UDP CONNECT");
-    		short dmeWorldId = Utils.bytesToShortLittle(packet.getPayload()[4], packet.getPayload()[5]);
+    		short dmeWorldId = Utils.bytesToShortLittle(packet.toBytes()[6], packet.toBytes()[7]);
     		logger.info("Dme world requested: " + Integer.toString((int) dmeWorldId));
     		
     		// ---------- Add the player to the world
@@ -154,6 +155,10 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		dmeWorldManager.addPlayer(dmeWorldId, client.getSocket());
     		int dmePlayerId = dmeWorldManager.getPlayerId(client.getSocket());
     		int playerCount = dmeWorldManager.getPlayerCount(client.getSocket());
+    		
+    		logger.info(dmeWorldManager.toString());
+			logger.info("Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)));
+			logger.info("playerId: " + Utils.bytesToHex(Utils.intToBytesLittle(dmePlayerId)));
     		
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);

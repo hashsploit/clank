@@ -16,6 +16,14 @@ public class DmeWorldManager {
 	
 	private HashMap<InetSocketAddress, DmeWorld> dmeUdpWorldLookup = new HashMap<InetSocketAddress, DmeWorld>();
 	
+	public String toString() {
+		String result = "++++++++++ DmeWorld Manager ++++++++++\n";
+		for (DmeWorld dmeWorld: dmeWorlds.values()) {
+			result += dmeWorld.toString();
+		}
+		result += "=== End DmeWorldManagerToString ===";
+		return result;
+	}
 	
 	public void addPlayer(short dmeWorldIdShort, SocketChannel socket) {
 		int dmeWorldId = (int) dmeWorldIdShort;
@@ -81,6 +89,7 @@ public class DmeWorldManager {
 	}
 
 	public void playerUdpConnected(int dmeWorldId, int playerId, InetSocketAddress inetSocketAddress) {
+		logger.info(this.toString());
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
 		dmeUdpWorldLookup.put(inetSocketAddress, dmeWorld);
 		logger.info(dmeWorld.toString());
