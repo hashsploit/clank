@@ -10,18 +10,12 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
-import io.netty.channel.socket.DatagramPacket;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
-import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusDMEWorldHandler;
-import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
-import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.utils.Utils;
 
@@ -194,6 +188,10 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		// Server AUX UDP Info (IP and port)
     		ByteBuffer buf = ByteBuffer.allocate(18);
     		String udpAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
+    		
+    		if (udpAddress == null || udpAddress.isEmpty()) {
+    			udpAddress = Utils.getPublicIpAddress();
+    		}
     		
     		logger.finest("DME config ip: " + udpAddress + ":" + curUdpPort);
     		

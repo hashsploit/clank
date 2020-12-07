@@ -8,8 +8,8 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.NetAddressType;
 import net.hashsploit.clank.server.common.objects.NetConnectionType;
@@ -44,7 +44,12 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
-		final String ipAddrStr = ((MediusConfig) Clank.getInstance().getConfig()).getAddress();
+		String ipAddrStr = ((MediusConfig) Clank.getInstance().getConfig()).getAddress();
+		
+		if (ipAddrStr == null || ipAddrStr.isEmpty()) {
+			ipAddrStr = Utils.getPublicIpAddress();
+		}
+		
 		logger.finest("Joining addr: " + ipAddrStr);
 		byte[] ipAddr = ipAddrStr.getBytes();
 		int numZeros = 16 - ipAddrStr.length();

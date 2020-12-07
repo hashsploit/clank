@@ -8,7 +8,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 
 public class DmeWorldManager {
-	private static final Logger logger = Logger.getLogger(DmeWorld.class.getName());
+	
+	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());
 
 	private HashMap<Integer, DmeWorld> dmeWorlds = new HashMap<Integer, DmeWorld>();
 	

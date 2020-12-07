@@ -3,20 +3,17 @@ package net.hashsploit.clank.server.dme;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.ArrayList;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.logging.Logger;
 
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
-import net.hashsploit.clank.server.IClient;
+import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
-import net.hashsploit.clank.server.pipeline.TestHandlerDmeUdp;
 import net.hashsploit.clank.utils.Utils;
 
 public class DmeWorld {
@@ -153,14 +150,34 @@ public class DmeWorld {
 		int playerId = player.getPlayerId();
 		
 		// build server notify packet
-		String p1 = "085200";
-		String p2 = Utils.bytesToHex(Utils.shortToBytesLittle((short) playerId));
-		String p3 = "3139322e3136382e302e39390000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
-		String res = p1 + p2 + p3;
+		String ipAddress = null;//((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
+		
+		if (ipAddress == null /*|| ipAddress.isEmpty()*/) {
+			ipAddress = Utils.getPublicIpAddress();
+		}
+		
+		byte[] ipAddr = ipAddress.getBytes();
+		int numZeros = 16 - ipAddress.length();
+		String zeroString = new String(new char[numZeros]).replace("\0", "00");
+		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
+		
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		
+		try {
+			baos.write(Utils.hexStringToByteArray("085200"));
+			baos.write(Utils.shortToBytesLittle((short) playerId));
+			
+			baos.write(ipAddr);
+			baos.write(zeroTrail);
+			
+			baos.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		
 		for (DmePlayer playerToReceiveData: players.values()) {
 			if (player != playerToReceiveData && player.getStatus() == DmePlayerStatus.CONNECTED) {
-				playerToReceiveData.sendData(Utils.hexStringToByteArray(res));
+				playerToReceiveData.sendData(baos.toByteArray());
 			}
 		}
 	}
