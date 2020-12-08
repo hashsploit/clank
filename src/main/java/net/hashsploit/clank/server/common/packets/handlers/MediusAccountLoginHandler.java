@@ -9,6 +9,7 @@ import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
+import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginResponse;
 import net.hashsploit.clank.utils.Utils;
@@ -30,19 +31,23 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 
 	@Override
 	public MediusMessage write(MediusClient client) {
-
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.LOGIN_FAILED.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
 		
-		// TODO: handle logic elsewhere (controller/model design)
 		// TODO: Clean the username!!! add a utility to check if the username is valid, length, and characters in it.
 		final String username = Utils.parseMediusString(reqPacket.getUsernameBytes());
 		final String password = Utils.parseMediusString(reqPacket.getPasswordBytes());
 
+		int playerAccountId = Clank.getInstance().getDatabase().getAccountId(username);
+		
 		if (Clank.getInstance().getDatabase().accountExists(username)) {
 			if (Clank.getInstance().getDatabase().validateAccount(username, password)) {
 				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
+				// Add player to MLS Logic Handler (with accountId), update status to connected
+				client.getPlayer().setUsername(username);
+				client.getServer().getLogicHandler().updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_AUTH_WORLD);
+				
 				// TODO: Generate random auth token each connection, save in db for MLS to use.
 				// db should have a expiration UNIX time-stamp as well that needs to be updated
 				// by MLS.
@@ -57,8 +62,8 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.INVALID_PASSWORD.getValue()));
 			}
 		}
-
-		byte[] accountID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getAccountId(username));
+		
+		byte[] accountID = Utils.intToBytesLittle(playerAccountId);
 		byte[] accountType = Utils.intToBytesLittle(2);
 		byte[] worldID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getLocationId());
 		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress() : null;

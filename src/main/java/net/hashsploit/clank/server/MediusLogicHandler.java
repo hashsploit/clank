@@ -1,22 +1,27 @@
-package net.hashsploit.clank.server.common;
+package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
 
 public class MediusLogicHandler {
 	
-	private GameList gameList = new GameList();
-	
+	private GameList gameList;
+	private PlayerList playerList;
 	
 	private final String location = "Aquatos";
 	private final int locationId = 40;
 	
+	public MediusLogicHandler() {
+		this.gameList = new GameList();
+		this.playerList = new PlayerList();
+	}
+	
 	public ArrayList<MediusGame> getGames() {		
 		return gameList.getGames();
 	}
-	
 	
 	public synchronized MediusGame getGame(int worldID) {
 		return gameList.getGame(worldID);
@@ -33,21 +38,7 @@ public class MediusLogicHandler {
 	public synchronized String getLocation() {
 		return location;
 	}
-	
-	public synchronized int getAccountId(String username) {
-		if (username.toLowerCase().equals("smily")) {
-			return 50;
-		}
-		else if (username.toLowerCase().equals("hashsploit")) {
-			return 51;
-		}
-		else if (username.toLowerCase().equals("fourbolt")) { // Used in MediusGetMyClansHandler
-			return 52;
-		}
 		
-		return 0;
-	}
-	
 	public synchronized int getCityWorldId() {
 		return 123;
 	}
@@ -55,7 +46,6 @@ public class MediusLogicHandler {
 	public synchronized short getCityPlayerCount(int cityWorldId) {
 		return 1;
 	}
-	
 	
 	public synchronized String getChannelLobbyName(int cityWorldId) {
 		if (cityWorldId == 123) {
@@ -69,5 +59,13 @@ public class MediusLogicHandler {
 		return 1;
 	}
 
+	/* 
+	 * ==================================================================
+	 *                  Player update methods
+	 * ==================================================================
+	 */
 
+	public void updatePlayerStatus(Player player, MediusPlayerStatus status) {
+		playerList.updatePlayerStatus(player, status);	
+	}
 }

@@ -9,6 +9,7 @@ import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.MediusClientChannelInitializer;
+import net.hashsploit.clank.server.MediusLogicHandler;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.TcpServer;

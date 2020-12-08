@@ -17,5 +17,7 @@ public interface IDatabase {
 	 * @return
 	 */
 	public boolean validateAccount(String username, String password);
+
+	public int getAccountId(String username);
 	
 }

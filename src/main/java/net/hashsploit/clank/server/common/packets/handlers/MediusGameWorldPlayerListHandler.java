@@ -1,5 +1,6 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
@@ -27,8 +28,9 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     
     @Override
     public MediusMessage write(MediusClient client) {
+
     	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
-    	byte[] accountID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getAccountId("hashsploit"));
+    	byte[] accountID = Utils.intToBytesLittle(Clank.getInstance().getDatabase().getAccountId("Smily"));
     	byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
     	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());
     	byte[] connectionClass = Utils.intToBytesLittle(1);

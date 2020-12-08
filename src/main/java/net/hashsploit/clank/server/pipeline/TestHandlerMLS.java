@@ -133,7 +133,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		// (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
 		// {
 		if (Utils.bytesToHex(data).startsWith("00490001")) {
-
+			logger.info("Check cities reconnect detected");
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {
 

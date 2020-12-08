@@ -39,6 +39,10 @@ public class DbManager {
 	public boolean validateAccount(String username, String password) {
 		return db.validateAccount(username, password);
 	}
+
+	public int getAccountId(String username) {
+		return db.getAccountId(username);
+	}
 	
 	
 	

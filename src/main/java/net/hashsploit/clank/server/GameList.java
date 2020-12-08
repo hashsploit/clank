@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.common;
+package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,7 +8,6 @@ import java.util.Map;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
 
 public class GameList {
-
 	
 	private HashMap<Integer, MediusGame> gameSet = new HashMap<Integer, MediusGame>();
 	
@@ -19,7 +18,6 @@ public class GameList {
 	}
 
 	public MediusGame getGame(int worldId) {
-		// TODO Auto-generated method stub
 		return gameSet.get(worldId);
 	}
 

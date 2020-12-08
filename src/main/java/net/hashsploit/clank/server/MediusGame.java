@@ -1,4 +1,4 @@
-package net.hashsploit.clank.server.common;
+package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 
