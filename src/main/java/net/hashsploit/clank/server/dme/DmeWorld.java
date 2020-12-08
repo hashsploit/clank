@@ -3,17 +3,13 @@ package net.hashsploit.clank.server.dme;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
-import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
 import net.hashsploit.clank.utils.Utils;
@@ -201,7 +197,7 @@ public class DmeWorld {
 	 *  UDP Methods =================================================================
 	 */
 	
-	public void setPlayerUdpConnection(int playerId, Channel playerUdpChannel, InetSocketAddress playerUdpAddr) {
+	public void setPlayerUdpConnection(int playerId, DatagramChannel playerUdpChannel, InetSocketAddress playerUdpAddr) {
 		DmePlayer player = players.get(playerId);
 		
 		if (playerUdpLookup.containsKey(playerUdpAddr)) {

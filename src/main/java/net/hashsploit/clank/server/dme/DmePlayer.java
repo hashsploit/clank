@@ -14,23 +14,16 @@ import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
 public class DmePlayer {
 
 	private int playerId;
-
-	// TCP
 	private SocketChannel tcpChannel;
-	// UDP
 	private DatagramChannel udpChannel;
-	private InetSocketAddress playerUdpAddr;
+	private InetSocketAddress udpAddress;
 	private int aggTime = 30; // in ms
 	private float lastSendTime;
 	private PriorityBlockingQueue<byte[]> packetQueue;
-
-	public DmePlayer() {
-		packetQueue = new PriorityBlockingQueue<byte[]>(512);
-	}
-
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
 	public DmePlayer(int playerId, SocketChannel tcpChannel) {
+		packetQueue = new PriorityBlockingQueue<byte[]>(512);
 		status = DmePlayerStatus.CONNECTING;
 		this.playerId = playerId;
 		this.tcpChannel = tcpChannel;
@@ -55,7 +48,7 @@ public class DmePlayer {
 
 	public void setUdpConnection(DatagramChannel udpChannel, InetSocketAddress playerUdpAddr) {
 		this.udpChannel = udpChannel;
-		this.playerUdpAddr = playerUdpAddr;
+		this.udpAddress = playerUdpAddr;
 	}
 
 	public void sendUdpData(byte[] payload) {
@@ -79,7 +72,7 @@ public class DmePlayer {
 			e.printStackTrace();
 		}
 
-		udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(out.toByteArray()), playerUdpAddr));
+		udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(out.toByteArray()), udpAddress));
 	}
 
 }

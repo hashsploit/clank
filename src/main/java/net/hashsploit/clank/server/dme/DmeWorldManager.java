@@ -5,8 +5,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 
 public class DmeWorldManager {
@@ -92,7 +91,7 @@ public class DmeWorldManager {
 		worldToSend.clientAppSingleUdp(senderUdpAddr, bytes);		
 	}
 
-	public void playerUdpConnected(int dmeWorldId, int playerId, Channel playerUdpChannel, InetSocketAddress playerUdpAddr) {
+	public void playerUdpConnected(int dmeWorldId, int playerId, DatagramChannel playerUdpChannel, InetSocketAddress playerUdpAddr) {
 		logger.info(this.toString());
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
 		dmeUdpWorldLookup.put(playerUdpAddr, dmeWorld);

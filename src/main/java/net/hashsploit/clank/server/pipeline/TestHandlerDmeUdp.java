@@ -1,13 +1,6 @@
 package net.hashsploit.clank.server.pipeline;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -15,13 +8,10 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
-import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.MediusDMEWorldHandler;
-import net.hashsploit.clank.server.dme.DmeServer;
-import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.server.dme.DmeUdpServer;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
@@ -96,7 +86,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			logger.info("Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)));
 			logger.info("playerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
 
-    		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, ctx.channel(), requestDatagram.sender());
+    		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, (DatagramChannel) ctx.channel(), requestDatagram.sender());
 			
 			short playerCount = (short) dmeWorldManager.getPlayerCount(dmeWorldId);
 			
