@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.logging.Logger;
 
 import io.netty.buffer.Unpooled;
@@ -75,10 +74,11 @@ public class DmePlayer {
 		// they won't be pop'd until next call)
 		try {
 			for (int i = 0; i < qSize; i++) {
-				out.write(packetQueue.poll());
+				out.write(packetQueue.take());
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
