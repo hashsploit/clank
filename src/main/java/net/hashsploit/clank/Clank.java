@@ -191,7 +191,7 @@ public class Clank {
 			while (running) {
 				update();
 				try {
-					Thread.sleep(5);
+					Thread.sleep(30);
 				} catch (InterruptedException e) {
 					// Discard
 				}
