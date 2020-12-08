@@ -3,8 +3,7 @@ package net.hashsploit.clank.server.dme;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Logger;
 
 import io.netty.buffer.Unpooled;
@@ -22,11 +21,11 @@ public class DmePlayer {
 	private InetSocketAddress udpAddress;
 	private int aggTime = 30; // in ms
 	private float lastSendTime;
-	private BlockingQueue<byte[]> packetQueue;
+	private ConcurrentLinkedQueue<byte[]> packetQueue;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
 	public DmePlayer(int playerId, SocketChannel tcpChannel) {
-		packetQueue = new LinkedBlockingQueue<byte[]>(512);
+		packetQueue = new ConcurrentLinkedQueue<byte[]>();
 		status = DmePlayerStatus.CONNECTING;
 		this.playerId = playerId;
 		this.tcpChannel = tcpChannel;
@@ -74,11 +73,9 @@ public class DmePlayer {
 		// they won't be pop'd until next call)
 		try {
 			for (int i = 0; i < qSize; i++) {
-				out.write(packetQueue.take());
+				out.write(packetQueue.poll());
 			}
 		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 		
