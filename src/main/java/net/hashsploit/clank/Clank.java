@@ -19,7 +19,10 @@ import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.common.MediusServer;
+import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
+import net.hashsploit.clank.server.dme.DmeWorld;
+import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {
@@ -189,7 +192,7 @@ public class Clank {
 		while (running) {
 			update();
 			try {
-				Thread.sleep(300);
+				Thread.sleep(5);
 			} catch (InterruptedException e) {
 				// Discard
 			}
@@ -201,7 +204,33 @@ public class Clank {
 	 * Tick the server for internal event updates.
 	 */
 	public void update() {
+		// Configure the server specifics
+		switch (config.getEmulationMode()) {
+			case MEDIUS_AUTHENTICATION_SERVER:
+				break;
+			case MEDIUS_LOBBY_SERVER:
+				break;
+			case MEDIUS_PROXY_SERVER:
+				break;
+			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
+				break;
+			case NAT_SERVER:
+				break;
+			case DME_SERVER:
+				dmeUpdate();
+				break;
+			default:
+				return;
+		}
+	}
 		
+	public void dmeUpdate() {
+		DmeWorldManager dmeWorldManager = ((DmeServer) server).getDmeWorldManager();
+		for (DmeWorld dmeWorld : dmeWorldManager.getWorlds()) {
+			for (DmePlayer dmePlayer: dmeWorld.getPlayers()) {
+				dmePlayer.flushUdpData();
+			}
+		}
 	}
 	
 	/**

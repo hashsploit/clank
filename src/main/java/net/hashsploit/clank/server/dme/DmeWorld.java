@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.Clank;
@@ -101,6 +103,10 @@ public class DmeWorld {
 		int playerTargetId = (int) payload[3];
 		payload[3] = (byte) sourceId;
 		
+		if (sourceId == playerTargetId) {
+			throw new IllegalStateException("ClientAppSingle: SourceId same as TargetId");
+		}
+		
 		DmePlayer targetPlayer = players.get(playerTargetId);
 		targetPlayer.sendData(payload);
 	}
@@ -190,18 +196,25 @@ public class DmeWorld {
 		return players.size();
 	}
 
-	public void setPlayerUdpConnection(int playerId, InetSocketAddress inetSocketAddress) {
-		DmePlayer player = players.get(playerId);
-		playerUdpLookup.put(inetSocketAddress, player);
-		player.setUdpConnection(inetSocketAddress);
-	}
 	
 	/*
 	 *  UDP Methods =================================================================
 	 */
+	
+	public void setPlayerUdpConnection(int playerId, Channel playerUdpChannel, InetSocketAddress playerUdpAddr) {
+		DmePlayer player = players.get(playerId);
+		
+		if (playerUdpLookup.containsKey(playerUdpAddr)) {
+			throw new IllegalStateException("setPlayerUdpConnection: New connection player " + Integer.toString(playerId) + " has the same Udp channel as " + 
+					Integer.toString(playerUdpLookup.get(playerUdpAddr).getPlayerId()) + " !");
+		}
+		
+		playerUdpLookup.put(playerUdpAddr, player);
+		player.setUdpConnection(playerUdpChannel, playerUdpAddr);
+	}
 
-	public void broadcastUdp(ChannelHandlerContext ctx, InetSocketAddress sender, byte[] payload) {
-		DmePlayer sourcePlayer = playerUdpLookup.get(sender);
+	public void broadcastUdp(InetSocketAddress senderUdpAddr, byte[] payload) {
+		DmePlayer sourcePlayer = playerUdpLookup.get(senderUdpAddr);
 		int sourceId = sourcePlayer.getPlayerId();
 		
 		// Insert the source id
@@ -210,19 +223,27 @@ public class DmeWorld {
 		// Send to every player that is not the source id player
 		for (DmePlayer player: players.values()) {
 			if (player.getPlayerId() != sourceId) {
-				player.sendUdpData(ctx, payload);
+				player.sendUdpData(payload);
 			}
 		}		
 	}
 
-	public void clientAppSingleUdp(ChannelHandlerContext ctx, InetSocketAddress sender, byte[] payload) {
-		DmePlayer sourcePlayer = playerUdpLookup.get(sender);
+	public void clientAppSingleUdp(InetSocketAddress senderUdpAddr, byte[] payload) {
+		DmePlayer sourcePlayer = playerUdpLookup.get(senderUdpAddr);
 		int sourceId = sourcePlayer.getPlayerId();
 		int playerTargetId = (int) payload[3];
 		payload[3] = (byte) sourceId;
 		
+		if (sourceId == playerTargetId) {
+			throw new IllegalStateException("ClientAppSingleUdp: SourceId same as TargetId");
+		}
+		
 		DmePlayer targetPlayer = players.get(playerTargetId);
-		targetPlayer.sendUdpData(ctx, payload);		
+		targetPlayer.sendUdpData(payload);		
+	}
+
+	public Collection<DmePlayer> getPlayers() {
+		return players.values();
 	}
 
 }

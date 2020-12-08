@@ -35,14 +35,14 @@ public class MediusLogicHandler {
 	}
 	
 	public synchronized int getAccountId(String username) {
-		if (username.equals("Smily")) {
+		if (username.toLowerCase().equals("smily")) {
 			return 50;
 		}
-		else if (username.equals("hashsploit")) {
+		else if (username.toLowerCase().equals("hashsploit")) {
 			return 51;
 		}
-		else if (username.equals("Test clan username")) { // Used in MediusGetMyClansHandler
-			return 3;
+		else if (username.toLowerCase().equals("fourbolt")) { // Used in MediusGetMyClansHandler
+			return 52;
 		}
 		
 		return 0;

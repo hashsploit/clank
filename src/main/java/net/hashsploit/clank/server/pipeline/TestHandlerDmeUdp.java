@@ -53,7 +53,6 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
-
 		logger.fine("======================================================");
 		logger.fine("======================================================");
 		logger.fine("======================================================");
@@ -97,7 +96,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			logger.info("Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)));
 			logger.info("playerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
 
-    		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, requestDatagram.sender());
+    		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, ctx.channel(), requestDatagram.sender());
 			
 			short playerCount = (short) dmeWorldManager.getPlayerCount(dmeWorldId);
 			
@@ -124,11 +123,11 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("UDP Packet ID: " + m.getId().getValue());
 			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
-				dmeWorldManager.broadcastUdp(ctx, requestDatagram.sender(), m.toBytes());	
+				dmeWorldManager.broadcastUdp(requestDatagram.sender(), m.toBytes());	
 			}
 			else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
-				dmeWorldManager.clientAppSingleUdp(ctx, requestDatagram.sender(), m.toBytes());
+				dmeWorldManager.clientAppSingleUdp(requestDatagram.sender(), m.toBytes());
 			}
 		}
 	}

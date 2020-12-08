@@ -1,9 +1,11 @@
 package net.hashsploit.clank.server.dme;
 
 import java.net.InetSocketAddress;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.SocketChannel;
 
@@ -15,6 +17,7 @@ public class DmeWorldManager {
 	
 	private HashMap<SocketChannel, DmeWorld> dmeWorldLookup = new HashMap<SocketChannel, DmeWorld>();
 	
+	// UDP
 	private HashMap<InetSocketAddress, DmeWorld> dmeUdpWorldLookup = new HashMap<InetSocketAddress, DmeWorld>();
 	
 	public String toString() {
@@ -79,27 +82,26 @@ public class DmeWorldManager {
 	/*
 	 *  UDP Methods =================================================================
 	 */
-	public void broadcastUdp(ChannelHandlerContext ctx, InetSocketAddress sender, byte[] bytes) {
-		DmeWorld worldToBroadcast = dmeUdpWorldLookup.get(sender);
-		worldToBroadcast.broadcastUdp(ctx, sender, bytes);
+	public void broadcastUdp(InetSocketAddress senderUdpAddr, byte[] bytes) {
+		DmeWorld worldToBroadcast = dmeUdpWorldLookup.get(senderUdpAddr);
+		worldToBroadcast.broadcastUdp(senderUdpAddr, bytes);
 	}
 	
-	public void clientAppSingleUdp(ChannelHandlerContext ctx, InetSocketAddress sender, byte[] bytes) {
-		DmeWorld worldToSend = dmeUdpWorldLookup.get(sender);
-		worldToSend.clientAppSingleUdp(ctx, sender, bytes);		
+	public void clientAppSingleUdp(InetSocketAddress senderUdpAddr, byte[] bytes) {
+		DmeWorld worldToSend = dmeUdpWorldLookup.get(senderUdpAddr);
+		worldToSend.clientAppSingleUdp(senderUdpAddr, bytes);		
 	}
 
-	public void playerUdpConnected(int dmeWorldId, int playerId, InetSocketAddress inetSocketAddress) {
+	public void playerUdpConnected(int dmeWorldId, int playerId, Channel playerUdpChannel, InetSocketAddress playerUdpAddr) {
 		logger.info(this.toString());
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
-		dmeUdpWorldLookup.put(inetSocketAddress, dmeWorld);
+		dmeUdpWorldLookup.put(playerUdpAddr, dmeWorld);
 		logger.info(dmeWorld.toString());
-		dmeWorld.setPlayerUdpConnection(playerId, inetSocketAddress);
+		dmeWorld.setPlayerUdpConnection(playerId, playerUdpChannel, playerUdpAddr);
 	}
 
-
-
-
-	
+	public Collection<DmeWorld> getWorlds() {
+		return dmeWorlds.values();
+	}
 
 }
