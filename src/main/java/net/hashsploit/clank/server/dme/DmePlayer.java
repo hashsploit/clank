@@ -6,7 +6,7 @@ import java.net.InetSocketAddress;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import io.netty.buffer.Unpooled;
-import io.netty.channel.Channel;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
@@ -16,25 +16,24 @@ public class DmePlayer {
 	private int playerId;
 
 	// TCP
-	private SocketChannel socket;
+	private SocketChannel tcpChannel;
 	// UDP
-	private Channel playerUdpChannel;
+	private DatagramChannel udpChannel;
 	private InetSocketAddress playerUdpAddr;
 	private int aggTime = 30; // in ms
 	private float lastSendTime;
 	private PriorityBlockingQueue<byte[]> packetQueue;
 
 	public DmePlayer() {
-		packetQueue = new PriorityBlockingQueue<byte[]>();
-		
+		packetQueue = new PriorityBlockingQueue<byte[]>(512);
 	}
 
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
-	public DmePlayer(int playerId, SocketChannel socket) {
+	public DmePlayer(int playerId, SocketChannel tcpChannel) {
 		status = DmePlayerStatus.CONNECTING;
 		this.playerId = playerId;
-		this.socket = socket;
+		this.tcpChannel = tcpChannel;
 	}
 
 	public void fullyConnected() {
@@ -47,15 +46,15 @@ public class DmePlayer {
 
 	public void sendData(byte[] arr) {
 		// TODO Auto-generated method stub
-		socket.writeAndFlush(Unpooled.copiedBuffer(arr));
+		tcpChannel.writeAndFlush(Unpooled.copiedBuffer(arr));
 	}
 
 	public DmePlayerStatus getStatus() {
 		return status;
 	}
 
-	public void setUdpConnection(Channel playerUdpChannel, InetSocketAddress playerUdpAddr) {
-		this.playerUdpChannel = playerUdpChannel;
+	public void setUdpConnection(DatagramChannel udpChannel, InetSocketAddress playerUdpAddr) {
+		this.udpChannel = udpChannel;
 		this.playerUdpAddr = playerUdpAddr;
 	}
 
@@ -80,7 +79,7 @@ public class DmePlayer {
 			e.printStackTrace();
 		}
 
-		playerUdpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(out.toByteArray()), playerUdpAddr));
+		udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(out.toByteArray()), playerUdpAddr));
 	}
 
 }
