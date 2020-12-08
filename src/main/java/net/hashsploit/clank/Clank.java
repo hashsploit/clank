@@ -1,5 +1,6 @@
 package net.hashsploit.clank;
 
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -184,19 +185,23 @@ public class Clank {
 		// Set up the event bus
 		eventBus = new EventBus(this);
 		
+		
+		// Tick
+		Executors.newSingleThreadExecutor().submit(() -> {
+			while (running) {
+				update();
+				try {
+					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					// Discard
+				}
+			}
+		});
+		
+		
 		// Start server
 		terminal.setPrompt(Terminal.colorize(terminalPrompt + AnsiColor.RESET) + " ");
 		server.start();
-		
-		// Tick
-		while (running) {
-			update();
-			try {
-				Thread.sleep(5);
-			} catch (InterruptedException e) {
-				// Discard
-			}
-		}
 	}
 	
 	
