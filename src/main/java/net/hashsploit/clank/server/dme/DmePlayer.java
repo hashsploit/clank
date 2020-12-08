@@ -3,7 +3,10 @@ package net.hashsploit.clank.server.dme;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
+import java.util.logging.Logger;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.socket.DatagramChannel;
@@ -12,6 +15,7 @@ import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
 
 public class DmePlayer {
+	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());
 
 	private int playerId;
 	private SocketChannel tcpChannel;
@@ -19,11 +23,11 @@ public class DmePlayer {
 	private InetSocketAddress udpAddress;
 	private int aggTime = 30; // in ms
 	private float lastSendTime;
-	private PriorityBlockingQueue<byte[]> packetQueue;
+	private BlockingQueue<byte[]> packetQueue;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
 	public DmePlayer(int playerId, SocketChannel tcpChannel) {
-		packetQueue = new PriorityBlockingQueue<byte[]>(512);
+		packetQueue = new LinkedBlockingQueue<byte[]>(512);
 		status = DmePlayerStatus.CONNECTING;
 		this.playerId = playerId;
 		this.tcpChannel = tcpChannel;
@@ -52,26 +56,33 @@ public class DmePlayer {
 	}
 
 	public void sendUdpData(byte[] payload) {
-		// playerUdpChannel.writeAndFlush(new
-		// DatagramPacket(Unpooled.copiedBuffer(payload), playerUdpAddr));
+		// Uncommenting this WORKS
+		//udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(payload), udpAddress));
 		packetQueue.add(payload);
 	}
 
 	public void flushUdpData() {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
+		int qSize = packetQueue.size();
+		
+		if (qSize == 0) {
+			return;
+		}
+
 		// Gets an instance of the queue size, removes that # of packets (so even if
 		// more are added,
 		// they won't be pop'd until next call)
 		try {
-			for (int i = 0; i < packetQueue.size(); i++) {
+			for (int i = 0; i < qSize; i++) {
 				out.write(packetQueue.poll());
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+		
+		logger.fine("PUSHING UDP DATA ON CLIENT: " + Integer.toString(playerId));
 		udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(out.toByteArray()), udpAddress));
 	}
 
