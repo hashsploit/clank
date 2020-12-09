@@ -10,9 +10,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.server.common.MediusServer;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
+import net.hashsploit.clank.utils.Utils;
 
 public class MediusClient implements IClient {
 
@@ -204,6 +206,16 @@ public class MediusClient implements IClient {
 	 */
 	public void sendMessage(RTMessage msg) {
 		sendRaw(msg.toBytes());
+	}
+	
+	public void sendMediusMessage(MediusMessage msg) {
+		RTMessage packet = new RTMessage(RTMessageId.SERVER_APP, msg.toBytes());
+
+		byte[] finalPayload = packet.toBytes();
+
+		logger.finest(msg.toString());
+		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
+		this.sendMessage(packet);
 	}
 
 	/**

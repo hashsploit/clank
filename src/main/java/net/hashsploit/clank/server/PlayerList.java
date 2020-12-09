@@ -1,5 +1,6 @@
 package net.hashsploit.clank.server;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -12,6 +13,14 @@ public class PlayerList {
 	
 	public PlayerList() {
 		this.players = new HashMap<Integer, Player>();
+	}
+	
+	public String toString() {
+		String result = "PlayerList ----- \n";
+		for (Player player: players.values()) {
+			result += player.toString();
+		}
+		return result;
 	}
 
 	public void updatePlayerStatus(Player player, MediusPlayerStatus status) {
@@ -37,5 +46,15 @@ public class PlayerList {
 		else {
 			players.get(accountId).updateStatus(status);
 		}
+	}
+
+	public ArrayList<Player> getPlayersByWorld(int worldId) {
+		ArrayList<Player> result = new ArrayList<Player>();
+		for (Player player: players.values()) {
+			if (player.getChatWorldId() == worldId) {
+				result.add(player);
+			}
+		}
+		return result;
 	}
 }

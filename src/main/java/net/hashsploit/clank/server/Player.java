@@ -10,11 +10,24 @@ public class Player {
 	private String username;
 	private int accountId;
 	
+	private int gameWorldId;
+	
 	private int chatWorldId;
 	
 	public Player(MediusClient client, MediusPlayerStatus status) {
 		this.client = client;
 		this.playerStatus = status;
+		this.gameWorldId = 0;
+		this.chatWorldId = 0;
+	}
+	
+	public String toString() {
+		return "Player: \n" + 
+				"Username: " + username + "\n" + 
+				"State: " + playerStatus.name() + "\n" + 
+				"AccountID: " + Integer.toString(accountId) + "\n" + 
+				"ChatWorld: " + Integer.toString(chatWorldId) + "\n" + 
+				"GameWorld: " + Integer.toString(gameWorldId);
 	}
 
 	public String getUsername() {
@@ -31,7 +44,8 @@ public class Player {
 	}
 
 	public void setAccountId(int playerAccountId) {
-		accountId = playerAccountId;
+		this.accountId = playerAccountId;
+		this.username = Clank.getInstance().getDatabase().getUsername(accountId);
 	}
 	
 	public void setChatWorld(int chatWorldId) {
@@ -44,6 +58,18 @@ public class Player {
 
 	public Integer getAccountId() {
 		return accountId;
+	}
+
+	public MediusPlayerStatus getStatus() {
+		return playerStatus;
+	}
+
+	public int getGameWorldId() {
+		return gameWorldId;
+	}
+
+	public int getChatWorldId() {
+		return chatWorldId;
 	}
 		
 }

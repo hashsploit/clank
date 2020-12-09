@@ -33,7 +33,8 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 	public MediusMessage write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.LOGIN_FAILED.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
-		
+		//byte[] mlsToken = Utils.hexStringToByteArray("12345678901234567890123456789012345678");
+		                                              
 		// TODO: Clean the username!!! add a utility to check if the username is valid, length, and characters in it.
 		final String username = Utils.parseMediusString(reqPacket.getUsernameBytes());
 		final String password = Utils.parseMediusString(reqPacket.getPasswordBytes());
@@ -51,9 +52,11 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 				// TODO: Generate random auth token each connection, save in db for MLS to use.
 				// db should have a expiration UNIX time-stamp as well that needs to be updated
 				// by MLS.
-				new Random().nextBytes(mlsToken);
+				//new Random().nextBytes(mlsToken);
 				
 				// Last 3 bytes are padding
+				mlsToken = Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId()) + "000000");
+				
 				mlsToken[mlsToken.length - 1] = (byte) 0x00;
 				mlsToken[mlsToken.length - 2] = (byte) 0x00;
 				mlsToken[mlsToken.length - 3] = (byte) 0x00;

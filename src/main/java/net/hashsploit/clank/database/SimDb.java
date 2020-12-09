@@ -50,4 +50,75 @@ public class SimDb implements IDatabase {
 		return 0;
 	}
 	
+	@Override
+	public String getMlsToken(Integer accountId) {
+		switch(accountId) {
+		case 50:
+			return "11111111111111111111111111111111";
+		case 51:
+			return "22222222222222222222222222222222";
+		case 52:
+			return "33333333333333333333333333333333";
+		case 53:
+			return "44444444444444444444444444444444";
+		case 54:
+			return "55555555555555555555555555555555";
+		case 55:
+			return "66666666666666666666666666666666";
+		case 56:
+			return "77777777777777777777777777777777";
+		}
+		
+		return null;
+	}
+	
+	@Override
+	public int getAccountIdFromMlsToken(String mlsToken) {
+		if (mlsToken.equals("11111111111111111111111111111111")) {
+			return 50;
+		}
+		if (mlsToken.equals("22222222222222222222222222222222")) {
+			return 51;
+		}
+		if (mlsToken.equals("33333333333333333333333333333333")) {
+			return 52;
+		}
+		if (mlsToken.equals("44444444444444444444444444444444")) {
+			return 53;
+		}
+		if (mlsToken.equals("55555555555555555555555555555555")) {
+			return 54;
+		}
+		if (mlsToken.equals("66666666666666666666666666666666")) {
+			return 55;
+		}
+		if (mlsToken.equals("77777777777777777777777777777777")) {
+			return 56;
+		}
+		return -1;
+	}
+
+	@Override
+	public String getUsername(int accountId) {
+		switch(accountId) {
+		case 50:
+			return "smily";
+		case 51:
+			return "hashsploit";
+		case 52:
+			return "fourbolt";
+		case 53:
+			return "aequs";
+		case 54:
+			return "trop";
+		case 55:
+			return "badger41";
+		case 56:
+			return "dan";
+		}
+		
+		return null;
+	}
+
+	
 }

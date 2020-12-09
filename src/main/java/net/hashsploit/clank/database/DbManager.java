@@ -43,7 +43,18 @@ public class DbManager {
 	public int getAccountId(String username) {
 		return db.getAccountId(username);
 	}
+
+	public String getMlsToken(Integer accountId) {
+		return db.getMlsToken(accountId);
+	}
 	
+	public int getAccountIdFromMlsToken(String mlsToken) {
+		return db.getAccountIdFromMlsToken(mlsToken);
+	}
+
+	public String getUsername(int accountId) {
+		return db.getUsername(accountId);
+	}
 	
 	
 	

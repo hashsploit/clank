@@ -19,6 +19,10 @@ public class MediusLogicHandler {
 		this.playerList = new PlayerList();
 	}
 	
+	public String playersToString() {
+		return playerList.toString();
+	}
+	
 	public ArrayList<MediusGame> getGames() {		
 		return gameList.getGames();
 	}
@@ -68,4 +72,23 @@ public class MediusLogicHandler {
 	public void updatePlayerStatus(Player player, MediusPlayerStatus status) {
 		playerList.updatePlayerStatus(player, status);	
 	}
+
+	
+	/* 
+	 * ==================================================================
+	 *                  Get Players in game/lobby
+	 * ==================================================================
+	 */
+	public ArrayList<Player> getGameWorldPlayers(int worldIdRequested) {
+		ArrayList<Player> result = new ArrayList<Player>();
+
+		return result;
+	}
+
+	public ArrayList<Player> getLobbyWorldPlayers(int worldId) {
+		ArrayList<Player> result = playerList.getPlayersByWorld(worldId);
+		return result;
+	}
+
+
 }
