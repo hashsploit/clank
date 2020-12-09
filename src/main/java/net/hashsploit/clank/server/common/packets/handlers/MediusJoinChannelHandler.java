@@ -43,6 +43,8 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 	public MediusMessage write(MediusClient client) {
 		// RESPONSE
 		
+		logger.finest(client.getServer().getLogicHandler().playersToString());
+		
 		// Update player status to joined channel
 		client.getPlayer().setChatWorld(Utils.bytesToIntLittle(worldId));
 		client.getServer().getLogicHandler().updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
@@ -61,6 +63,8 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 		String zeroString = new String(new char[numZeros]).replace("\0", "00");
 		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
+		String mlsToken = Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId());
+		
 		try {
 			outputStream.write(messageId);
 			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
@@ -73,30 +77,44 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 			outputStream.write(ipAddr); // ip address
 			outputStream.write(zeroTrail); // zero padding for ip address
 
-			outputStream.write(Utils.intToBytesLittle(10078)); // port
+			outputStream.write(Utils.shortToBytesLittle((short) 10078)); // port
 
-			outputStream.write(worldId); // world id
-
-			// outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000FFFFFFFF0B000000"));
 			// // ???
-			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000FFFFFFFF0B000000")); // ???
-			// outputStream.write(Utils.hexStringToByteArray("000000000000000000000000000000000000000000000000"));
-			// // ???
+			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000ffffffff7b000000"));
 
-			// outputStream.write(Utils.hexStringToByteArray("CF09ADE3EA5551113BBB519AC5BCB0CB45CD22DD399257E74E886684A12A3E68A865F487CE86777545D6CBFD90C2C6186F7D05E82419DB2E2230E7F73CCF8BB33333323837"));
 			// // RSA_KEY 64
+			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")); // RSA_KEY 64
 
-			outputStream.write(Utils.hexStringToByteArray("000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")); // RSA_KEY 64
+			
+			outputStream.write(Utils.hexStringToByteArray("3333323837000000000000000000000000")); // aSessionKey
 
-			outputStream.write(Utils.hexStringToByteArray("0000000000000000000000000000000000")); // aSessionKey
-
-			outputStream.write(Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E00")); // aAccessKey
-
+			//outputStream.write(Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E")); // aAccessKey
+			outputStream.write(Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId()))); // aAccessKey
+			outputStream.write(Utils.hexStringToByteArray("000000"));
+		
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		//WORKING
+//		TRUE STRUCTURE:
+//			310000000000000000000000000000000000000000
+//			000000
+//			00000000
+//			01000000
+//			01000000
+//			3139322e3136382e302e393900000000
+//			5e27
+//			00000000000000000000000000000000000000000000ffffffff0b000000
+//
+//			00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 
+//			3333323837000000000000000000000000782b6f2f532f71443453633243364b4e000000
+		byte[] test = Utils.hexStringToByteArray("3100000000000000000000000000000000000000000000000000000001000000010000003139322e3136382e302e3939000000005E2700000000000000000000000000000000000000000000FFFFFFFF0B000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003333323837000000000000000000000000782B6F2F532F71443453633243364B4E000000");
+		//return new MediusMessage(responseType, test);
+
+		
 		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 
