@@ -44,7 +44,7 @@ public class Utils {
 
 		for (byte b : data) {
 			if (b == (byte) 0x00) {
-				continue;
+				break;
 			}
 			if (b == '\r') {
 				sb.append("\\r");
