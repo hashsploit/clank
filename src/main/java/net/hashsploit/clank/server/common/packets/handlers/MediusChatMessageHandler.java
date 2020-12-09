@@ -1,13 +1,16 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusChatMessageType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
+import net.hashsploit.clank.server.common.packets.serializers.ChatFwdMessageResponse;
 import net.hashsploit.clank.server.common.packets.serializers.ChatMessageRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
@@ -20,7 +23,7 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 	private GenericChatFwdMessageResponse respPacket;
 
 	public MediusChatMessageHandler() {
-		super(MediusMessageType.ChatMessage, MediusMessageType.GenericChatFwdMessage);
+		super(MediusMessageType.ChatMessage, MediusMessageType.ChatFwdMessage);
 	}
 
 	@Override
@@ -34,14 +37,36 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 	@Override
 	public MediusMessage write(MediusClient client) {
 
-		int timestamp = 0;
-		int senderAccountId = 0;
-		MediusChatMessageType mediusChatMessageType = MediusChatMessageType.BROADCAST;
-		byte[] accountName = "DanBot".getBytes();
-		byte[] message = "this is a test string".getBytes();
+		/*
+		 * 
+		 *  Send this chat message to each client in the same world
+		*/
+		logger.info("CHAT MESSAGE HANDLER");
+		String username = client.getPlayer().getUsername();
+		String chatMsg = Utils.bytesToStringClean(reqPacket.getText());
+		logger.info(username);
+		logger.info(chatMsg);
+		
+		ChatFwdMessageResponse msg = new ChatFwdMessageResponse(
+				reqPacket.getMessageId(), 
+				Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.getValue()),
+				Utils.buildByteArrayFromString(chatMsg, MediusConstants.CHATMESSAGE_MAXLEN.getValue()));
+				
+		/*
+		 * Example:
+		 * PACKET: 160.33.33.245:10078 => 192.168.0.50:53689
+[SUCCESS] ID:ID_0a PLAINTEXT: 
+01 3C 31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 CF 84 13 00 5A 33 72 30 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 47 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+.<1.......................I...Z3r0x...............................G...............................................................
+		 */
+		int playerWorldId = client.getPlayer().getChatWorldId();
+		ArrayList<Player> playersInWorld = client.getServer().getLogicHandler().getLobbyWorldPlayers(playerWorldId);
 
-		respPacket = new GenericChatFwdMessageResponse(timestamp, senderAccountId, mediusChatMessageType, accountName, message);
-
+		for (Player player: playersInWorld) {
+			if (player != client.getPlayer()) // Dont send to self
+				player.getClient().sendMediusMessage(msg);
+		}
+	
 		return null;
 	}
 

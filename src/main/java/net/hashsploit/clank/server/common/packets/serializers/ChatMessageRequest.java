@@ -68,5 +68,13 @@ public class ChatMessageRequest extends MediusMessage {
 				"text: " + Utils.bytesToHex(text);		
 	}
 
+	public synchronized byte[] getMessageId() {
+		return messageId;
+	}
+
+	public synchronized byte[] getText() {
+		return text;
+	}
+
 	
 }
