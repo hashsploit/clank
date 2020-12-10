@@ -48,10 +48,10 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		byte[] rsaKey = new byte[64]; // 00's
 		
 		byte[] sessionKey = new byte[17];
-		//sessionKey = Utils.hexStringToByteArray("4242424242424242424242424242424242");
+		sessionKey = Utils.hexStringToByteArray("4242424242424242424242424242424242");
 		
 		byte[] accessKey = new byte[17];
-		//accessKey = Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E00");
+		accessKey = Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId()));
 		final NetConnectionInfo netConnectionInfo = new NetConnectionInfo(
 				NetConnectionType.NET_CONNECTION_TYPE_CLIENT_SERVER_TCP_AUX_UDP,
 				netAddressList,

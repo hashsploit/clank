@@ -8,6 +8,7 @@ import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.IServer;
+import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.pipeline.TestHandlerDmeTcp;
 
 public class DmeTcpClient implements IClient {

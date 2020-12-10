@@ -5,8 +5,10 @@ public enum DmePlayerStatus {
 	DISCONNECTED(0),
 	
 	CONNECTING(1),
+		
+	STAGING(2),
 	
-	CONNECTED(2);
+	ACTIVE(3);
 	
 	private final int value;
 

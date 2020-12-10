@@ -32,7 +32,7 @@ public class DmePlayer {
 	}
 
 	public void fullyConnected() {
-		status = DmePlayerStatus.CONNECTED;
+		status = DmePlayerStatus.STAGING;
 	}
 
 	public int getPlayerId() {
@@ -40,7 +40,6 @@ public class DmePlayer {
 	}
 
 	public void sendData(byte[] arr) {
-		// TODO Auto-generated method stub
 		tcpChannel.writeAndFlush(Unpooled.copiedBuffer(arr));
 	}
 
