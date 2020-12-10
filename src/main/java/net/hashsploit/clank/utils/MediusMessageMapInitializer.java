@@ -59,7 +59,7 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusWorldReportZero
 
 public class MediusMessageMapInitializer {
 	
-	public static final HashMap<MediusMessageType, MediusPacketHandler> getMap() {
+	public static final HashMap<MediusMessageType, MediusPacketHandler> getMlsMap() {
 		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
 		
 		mp.put(MediusMessageType.AccountLogout, new MediusAccountLogoutHandler());
@@ -110,13 +110,7 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GetIgnoreList, new MediusGetIgnoreListHandler());
 		mp.put(MediusMessageType.GetClanInvitationsSent, new MediusGetClanInvitationsSentHandler());
 		mp.put(MediusMessageType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
-	
-		// MAS stuff
-		mp.put(MediusMessageType.SessionBegin, new MediusSessionBeginHandler());
-		mp.put(MediusMessageType.DnasSignaturePost, new MediusDnasSignaturePostHandler());
-		mp.put(MediusMessageType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
-		mp.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
-		
+
 		// added for Amplitude
 		mp.put(MediusMessageType.AccountRegistration, new MediusAccountRegistrationHandler());
 		mp.put(MediusMessageType.LadderPosition, new MediusLadderPositionHandler());
@@ -132,6 +126,18 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.FindWorldByName, new MediusFindWorldByNameHandler());
 		mp.put(MediusMessageType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
 		mp.put(MediusMessageType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
+		
+		return mp;
+	}
+
+	public static final HashMap<MediusMessageType, MediusPacketHandler> getMasMap() {
+		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
+
+		// MAS stuff
+		mp.put(MediusMessageType.SessionBegin, new MediusSessionBeginHandler());
+		mp.put(MediusMessageType.DnasSignaturePost, new MediusDnasSignaturePostHandler());
+		mp.put(MediusMessageType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
+		mp.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
 		
 		return mp;
 	}

@@ -32,8 +32,16 @@ public class MediusServer extends TcpServer {
 	public MediusServer(final EmulationMode emulationMode, final String address, final int port, final int parentThreads, final int childThreads) {
 		super(address, port, parentThreads, childThreads);
 		this.emulationMode = emulationMode;
-		this.mediusMessageMap = MediusMessageMapInitializer.getMap();
 		
+		if (emulationMode == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
+			this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();	
+		}
+		else if (emulationMode == EmulationMode.MEDIUS_LOBBY_SERVER) {
+			this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();	
+		}
+		else {
+			this.mediusMessageMap = null;
+		}
 		setChannelInitializer(new MediusClientChannelInitializer(this));
 	}
 	
