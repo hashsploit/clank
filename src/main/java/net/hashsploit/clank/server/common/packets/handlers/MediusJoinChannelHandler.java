@@ -40,7 +40,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		// RESPONSE
 		
 		logger.finest(client.getServer().getLogicHandler().playersToString());
@@ -115,7 +115,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 		//return new MediusMessage(responseType, test);
 
 		
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 }

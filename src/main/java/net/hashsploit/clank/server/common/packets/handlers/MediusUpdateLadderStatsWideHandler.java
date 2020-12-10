@@ -37,7 +37,7 @@ public class MediusUpdateLadderStatsWideHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		byte[] statsResponse = Utils.buildByteArrayFromString("0000000", 7); // empty 7 byte array
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
@@ -48,7 +48,7 @@ public class MediusUpdateLadderStatsWideHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 }

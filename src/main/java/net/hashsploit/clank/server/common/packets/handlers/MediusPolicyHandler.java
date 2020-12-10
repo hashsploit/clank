@@ -40,7 +40,7 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		String policyString = ((MlsConfig) Clank.getInstance().getConfig()).getPolicy();
 		List<MediusMessage> mediusMessages = new ArrayList<MediusMessage>();
@@ -150,14 +150,10 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 		}
 		
 		
-		
-		
 		// FIXME: bad practice, this should be enqueued and the pipeline should be rewritten.
 		for (final MediusMessage mediusMessage : mediusMessages) {
 			client.sendMessage(new RTMessage(RTMessageId.SERVER_APP, mediusMessage.toBytes()));
 		}
 
-		//return new MediusMessage(responseType, outputStream.toByteArray());
-		return null;
 	}
 }

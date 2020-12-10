@@ -38,7 +38,7 @@ public class MediusGetClanInvitationsSentHandler extends MediusPacketHandler {
     }
     
     @Override
-    public MediusMessage write(MediusClient client) { 
+    public void write(MediusClient client) { 
 
     	byte[] accountName = Utils.buildByteArrayFromString("Account Name", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
        	byte[] applicationID = Utils.intToBytes(1);
@@ -60,7 +60,7 @@ public class MediusGetClanInvitationsSentHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 		
-		return new MediusMessage(responseType, outputStream.toByteArray());	    
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));	    
     }
 
 }

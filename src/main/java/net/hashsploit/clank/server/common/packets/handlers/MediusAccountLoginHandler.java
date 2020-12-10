@@ -30,7 +30,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.LOGIN_FAILED.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
 		//byte[] mlsToken = Utils.hexStringToByteArray("12345678901234567890123456789012345678");
@@ -91,8 +91,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		byte[] natZeroTrail = Utils.hexStringToByteArray(natZeroString);
 
 		respPacket = new AccountLoginResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountType, worldID, mlsAddress, mlsZeroTrail, natAddress, natZeroTrail, mlsToken);
-
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 }

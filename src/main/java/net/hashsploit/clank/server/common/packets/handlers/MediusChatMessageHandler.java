@@ -35,7 +35,7 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		/*
 		 * 
@@ -66,8 +66,6 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 			if (player != client.getPlayer()) // Dont send to self
 				player.getClient().sendMediusMessage(msg);
 		}
-	
-		return null;
 	}
 
 }

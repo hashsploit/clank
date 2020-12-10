@@ -24,12 +24,12 @@ public class MediusVersionServerHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		String serverVersion = Clank.NAME + " v" + Clank.VERSION;
 		
 		respPacket = new VersionServerResponse(reqPacket.getMessageId(), serverVersion);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 }

@@ -24,7 +24,7 @@ public class MediusChannelListHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		int mediusWorldId = 1;
@@ -34,7 +34,7 @@ public class MediusChannelListHandler extends MediusPacketHandler {
 		
 		respPacket = new ChannelListResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, lobbyName, playerCount, endOfList);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 

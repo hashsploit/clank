@@ -31,14 +31,13 @@ public class MediusAccountGetIDHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
 
 		respPacket = new AccountGetIDResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(9), callbackStatus);
-
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 }

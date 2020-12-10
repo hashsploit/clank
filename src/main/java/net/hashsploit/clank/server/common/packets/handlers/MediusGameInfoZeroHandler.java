@@ -28,7 +28,7 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {		
+	public void write(MediusClient client) {		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
 		MediusGame game = client.getServer().getLogicHandler().getGame(Utils.bytesToIntLittle(reqPacket.getWorldID()));
@@ -38,7 +38,7 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 				req.getPlayerSkillLevel(), game.getPlayerCount(), game.getStats(), req.getGameName(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(),
 				game.getWorldStatus(), req.getGameHostType());
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 }

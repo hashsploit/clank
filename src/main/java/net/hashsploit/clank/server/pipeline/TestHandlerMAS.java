@@ -98,16 +98,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		    
 		    // Process this medius packet
 		    mediusPacket.read(incomingMessage);
-		    mm = mediusPacket.write(client);	    
-		    if (mm != null) {
-		    	RTMessage responsepacket = new RTMessage(RTMessageId.SERVER_APP, mm.toBytes());
-	
-				byte[] finalPayload = responsepacket.toBytes();
-				logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
-				ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-				ctx.write(msg);
-				ctx.flush();	
-		    }
+		    mediusPacket.write(client);	    
 	    }
     }
     

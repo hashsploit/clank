@@ -42,7 +42,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		// RESPONSE
 
 		int worldId = Utils.bytesToIntLittle(reqPacket.getLobbyWorldID());
@@ -115,90 +115,6 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 				client.sendMediusMessage(m);
 			}
 		}
-//			byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.NO_RESULT.getValue());
-//			byte[] accountID = Utils.intToBytesLittle(0);
-//			byte[] accountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-//			byte[] connectState = Utils.intToBytesLittle(0);
-//			byte[] gameWorldID = Utils.intToBytesLittle(0);
-//			byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.WORLDNAME_MAXLEN.getValue());
-//			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.getValue());
-//			byte[] endOfList = Utils.hexStringToByteArray("01000000");
-//	
-//			logger.finest("Message ID: " + Utils.bytesToHex(reqPacket.getMessageID()));
-//			logger.finest("Account ID: " + Utils.bytesToHex(accountID));
-//			logger.finest("AccountName: " + Utils.bytesToHex(accountName));
-//			logger.finest("ConnectState: " + Utils.bytesToHex(connectState));
-//			logger.finest("lobbyWorldID: " + Utils.bytesToHex(reqPacket.getLobbyWorldID()));
-//			logger.finest("gameWorldID: " + Utils.bytesToHex(gameWorldID));
-//			logger.finest("lobbyName: " + Utils.bytesToHex(lobbyName));
-//			logger.finest("gameName: " + Utils.bytesToHex(gameName));
-//			logger.finest("endOfList: " + Utils.bytesToHex(endOfList));
-//			
-//			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//			try {
-//				outputStream.write(reqPacket.getMessageID());
-//				outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
-//				outputStream.write(callbackStatus);
-//				outputStream.write(accountID);
-//				outputStream.write(accountName);
-//				outputStream.write(connectState);
-//				outputStream.write(reqPacket.getLobbyWorldID());
-//				outputStream.write(gameWorldID);
-//				outputStream.write(lobbyName);
-//				outputStream.write(gameName);
-//				outputStream.write(endOfList);
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//	
-//			client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
-
-		
-		
-		
-		
-		return null;
-		
-//		byte[] callbackStatus = Utils.intToBytesLittle(0);
-//		byte[] accountID = Utils.intToBytesLittle(101);
-//		byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-//		MediusPlayerOnlineState onlineState = new MediusPlayerOnlineState(MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD, 0, 0, "Aquatos v2", "Aquatos v2");
-//		byte[] connectState = Utils.intToBytesLittle(onlineState.getConnectionStatus().getValue());
-//		byte[] gameWorldID = Utils.intToBytesLittle(0);
-//		byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.WORLDNAME_MAXLEN.getValue());
-//		byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.getValue());
-//		byte[] endOfList = Utils.hexStringToByteArray("01000000");
-//
-//		logger.finest("Message ID: " + Utils.bytesToHex(messageID));
-//		logger.finest("Account ID: " + Utils.bytesToHex(accountID));
-//		logger.finest("AccountName: " + Utils.bytesToHex(accountName));
-//		logger.finest("ConnectState: " + Utils.bytesToHex(connectState));
-//		logger.finest("lobbyWorldID: " + Utils.bytesToHex(lobbyWorldID));
-//		logger.finest("gameWorldID: " + Utils.bytesToHex(gameWorldID));
-//		logger.finest("lobbyName: " + Utils.bytesToHex(lobbyName));
-//		logger.finest("gameName: " + Utils.bytesToHex(gameName));
-//		logger.finest("endOfList: " + Utils.bytesToHex(endOfList));
-//		
-//		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//		try {
-//			outputStream.write(messageID);
-//			outputStream.write(Utils.hexStringToByteArray("000000")); // Padding
-//			outputStream.write(callbackStatus);
-//			outputStream.write(accountID);
-//			outputStream.write(accountName);
-//			outputStream.write(connectState);
-//			outputStream.write(lobbyWorldID);
-//			outputStream.write(gameWorldID);
-//			outputStream.write(lobbyName);
-//			outputStream.write(gameName);
-//			outputStream.write(endOfList);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//
-//		return new MediusMessage(responseType, outputStream.toByteArray());
 	}
 	
 

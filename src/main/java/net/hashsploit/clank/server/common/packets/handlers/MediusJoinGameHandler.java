@@ -32,7 +32,7 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		// RESPONSE
 
 		final MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
@@ -64,7 +64,7 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		respPacket = new JoinGameResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(gameHostType.getValue()),
 				netConnectionInfo);
 		
-		return respPacket;
+       	client.sendMediusMessage(respPacket);
 	}
 
 }

@@ -37,7 +37,7 @@ public class MediusGetMyClansHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
 		logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
 
@@ -71,7 +71,7 @@ public class MediusGetMyClansHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 }

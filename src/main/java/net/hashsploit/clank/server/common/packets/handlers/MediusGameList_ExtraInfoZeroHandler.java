@@ -43,7 +43,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		
 		ArrayList<MediusGame> games = client.getServer().getLogicHandler().getGames();
@@ -91,7 +91,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 					req.getGameHostType(), req.getGameName(), game.getStats(), endOfList);
 		}
 
-		return respPacket;	
+		client.sendMediusMessage(respPacket);
 		
 	}
 

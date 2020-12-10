@@ -28,7 +28,7 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     }
     
     @Override
-    public MediusMessage write(MediusClient client) {
+    public void write(MediusClient client) {
 
     	int worldIdRequested = Utils.bytesToIntLittle(reqPacket.getWorldID());
 //    	
@@ -45,12 +45,7 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     	byte[] endOfList = Utils.hexStringToByteArray("01000000");
     	
 		respPacket = new GameWorldPlayerListResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountName, stats, connectionClass, endOfList);
-		
-		
-		
-		
-		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
     }
 
 }

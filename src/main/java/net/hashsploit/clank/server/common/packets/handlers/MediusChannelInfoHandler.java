@@ -38,7 +38,7 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
@@ -47,7 +47,6 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 		byte[] maxPlayers = Utils.intToBytesLittle(224);
 
 		respPacket = new ChannelInfoResponse(reqPacket.getMessageID(), callbackStatus, lobbyName, activePlayerCount, maxPlayers);
-		
-		return respPacket;	
+		client.sendMediusMessage(respPacket);
 	}
 }

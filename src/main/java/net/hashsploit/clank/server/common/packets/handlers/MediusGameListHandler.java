@@ -26,7 +26,7 @@ public class MediusGameListHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		int mediusWorldId = 1;
@@ -37,8 +37,7 @@ public class MediusGameListHandler extends MediusPacketHandler {
 		boolean endOfList = true;
 		
 		respPacket = new GameListResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, gameName, worldStatus, gameHostType, playerCount, endOfList);
-		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 }

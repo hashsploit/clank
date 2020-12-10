@@ -38,11 +38,12 @@ public class MediusAccountUpdateStatsHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
 		respPacket = new AccountUpdateStatsResponse(reqPacket.getMessageID(), callbackStatus);
 		
-		return respPacket;	}
+		client.sendMediusMessage(respPacket);
+	}
 	
 }

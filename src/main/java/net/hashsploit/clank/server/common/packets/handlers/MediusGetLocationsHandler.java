@@ -38,7 +38,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		byte[] locationID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getLocationId());// random location
 		byte[] locationName = Utils.buildByteArrayFromString(client.getServer().getLogicHandler().getLocation(), MediusConstants.LOCATIONNAME_MAXLEN.getValue());
@@ -65,7 +65,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 }

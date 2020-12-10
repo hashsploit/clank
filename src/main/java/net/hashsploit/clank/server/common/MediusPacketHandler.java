@@ -31,8 +31,7 @@ public abstract class MediusPacketHandler {
     	
     }
     
-    public MediusMessage write(MediusClient client) {
-    	return null;
+    public void write(MediusClient client) {
     }
     
 }

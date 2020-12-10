@@ -83,34 +83,11 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		//checkForCitiesReconnect(ctx, packet);
 
 		// Medius packets
-		MediusMessage response = checkMediusPackets(packet);
-
-		// If there is a response, pass it onto the next handler
-		passOnToHandler(ctx, response);
+		checkMediusPackets(packet);
 	}
 
-	private void passOnToHandler(ChannelHandlerContext ctx, MediusMessage mm) {
-		if (mm == null)
-			return;
-//    	try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		RTMessage packet = new RTMessage(RTMessageId.SERVER_APP, mm.toBytes());
-		byte[] finalPayload = packet.toBytes();
-
-		logger.finest(mm.toString());
-		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
-		ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-		ctx.write(msg);
-		ctx.flush();
-	}
-
-	private MediusMessage checkMediusPackets(RTMessage packet) {
+	private void checkMediusPackets(RTMessage packet) {
 		// ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
-		MediusMessage mm = null;
 		if (packet.getId().toString().contains("APP")) {
 
 			MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
@@ -123,73 +100,9 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 
 			// Process this medius packet
 			mediusPacket.read(incomingMessage);
-			mm = mediusPacket.write(client);
+			mediusPacket.write(client);
 		}
-		return mm;
 	}
-
-//	private void checkForCitiesReconnect(ChannelHandlerContext ctx, RTMessage packet) {
-//		// TODO Auto-generated method stub
-//		byte[] data = packet.toBytes();
-//
-//		// if
-//		// (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"))
-//		// {
-//		if (Utils.bytesToHex(data).startsWith("00490001")) {
-//			logger.info("Check cities reconnect detected");
-//			logger.finest(client.getServer().getLogicHandler().playersToString());
-//			
-//			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-//			try {
-//
-//				// ID_14
-//				// byte[] p14 =
-//				// Utils.hexStringToByteArray("BE2F79946D8FFFCA8D08671D329ACDB89A488F33ABEDD83C278E8C6F4FA68CBA0A66CEEC21EB8EE6C841B725FAA913E3A6982ECAF76B85977C36C1B4538C8850");
-//				final byte[] p14 = Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-//				outputStream.write(RTMessageId.SERVER_CRYPTKEY_GAME.getValue());
-//				outputStream.write(Utils.shortToBytesLittle((short) p14.length));
-//				outputStream.write(p14);
-//
-//				// ID_07
-//				// outputStream.write(Utils.hexStringToByteArray("0108D30000010039362E3234322E38382E333600000000"));
-//				// // ip address to send back to the client
-//				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//
-//				baos.write(Utils.hexStringToByteArray("0108D300000100"));
-//
-//				byte[] ipAddr = client.getIPAddress().getBytes();
-//				int numZeros = 16 - client.getIPAddress().getBytes().length;
-//				String zeroString = new String(new char[numZeros]).replace("\0", "00");
-//				byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
-//
-//				baos.write(ipAddr);
-//				baos.write(zeroTrail);
-//				baos.write(Utils.hexStringToByteArray("00"));
-//
-//				outputStream.write(RTMessageId.SERVER_CONNECT_ACCEPT_TCP.getValue());
-//				outputStream.write(Utils.shortToBytesLittle((short) baos.size()));
-//				outputStream.write(baos.toByteArray());
-//
-//				// ID_1a
-//				// outputStream.write(Utils.hexStringToByteArray("0100"));
-//				final byte[] p1a = Utils.hexStringToByteArray("0100");
-//				outputStream.write(RTMessageId.SERVER_CONNECT_COMPLETE.getValue());
-//				outputStream.write(Utils.shortToBytesLittle((short) p1a.length));
-//				outputStream.write(p1a);
-//
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//
-//			byte[] finalPayload = outputStream.toByteArray();
-//
-//			logger.fine("Cities re-connect Final payload: " + Utils.bytesToHex(finalPayload));
-//			ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-//			ctx.write(msg); // (1)
-//			ctx.flush(); // (2)
-//		}
-//	}
 
 	public void checkInitialConnect(ChannelHandlerContext ctx, RTMessage packet) {
 		byte[] data = packet.toBytes();

@@ -32,7 +32,7 @@ public class MediusGetAnnouncementsHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		final List<String> announcements = ((MlsConfig) Clank.getInstance().getConfig()).getAnnouncements();
 
@@ -93,11 +93,6 @@ public class MediusGetAnnouncementsHandler extends MediusPacketHandler {
 			
 			client.sendMessage(new RTMessage(RTMessageId.SERVER_APP, announcementResponse.toBytes()));
 		}
-		
-		
-
-
-		return null;
 	}
 
 }

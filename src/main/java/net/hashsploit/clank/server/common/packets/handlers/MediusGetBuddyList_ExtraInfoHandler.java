@@ -32,7 +32,7 @@ public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		byte[] testResp = Utils.hexStringToByteArray("00000001000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000");
 		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -43,6 +43,6 @@ public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacketHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 }

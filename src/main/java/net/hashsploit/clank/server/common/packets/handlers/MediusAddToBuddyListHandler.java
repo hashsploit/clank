@@ -33,13 +33,13 @@ public class MediusAddToBuddyListHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
 		respPacket = new AddToBuddyListResponse(reqPacket.getMessageID(), callbackStatus);
 
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 }

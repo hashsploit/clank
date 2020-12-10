@@ -38,7 +38,7 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
     }
     
     @Override
-    public MediusMessage write(MediusClient client) {
+    public void write(MediusClient client) {
     	int cityWorldId = client.getServer().getLogicHandler().getCityWorldId();
     	byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
     	byte[] mediusWorldID = Utils.intToBytesLittle(cityWorldId);
@@ -56,6 +56,6 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 		respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageID(), callbackStatus, mediusWorldID, playerCount, maxPlayers, worldSecurityLevelType, 
 				genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
 		
-		return respPacket;    
+		client.sendMediusMessage(respPacket);
 	}
 }
