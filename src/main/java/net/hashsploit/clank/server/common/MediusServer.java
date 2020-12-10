@@ -33,15 +33,17 @@ public class MediusServer extends TcpServer {
 		super(address, port, parentThreads, childThreads);
 		this.emulationMode = emulationMode;
 		
-		if (emulationMode == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
+		switch(emulationMode) {
+		case MEDIUS_AUTHENTICATION_SERVER:
 			this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();	
-		}
-		else if (emulationMode == EmulationMode.MEDIUS_LOBBY_SERVER) {
+			break;
+		case MEDIUS_LOBBY_SERVER:
 			this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();	
-		}
-		else {
+			break;
+		default:
 			this.mediusMessageMap = null;
 		}
+		
 		setChannelInitializer(new MediusClientChannelInitializer(this));
 	}
 	
