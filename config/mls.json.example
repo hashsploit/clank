@@ -1,6 +1,8 @@
 {
 	"mode": "MEDIUS_LOBBY_SERVER",
 	"log_level": "INFO",
+	"file_log_level": null,
+	"file_log_size": 0,
 	"address": null,
 	"port": 10078,
 	"encryption": false,
@@ -40,6 +42,38 @@
 		"command_prefix": "/",
 		"strip_special_chars": true
 	},
+	"channels": [
+		{
+			"id": 0,
+			"name": "Channel 1",
+			"capacity": 256
+		},
+		{
+			"id": 1,
+			"name": "Channel 2",
+			"capacity": 256
+		},
+		{
+			"id": 2,
+			"name": "Channel 3",
+			"capacity": 256
+		},
+		{
+			"id": 3,
+			"name": "Channel 4",
+			"capacity": 256
+		}
+	],
+	"locations": [
+		{
+			"id": 0,
+			"name": "Location 1"
+		},
+		{
+			"id": 1,
+			"name": "Location 2"
+		}
+	],
 	"system_message": {
 		"enabled": false,
 		"severity": 200,
