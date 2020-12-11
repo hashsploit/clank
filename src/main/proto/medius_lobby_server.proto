@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "net.hashsploit.clank.rpc";
+option java_outer_classname = "MediusLobbyServerProto";
+option objc_class_prefix = "RPC";
+
+package clank;
+
+// This is the Clank Medius Lobby Server Service
+service MediusLobbyServer {
+	
+	// This RPC endpoint updates player information.
+	rpc PlayerUpdate(PlayerUpdateRequest) returns (PlayerUpdateResponse) {}
+	
+	// This RPC endpoint updates world information.
+	rpc WorldUpdate(WorldUpdateRequest) returns (WorldUpdateResponse) {}
+	
+}
+
+message PlayerUpdateRequest {
+	int32 account_id = 1;
+	int32 dme_world_id = 2;
+	enum PlayerStatus {
+		DISCONNECTED = 0;
+		CONNECTED = 1;
+		STAGING = 2;
+		IN_GAME = 3;
+	}
+}
+
+message WorldUpdateRequest {
+	int32 world_id = 1;
+	enum WorldStatus {
+		CREATED = 0;
+		STAGING = 1;
+		IN_GAME = 2;
+		DESTROYED = 3;
+	}
+}
+
+message PlayerUpdateResponse {
+	bool successful = 1;
+}
+
+message WorldUpdateResponse {
+	bool successful = 1;
+}
+
