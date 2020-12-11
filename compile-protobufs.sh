@@ -12,4 +12,3 @@ fi
 echo -e "Compiling protobuf sources ..."
 mvn clean protobuf:compile
 
-
