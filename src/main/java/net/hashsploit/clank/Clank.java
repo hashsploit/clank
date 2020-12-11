@@ -1,8 +1,11 @@
 package net.hashsploit.clank;
 
+import java.security.Security;
 import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
@@ -25,21 +28,22 @@ import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.server.nat.NatServer;
+import net.hashsploit.clank.server.rpc.AbstractRpcServer;
 
 public class Clank {
 	
 	public static final String NAME = "Clank";
-	public static final String VERSION = "0.1.5";
+	public static final String VERSION = "0.1.6";
 	public static Clank instance;
-	private static final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger(Clank.class.getName());
 	
 	private boolean running;
 	private AbstractConfig config;
 	private Terminal terminal;
 	private IServer server;
 	private DbManager db;
+	private AbstractRpcServer rpcServer;
 	private EventBus eventBus;
-	//private HashMap<String, DiscordWebhook> discordWebhooks;
 	
 	public Clank(AbstractConfig config) {
 		
@@ -51,8 +55,11 @@ public class Clank {
 		this.config = config;
 		this.running = true;
 		
-		// Configure terminal
+		// Initialize server
 		System.out.println("Initializing ...");
+		
+		Security.addProvider(new BouncyCastleProvider());
+		
 		terminal = new Terminal();
 		terminal.setLevel(config.getLogLevel());
 		terminal.registerCommand(new CLIExitCommand());
@@ -244,6 +251,9 @@ public class Clank {
 	public void shutdown() {
 		running = false;
 		terminal.print(Level.INFO, "Shutting down ...");
+		if (rpcServer != null) {
+			rpcServer.stop();
+		}
 		if (server != null) {
 			server.stop();
 		}
@@ -289,6 +299,14 @@ public class Clank {
 	 */
 	public IServer getServer() {
 		return server;
+	}
+	
+	/**
+	 * Get the RPC Server relating to this server.
+	 * @return
+	 */
+	public AbstractRpcServer getRpcServer() {
+		return rpcServer;
 	}
 	
 	/**
