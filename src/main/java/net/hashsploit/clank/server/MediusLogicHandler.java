@@ -23,7 +23,8 @@ public class MediusLogicHandler {
 		return playerList.toString();
 	}
 	
-	public ArrayList<MediusGame> getGames() {		
+	public ArrayList<MediusGame> getGames() {	
+		// Get games in staging
 		return gameList.getGames();
 	}
 	

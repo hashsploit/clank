@@ -242,4 +242,21 @@ public class DmeWorld {
 		return players.values();
 	}
 
+	public boolean hasPlayer(int accountId) {
+		for (int playerAccountId: players.keySet()) {
+			if (accountId == playerAccountId) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	public void playerDisconnected(int accountId) {
+		players.remove(accountId);
+	}
+
+	public boolean isEmpty() {
+		return players.size() == 0;
+	}
+
 }

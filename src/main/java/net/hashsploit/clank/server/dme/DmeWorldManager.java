@@ -12,6 +12,7 @@ public class DmeWorldManager {
 	
 	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());
 
+	// DmeWorldId -> DmeWorld
 	private HashMap<Integer, DmeWorld> dmeWorlds = new HashMap<Integer, DmeWorld>();
 	
 	private HashMap<SocketChannel, DmeWorld> dmeWorldLookup = new HashMap<SocketChannel, DmeWorld>();
@@ -101,6 +102,28 @@ public class DmeWorldManager {
 
 	public Collection<DmeWorld> getWorlds() {
 		return dmeWorlds.values();
+	}
+
+	public int getWorldId(int accountId) {
+		for (int worldId: dmeWorlds.keySet()) {
+			if (dmeWorlds.get(worldId).hasPlayer(accountId)) {
+				return worldId;
+			}
+		}
+		return -1;
+	}
+
+	public void playerDisconnected(int accountId, int worldId) {
+		dmeWorlds.get(worldId).playerDisconnected(accountId);
+	}
+
+	public boolean worldIsEmpty(int worldId) {
+		DmeWorld world = dmeWorlds.get(worldId);
+		return world.isEmpty();
+	}
+
+	public void deleteWorld(int worldId) {
+		dmeWorlds.remove(worldId);
 	}
 
 }

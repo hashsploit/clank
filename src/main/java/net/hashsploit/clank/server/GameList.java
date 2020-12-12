@@ -9,12 +9,17 @@ import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneReque
 
 public class GameList {
 	
+	private int gameIdCounter;
 	private HashMap<Integer, MediusGame> gameSet = new HashMap<Integer, MediusGame>();
 	
+	public GameList() {
+		gameIdCounter = 1;
+	}
+	
 	public int getNewGameId(CreateGameOneRequest req) {
-		int id = 9;
-		gameSet.put(id, new MediusGame(id, req));
-		return id;
+		gameSet.put(gameIdCounter, new MediusGame(gameIdCounter, req));
+		gameIdCounter++;
+		return gameIdCounter-1;
 	}
 
 	public MediusGame getGame(int worldId) {
@@ -22,9 +27,11 @@ public class GameList {
 	}
 
 	public ArrayList<MediusGame> getGames() {
+		// get games in staging
 		ArrayList<MediusGame> result = new ArrayList<MediusGame>();
 		
 		for (MediusGame game : gameSet.values()) {
+			if (game.getWorldStatusInt() == 1) // Staging
 		    result.add(game);
 		}
 		

@@ -10,9 +10,13 @@ public class MediusGame {
 	
 	private int worldId;
 	private CreateGameOneRequest req;
-	private int playerCount = 1;
+	private int playerCount = 0;
 	
-	private int worldStatus = 1;
+	// 0 -> PENDING_CREATION
+	// 1 -> STAGING
+	// 2 -> ACTIVE
+	// 3 -> DISCONNECTED
+	private int worldStatus = 0;
 	
 	private ArrayList<String> players = new ArrayList<String>();
 
@@ -30,17 +34,18 @@ public class MediusGame {
 	}
 
 	public byte[] getStats() {
-		// TODO Auto-generated method stub
 		return Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 	}
 
 	public byte[] getWorldStatus() {
-		// TODO Auto-generated method stub
 		return Utils.intToBytesLittle(worldStatus);
+	}
+	
+	public int getWorldStatusInt() {
+		return worldStatus;
 	}
 
 	public byte[] getWorldId() {
-		// TODO Auto-generated method stub
 		return Utils.intToBytesLittle(worldId);
 	}
 	
