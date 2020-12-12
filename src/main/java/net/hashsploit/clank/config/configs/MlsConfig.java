@@ -33,38 +33,6 @@ public class MlsConfig extends MediusConfig {
 	}
 	
 	/**
-	 * Get the policy text.
-	 * @return
-	 */
-	public String getPolicy() {
-		final String key = ConfigNames.POLICY.toString();
-		
-		if (getJson().isNull(key)) {
-			return null;
-		}
-		
-		return getJson().getString(key);
-	}
-	
-	/**
-	 * Get the announcements message.
-	 * @return
-	 */
-	public List<String> getAnnouncements() {
-		final String key = ConfigNames.ANNOUNCEMENTS.toString();
-
-		if (getJson().isNull(ConfigNames.ANNOUNCEMENTS.toString())) {
-			return null; 
-		}
-		
-		if (getJson().getJSONArray(ConfigNames.ANNOUNCEMENTS.toString()).isEmpty()) {
-			return null;
-		}
-		
-		return getArrayOfStrings(getJson(), key);
-	}
-	
-	/**
 	 * Get player operators.
 	 * @return
 	 */

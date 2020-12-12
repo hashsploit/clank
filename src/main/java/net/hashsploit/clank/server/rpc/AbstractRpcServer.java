@@ -12,12 +12,12 @@ import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
 
 public abstract class AbstractRpcServer {
 	
-	private static final Logger logger = Logger.getLogger(ClankMlsRpcServer.class.getName());
+	private static final Logger logger = Logger.getLogger(AbstractRpcServer.class.getName());
 
 	private final String address;
 	private final int port;
 	private final ServerBuilder<?> builder;
-	private final Server server;
+	private Server server;
 
 	public AbstractRpcServer(String address, int port) {
 		this.address = address;
@@ -25,8 +25,6 @@ public abstract class AbstractRpcServer {
 		builder = NettyServerBuilder.forAddress(new InetSocketAddress(address, port));
 
 		// TODO: builder.useTransportSecurity(certChain, privateKey);
-
-		server = builder.build();
 	}
 
 	/**
@@ -46,12 +44,13 @@ public abstract class AbstractRpcServer {
 	public void setupEncryption(InputStream certChain, InputStream privateKey) {
 		builder.useTransportSecurity(certChain, privateKey);
 	}
-
+	
 	/**
 	 * Start the RPC server.
 	 */
 	public void start() {
 		try {
+			server = builder.build();
 			server.start();
 			logger.info(String.format("RPC server started on %s:%d", address, port));
 		} catch (IOException e) {

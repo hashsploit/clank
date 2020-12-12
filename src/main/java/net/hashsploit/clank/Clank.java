@@ -28,7 +28,6 @@ import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.server.nat.NatServer;
-import net.hashsploit.clank.server.rpc.AbstractRpcServer;
 
 public class Clank {
 	

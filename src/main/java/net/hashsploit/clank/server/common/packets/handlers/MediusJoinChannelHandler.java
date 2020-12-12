@@ -52,6 +52,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 		String ipAddrStr = ((MediusConfig) Clank.getInstance().getConfig()).getAddress();
+		short port = (short) ((MediusConfig) Clank.getInstance().getConfig()).getPort();
 		
 		if (ipAddrStr == null || ipAddrStr.isEmpty()) {
 			ipAddrStr = Utils.getPublicIpAddress();
@@ -77,7 +78,7 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 			outputStream.write(ipAddr); // ip address
 			outputStream.write(zeroTrail); // zero padding for ip address
 
-			outputStream.write(Utils.shortToBytesLittle((short) 10078)); // port
+			outputStream.write(Utils.shortToBytesLittle(port)); // port
 
 			// // ???
 			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000ffffffff7b000000"));

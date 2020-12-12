@@ -11,7 +11,7 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 
 	public ClankMlsRpcServer(String address, int port) throws IOException {
 		super(address, port);
-		addService(new ClankMlsRpcService());
+		addService(new ClankMlsService());
 	}
 
 	@Override
@@ -24,7 +24,7 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 		super.stop();
 	}
 
-	private static class ClankMlsRpcService extends ClankMlsServiceGrpc.ClankMlsServiceImplBase {
+	private static class ClankMlsService extends ClankMlsServiceGrpc.ClankMlsServiceImplBase {
 
 		/**
 		 * Player update requested from DME.

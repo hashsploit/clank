@@ -59,6 +59,9 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusWorldReportZero
 
 public class MediusMessageMapInitializer {
 	
+	// Prevent instantiation
+	private MediusMessageMapInitializer() {}
+	
 	public static final HashMap<MediusMessageType, MediusPacketHandler> getMlsMap() {
 		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
 		
@@ -133,11 +136,20 @@ public class MediusMessageMapInitializer {
 	public static final HashMap<MediusMessageType, MediusPacketHandler> getMasMap() {
 		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
 
-		// MAS stuff
+		// UYA
 		mp.put(MediusMessageType.SessionBegin, new MediusSessionBeginHandler());
 		mp.put(MediusMessageType.DnasSignaturePost, new MediusDnasSignaturePostHandler());
 		mp.put(MediusMessageType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
 		mp.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
+		mp.put(MediusMessageType.SetLobbyWorldFilter, new MediusSetLobbyWorldFilterHandler());
+		
+		// Other titles
+		mp.put(MediusMessageType.GetMyIP, new MediusGetMyIPHandler());
+		mp.put(MediusMessageType.GetLocations, new MediusGetLocationsHandler());
+		mp.put(MediusMessageType.PickLocation, new MediusPickLocationHandler());
+		mp.put(MediusMessageType.GetAnnouncements, new MediusGetAnnouncementsHandler());
+		mp.put(MediusMessageType.Policy, new MediusPolicyHandler());
+		
 		
 		return mp;
 	}
