@@ -49,7 +49,7 @@ public class DmeServer extends TcpServer {
 		setChannelInitializer(new DmeTcpClientInitializer(this));
 		
 		// Start RPC client
-		final RpcConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcConfig();
+		final RpcConfig rpcConfig = ((DmeConfig) Clank.getInstance().getConfig()).getRpcConfig();
 		String rpcAddress = rpcConfig.getAddress();
 		final int rpcPort = rpcConfig.getPort();
 		

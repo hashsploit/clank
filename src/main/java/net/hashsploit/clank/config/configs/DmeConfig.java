@@ -5,6 +5,7 @@ import org.json.JSONObject;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.ConfigNames;
+import net.hashsploit.clank.server.rpc.RpcConfig;
 
 public class DmeConfig extends AbstractConfig {
 
@@ -135,6 +136,27 @@ public class DmeConfig extends AbstractConfig {
 	@Override
 	public EmulationMode getEmulationMode() {
 		return EmulationMode.DME_SERVER;
+	}
+	
+	/**
+	 * Get the RPC client configuration.
+	 * @return
+	 */
+	public RpcConfig getRpcConfig() {
+		final String key = ConfigNames.RPC.toString();
+		
+		if (getJson().isNull(key)) {
+			return null;
+		}
+		
+		if (getJson().getJSONObject(key).isEmpty()) {
+			return null;
+		}
+		
+		final String rpcAddress = getJson().getJSONObject(key).getString(ConfigNames.RPC_ADDRESS.toString());
+		final int rpcPort = getJson().getJSONObject(key).getInt(ConfigNames.RPC_PORT.toString());
+		
+		return new RpcConfig(rpcAddress, rpcPort);
 	}
 
 }
