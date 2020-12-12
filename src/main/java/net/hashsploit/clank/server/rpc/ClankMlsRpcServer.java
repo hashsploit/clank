@@ -45,13 +45,13 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 		}
 
 		private PlayerUpdateResponse updatePlayer(PlayerUpdateRequest request) {
-
-			return null;
+			PlayerUpdateResponse response = PlayerUpdateResponse.newBuilder().setSuccess(true).build();
+			return response;
 		}
 
 		private WorldUpdateResponse updateWorld(WorldUpdateRequest request) {
-
-			return null;
+			WorldUpdateResponse response = WorldUpdateResponse.newBuilder().setSuccess(true).build();
+			return response;
 		}
 
 	}

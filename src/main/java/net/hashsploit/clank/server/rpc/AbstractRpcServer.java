@@ -53,6 +53,7 @@ public abstract class AbstractRpcServer {
 	public void start() {
 		try {
 			server.start();
+			logger.info(String.format("RPC server started on %s:%d", address, port));
 		} catch (IOException e) {
 			logger.severe(String.format("Failed to start the RPC service %s:%d: %s", address, port, e.getMessage()));
 		}
@@ -63,6 +64,7 @@ public abstract class AbstractRpcServer {
 	 */
 	public void stop() {
 		server.shutdown();
+		logger.info(String.format("RPC server on %s:%d closed", address, port));
 	}
 
 	/**
