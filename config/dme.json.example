@@ -5,6 +5,10 @@
 	"udp_address": "172.16.221.250",
 	"port": 10079,
 	"udp_port": 50001,
+	"rpc": {
+		"address": null,
+		"port": 8484
+	},
 	"encryption": false,
 	"capacity": 200,
 	"timeout": 15000,
