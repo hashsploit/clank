@@ -8,10 +8,13 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.MediusLogicHandler;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.server.UdpServer;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
+import net.hashsploit.clank.server.rpc.RpcConfig;
+import net.hashsploit.clank.utils.Utils;
 
 public class DmeServer extends TcpServer {
 
@@ -46,7 +49,15 @@ public class DmeServer extends TcpServer {
 		setChannelInitializer(new DmeTcpClientInitializer(this));
 		
 		// Start RPC client
-		rpcClient = new ClankDmeRpcClient("192.168.0.99", 6000);
+		final RpcConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcConfig();
+		String rpcAddress = rpcConfig.getAddress();
+		final int rpcPort = rpcConfig.getPort();
+		
+		if (rpcAddress == null) {
+			rpcAddress = Utils.getPublicIpAddress();
+		}
+		
+		rpcClient = new ClankDmeRpcClient(rpcAddress, rpcPort);
 	}
 
 	@Override

@@ -168,24 +168,24 @@ public enum ConfigNames {
 	RPC_SERVER("rpc_server"),
 	
 	/**
+	 * RPC Client Address.
+	 */
+	RPC_ADDRESS("address"),
+	
+	/**
 	 * RPC Server Address.
 	 */
 	RPC_SERVER_ADDRESS("address"),
 	
 	/**
-	 * RPC Client Address.
+	 * RPC Client Port.
 	 */
-	RPC_CLIENT_ADDRESS("address"),
+	RPC_PORT("port"),
 	
 	/**
 	 * RPC Server Port.
 	 */
 	RPC_SERVER_PORT("port"),
-	
-	/**
-	 * RPC Client Port.
-	 */
-	RPC_PORT("port"),
 	
 	/**
 	 * RPC Server Encryption JSON object.

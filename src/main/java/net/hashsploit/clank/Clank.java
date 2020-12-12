@@ -42,7 +42,6 @@ public class Clank {
 	private Terminal terminal;
 	private IServer server;
 	private DbManager db;
-	private AbstractRpcServer rpcServer;
 	private EventBus eventBus;
 	
 	public Clank(AbstractConfig config) {
@@ -251,9 +250,6 @@ public class Clank {
 	public void shutdown() {
 		running = false;
 		terminal.print(Level.INFO, "Shutting down ...");
-		if (rpcServer != null) {
-			rpcServer.stop();
-		}
 		if (server != null) {
 			server.stop();
 		}
@@ -299,14 +295,6 @@ public class Clank {
 	 */
 	public IServer getServer() {
 		return server;
-	}
-	
-	/**
-	 * Get the RPC Server relating to this server.
-	 * @return
-	 */
-	public AbstractRpcServer getRpcServer() {
-		return rpcServer;
 	}
 	
 	/**

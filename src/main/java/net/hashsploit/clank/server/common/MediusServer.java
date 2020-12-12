@@ -3,8 +3,11 @@ package net.hashsploit.clank.server.common;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
+import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.MediusClient;
@@ -13,9 +16,14 @@ import net.hashsploit.clank.server.MediusLogicHandler;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.TcpServer;
+import net.hashsploit.clank.server.dme.DmeServer;
+import net.hashsploit.clank.server.rpc.AbstractRpcServer;
+import net.hashsploit.clank.server.rpc.ClankMlsRpcServer;
+import net.hashsploit.clank.server.rpc.RpcServerConfig;
 import net.hashsploit.clank.server.scert.objects.RTMsgEncodingType;
 import net.hashsploit.clank.server.scert.objects.RTMsgLanguageType;
 import net.hashsploit.clank.utils.MediusMessageMapInitializer;
+import net.hashsploit.clank.utils.Utils;
 
 /**
  * A generic Medius Server (TCP)
@@ -24,41 +32,57 @@ import net.hashsploit.clank.utils.MediusMessageMapInitializer;
  *
  */
 public class MediusServer extends TcpServer {
+
+	private static final Logger logger = Logger.getLogger(MediusServer.class.getName());
 	
+	private AbstractRpcServer rpcServer;
 	private final EmulationMode emulationMode;
 	private final HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
 	private final MediusLogicHandler logicHandler = new MediusLogicHandler();
-	
+
 	public MediusServer(final EmulationMode emulationMode, final String address, final int port, final int parentThreads, final int childThreads) {
 		super(address, port, parentThreads, childThreads);
 		this.emulationMode = emulationMode;
-		
-		switch(emulationMode) {
-		case MEDIUS_AUTHENTICATION_SERVER:
-			this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();	
-			break;
-		case MEDIUS_LOBBY_SERVER:
-			this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();	
-			break;
-		default:
-			this.mediusMessageMap = null;
+
+		switch (emulationMode) {
+			case MEDIUS_AUTHENTICATION_SERVER:
+				this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();
+				break;
+			case MEDIUS_LOBBY_SERVER:
+				this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
+				
+				final RpcServerConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcServerConfig();
+				String rpcAddress = rpcConfig.getAddress();
+				final int rpcPort = rpcConfig.getPort();
+				
+				if (rpcAddress == null) {
+					Utils.getPublicIpAddress();
+				}
+				
+				try {
+					rpcServer = new ClankMlsRpcServer(rpcAddress, rpcPort);
+				} catch (IOException e) {
+					logger.severe(String.format("Failed to start RPC server: %s", e.getMessage()));
+					Clank.getInstance().shutdown();
+				}
+				break;
+			default:
+				this.mediusMessageMap = null;
 		}
-		
+
 		setChannelInitializer(new MediusClientChannelInitializer(this));
 	}
-	
-	
+
 	@Override
 	public void start() {
 		super.start();
 	}
-	
-	
+
 	@Override
 	public void stop() {
-		
+
 		sendSystemBroadcastMessage(255, "The server was closed. You have been disconnected.");
-		
+
 		for (IClient c : getClients()) {
 			if (c instanceof MediusClient) {
 				final MediusClient client = (MediusClient) c;
@@ -67,22 +91,27 @@ public class MediusServer extends TcpServer {
 			}
 		}
 		
+		if (rpcServer != null) {
+			rpcServer.stop();
+		}
+
 		super.stop();
 	}
-	
+
 	/**
 	 * Get the server's emulation mode type.
+	 * 
 	 * @return
 	 */
 	public EmulationMode getEmulationMode() {
 		return emulationMode;
 	}
-	
+
 	/**
 	 * Broadcast a Medius SYSTEM_MESSAGE to all clients connected.
 	 * 
 	 * @param severity An integer anywhere between 0-255 inclusive.
-	 * @param message A string of text to send to the client.
+	 * @param message  A string of text to send to the client.
 	 */
 	public void sendSystemBroadcastMessage(int severity, String message) {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -93,8 +122,9 @@ public class MediusServer extends TcpServer {
 			baos.write((byte) 1); // EndOfList boolean (1 byte)
 			baos.write(ChatColor.parse(message));
 			baos.write((byte) 0x00);
-		} catch (IOException e) {}
-		
+		} catch (IOException e) {
+		}
+
 		for (IClient c : getClients()) {
 			if (c instanceof MediusClient) {
 				final MediusClient client = (MediusClient) c;
@@ -102,7 +132,7 @@ public class MediusServer extends TcpServer {
 			}
 		}
 	}
-	
+
 	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
 		return mediusMessageMap;
 	}
@@ -110,5 +140,14 @@ public class MediusServer extends TcpServer {
 	public synchronized MediusLogicHandler getLogicHandler() {
 		return logicHandler;
 	}
-	
+
+	/**
+	 * Get the RPC Server relating to this server.
+	 * 
+	 * @return
+	 */
+	public AbstractRpcServer getRpcServer() {
+		return rpcServer;
+	}
+
 }

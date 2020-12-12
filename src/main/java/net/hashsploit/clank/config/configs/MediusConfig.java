@@ -5,6 +5,8 @@ import org.json.JSONObject;
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.ConfigNames;
 import net.hashsploit.clank.database.DatabaseInfo;
+import net.hashsploit.clank.server.rpc.RpcConfig;
+import net.hashsploit.clank.server.rpc.RpcServerConfig;
 
 public class MediusConfig extends AbstractConfig {
 
@@ -92,7 +94,7 @@ public class MediusConfig extends AbstractConfig {
 	}
 	
 	/**
-	 * 
+	 * Get database info.
 	 * @return
 	 */
 	public DatabaseInfo getDatabaseInfo() {
@@ -104,5 +106,50 @@ public class MediusConfig extends AbstractConfig {
 		
 		return new DatabaseInfo(host, database, username, password);
 	}
-
+	
+	/**
+	 * Get the RPC client configuration.
+	 * @return
+	 */
+	public RpcConfig getRpcConfig() {
+		final String key = ConfigNames.RPC.toString();
+		
+		if (getJson().isNull(key)) {
+			return null;
+		}
+		
+		if (getJson().getJSONObject(key).isEmpty()) {
+			return null;
+		}
+		
+		final String rpcAddress = getJson().getJSONObject(key).getString(ConfigNames.RPC_ADDRESS.toString());
+		final int rpcPort = getJson().getJSONObject(key).getInt(ConfigNames.RPC_PORT.toString());
+		
+		return new RpcConfig(rpcAddress, rpcPort);
+	}
+	
+	/**
+	 * Get the RPC server configuration.
+	 */
+	public RpcServerConfig getRpcServerConfig() {
+		final String key = ConfigNames.RPC_SERVER.toString();
+		
+		if (getJson().isNull(key)) {
+			return null; 
+		}
+		
+		if (getJson().getJSONObject(key).isEmpty()) {
+			return null;
+		}
+		
+		final String rpcAddress = getJson().getJSONObject(key).getString(ConfigNames.RPC_ADDRESS.toString());
+		final int rpcPort = getJson().getJSONObject(key).getInt(ConfigNames.RPC_PORT.toString());
+		final JSONObject encryption = getJson().getJSONObject(key).getJSONObject(ConfigNames.RPC_SERVER_ENCRYPTION.toString());
+		final boolean encryptionEnabled = encryption.getBoolean(ConfigNames.RPC_SERVER_ENCRYPTION_ENABLED.toString());
+		final String certChainFile = encryption.getString(ConfigNames.RPC_SERVER_ENCRYPTION_CERT_CHAIN.toString());
+		final String privateKeyFile = encryption.getString(ConfigNames.RPC_SERVER_ENCRYPTION_PRIVATE_KEY.toString());
+		
+		return new RpcServerConfig(rpcAddress, rpcPort, encryptionEnabled, certChainFile, privateKeyFile);
+	}
+	
 }
