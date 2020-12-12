@@ -146,15 +146,19 @@ public class DmeConfig extends AbstractConfig {
 		final String key = ConfigNames.RPC.toString();
 		
 		if (getJson().isNull(key)) {
-			return null;
+			return null; 
 		}
 		
 		if (getJson().getJSONObject(key).isEmpty()) {
 			return null;
 		}
 		
-		final String rpcAddress = getJson().getJSONObject(key).getString(ConfigNames.RPC_ADDRESS.toString());
+		String rpcAddress = null;
 		final int rpcPort = getJson().getJSONObject(key).getInt(ConfigNames.RPC_PORT.toString());
+		
+		if (!getJson().getJSONObject(key).isNull(ConfigNames.RPC_ADDRESS.toString())) {
+			rpcAddress = getJson().getJSONObject(key).getString(ConfigNames.RPC_ADDRESS.toString());
+		}
 		
 		return new RpcConfig(rpcAddress, rpcPort);
 	}
