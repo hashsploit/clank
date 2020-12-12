@@ -158,6 +158,56 @@ public enum ConfigNames {
 	DME_PORT("port"),
 	
 	/**
+	 * RPC JSON object.
+	 */
+	RPC("RPC"),
+	
+	/**
+	 * RPC Server JSON object.
+	 */
+	RPC_SERVER("rpc_server"),
+	
+	/**
+	 * RPC Server Address.
+	 */
+	RPC_SERVER_ADDRESS("address"),
+	
+	/**
+	 * RPC Client Address.
+	 */
+	RPC_CLIENT_ADDRESS("address"),
+	
+	/**
+	 * RPC Server Port.
+	 */
+	RPC_SERVER_PORT("port"),
+	
+	/**
+	 * RPC Client Port.
+	 */
+	RPC_PORT("port"),
+	
+	/**
+	 * RPC Server Encryption JSON object.
+	 */
+	RPC_SERVER_ENCRYPTION("encryption"),
+
+	/**
+	 * RPC Server Encryption JSON object enabled.
+	 */
+	RPC_SERVER_ENCRYPTION_ENABLED("enabled"),
+
+	/**
+	 * RPC Server Encryption JSON object cert chain.
+	 */
+	RPC_SERVER_ENCRYPTION_CERT_CHAIN("cert_chain"),
+
+	/**
+	 * RPC Server Encryption JSON object private key.
+	 */
+	RPC_SERVER_ENCRYPTION_PRIVATE_KEY("private_key"),
+	
+	/**
 	 * EULA/Policy agreement.
 	 */
 	POLICY("policy"),

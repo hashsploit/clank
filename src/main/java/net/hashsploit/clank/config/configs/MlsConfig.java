@@ -82,4 +82,17 @@ public class MlsConfig extends MediusConfig {
 		return getArrayOfStrings(getJson().getJSONObject(ConfigNames.OPERATORS.toString()), key);
 	}
 	
+	/**
+	 * Get RPC Address
+	 */
+	public String getRpcAddress() {
+		final String key = ConfigNames.POLICY.toString();
+		
+		if (getJson().isNull(key)) {
+			return null;
+		}
+		
+		return getJson().getString(key);
+	}
+	
 }
