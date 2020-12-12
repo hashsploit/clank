@@ -11,6 +11,7 @@ import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.MediusLogicHandler;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.server.UdpServer;
+import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
 
 public class DmeServer extends TcpServer {
 
@@ -22,6 +23,8 @@ public class DmeServer extends TcpServer {
 	private final int udpStartingPort;
 	private final int udpThreads;
 	private DmeUdpServer udpDmeServer;
+	
+	private final ClankDmeRpcClient rpcClient;
 
 	public DmeServer(final String tcpAddress, final int tcpPort, final int tcpParentThreads, final int tcpChildThreads, final String udpAddress, final int udpStartingPort, final int udpThreads) {
 		super(tcpAddress, tcpPort, tcpParentThreads, tcpChildThreads);
@@ -41,6 +44,9 @@ public class DmeServer extends TcpServer {
 		});
 
 		setChannelInitializer(new DmeTcpClientInitializer(this));
+		
+		// Start RPC client
+		rpcClient = new ClankDmeRpcClient("192.168.0.99", 6000);
 	}
 
 	@Override
@@ -59,6 +65,10 @@ public class DmeServer extends TcpServer {
 		}
 		*/
 		super.stop();
+	}
+	
+	public ClankDmeRpcClient getRpcClient() {
+		return rpcClient;
 	}
 	
 	/**

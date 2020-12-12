@@ -71,27 +71,38 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 					minPlayers, maxPlayers,
 					gameLevel, playerSkillLevel, rulesSet, genericField1, genericField2, genericField3, worldStatus, Utils.intToBytes(0),
 					gameHostType, gameName, gameStats, Utils.hexStringToByteArray("01000000"));
+			client.sendMediusMessage(respPacket);
 			
 		}
 		
 		else {
-			callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
-			MediusGame game = games.get(0);
-			CreateGameOneRequest req = game.getReqPacket();
 			
-			short playerCount = (short) Utils.bytesToIntLittle(game.getPlayerCount());
-			short minPlayers = (short) Utils.bytesToIntLittle(req.getMinPlayers());
-			short maxPlayers = (short) Utils.bytesToIntLittle(req.getMaxPlayers());		
-			byte[] worldSecurityLevelType = Utils.hexStringToByteArray("00000000");
-			byte[] endOfList = Utils.hexStringToByteArray("01000000");
-
-			respPacket = new GameList_ExtraInfoZeroResponse(reqPacket.getMessageID(), game.getWorldId(), callbackStatus, Utils.shortToBytesLittle(playerCount), 
-					Utils.shortToBytesLittle(minPlayers), Utils.shortToBytesLittle(maxPlayers),
-					req.getGameLevel(), req.getPlayerSkillLevel(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(), worldSecurityLevelType, game.getWorldStatus(),
-					req.getGameHostType(), req.getGameName(), game.getStats(), endOfList);
+			for (int i = 0; i < games.size(); i++) {
+				callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
+				MediusGame game = games.get(i);
+				CreateGameOneRequest req = game.getReqPacket();
+				
+				short playerCount = (short) Utils.bytesToIntLittle(game.getPlayerCount());
+				short minPlayers = (short) Utils.bytesToIntLittle(req.getMinPlayers());
+				short maxPlayers = (short) Utils.bytesToIntLittle(req.getMaxPlayers());		
+				byte[] worldSecurityLevelType = Utils.hexStringToByteArray("00000000");
+				
+				byte[] endOfList;
+				if (i == games.size()-1) {
+					endOfList = Utils.hexStringToByteArray("01000000");
+				}
+				else {
+					endOfList = Utils.hexStringToByteArray("00000000");
+				}
+	
+				respPacket = new GameList_ExtraInfoZeroResponse(reqPacket.getMessageID(), game.getWorldId(), callbackStatus, Utils.shortToBytesLittle(playerCount), 
+						Utils.shortToBytesLittle(minPlayers), Utils.shortToBytesLittle(maxPlayers),
+						req.getGameLevel(), req.getPlayerSkillLevel(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(), worldSecurityLevelType, game.getWorldStatus(),
+						req.getGameHostType(), req.getGameName(), game.getStats(), endOfList);
+				client.sendMediusMessage(respPacket);
+			}
 		}
 
-		client.sendMediusMessage(respPacket);
 		
 	}
 

@@ -37,6 +37,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
 		logger.fine("[TCP]" + ctx.channel().remoteAddress() + ": channel active");
+		logger.fine("Updating player status to MLS...");		
+		logger.fine("Done!");
 	}
 
 	@Override
@@ -107,6 +109,9 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		int playerId = dmeWorldManager.getPlayerId(client.getSocket());
 
     		logger.info(dmeWorldManager.toString());
+
+    		client.updatePlayer(playerId, 2);
+    		
     		
     		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100

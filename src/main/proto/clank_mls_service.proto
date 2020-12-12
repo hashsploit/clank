@@ -26,6 +26,7 @@ message PlayerUpdateRequest {
 		STAGING = 2;
 		ACTIVE = 3;
 	}
+	PlayerStatus player_status = 3;
 }
 
 message WorldUpdateRequest {
@@ -36,6 +37,7 @@ message WorldUpdateRequest {
 		ACTIVE = 2;
 		DESTROYED = 3;
 	}
+	WorldStatus world_status = 3;
 }
 
 message PlayerUpdateResponse {
