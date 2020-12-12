@@ -4,7 +4,7 @@ option java_multiple_files = true;
 option java_package = "net.hashsploit.clank.server.rpc";
 option java_outer_classname = "ClankMlsProto";
 
-package clank;
+package net.hashsploit.clank.server.rpc;
 
 // This is the Clank Medius Lobby Server Service.
 service ClankMlsService {
