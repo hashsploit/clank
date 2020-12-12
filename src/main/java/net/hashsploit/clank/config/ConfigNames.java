@@ -160,7 +160,7 @@ public enum ConfigNames {
 	/**
 	 * RPC JSON object.
 	 */
-	RPC("RPC"),
+	RPC("rpc"),
 	
 	/**
 	 * RPC Server JSON object.
