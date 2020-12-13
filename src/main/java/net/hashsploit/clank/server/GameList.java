@@ -32,7 +32,7 @@ public class GameList {
 	public void updateGameWorldStatus(int worldId, WorldStatus worldStatus) {
 		gameSet.get(worldId).updateStatus(worldStatus);
 
-		if (worldStatus == DISCONNECTED) {
+		if (worldStatus == WorldStatus.DESTROYED) {
 			gameSet.remove(worldId);
 		}		
 	}
