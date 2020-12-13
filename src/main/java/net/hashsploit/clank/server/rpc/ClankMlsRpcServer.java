@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 import io.grpc.stub.StreamObserver;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.common.MediusServer;
+import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 
 public class ClankMlsRpcServer extends AbstractRpcServer {
@@ -56,7 +57,27 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			logger.severe("Data received: " + Integer.toString(request.getWorldId()));
 			logger.severe("Data received: " + request.getPlayerStatus().toString());
 			MediusServer mlsServer = (MediusServer) (Clank.getInstance().getServer());
-			mlsServer.getLogicHandler().updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), request.getPlayerStatus());
+			
+			
+			MediusPlayerStatus status;
+			switch (request.getPlayerStatus()) {
+			case DISCONNECTED:
+				status = MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD;
+				break;
+			case CONNECTED:
+				status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
+				break;
+			case STAGING:
+				status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
+				break;
+			case ACTIVE:
+				status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
+				break;
+			default:
+				status = null;
+			}
+			
+			mlsServer.getLogicHandler().updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
 			return response;
 		}
 

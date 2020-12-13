@@ -95,7 +95,8 @@ public class MediusLogicHandler {
 		logger.info("Updating world from DME World Status: " + worldStatus.toString());
 		gameList.updateGameWorldStatus(worldId, worldStatus);
 	}
-	public void updatePlayerStatusFromDme(String mlsToken, int worldId, PlayerStatus playerStatus) {
+	
+	public void updatePlayerStatusFromDme(String mlsToken, int worldId, MediusPlayerStatus status) {
 		// PlayerStatus is from gRPC
 		// This method is called from gRPC DME -> MLS
 		/* 
@@ -107,27 +108,14 @@ public class MediusLogicHandler {
 		 *    UNRECOGNIZED(-1),
 		 */
 		// Update the gameWorld. Update the playerList
-		MediusPlayerStatus status;
 		logger.info("Updating player from DME mlsToken: " + mlsToken);
-		logger.info("Updating player from DME Status: " + playerStatus.toString());
-		switch (playerStatus) {
-		case DISCONNECTED:
-			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD;
-			break;
-		case CONNECTED:
-			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
-			break;
-		case STAGING:
-			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
-			break;
-		case ACTIVE:
-			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
-			break;
-		default:
-			status = null;
-		}
+		logger.info("Updating player from DME world: " + Integer.toString(worldId));
+		logger.info("Updating player from DME Status: " + status.toString());
 		int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(mlsToken);
 		playerList.updatePlayerStatus(accountId, status);
+		
+		
+		
 	}
 
 
