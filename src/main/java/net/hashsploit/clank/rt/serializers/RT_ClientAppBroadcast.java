@@ -6,12 +6,12 @@ import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.utils.Utils;
 
-public class ClientAppBroadcast extends RTMessage {
+public class RT_ClientAppBroadcast extends RTMessage {
 
 	private short sourceOrTarget;
 	private byte [] appPayload;
 	
-	public ClientAppBroadcast(byte[] packetData) {
+	public RT_ClientAppBroadcast(byte[] packetData) {
 		super(RTMessageId.CLIENT_APP_BROADCAST, Arrays.copyOfRange(packetData, 3, packetData.length));
 		
 		byte[] payload = this.getPayload();
