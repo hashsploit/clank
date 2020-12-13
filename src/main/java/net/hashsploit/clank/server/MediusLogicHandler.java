@@ -2,12 +2,17 @@ package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
+import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.rpc.PlayerUpdateRequest.PlayerStatus;
+import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class MediusLogicHandler {
-	
+	private static final Logger logger = Logger.getLogger(MediusLogicHandler.class.getName());
+
 	private GameList gameList;
 	private PlayerList playerList;
 	
@@ -73,6 +78,41 @@ public class MediusLogicHandler {
 	public void updatePlayerStatus(Player player, MediusPlayerStatus status) {
 		playerList.updatePlayerStatus(player, status);	
 	}
+	
+	public void updatePlayerStatusFromDme(int accountId, int worldId, PlayerStatus playerStatus) {
+		// PlayerStatus is from gRPC
+		// This method is called from gRPC DME -> MLS
+		/* 
+		 * PlayerStatus:
+		 *    DISCONNECTED(0),
+		 *    CONNECTED(1),
+		 *    STAGING(2),
+		 *    ACTIVE(3),
+		 *    UNRECOGNIZED(-1),
+		 */
+		// Update the gameWorld. Update the playerList
+		MediusPlayerStatus status;
+		logger.info("Updating player from DME accountId: " + Integer.toString(accountId));
+		logger.info("Updating player from DME Status: " + playerStatus.toString());
+		switch (playerStatus) {
+		case DISCONNECTED:
+			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD;
+			break;
+		case CONNECTED:
+			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
+			break;
+		case STAGING:
+			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
+			break;
+		case ACTIVE:
+			status = MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD;
+			break;
+		default:
+			status = null;
+		}
+		playerList.updatePlayerStatus(accountId, status);
+	}
+
 
 	
 	/* 
@@ -87,9 +127,18 @@ public class MediusLogicHandler {
 	}
 
 	public ArrayList<Player> getLobbyWorldPlayers(int worldId) {
-		ArrayList<Player> result = playerList.getPlayersByWorld(worldId);
+		ArrayList<Player> result = playerList.getPlayersByLobbyWorld(worldId);
 		return result;
 	}
+
+	
+	/*
+	 * Update Dme World status in the MLS GameList
+	 */
+	public void updateDmeWorldStatus(int worldId, WorldStatus worldStatus) {
+		gameList.updateGameWorldStatus(worldId, worldStatus);
+	}
+
 
 
 }

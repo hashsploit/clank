@@ -7,6 +7,7 @@ import io.grpc.StatusRuntimeException;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import net.hashsploit.clank.server.rpc.ClankMlsServiceGrpc.ClankMlsServiceBlockingStub;
 import net.hashsploit.clank.server.rpc.PlayerUpdateRequest.PlayerStatus;
+import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class ClankDmeRpcClient {
 	private static final Logger logger = Logger.getLogger(ClankDmeRpcClient.class.getName());
@@ -34,8 +35,16 @@ public class ClankDmeRpcClient {
 		}
 	}
 
-	public void updateWorld(int worldId, int worldStatus) {
-
+	public void updateWorld(int worldId, WorldStatus worldStatus) {
+		WorldUpdateRequest request = WorldUpdateRequest.newBuilder().setWorldId(worldId).setWorldStatus(worldStatus).build();
+		WorldUpdateResponse response;
+		try {
+			response = asyncStub.worldUpdate(request);
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+			logger.warning("RPC failed: " + e.getStatus());
+			return;
+		}
 	}
 
 }

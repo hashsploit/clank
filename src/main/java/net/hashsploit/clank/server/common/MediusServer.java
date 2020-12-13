@@ -60,7 +60,7 @@ public class MediusServer extends TcpServer {
 				}
 				
 				try {
-					rpcServer = new ClankMlsRpcServer(rpcAddress, rpcPort);
+					rpcServer = new ClankMlsRpcServer(rpcAddress, rpcPort, this);
 				} catch (IOException e) {
 					logger.severe(String.format("Failed to create RPC service: %s", e.getMessage()));
 					Clank.getInstance().shutdown();

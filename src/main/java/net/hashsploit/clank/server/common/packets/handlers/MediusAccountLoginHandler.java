@@ -47,7 +47,6 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 
 				// Add player to MLS Logic Handler (with accountId), update status to connected
 				client.getPlayer().setUsername(username);
-				client.getServer().getLogicHandler().updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_AUTH_WORLD);
 				
 				// TODO: Generate random auth token each connection, save in db for MLS to use.
 				// db should have a expiration UNIX time-stamp as well that needs to be updated

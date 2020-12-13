@@ -7,6 +7,8 @@ import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
+import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
+import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class DmeWorldManager {
 	
@@ -29,7 +31,7 @@ public class DmeWorldManager {
 		return result;
 	}
 	
-	public void addPlayer(short dmeWorldIdShort, SocketChannel socket) {
+	public void addPlayer(short dmeWorldIdShort, SocketChannel socket, ClankDmeRpcClient clankDmeRpcClient) {
 		int dmeWorldId = (int) dmeWorldIdShort;
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
 		
@@ -37,6 +39,9 @@ public class DmeWorldManager {
 			// Initialize the world
 			dmeWorld = new DmeWorld(dmeWorldId);
 			dmeWorlds.put(dmeWorldId, dmeWorld);
+			
+			// Send world creation
+			clankDmeRpcClient.updateWorld(dmeWorldId, WorldStatus.STAGING);
 		}
 		
 		// Add the player
@@ -52,6 +57,7 @@ public class DmeWorldManager {
 		
 		// Set that player to fully connected
 		dmeWorld.playerFullyConnected(socket);
+		
 	}
 
 	public int getPlayerId(SocketChannel socket) {

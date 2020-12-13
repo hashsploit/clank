@@ -47,8 +47,13 @@ public class PlayerList {
 			players.get(accountId).updateStatus(status);
 		}
 	}
+	
+	public void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
+		Player p = players.get(accountId);
+		updatePlayerStatus(p, status);
+	}
 
-	public ArrayList<Player> getPlayersByWorld(int worldId) {
+	public ArrayList<Player> getPlayersByLobbyWorld(int worldId) {
 		ArrayList<Player> result = new ArrayList<Player>();
 		for (Player player: players.values()) {
 			if (player.getChatWorldId() == worldId) {
@@ -57,4 +62,6 @@ public class PlayerList {
 		}
 		return result;
 	}
+
+
 }
