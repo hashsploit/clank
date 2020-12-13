@@ -17,6 +17,7 @@ import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.server.rpc.PlayerUpdateRequest.PlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -110,7 +111,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
     		logger.info(dmeWorldManager.toString());
 
-    		client.updatePlayer(playerId, 2);
+    		//client.updateDmePlayer(playerId, dmeWorldManager.getWorldId(playerId), PlayerStatus.CONNECTED);
     		
     		
     		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
@@ -151,7 +152,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		
     		// ---------- Add the player to the world
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
-    		dmeWorldManager.addPlayer(dmeWorldId, client.getSocket());
+    		dmeWorldManager.addPlayer(dmeWorldId, client.getSocket(), ((DmeServer) client.getServer()).getRpcClient());
     		int dmePlayerId = dmeWorldManager.getPlayerId(client.getSocket());
     		int playerCount = dmeWorldManager.getPlayerCount(client.getSocket());
     		

@@ -56,7 +56,7 @@ public class DmeServer extends TcpServer {
 		}
 		
 		rpcClient = new ClankDmeRpcClient(rpcAddress, rpcPort);
-		rpcClient.updatePlayer(0, 0, PlayerStatus.ACTIVE);
+		//rpcClient.updatePlayer(3, 3, PlayerStatus.ACTIVE);
 	}
 
 	@Override
