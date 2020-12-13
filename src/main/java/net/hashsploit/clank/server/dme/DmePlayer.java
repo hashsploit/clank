@@ -15,8 +15,10 @@ import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
 public class DmePlayer {
 	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());
 
+	private int accountId;
 	private int playerId;
-	private SocketChannel tcpChannel;
+	
+	private DmeTcpClient client;
 	private DatagramChannel udpChannel;
 	private InetSocketAddress udpAddress;
 	private int aggTime = 30; // in ms
@@ -24,23 +26,39 @@ public class DmePlayer {
 	private ConcurrentLinkedQueue<byte[]> packetQueue;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
-	public DmePlayer(int playerId, SocketChannel tcpChannel) {
+	public String toString() {
+		return "DmePlayer: \n" + 
+				"AccountId: " + Integer.toString(accountId) + "\n" +
+				"PlayerId: " + Integer.toString(playerId) + "\n" +
+				"Status: " + status.toString() + "\n" ;
+	}
+	
+	
+	public DmePlayer(DmeTcpClient client) {
 		packetQueue = new ConcurrentLinkedQueue<byte[]>();
 		status = DmePlayerStatus.CONNECTING;
-		this.playerId = playerId;
-		this.tcpChannel = tcpChannel;
+		this.client = client;
 	}
-
-	public void fullyConnected() {
-		status = DmePlayerStatus.STAGING;
+	
+	public void setAccountId(int accountId) {
+		this.accountId = accountId;
+	}
+	
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
 	}
 
 	public int getPlayerId() {
 		return playerId;
 	}
 
+	public void fullyConnected() {
+		status = DmePlayerStatus.STAGING;
+	}
+
+
 	public void sendData(byte[] arr) {
-		tcpChannel.writeAndFlush(Unpooled.copiedBuffer(arr));
+		this.client.getSocket().writeAndFlush(Unpooled.copiedBuffer(arr));
 	}
 
 	public DmePlayerStatus getStatus() {
@@ -80,6 +98,14 @@ public class DmePlayer {
 		
 		logger.fine("PUSHING UDP DATA ON CLIENT: " + Integer.toString(playerId));
 		udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(out.toByteArray()), udpAddress));
+	}
+
+	public DmeTcpClient getClient() {
+		return client;
+	}
+
+	public InetSocketAddress getUdpAddr() {
+		return udpAddress;
 	}
 
 }

@@ -19,11 +19,12 @@ public class DmeTcpClient implements IClient {
 
 	private final IServer server;
 	private final SocketChannel channel;
+	private final DmePlayer player;
 	
 	public DmeTcpClient(IServer server, SocketChannel ch) {
 		this.server = server;
 		this.channel = ch;
-		
+		this.player = new DmePlayer(this);
 		
 		logger.info("Client connected: " + getIPAddress());
 
@@ -74,13 +75,11 @@ public class DmeTcpClient implements IClient {
 	
 	public void onDisconnect() {
 		DmeServer dmeServer = (DmeServer) server;
-		int accountId = dmeServer.getDmeWorldManager().getPlayerId(channel);
-		int worldId = dmeServer.getDmeWorldManager().getWorldId(accountId);
 		
 		DmeWorldManager mgr = dmeServer.getDmeWorldManager();
 		
 		// Delete player from world
-		mgr.playerDisconnected(accountId, worldId);
+		int worldId = mgr.playerDisconnected(player);
 		// Relay delete player to MLS
 		//dmeServer.getRpcClient().updatePlayer(accountId, worldId, PlayerStatus.DISCONNECTED); // 0 = disconnect
 
@@ -89,14 +88,20 @@ public class DmeTcpClient implements IClient {
 			// Delete the world
 			mgr.deleteWorld(worldId);
 			// Send the world deletion to MLS
-			dmeServer.getRpcClient().updateWorld(worldId, WorldStatus.DESTROYED); // 3 = disconnect
+			//dmeServer.getRpcClient().updateWorld(worldId, WorldStatus.DESTROYED); // 3 = disconnect
 		}
 		
+		logger.info("Player disconnected! WorldManager: ");
+		logger.info(mgr.toString());
 	}
 
 	public void updateDmePlayer(int accountId, int worldId, PlayerStatus status) {
 		DmeServer dmeServer = (DmeServer) server;
-		dmeServer.getRpcClient().updatePlayer(accountId, worldId, status);		
+		//dmeServer.getRpcClient().updatePlayer(accountId, worldId, status);		
+	}
+
+	public DmePlayer getPlayer() {
+		return this.player;
 	}
 	
 }

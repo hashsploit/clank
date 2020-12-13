@@ -17,7 +17,8 @@ public class DmeWorldManager {
 	// DmeWorldId -> DmeWorld
 	private HashMap<Integer, DmeWorld> dmeWorlds = new HashMap<Integer, DmeWorld>();
 	
-	private HashMap<SocketChannel, DmeWorld> dmeWorldLookup = new HashMap<SocketChannel, DmeWorld>();
+	// DmePlayer -> DmeWorld lookup
+	private HashMap<DmePlayer, DmeWorld> dmeWorldLookup = new HashMap<DmePlayer, DmeWorld>();
 	
 	// UDP
 	private HashMap<InetSocketAddress, DmeWorld> dmeUdpWorldLookup = new HashMap<InetSocketAddress, DmeWorld>();
@@ -27,11 +28,11 @@ public class DmeWorldManager {
 		for (DmeWorld dmeWorld: dmeWorlds.values()) {
 			result += dmeWorld.toString();
 		}
-		result += "=== End DmeWorldManagerToString ===";
+		result += "+++++++++++++++++++++++++++++++++++++++++";
 		return result;
 	}
 	
-	public void addPlayer(short dmeWorldIdShort, SocketChannel socket, ClankDmeRpcClient clankDmeRpcClient) {
+	public void addPlayer(short dmeWorldIdShort, DmePlayer player) {
 		int dmeWorldId = (int) dmeWorldIdShort;
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
 		
@@ -41,31 +42,28 @@ public class DmeWorldManager {
 			dmeWorlds.put(dmeWorldId, dmeWorld);
 			
 			// Send world creation
-			clankDmeRpcClient.updateWorld(dmeWorldId, WorldStatus.STAGING);
+			ClankDmeRpcClient rpcClient = ((DmeServer) player.getClient().getServer()).getRpcClient();
+			rpcClient.updateWorld(dmeWorldId, WorldStatus.STAGING);
 		}
 		
 		// Add the player
-		dmeWorld.addPlayer(socket);
+		dmeWorld.addPlayer(player);
 		
 		// Add the reverse lookup
-		dmeWorldLookup.put(socket, dmeWorld);
+		dmeWorldLookup.put(player, dmeWorld);
 	}
 
-	public void playerFullyConnected(SocketChannel socket) {
+	public void playerFullyConnected(DmePlayer dmePlayer) {
 		// Get the world that this player is connected to
-		DmeWorld dmeWorld = dmeWorldLookup.get(socket);
+		DmeWorld dmeWorld = dmeWorldLookup.get(dmePlayer);
 		
 		// Set that player to fully connected
-		dmeWorld.playerFullyConnected(socket);
+		dmeWorld.playerFullyConnected(dmePlayer);
 		
 	}
 
-	public int getPlayerId(SocketChannel socket) {
-		return dmeWorldLookup.get(socket).getPlayerId(socket);
-	}
-
-	public int getPlayerCount(SocketChannel socket) {
-		return dmeWorldLookup.get(socket).getPlayerCount();
+	public int getPlayerCount(DmePlayer player) {
+		return dmeWorldLookup.get(player).getPlayerCount();
 	}
 	
 	public int getPlayerCount(int dmeWorldId) {
@@ -75,14 +73,14 @@ public class DmeWorldManager {
 	/*
 	 *  TCP Methods =================================================================
 	 */
-	public void broadcast(SocketChannel socket, byte[] bytes) {
-		DmeWorld worldToBroadcast = dmeWorldLookup.get(socket);
-		worldToBroadcast.broadcast(socket, bytes);
+	public void broadcast(DmePlayer dmePlayer, byte[] bytes) {
+		DmeWorld worldToBroadcast = dmeWorldLookup.get(dmePlayer);
+		worldToBroadcast.broadcast(dmePlayer, bytes);
 	}
 
-	public void clientAppSingle(SocketChannel socket, byte[] bytes) {
-		DmeWorld worldToSend = dmeWorldLookup.get(socket);
-		worldToSend.clientAppSingle(socket, bytes);
+	public void clientAppSingle(DmePlayer dmePlayer, byte[] bytes) {
+		DmeWorld worldToSend = dmeWorldLookup.get(dmePlayer);
+		worldToSend.clientAppSingle(dmePlayer, bytes);
 	}
 	
 	/*
@@ -99,11 +97,20 @@ public class DmeWorldManager {
 	}
 
 	public void playerUdpConnected(int dmeWorldId, int playerId, DatagramChannel playerUdpChannel, InetSocketAddress playerUdpAddr) {
-		logger.info(this.toString());
+		// Get the DmeWorld
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
+		
+		// Get the DmePlayer that this UDP connection belongs to
+		DmePlayer player = dmeWorld.getPlayerFromPlayerId(playerId);
+		
+		// Set playerUdpAddr for lookup later
+		dmeWorld.setPlayerUdpConnection(player, playerUdpAddr);
+		
+		// Set Udp connection to this player
+		player.setUdpConnection(playerUdpChannel, playerUdpAddr);
+		
+		// Set hashmap for this individual player -> world
 		dmeUdpWorldLookup.put(playerUdpAddr, dmeWorld);
-		logger.info(dmeWorld.toString());
-		dmeWorld.setPlayerUdpConnection(playerId, playerUdpChannel, playerUdpAddr);
 	}
 
 	public Collection<DmeWorld> getWorlds() {
@@ -119,8 +126,14 @@ public class DmeWorldManager {
 		return -1;
 	}
 
-	public void playerDisconnected(int accountId, int worldId) {
-		dmeWorlds.get(worldId).playerDisconnected(accountId);
+	public int playerDisconnected(DmePlayer player) {
+		DmeWorld world = dmeWorldLookup.get(player);
+		world.playerDisconnected(player);
+		dmeWorldLookup.remove(player);
+		dmeUdpWorldLookup.remove(player.getUdpAddr());
+				
+		// Return the world where player was disconnected
+		return world.getWorldId();
 	}
 
 	public boolean worldIsEmpty(int worldId) {
@@ -131,5 +144,6 @@ public class DmeWorldManager {
 	public void deleteWorld(int worldId) {
 		dmeWorlds.remove(worldId);
 	}
+
 
 }

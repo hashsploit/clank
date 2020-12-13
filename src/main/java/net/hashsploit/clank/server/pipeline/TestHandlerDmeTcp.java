@@ -37,8 +37,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
 		logger.fine("[TCP]" + ctx.channel().remoteAddress() + ": channel active");
-		logger.fine("Updating player status to MLS...");		
-		logger.fine("Done!");
+//		logger.fine("Updating player status to MLS...");		
+//		logger.fine("Done!");
 	}
 
 	@Override
@@ -77,10 +77,10 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
 
 		if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
-			dmeWorldManager.broadcast(client.getSocket(), m.toBytes());
+			dmeWorldManager.broadcast(client.getPlayer(), m.toBytes());
 		}
 		else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
-			dmeWorldManager.clientAppSingle(client.getSocket(), m.toBytes());
+			dmeWorldManager.clientAppSingle(client.getPlayer(), m.toBytes());
 		}
 	}
     
@@ -105,9 +105,11 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		//int playerId = client.getServer().getDmeWorldManager().add(client);
     		// ---------- The player is now fully connected
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
-    		dmeWorldManager.playerFullyConnected(client.getSocket());
-    		int playerId = dmeWorldManager.getPlayerId(client.getSocket());
+    		dmeWorldManager.playerFullyConnected(client.getPlayer());
+    		int playerId = client.getPlayer().getPlayerId();
 
+    		logger.info("Player fully connected! Player: " + client.getPlayer().toString());
+    		logger.info("World Manager:");
     		logger.info(dmeWorldManager.toString());
 
     		//client.updateDmePlayer(playerId, dmeWorldManager.getWorldId(playerId), PlayerStatus.CONNECTED);
@@ -145,19 +147,17 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     private void checkForTcpAuxUdpConnect(ChannelHandlerContext ctx, RTMessage packet) {
     	
     	if (packet.getId() == RTMessageId.CLIENT_CONNECT_TCP_AUX_UDP) {
-    		logger.info("Detected TCP AUX UDP CONNECT");
     		short dmeWorldId = Utils.bytesToShortLittle(packet.toBytes()[6], packet.toBytes()[7]);
-    		logger.info("Dme world requested: " + Integer.toString((int) dmeWorldId));
-    		
+    		logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
+
     		// ---------- Add the player to the world
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
-    		dmeWorldManager.addPlayer(dmeWorldId, client.getSocket(), ((DmeServer) client.getServer()).getRpcClient());
-    		int dmePlayerId = dmeWorldManager.getPlayerId(client.getSocket());
-    		int playerCount = dmeWorldManager.getPlayerCount(client.getSocket());
+    		dmeWorldManager.addPlayer(dmeWorldId, client.getPlayer());
+    		int dmePlayerId = client.getPlayer().getPlayerId();
+    		int playerCount = dmeWorldManager.getPlayerCount(client.getPlayer());
     		
+			logger.info("Player ID Generated: " + Utils.bytesToHex(Utils.intToBytesLittle(dmePlayerId)));
     		logger.info(dmeWorldManager.toString());
-			logger.info("Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)));
-			logger.info("playerId: " + Utils.bytesToHex(Utils.intToBytesLittle(dmePlayerId)));
     		
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);

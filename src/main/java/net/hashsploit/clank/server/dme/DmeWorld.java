@@ -7,23 +7,23 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
+import net.hashsploit.clank.server.pipeline.TestHandlerDmeUdp;
 import net.hashsploit.clank.utils.Utils;
 
 public class DmeWorld {
+	private static final Logger logger = Logger.getLogger(DmeWorld.class.getName());
 
 	
 	private int worldId;
 		
 	// Lookup Player from Dme Id
 	HashMap<Integer, DmePlayer> players = new HashMap<Integer, DmePlayer>();
-	
-	// Lookup Player from Socket
-	HashMap<SocketChannel, DmePlayer> playerSocketLookup = new HashMap<SocketChannel, DmePlayer>();
 	
 	// Lookup Player from Udp Packet
 	HashMap<InetSocketAddress, DmePlayer> playerUdpLookup = new HashMap<InetSocketAddress, DmePlayer>();
@@ -33,13 +33,16 @@ public class DmeWorld {
 	}
 
 	public String toString() {
-		return "DmeWorld: \n" + 
-				"worldId: " + Integer.toString(worldId) + "\n" +
-				"numPlayers: " + Integer.toString(players.size()) + "\n"
-				;
+		String result = " ====== DmeWorld: \n" + 
+				"--- worldId: " + Integer.toString(worldId) + "\n" +
+				"--- numPlayers: " + Integer.toString(players.size()) + "\n";
+		for (DmePlayer player: players.values()) {
+			result += player.toString();
+		}
+		return result;
 	}
 
-	public void addPlayer(SocketChannel socket) {
+	public void addPlayer(DmePlayer player) {
 		/*
 		 * Initial connect. Player has not finished connecting yet
 		 */
@@ -50,23 +53,21 @@ public class DmeWorld {
 			return;
 		}
 		
-		DmePlayer player = new DmePlayer(newPlayerId, socket);
-		
-		// Otherwise, add the player
+		// Set the players ID
+		player.setPlayerId(newPlayerId);
+				
+		// Add this player ID + player to this world
 		players.put(newPlayerId, player);
-		// Add reverse lookup
-		playerSocketLookup.put(socket, player);
 	}
 	
-	public void playerFullyConnected(SocketChannel socket) {
+	public void playerFullyConnected(DmePlayer player) {
 		/* 
 		 * Player is now fully connected. Send a broadcast notify
 		 */
-		DmePlayer player = playerSocketLookup.get(socket);
 		player.fullyConnected();
 		
 		// Broadcast this player is fully connected to everyone else
-		sendServerNotify(player);
+		sendServerNotify(player, true);
 	}
 	
 	private int getNewId() {
@@ -93,8 +94,7 @@ public class DmeWorld {
 		return result;
 	}
 	
-	public void clientAppSingle(SocketChannel socket, byte[] payload) {
-		DmePlayer sourcePlayer = playerSocketLookup.get(socket);
+	public void clientAppSingle(DmePlayer sourcePlayer, byte[] payload) {
 		int sourceId = sourcePlayer.getPlayerId();
 		int playerTargetId = (int) payload[3];
 		payload[3] = (byte) sourceId;
@@ -104,11 +104,12 @@ public class DmeWorld {
 		}
 		
 		DmePlayer targetPlayer = players.get(playerTargetId);
+		if (targetPlayer == null) 
+			return;
 		targetPlayer.sendData(payload);
 	}
 	
-	public void broadcast(SocketChannel socket, byte[] payload) {
-		DmePlayer sourcePlayer = playerSocketLookup.get(socket);
+	public void broadcast(DmePlayer sourcePlayer, byte[] payload) {
 		int sourceId = sourcePlayer.getPlayerId();
 		
 		// Insert the source id
@@ -148,7 +149,7 @@ public class DmeWorld {
 		return result;
 	}
 		
-	private void sendServerNotify(DmePlayer player) {
+	private void sendServerNotify(DmePlayer player, boolean connecting) {
 		int playerId = player.getPlayerId();
 		
 		// build server notify packet
@@ -166,13 +167,19 @@ public class DmeWorld {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		
 		try {
-			baos.write(Utils.hexStringToByteArray("085200"));
+			if (connecting) {
+				baos.write(Utils.hexStringToByteArray("085200"));
+			}
+			else {
+				baos.write(Utils.hexStringToByteArray("091200"));
+			}
 			baos.write(Utils.shortToBytesLittle((short) playerId));
 			
 			baos.write(ipAddr);
 			baos.write(zeroTrail);
-			
-			baos.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
+			if (connecting) {
+				baos.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -184,10 +191,6 @@ public class DmeWorld {
 		}
 	}
 
-	public int getPlayerId(SocketChannel socket) {
-		return playerSocketLookup.get(socket).getPlayerId();
-	}
-
 	public int getPlayerCount() {
 		return players.size();
 	}
@@ -196,17 +199,12 @@ public class DmeWorld {
 	/*
 	 *  UDP Methods =================================================================
 	 */
-	
-	public void setPlayerUdpConnection(int playerId, DatagramChannel playerUdpChannel, InetSocketAddress playerUdpAddr) {
-		DmePlayer player = players.get(playerId);
-		
+	public void setPlayerUdpConnection(DmePlayer player, InetSocketAddress playerUdpAddr) {
 		if (playerUdpLookup.containsKey(playerUdpAddr)) {
-			throw new IllegalStateException("setPlayerUdpConnection: New connection player " + Integer.toString(playerId) + " has the same Udp channel as " + 
+			throw new IllegalStateException("setPlayerUdpConnection: New connection player " + Integer.toString(player.getPlayerId()) + " has the same Udp channel as " + 
 					Integer.toString(playerUdpLookup.get(playerUdpAddr).getPlayerId()) + " !");
 		}
-		
 		playerUdpLookup.put(playerUdpAddr, player);
-		player.setUdpConnection(playerUdpChannel, playerUdpAddr);
 	}
 
 	public void broadcastUdp(InetSocketAddress senderUdpAddr, byte[] payload) {
@@ -235,6 +233,8 @@ public class DmeWorld {
 		}
 		
 		DmePlayer targetPlayer = players.get(playerTargetId);
+		if (targetPlayer == null) 
+			return;
 		targetPlayer.sendUdpData(payload);		
 	}
 
@@ -251,12 +251,22 @@ public class DmeWorld {
 		return false;
 	}
 
-	public void playerDisconnected(int accountId) {
-		players.remove(accountId);
+	public void playerDisconnected(DmePlayer player) {
+		players.remove(player.getPlayerId());
+		playerUdpLookup.remove(player.getUdpAddr());
+		sendServerNotify(player, false);
 	}
 
 	public boolean isEmpty() {
 		return players.size() == 0;
+	}
+
+	public DmePlayer getPlayerFromPlayerId(int playerId) {
+		return players.get(playerId);
+	}
+
+	public int getWorldId() {
+		return worldId;
 	}
 
 }

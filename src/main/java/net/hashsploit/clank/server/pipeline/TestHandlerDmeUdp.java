@@ -72,22 +72,21 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	private void checkFirstPacket(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data, int port, String clientAddr) {	
 		if (Utils.bytesToHex(data).length() >= 56 && (Utils.bytesToHex(data).substring(56,60).equals("5f27"))) { 
 			// example: 161d000108017b00bc2900003139322e3136382e312e3939000000005f270100
-			logger.info("UDP CONNECT REQ DETECTED!:");
 			clientAddr = clientAddr.substring(1);
-			logger.info("Client Addr: " + clientAddr);
-			logger.info("Client port: " + port);
+			//logger.info("Client Addr: " + clientAddr);
+			//logger.info("Client port: " + port);
 			ByteBuffer buffer = ByteBuffer.allocate(25);
 			
     		DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
-    		logger.info(dmeWorldManager.toString());
 			int dmeWorldId = (int) Utils.bytesToShortLittle(data[6], data[7]);
     		int playerId = (int) Utils.bytesToShortLittle(data[30], data[31]);
     		
-			logger.info("Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)));
-			logger.info("playerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
+			logger.info("UDP CONNECT REQ DETECTED! Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)) + " PlayerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
 
     		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, (DatagramChannel) ctx.channel(), requestDatagram.sender());
-			
+    		
+    		logger.info(dmeWorldManager.toString());
+
 			short playerCount = (short) dmeWorldManager.getPlayerCount(dmeWorldId);
 			
 			String hex = "010801" + 
