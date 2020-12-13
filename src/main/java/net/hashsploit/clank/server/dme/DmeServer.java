@@ -10,7 +10,7 @@ import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.server.UdpServer;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
-import net.hashsploit.clank.server.rpc.PlayerUpdateRequest.PlayerStatus;
+import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.RpcConfig;
 import net.hashsploit.clank.utils.Utils;
 

@@ -3,7 +3,6 @@ package net.hashsploit.clank.server.dme;
 import java.util.logging.Logger;
 
 import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
@@ -11,9 +10,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.IServer;
-import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.pipeline.TestHandlerDmeTcp;
-import net.hashsploit.clank.server.rpc.PlayerUpdateRequest.PlayerStatus;
+import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class DmeTcpClient implements IClient {

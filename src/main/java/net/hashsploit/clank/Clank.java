@@ -92,7 +92,7 @@ public class Clank {
 		Logger.getLogger("io.netty").setLevel(Level.OFF);
 		Logger.getLogger("javax.net").setLevel(Level.OFF);
 		Logger.getLogger("io.grpc").setLevel(Level.OFF);
-		Logger.getLogger("io.perfmark").setLevel(Level.OFF);
+		Logger.getLogger("io.perfmark.impl").setLevel(Level.OFF);
 		
 		terminal.init();
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));

@@ -6,7 +6,6 @@ import io.grpc.ManagedChannel;
 import io.grpc.StatusRuntimeException;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import net.hashsploit.clank.server.rpc.ClankMlsServiceGrpc.ClankMlsServiceBlockingStub;
-import net.hashsploit.clank.server.rpc.PlayerUpdateRequest.PlayerStatus;
 
 public class ClankDmeRpcClient {
 	private static final Logger logger = Logger.getLogger(ClankDmeRpcClient.class.getName());

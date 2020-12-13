@@ -9,23 +9,41 @@ package net.hashsploit.clank.server.rpc;
 // This is the Clank Medius Lobby Server Service.
 service ClankMlsService {
 	
-	// This RPC endpoint updates player information.
+	// DME: This RPC endpoint updates player information.
 	rpc PlayerUpdate(PlayerUpdateRequest) returns (PlayerUpdateResponse) {}
 	
-	// This RPC endpoint updates world information.
+	// DME: This RPC endpoint updates world information.
 	rpc WorldUpdate(WorldUpdateRequest) returns (WorldUpdateResponse) {}
 	
+	// BOT: This RPC endpoint exposes all players in the lobby.
+	rpc PlayersOnline(PlayersOnlineRequest) returns (PlayersOnlineResponse) {}
+	
+}
+
+message PlayersOnlineRequest {
+	int32 max_players = 1;
+}
+
+message PlayersOnlineResponse {
+	repeated Player players = 1;
+}
+
+enum PlayerStatus {
+	DISCONNECTED = 0;
+	CONNECTED = 1;
+	STAGING = 2;
+	ACTIVE = 3;
+}
+
+message Player {
+	int32 account_id = 1;
+	string username = 2;
+	PlayerStatus player_status = 3;
 }
 
 message PlayerUpdateRequest {
 	int32 account_id = 1;
 	int32 world_id = 2;
-	enum PlayerStatus {
-		DISCONNECTED = 0;
-		CONNECTED = 1;
-		STAGING = 2;
-		ACTIVE = 3;
-	}
 	PlayerStatus player_status = 3;
 }
 
