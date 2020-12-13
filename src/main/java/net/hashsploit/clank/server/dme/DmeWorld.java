@@ -242,9 +242,9 @@ public class DmeWorld {
 		return players.values();
 	}
 
-	public boolean hasPlayer(int accountId) {
-		for (int playerAccountId: players.keySet()) {
-			if (accountId == playerAccountId) {
+	public boolean hasPlayer(String mlsToken) {
+		for (DmePlayer player: players.values()) {
+			if (mlsToken == player.getMlsToken()) {
 				return true;
 			}
 		}

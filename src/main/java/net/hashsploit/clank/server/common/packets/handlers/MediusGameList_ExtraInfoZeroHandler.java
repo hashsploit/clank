@@ -97,7 +97,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 	
 				respPacket = new GameList_ExtraInfoZeroResponse(reqPacket.getMessageID(), game.getWorldId(), callbackStatus, Utils.shortToBytesLittle(playerCount), 
 						Utils.shortToBytesLittle(minPlayers), Utils.shortToBytesLittle(maxPlayers),
-						req.getGameLevel(), req.getPlayerSkillLevel(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(), worldSecurityLevelType, game.getWorldStatus(),
+						req.getGameLevel(), req.getPlayerSkillLevel(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(), worldSecurityLevelType, game.getWorldStatusBytes(),
 						req.getGameHostType(), req.getGameName(), game.getStats(), endOfList);
 				client.sendMediusMessage(respPacket);
 			}

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
@@ -29,10 +30,10 @@ public class GameList {
 		return gameSet.get(worldId);
 	}
 	
-	public void updateGameWorldStatus(int worldId, WorldStatus worldStatus) {
+	public void updateGameWorldStatus(int worldId, MediusWorldStatus worldStatus) {
 		gameSet.get(worldId).updateStatus(worldStatus);
 
-		if (worldStatus == WorldStatus.DESTROYED) {
+		if (worldStatus == MediusWorldStatus.WORLD_CLOSED) {
 			gameSet.remove(worldId);
 		}		
 	}
@@ -42,7 +43,7 @@ public class GameList {
 		ArrayList<MediusGame> result = new ArrayList<MediusGame>();
 		
 		for (MediusGame game : gameSet.values()) {
-			if (game.getWorldStatusInt() == 1) // Staging TODO: make this an enum
+			if (game.getWorldStatus() == MediusWorldStatus.WORLD_STAGING) // Staging TODO: make this an enum
 		    result.add(game);
 		}
 		

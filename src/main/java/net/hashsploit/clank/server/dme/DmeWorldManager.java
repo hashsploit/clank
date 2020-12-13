@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
+import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class DmeWorldManager {
@@ -60,6 +61,8 @@ public class DmeWorldManager {
 		// Set that player to fully connected
 		dmeWorld.playerFullyConnected(dmePlayer);
 		
+		// Update MLS that player is fully connected
+		dmePlayer.getClient().updateDmePlayer(dmePlayer.getMlsToken(), this.getWorldId(dmePlayer.getMlsToken()), PlayerStatus.STAGING);
 	}
 
 	public int getPlayerCount(DmePlayer player) {
@@ -117,9 +120,9 @@ public class DmeWorldManager {
 		return dmeWorlds.values();
 	}
 
-	public int getWorldId(int accountId) {
+	public int getWorldId(String mlsToken) {
 		for (int worldId: dmeWorlds.keySet()) {
-			if (dmeWorlds.get(worldId).hasPlayer(accountId)) {
+			if (dmeWorlds.get(worldId).hasPlayer(mlsToken)) {
 				return worldId;
 			}
 		}

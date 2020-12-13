@@ -15,7 +15,7 @@ import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
 public class DmePlayer {
 	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());
 
-	private int accountId;
+	private String mlsToken;
 	private int playerId;
 	
 	private DmeTcpClient client;
@@ -28,7 +28,7 @@ public class DmePlayer {
 
 	public String toString() {
 		return "DmePlayer: \n" + 
-				"AccountId: " + Integer.toString(accountId) + "\n" +
+				"MlsToken: " + mlsToken + "\n" +
 				"PlayerId: " + Integer.toString(playerId) + "\n" +
 				"Status: " + status.toString() + "\n" ;
 	}
@@ -38,10 +38,6 @@ public class DmePlayer {
 		packetQueue = new ConcurrentLinkedQueue<byte[]>();
 		status = DmePlayerStatus.CONNECTING;
 		this.client = client;
-	}
-	
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
 	}
 	
 	public void setPlayerId(int playerId) {
@@ -106,6 +102,16 @@ public class DmePlayer {
 
 	public InetSocketAddress getUdpAddr() {
 		return udpAddress;
+	}
+
+
+	public void setMlsToken(String mlsToken) {
+		this.mlsToken = mlsToken;
+	}
+
+
+	public String getMlsToken() {
+		return mlsToken;
 	}
 
 }

@@ -22,8 +22,8 @@ public class ClankDmeRpcClient {
 
 	}
 
-	public void updatePlayer(int accountId, int worldId, PlayerStatus playerStatus) {
-		PlayerUpdateRequest request = PlayerUpdateRequest.newBuilder().setAccountId(accountId).setWorldId(worldId).setPlayerStatus(playerStatus).build();
+	public void updatePlayer(String mlsToken, int worldId, PlayerStatus playerStatus) {
+		PlayerUpdateRequest request = PlayerUpdateRequest.newBuilder().setMlsToken(mlsToken).setWorldId(worldId).setPlayerStatus(playerStatus).build();
 		PlayerUpdateResponse response;
 		try {
 			response = asyncStub.playerUpdate(request);

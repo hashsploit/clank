@@ -3,7 +3,9 @@ package net.hashsploit.clank.server;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
@@ -77,7 +79,23 @@ public class MediusLogicHandler {
 		playerList.updatePlayerStatus(player, status);	
 	}
 	
-	public void updatePlayerStatusFromDme(int accountId, int worldId, PlayerStatus playerStatus) {
+	
+	/*
+	 * ==================================================================
+	 * gRPC Update methods from DME
+     * ==================================================================
+
+	 */
+	
+	/*
+	 * Update Dme World status in the MLS GameList
+	 */
+	public void updateDmeWorldStatus(int worldId, MediusWorldStatus worldStatus) {
+		logger.info("Updating world from DME worldId: " + Integer.toString(worldId));
+		logger.info("Updating world from DME World Status: " + worldStatus.toString());
+		gameList.updateGameWorldStatus(worldId, worldStatus);
+	}
+	public void updatePlayerStatusFromDme(String mlsToken, int worldId, PlayerStatus playerStatus) {
 		// PlayerStatus is from gRPC
 		// This method is called from gRPC DME -> MLS
 		/* 
@@ -90,7 +108,7 @@ public class MediusLogicHandler {
 		 */
 		// Update the gameWorld. Update the playerList
 		MediusPlayerStatus status;
-		logger.info("Updating player from DME accountId: " + Integer.toString(accountId));
+		logger.info("Updating player from DME mlsToken: " + mlsToken);
 		logger.info("Updating player from DME Status: " + playerStatus.toString());
 		switch (playerStatus) {
 		case DISCONNECTED:
@@ -108,6 +126,7 @@ public class MediusLogicHandler {
 		default:
 			status = null;
 		}
+		int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(mlsToken);
 		playerList.updatePlayerStatus(accountId, status);
 	}
 
@@ -119,24 +138,13 @@ public class MediusLogicHandler {
 	 * ==================================================================
 	 */
 	public ArrayList<Player> getGameWorldPlayers(int worldIdRequested) {
-		ArrayList<Player> result = new ArrayList<Player>();
-
-		return result;
+		return playerList.getPlayersByGameWorld(worldIdRequested);
 	}
 
 	public ArrayList<Player> getLobbyWorldPlayers(int worldId) {
 		ArrayList<Player> result = playerList.getPlayersByLobbyWorld(worldId);
 		return result;
 	}
-
-	
-	/*
-	 * Update Dme World status in the MLS GameList
-	 */
-	public void updateDmeWorldStatus(int worldId, WorldStatus worldStatus) {
-		gameList.updateGameWorldStatus(worldId, worldStatus);
-	}
-
 
 
 }

@@ -36,7 +36,7 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		
 		respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, req.getAppID(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), 
 				req.getPlayerSkillLevel(), game.getPlayerCount(), game.getStats(), req.getGameName(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(),
-				game.getWorldStatus(), req.getGameHostType());
+				game.getWorldStatusBytes(), req.getGameHostType());
 		
 		client.sendMediusMessage(respPacket);
 	}

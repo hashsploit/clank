@@ -16,6 +16,7 @@ import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
+import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.server.common.packets.serializers.WorldReportZeroRequest;
@@ -37,6 +38,14 @@ public class MediusWorldReportZeroHandler extends MediusPacketHandler {
 
 	@Override
 	public void write(MediusClient client) {
+		// Update the logichandler with the world
+		
+		int worldId = Utils.bytesToIntLittle(reqPacket.getWorldID());
+		int worldStatus = Utils.bytesToIntLittle(reqPacket.getWorldStatus());
+		if (worldStatus == 2) {
+			client.getServer().getLogicHandler().updateDmeWorldStatus(worldId, MediusWorldStatus.WORLD_ACTIVE);
+		}
+		
 	}
 
 }

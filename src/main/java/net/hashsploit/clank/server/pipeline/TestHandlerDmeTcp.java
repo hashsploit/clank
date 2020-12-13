@@ -12,11 +12,16 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.database.DbManager;
+import net.hashsploit.clank.database.SimDb;
+import net.hashsploit.clank.rt.serializers.RT_ClientConnectTcpAuxUdp;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.server.rpc.PlayerStatus;
+import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -111,10 +116,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		logger.info("Player fully connected! Player: " + client.getPlayer().toString());
     		logger.info("World Manager:");
     		logger.info(dmeWorldManager.toString());
-
-    		//client.updateDmePlayer(playerId, dmeWorldManager.getWorldId(playerId), PlayerStatus.CONNECTED);
-    		
-    		
+		
     		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		RTMessage c1 = new RTMessage(RTMessageId.SERVER_CONNECT_COMPLETE, t1);
@@ -147,10 +149,16 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     private void checkForTcpAuxUdpConnect(ChannelHandlerContext ctx, RTMessage packet) {
     	
     	if (packet.getId() == RTMessageId.CLIENT_CONNECT_TCP_AUX_UDP) {
-    		short dmeWorldId = Utils.bytesToShortLittle(packet.toBytes()[6], packet.toBytes()[7]);
+    		RT_ClientConnectTcpAuxUdp connectPacket = new RT_ClientConnectTcpAuxUdp(packet);
+    		
+    		short dmeWorldId = connectPacket.getDmeWorldId();
     		logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
 
     		// ---------- Add the player to the world
+    		// Set accountId for this player -> client
+    		String mlsToken = Utils.bytesToHex(connectPacket.getMlsToken());    		
+    		client.getPlayer().setMlsToken(mlsToken);
+    		
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
     		dmeWorldManager.addPlayer(dmeWorldId, client.getPlayer());
     		int dmePlayerId = client.getPlayer().getPlayerId();
@@ -158,6 +166,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		
 			logger.info("Player ID Generated: " + Utils.bytesToHex(Utils.intToBytesLittle(dmePlayerId)));
     		logger.info(dmeWorldManager.toString());
+    	
     		
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);

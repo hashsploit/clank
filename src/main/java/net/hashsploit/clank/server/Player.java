@@ -53,6 +53,9 @@ public class Player {
 	}
 
 	public void updateStatus(MediusPlayerStatus status) {
+		if (status != MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD) {
+			this.gameWorldId = 0;
+		}
 		this.playerStatus = status;
 	}
 
@@ -70,6 +73,10 @@ public class Player {
 
 	public int getChatWorldId() {
 		return chatWorldId;
+	}
+
+	public void setGameWorldId(int gameWorldId) {
+		this.gameWorldId = gameWorldId;
 	}
 		
 }

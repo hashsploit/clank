@@ -63,5 +63,14 @@ public class PlayerList {
 		return result;
 	}
 
+	public ArrayList<Player> getPlayersByGameWorld(int worldId) {
+		ArrayList<Player> result = new ArrayList<Player>();
+		for (Player player: players.values()) {
+			if (player.getGameWorldId() == worldId) {
+				result.add(player);
+			}
+		}
+		return result;	}
+
 
 }

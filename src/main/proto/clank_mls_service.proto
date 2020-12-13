@@ -42,7 +42,7 @@ message Player {
 }
 
 message PlayerUpdateRequest {
-	int32 account_id = 1;
+	string mls_token = 1;
 	int32 world_id = 2;
 	PlayerStatus player_status = 3;
 }
