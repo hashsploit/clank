@@ -6,7 +6,7 @@ import org.json.JSONObject;
 
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.ConfigNames;
-import net.hashsploit.clank.database.DatabaseInfo;
+import net.hashsploit.clank.config.objects.DatabaseInfo;
 import net.hashsploit.clank.server.rpc.RpcConfig;
 import net.hashsploit.clank.server.rpc.RpcServerConfig;
 
@@ -82,6 +82,14 @@ public class MediusConfig extends AbstractConfig {
 	public String getNatAddress() {
 		final String key = ConfigNames.NAT.toString();
 		
+		if (getJson().isNull(key)) {
+			return null;
+		}
+		
+		if (getJson().getJSONObject(key).isNull(ConfigNames.NAT_ADDRESS.toString())) {
+			return null;
+		}
+		
 		return getJson().getJSONObject(key).getString(ConfigNames.NAT_ADDRESS.toString());
 	}
 	
@@ -89,10 +97,10 @@ public class MediusConfig extends AbstractConfig {
 	 * Get the NAT port.
 	 * @return
 	 */
-	public String getNatPort() {
+	public int getNatPort() {
 		final String key = ConfigNames.NAT.toString();
 		
-		return getJson().getJSONObject(key).getString(ConfigNames.NAT_PORT.toString());
+		return getJson().getJSONObject(key).getInt(ConfigNames.NAT_PORT.toString());
 	}
 	
 	/**
