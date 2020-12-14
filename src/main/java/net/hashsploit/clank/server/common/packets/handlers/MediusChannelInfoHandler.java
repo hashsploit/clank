@@ -42,8 +42,10 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
-    	byte[] lobbyName = Utils.buildByteArrayFromString(client.getServer().getLogicHandler().getChannelLobbyName(Utils.bytesToIntLittle(reqPacket.getWorldID())), MediusConstants.LOBBYNAME_MAXLEN.getValue());
-		byte[] activePlayerCount = Utils.intToBytesLittle(client.getServer().getLogicHandler().getChannelActivePlayerCount(Utils.bytesToIntLittle(reqPacket.getWorldID())));
+    	byte[] lobbyName = Utils.buildByteArrayFromString(client.getServer().getLogicHandler().getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID())).getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
+		byte[] activePlayerCount = Utils.intToBytesLittle(client.getServer().getLogicHandler().getChannelActivePlayerCountById(Utils.bytesToIntLittle(reqPacket.getWorldID())));
+		
+		// FIXME: hardcoded (bad)
 		byte[] maxPlayers = Utils.intToBytesLittle(224);
 
 		respPacket = new ChannelInfoResponse(reqPacket.getMessageID(), callbackStatus, lobbyName, activePlayerCount, maxPlayers);

@@ -1,15 +1,13 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
-import java.util.Random;
-
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MasConfig;
+import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginResponse;
 import net.hashsploit.clank.utils.Utils;
@@ -67,7 +65,11 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		
 		byte[] accountID = Utils.intToBytesLittle(playerAccountId);
 		byte[] accountType = Utils.intToBytesLittle(2);
-		byte[] worldID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getLocationId());
+		
+		// FIXME: bad location
+		final LocationConfig location = client.getServer().getLogicHandler().getLocation();
+		
+		byte[] worldID = Utils.intToBytesLittle(location.getId());
 		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress() : null;
 		String natIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getNatAddress() : null;
 
@@ -76,7 +78,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		}
 
 		if (natIpAddress == null) {
-			mlsIpAddress = Utils.getPublicIpAddress();
+			natIpAddress = Utils.getPublicIpAddress();
 		}
 
 		byte[] mlsAddress = mlsIpAddress.getBytes();

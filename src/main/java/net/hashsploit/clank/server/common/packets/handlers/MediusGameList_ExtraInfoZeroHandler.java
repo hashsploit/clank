@@ -1,28 +1,17 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.logging.Logger;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.MediusGame;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.GameHostType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
-import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
-import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.server.common.packets.serializers.GameList_ExtraInfoZeroRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameList_ExtraInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
@@ -56,7 +45,10 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 			byte[] playerCount = Utils.shortToBytesLittle((short) 1);
 			byte[] minPlayers = Utils.shortToBytesLittle((short) 0);
 			byte[] maxPlayers = Utils.shortToBytesLittle((short) 8);
-			byte[] gameLevel = Utils.intToBytesLittle(client.getServer().getLogicHandler().getCityWorldId());
+			
+			// FIXME: bad
+			byte[] gameLevel = Utils.intToBytesLittle(client.getServer().getLogicHandler().getChannel().getId()); // channel id
+			
 			byte[] playerSkillLevel = Utils.hexStringToByteArray("00000004");
 			byte[] rulesSet = Utils.intToBytesLittle(0);
 			byte[] genericField1 = Utils.intToBytesLittle(28);// Generic field 1 (Location Id (city id; aquatos))

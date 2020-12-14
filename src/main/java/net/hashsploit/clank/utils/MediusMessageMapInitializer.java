@@ -2,8 +2,8 @@ package net.hashsploit.clank.utils;
 
 import java.util.HashMap;
 
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountGetIDHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLoginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLogoutHandler;
@@ -46,6 +46,8 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusPickLocationHan
 import net.hashsploit.clank.server.common.packets.handlers.MediusPlayerInfoHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPlayerReportHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPolicyHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusServerAuthenticationHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusServerSessionBeginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusSessionBeginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusSessionEndHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusSetGameListFilterZeroHandler;
@@ -149,7 +151,8 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.PickLocation, new MediusPickLocationHandler());
 		mp.put(MediusMessageType.GetAnnouncements, new MediusGetAnnouncementsHandler());
 		mp.put(MediusMessageType.Policy, new MediusPolicyHandler());
-		
+		mp.put(MediusMessageType.MediusServerSessionBeginRequest, new MediusServerSessionBeginHandler());
+		mp.put(MediusMessageType.MediusServerAuthenticationRequest, new MediusServerAuthenticationHandler());
 		
 		return mp;
 	}

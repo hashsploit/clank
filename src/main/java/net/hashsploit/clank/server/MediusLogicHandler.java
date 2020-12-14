@@ -4,20 +4,18 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.config.configs.MlsConfig;
+import net.hashsploit.clank.config.objects.ChannelConfig;
+import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
-import net.hashsploit.clank.server.rpc.PlayerStatus;
-import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class MediusLogicHandler {
 	private static final Logger logger = Logger.getLogger(MediusLogicHandler.class.getName());
 
 	private GameList gameList;
 	private PlayerList playerList;
-	
-	private final String location = "Aquatos";
-	private final int locationId = 40;
 	
 	public MediusLogicHandler() {
 		this.gameList = new GameList();
@@ -33,41 +31,35 @@ public class MediusLogicHandler {
 		return gameList.getGames();
 	}
 	
-	public synchronized MediusGame getGame(int worldID) {
+	public MediusGame getGame(int worldID) {
 		return gameList.getGame(worldID);
 	}
 	
-	public synchronized int getNewGameId(CreateGameOneRequest req) {
+	public int getNewGameId(CreateGameOneRequest req) {
 		return gameList.getNewGameId(req);
 	}
-	
-	public synchronized int getLocationId() {
-		return locationId;
-	}
 
-	public synchronized String getLocation() {
-		return location;
-	}
-		
-	public synchronized int getCityWorldId() {
-		return 123;
+	public LocationConfig getLocation() {
+		return ((MlsConfig) Clank.getInstance().getConfig()).getLocations().get(0);
 	}
 	
-	public synchronized short getCityPlayerCount(int cityWorldId) {
-		return 1;
+	public ChannelConfig getChannel() {
+		return ((MlsConfig) Clank.getInstance().getConfig()).getChannels().get(0);
 	}
 	
-	public synchronized String getChannelLobbyName(int cityWorldId) {
-		if (cityWorldId == 123) {
-			return "CY00000000-00";
+	public ChannelConfig getChannelById(int id) {
+		for (final ChannelConfig channel : ((MlsConfig) Clank.getInstance().getConfig()).getChannels()) {
+			if (channel.getId() == id) {
+				return channel;
+			}
 		}
-		
-		return "ERROR!";
+		return null;
 	}
 	
-	public synchronized int getChannelActivePlayerCount(int cityWorldId) {
+	public int getChannelActivePlayerCountById(int id) {
 		return 1;
 	}
+	
 
 	/* 
 	 * ==================================================================

@@ -25,27 +25,51 @@ public class CreateGameOneRequest extends MediusMessage {
 	private byte[] genField3 = new byte[4];
 	private byte[] gameHostType = new byte[4];
 	private byte[] attributes = new byte[4];
+	private boolean noAttributes = false;
 	
 	public CreateGameOneRequest(byte[] data) {
 		super(MediusMessageType.CreateGame1, data);
     	ByteBuffer buf = ByteBuffer.wrap(data);
-    	buf.get(messageID);
-    	buf.get(sessionKey);
-    	buf.getShort(); //buffer
-    	buf.get(appID);
-    	buf.get(minPlayers);
-    	buf.get(maxPlayers);
-    	buf.get(gameLevel);//aquatos channel id?
-    	buf.get(gameName);
-    	buf.get(gamePassword);
-    	buf.get(spectatorPassword);
-    	buf.get(playerSkillLevel);
-    	buf.get(rulesSet);
-    	buf.get(genField1);
-    	buf.get(genField2);
-    	buf.get(genField3);
-    	buf.get(gameHostType);
-    	buf.get(attributes);
+    	
+    	if (data.length == 212) {
+    		buf.get(messageID);
+        	buf.get(sessionKey);
+        	buf.getShort(); //buffer
+        	buf.get(appID);
+        	buf.get(minPlayers);
+        	buf.get(maxPlayers);
+        	buf.get(gameLevel);//aquatos channel id?
+        	buf.get(gameName);
+        	buf.get(gamePassword);
+        	buf.get(spectatorPassword);
+        	buf.get(playerSkillLevel);
+        	buf.get(rulesSet);
+        	buf.get(genField1);
+        	buf.get(genField2);
+        	buf.get(genField3);
+        	buf.get(gameHostType);
+        	buf.get(attributes);
+    	} else {
+    		buf.get(messageID);
+        	buf.get(sessionKey);
+        	buf.getShort(); //buffer
+        	buf.get(appID);
+        	buf.get(minPlayers);
+        	buf.get(maxPlayers);
+        	buf.get(gameLevel);//aquatos channel id?
+        	buf.get(gameName);
+        	buf.get(gamePassword);
+        	buf.get(spectatorPassword);
+        	buf.get(playerSkillLevel);
+        	buf.get(rulesSet);
+        	buf.get(genField1);
+        	buf.get(genField2);
+        	buf.get(genField3);
+        	buf.get(gameHostType);
+        	noAttributes = true;
+    	}
+    	
+    	
 	}
 	
 	public String toString() {
