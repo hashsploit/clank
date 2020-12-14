@@ -213,7 +213,7 @@ A huge thanks to the following people in the PlayStation 2/PlayStation 3 communi
 - **Dnawrkshp** - reverse engineer, developer, modder, DL community.
 - **No23** - medius broker, dnas broker, reverse engineer, developer.
 - **Darkscorpius** - medius broker, reverse engineer, developer.
-- **Badger41** - reverse engineer, developer, modder.
+- **Badger41** - reverse engineer, developer, modder, DL community.
 - **atomic83** - medius broker, developer, documentation.
 - **1UP** - medius broker, developer, SOCOM community.
 - **K3rber0s** - developer, SOCOM community.
