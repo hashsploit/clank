@@ -38,10 +38,10 @@ public class MasConfig extends MediusConfig {
 	 * Get the MLS port.
 	 * @return
 	 */
-	public String getMlsPort() {
+	public int getMlsPort() {
 		final String key = ConfigNames.MLS.toString();
 		
-		return getJson().getJSONObject(key).getString(ConfigNames.MLS_PORT.toString());
+		return getJson().getJSONObject(key).getInt(ConfigNames.MLS_PORT.toString());
 	}
 	
 	/**
