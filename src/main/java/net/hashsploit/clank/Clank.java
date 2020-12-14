@@ -97,28 +97,6 @@ public class Clank {
 		terminal.init();
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
-		
-		// FIXME: Configure Discord Webhook callbacks
-		/*
-		for (final Object objectKey : config.getProperties().keySet()) {
-			final String key = objectKey.toString();
-			if (key.startsWith("DiscordWebhook_")) {
-				if (config.getProperties().getProperty(key) != null && !config.getProperties().getProperty(key).isEmpty()) {
-					final String urlString = config.getProperties().getProperty(key);
-					
-					try {
-						final URL url = new URL(urlString);
-						discordWebhooks.put(key.replace("DiscordWebhook_", ""), new DiscordWebhook(url));
-					} catch (MalformedURLException e) {
-						logger.log(Level.SEVERE, "Configuration value '" + key + "' requires a valid Discord Webhook URL.");
-						return;
-					}
-					
-				}
-			}
-		}
-		*/
-		
 		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_PROXY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
 		
 		// This is a *Medius server, set up the generic Medius components
