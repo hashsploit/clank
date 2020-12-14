@@ -155,6 +155,7 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.Policy, new MediusPolicyHandler());
 		mp.put(MediusMessageType.MediusServerSessionBeginRequest, new MediusServerSessionBeginHandler());
 		mp.put(MediusMessageType.MediusServerAuthenticationRequest, new MediusServerAuthenticationHandler());
+		mp.put(MediusMessageType.VersionServer, new MediusVersionServerHandler());
 		
 		return mp;
 	}
