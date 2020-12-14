@@ -80,7 +80,7 @@ You can then use `./launch.sh config/mas.json` to run a Clank MAS server.
 
 1. Run `./build.sh` to build Clank (requires maven).
 2. Copy an example configuration file `config/mas.json.example` -> `config/mas.json`.
-3. Run `./launch.sh config.mas`.
+3. Run `./launch.sh config/mas.json`.
 
 If you cloned the repo and are pulling from time-to-time, make note that
 any changes to the `src/main/proto/` files will require the protocol buffers
