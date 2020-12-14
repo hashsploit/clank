@@ -223,6 +223,41 @@ public enum ConfigNames {
 	OPERATORS("operators"),
 	
 	/**
+	 * Array list of channel objects.
+	 */
+	CHANNELS("channels"),
+	
+	/**
+	 * Channel object id.
+	 */
+	CHANNELS_ID("id"),
+	
+	/**
+	 * Channel object name.
+	 */
+	CHANNELS_NAME("name"),
+	
+	/**
+	 * Channel object capacity.
+	 */
+	CHANNELS_CAPACITY("capacity"),
+	
+	/**
+	 * Array list of location objects.
+	 */
+	LOCATIONS("locations"),
+	
+	/**
+	 * Location object id.
+	 */
+	LOCATIONS_ID("id"),
+	
+	/**
+	 * Location object name.
+	 */
+	LOCATIONS_NAME("name"),
+	
+	/**
 	 * Discord Webhook URLs.
 	 */
 	DISCORD_WEBHOOKS("discord_webhooks");
