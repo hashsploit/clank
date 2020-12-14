@@ -67,9 +67,10 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		byte[] accountType = Utils.intToBytesLittle(2);
 		
 		// FIXME: bad location
-		final LocationConfig location = client.getServer().getLogicHandler().getLocation();
+		//final LocationConfig location = client.getServer().getLogicHandler().getLocation();
 		
-		byte[] worldID = Utils.intToBytesLittle(location.getId());
+		// Default world id = 0
+		byte[] worldID = Utils.intToBytesLittle(0);
 		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress() : null;
 		String natIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getNatAddress() : null;
 
