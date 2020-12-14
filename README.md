@@ -222,7 +222,7 @@ A huge thanks to the following people in the PlayStation 2/PlayStation 3 communi
 - **Foas** - documentation, R&C community.
 - **TheLastRar** - developer, tester, providing patches for CLR_DEV9.
 - **Thief** - developer, documentation.
-- **Derrik ∞ GHz** medius broker, reverse engineer, developer.
-- **Megalia1** medius broker, documentation.
+- **Derrik ∞ GHz** - medius broker, reverse engineer, developer.
+- **Megalia1** - medius broker, documentation.
 - **Cristian** - DNAS/DNS host, documentation.
 - **shad** - developer, documentation.
