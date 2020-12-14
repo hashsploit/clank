@@ -1,11 +1,11 @@
-# Clank - A high-performance SCE-RT Medius server emulator.
+# Clank - A high-performance SCE-RT Medius server
 
-This project is an Open Source rewrite and implementation of the
-proprietary SCE-RT Medius server stack used in many PlayStation 2:tm:
-multiplayer titles. The project was originally intended for
-*Ratchet & Clank: Up Your Arsenal* for the [UYA Online](https://uyaonline.com/)
-project. However we have decided to redesign it to work for many other
-Medius titles.
+This project is an Open Source implementation of the
+proprietary SCE-RT Medius server stack used in many PlayStation 2
+and PlayStation 3 multiplayer titles. The project was originally
+intended for *Ratchet & Clank: Up Your Arsenal* for the
+[UYA Online](https://uyaonline.com/) project. However we decided
+to redesign it to work with many other Medius titles as well.
 
 Our server aims to be feature rich, modular, stable, and **fast**.
 
@@ -27,7 +27,7 @@ Server features that are complete will be checked, features that are still in pr
 - [x] Emulates NAT Server (NAT).
 - [x] Emulates Medius Lobby Server (MLS).
 - [x] Emulates DME Server (DME).
-- [x] Emulates Medius Universe Information Server (MUIS).
+- [ ] Emulates Medius Universe Information Server (MUIS).
 - [ ] SCE-RT encryption/decryption. (Using [medius-crypto](https://github.com/hashsploit/medius-crypto)).
 - [x] SCE-RT packet frames.
 - [ ] Lua sandbox.
@@ -67,7 +67,7 @@ The focus of the table below is based on a title's ability to get from login to 
 
 
 
-## Clank Components
+## Clank components
 
 This server supports emulating the following components:
 - The **MUIS (Medius Universe Information Server)** is the entrypoint for several
@@ -96,11 +96,9 @@ You can read more about these components [here](https://wiki.hashsploit.net/Play
 - The **address** is a *string* and can be set to a valid IPv4 address or `null` to use the default interface's address. This is the address in which the server will bind to and listen on.
 - The **port** is an *integer* and must be valid port from 1025 to 65535, this is the port in which the server will bind to and listen on.
 
-### MAS configuration
+### MAS configuration (config/mas.json.example)
 
 The component is an authentication server for handling player logins.
-
-#### **config/mas.conf:**
 
 | Name                     | Type    | Description                                                                    |
 |--------------------------|---------|--------------------------------------------------------------------------------|
@@ -125,7 +123,7 @@ The component is an authentication server for handling player logins.
 | Name                     | Type    | Description                                                                      |
 |--------------------------|---------|----------------------------------------------------------------------------------|
 | address                  | string  | IPv4 address of the MLS server, or `null` to use the current public IPv4 Address.|
-| capacity                 | integer | Port of the MLS server.                                                          |
+| port                     | integer | Port of the MLS server.                                                          |
 
 
 **NAT Object:**
@@ -133,7 +131,7 @@ The component is an authentication server for handling player logins.
 | Name                     | Type    | Description                                                                      |
 |--------------------------|---------|----------------------------------------------------------------------------------|
 | address                  | string  | IPv4 address of the NAT server, or `null` to use the current public IPv4 Address.|
-| capacity                 | integer | Port of the NAT server.                                                          |
+| port                     | integer | Port of the NAT server.                                                          |
 
 
 **Whitelist Object:**
@@ -204,3 +202,27 @@ SCE-RT (2001-2006):
 
 Read more about reverse-engineering the SCE-RT/Medius protocol here:
 [https://wiki.hashsploit.net/PlayStation_2#Medius](https://wiki.hashsploit.net/PlayStation_2#Medius)
+
+
+## Special thanks
+
+A huge thanks to the following people in the PlayStation 2/PlayStation 3 community that made this project possible.
+
+- **hashsploit** - reverse engineer, developer, documentation, UYA community.
+- **FourBolt** - developer, UYA community.
+- **Dnawrkshp** - reverse engineer, developer, modder, DL community.
+- **No23** - medius broker, dnas broker, reverse engineer, developer.
+- **Darkscorpius** - medius broker, reverse engineer, developer.
+- **Badger41** - reverse engineer, developer, modder.
+- **atomic83** - medius broker, developer, documentation.
+- **1UP** - medius broker, developer, SOCOM community.
+- **K3rber0s** - developer, SOCOM community.
+- **JoeyWolf** - tester, Jak X community.
+- **Shanzenos** - medius broker, documentation.
+- **Foas** - documentation, R&C community.
+- **TheLastRar** - developer, tester, providing patches for CLR_DEV9.
+- **Thief** - developer, documentation.
+- **Derrik ∞ GHz** medius broker, reverse engineer, developer.
+- **Megalia1** medius broker, documentation.
+- **Cristian** - DNAS/DNS host, documentation.
+- **shad** - developer, documentation.
