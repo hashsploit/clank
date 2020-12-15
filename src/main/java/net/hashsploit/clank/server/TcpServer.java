@@ -14,6 +14,8 @@ import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.utils.Utils;
 
 public class TcpServer extends AbstractServer {
@@ -58,7 +60,8 @@ public class TcpServer extends AbstractServer {
 		logger.info(String.format("Starting TCP server with %d parent thread(s), and %d child thread(s) ...", parentThreads, childThreads));
 		
 		if (!Utils.tcpPortIsAvailable(this.getAddress(), this.getPort())) {
-			throw new IllegalStateException(String.format("Port %s is currently in use!", this.getPort()));
+			logger.severe(String.format("Port %d is currently in use, or attempting to bind to an illegal address.", this.getPort()));
+			Clank.getInstance().shutdown();
 		}
 		
 		try {
@@ -95,5 +98,6 @@ public class TcpServer extends AbstractServer {
 	public void setChannelInitializer(final ChannelInitializer<SocketChannel> channelInitializer) {
 		this.channelInitializer = channelInitializer;
 	}
+
 
 }

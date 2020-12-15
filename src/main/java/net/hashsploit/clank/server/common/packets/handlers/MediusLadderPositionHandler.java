@@ -29,11 +29,11 @@ public class MediusLadderPositionHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		respPacket = new LadderPositionResponse(messageId);
 		
-		return respPacket;
+       	client.sendMediusMessage(respPacket);
 	}
 	
 }

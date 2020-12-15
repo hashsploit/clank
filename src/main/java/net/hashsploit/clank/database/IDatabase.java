@@ -17,5 +17,13 @@ public interface IDatabase {
 	 * @return
 	 */
 	public boolean validateAccount(String username, String password);
+
+	public int getAccountId(String username);
+
+	public String getMlsToken(Integer accountId);
+
+	public int getAccountIdFromMlsToken(String mlsToken);
+
+	public String getUsername(int accountId);
 	
 }

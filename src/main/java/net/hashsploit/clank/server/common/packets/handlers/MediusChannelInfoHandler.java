@@ -24,7 +24,6 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusChannelInfoHandler extends MediusPacketHandler {
 
-
 	private ChannelInfoRequest reqPacket;
 	private ChannelInfoResponse respPacket;
 	
@@ -39,16 +38,17 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
-    	byte[] lobbyName = Utils.buildByteArrayFromString("CY00000000-00", MediusConstants.LOBBYNAME_MAXLEN.getValue());
-		byte[] activePlayerCount = Utils.intToBytesLittle(1);
+    	byte[] lobbyName = Utils.buildByteArrayFromString(client.getServer().getLogicHandler().getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID())).getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
+		byte[] activePlayerCount = Utils.intToBytesLittle(client.getServer().getLogicHandler().getChannelActivePlayerCountById(Utils.bytesToIntLittle(reqPacket.getWorldID())));
+		
+		// FIXME: hardcoded (bad)
 		byte[] maxPlayers = Utils.intToBytesLittle(224);
 
 		respPacket = new ChannelInfoResponse(reqPacket.getMessageID(), callbackStatus, lobbyName, activePlayerCount, maxPlayers);
-		
-		return respPacket;	
+		client.sendMediusMessage(respPacket);
 	}
 }

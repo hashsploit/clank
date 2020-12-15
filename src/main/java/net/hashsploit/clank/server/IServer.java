@@ -2,6 +2,8 @@ package net.hashsploit.clank.server;
 
 import java.util.HashSet;
 
+import net.hashsploit.clank.server.dme.DmeWorld;
+
 public interface IServer {
 	
 	/**

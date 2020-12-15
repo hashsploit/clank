@@ -25,7 +25,7 @@ public class MediusCheckMyClanInvitationsHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.NO_RESULT;
 		int clanInvitationId = 1;
@@ -38,7 +38,7 @@ public class MediusCheckMyClanInvitationsHandler extends MediusPacketHandler {
 		
 		respPacket = new CheckMyClanInvitationsResponse(reqPacket.getMessageId(), callbackStatus, clanInvitationId, clanId, clanInvitationResponseStatus, message, leaderAccountId, leaderAccountName, endOfList);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 

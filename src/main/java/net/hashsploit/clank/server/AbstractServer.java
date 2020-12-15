@@ -15,7 +15,7 @@ public abstract class AbstractServer implements IServer {
 		this.port = port;
 		this.clients = new HashSet<IClient>();
 
-		if (address.isEmpty()) {
+		if (address == null || address.isEmpty()) {
 			this.address = "0.0.0.0";
 		} else {
 			this.address = address;

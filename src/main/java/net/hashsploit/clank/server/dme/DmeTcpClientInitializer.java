@@ -3,6 +3,7 @@ package net.hashsploit.clank.server.dme;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.FixedRecvByteBufAllocator;
+import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.timeout.ReadTimeoutException;
 import net.hashsploit.clank.Clank;
@@ -22,7 +23,7 @@ public class DmeTcpClientInitializer extends ChannelInitializer<SocketChannel> {
 		
 		// TODO: Pull bytebuffer allocator from config
 		ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(2048));
-		
+		ch.config().setWriteBufferWaterMark(new WriteBufferWaterMark(2048, 4096));
 		
 		final DmeTcpClient client = new DmeTcpClient(server, ch);
 		server.addClient(client);

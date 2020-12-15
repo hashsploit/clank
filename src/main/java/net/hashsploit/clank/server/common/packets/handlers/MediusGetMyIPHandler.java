@@ -24,14 +24,14 @@ public class MediusGetMyIPHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		String ipAddress = client.getIPAddress();
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		
 		respPacket = new GetMyIPResponse(reqPacket.getMessageId(), ipAddress, callbackStatus);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 

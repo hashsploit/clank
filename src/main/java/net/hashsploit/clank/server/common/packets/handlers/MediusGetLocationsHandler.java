@@ -3,18 +3,13 @@ package net.hashsploit.clank.server.common.packets.handlers;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.logging.Logger;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
+import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
@@ -38,16 +33,19 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
-		byte[] locationID = Utils.intToBytesLittle(40);// random location
-		byte[] locationName = Utils.buildByteArrayFromString("Aquatos", MediusConstants.LOCATIONNAME_MAXLEN.getValue());
+		// FIXME: bad location
+		final LocationConfig location = client.getServer().getLogicHandler().getLocation();
+		
+		byte[] locationId = Utils.intToBytesLittle(location.getId()); // random location
+		byte[] locationName = Utils.buildByteArrayFromString(location.getName(), MediusConstants.LOCATIONNAME_MAXLEN.getValue());
 		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 
 		logger.fine("Message ID: " + Utils.bytesToHex(messageID));
 		logger.fine("Padding: 000000");
-		logger.fine("locationID: " + Utils.bytesToHex(locationID));
+		logger.fine("locationID: " + Utils.bytesToHex(locationId));
 		logger.fine("locationName: " + Utils.bytesToHex(locationName));
 		logger.fine("statusCode: " + Utils.bytesToHex(statusCode));
 		logger.fine("endOfList: " + Utils.bytesToHex(endOfList));
@@ -56,7 +54,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 		try {
 			outputStream.write(messageID);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
-			outputStream.write(locationID);
+			outputStream.write(locationId);
 			outputStream.write(locationName);
 			outputStream.write(statusCode);
 			outputStream.write(endOfList);
@@ -65,7 +63,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 }

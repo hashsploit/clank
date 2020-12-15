@@ -5,12 +5,16 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.server.common.MediusServer;
+import net.hashsploit.clank.server.common.objects.MediusMessage;
+import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
+import net.hashsploit.clank.utils.Utils;
 
 public class MediusClient implements IClient {
 
@@ -34,7 +38,7 @@ public class MediusClient implements IClient {
 		this.unixConnectTime = System.currentTimeMillis();
 		this.txPacketCount = 0L;
 		this.rxPacketCount = 0L;
-		this.player = null;
+		this.player = new Player(this, MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED);
 
 		logger.info("Client connected: " + getIPAddress());
 
@@ -68,6 +72,18 @@ public class MediusClient implements IClient {
 	 */
 	public MediusServer getServer() {
 		return server;
+	}
+	
+	/**
+	 * DELETE THIS LATER
+	 */
+	
+	public DatagramChannel getDatagram() {
+		return null;
+	}
+	
+	public SocketChannel getSocket() {
+		return socketChannel;
 	}
 
 	/**
@@ -191,6 +207,16 @@ public class MediusClient implements IClient {
 	public void sendMessage(RTMessage msg) {
 		sendRaw(msg.toBytes());
 	}
+	
+	public void sendMediusMessage(MediusMessage msg) {
+		RTMessage packet = new RTMessage(RTMessageId.SERVER_APP, msg.toBytes());
+
+		byte[] finalPayload = packet.toBytes();
+
+		logger.finest(msg.toString());
+		logger.finest("Final payload: " + Utils.bytesToHex(finalPayload));
+		this.sendMessage(packet);
+	}
 
 	/**
 	 * Disconnect this client.
@@ -205,6 +231,10 @@ public class MediusClient implements IClient {
 	 * This method is called when the client socket closes.
 	 */
 	private void onDisconnect() {
+		
+		// Tell medius logic handler that this player disconnected
+		server.getLogicHandler().updatePlayerStatus(player, MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED);
+		
 		logger.info("Client disconnect: " + socketChannel.remoteAddress());
 		server.removeClient(this);
 	}

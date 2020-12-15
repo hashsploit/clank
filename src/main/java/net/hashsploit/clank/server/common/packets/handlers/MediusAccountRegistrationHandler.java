@@ -21,17 +21,13 @@ public class MediusAccountRegistrationHandler extends MediusPacketHandler {
 	@Override
 	public void read(MediusMessage mm) {
 		reqPacket = new AccountRegistrationRequest(mm.getPayload());
-		
-		
 		messageId = reqPacket.getMessageID();
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
-		
+	public void write(MediusClient client) {
 		respPacket = new AccountRegistrationResponse(messageId);
-		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 

@@ -46,7 +46,7 @@ public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
@@ -65,7 +65,7 @@ public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 }

@@ -38,7 +38,7 @@ public class MediusGetClanMemberList_ExtraInfoHandler extends MediusPacketHandle
     }
     
     @Override
-    public MediusMessage write(MediusClient client) { 
+    public void write(MediusClient client) { 
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
 		try {
@@ -58,7 +58,7 @@ public class MediusGetClanMemberList_ExtraInfoHandler extends MediusPacketHandle
 			e.printStackTrace();
 		}
 		
-		return new MediusMessage(responseType, outputStream.toByteArray());	    
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));	    
     }
 
 }

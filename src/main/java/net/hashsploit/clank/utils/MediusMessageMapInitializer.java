@@ -2,12 +2,14 @@ package net.hashsploit.clank.utils;
 
 import java.util.HashMap;
 
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusAccountGetIDHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLoginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountLogoutHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountRegistrationHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusAccountUpdateStatsHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusAddToBuddyListHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusChannelInfoHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusChannelListHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusChannelList_ExtraInfoOneHandler;
@@ -36,6 +38,7 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusGetLocationsHan
 import net.hashsploit.clank.server.common.packets.handlers.MediusGetMyClanMessagesHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusGetMyClansHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusGetMyIPHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusGetWorldSecurityLevelHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinChannelHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinGameHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusLadderPositionHandler;
@@ -44,6 +47,8 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusPickLocationHan
 import net.hashsploit.clank.server.common.packets.handlers.MediusPlayerInfoHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPlayerReportHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPolicyHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusServerAuthenticationHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusServerSessionBeginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusSessionBeginHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusSessionEndHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusSetGameListFilterZeroHandler;
@@ -57,7 +62,10 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusWorldReportZero
 
 public class MediusMessageMapInitializer {
 	
-	public static final HashMap<MediusMessageType, MediusPacketHandler> getMap() {
+	// Prevent instantiation
+	private MediusMessageMapInitializer() {}
+	
+	public static final HashMap<MediusMessageType, MediusPacketHandler> getMlsMap() {
 		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
 		
 		mp.put(MediusMessageType.AccountLogout, new MediusAccountLogoutHandler());
@@ -88,6 +96,7 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GetLobbyPlayerNames_ExtraInfo, new MediusGetLobbyPlayerNames_ExtraInfoHandler());  // vvvv
 	
 		// Creating games
+		mp.put(MediusMessageType.GetWorldSecurityLevel, new MediusGetWorldSecurityLevelHandler());
 		mp.put(MediusMessageType.CreateGame1, new MediusCreateGameOneHandler());
 		mp.put(MediusMessageType.JoinGame, new MediusJoinGameHandler());
 		mp.put(MediusMessageType.PlayerReport, new MediusPlayerReportHandler());
@@ -95,6 +104,10 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GameInfo0, new MediusGameInfoZeroHandler());
 		mp.put(MediusMessageType.EndGameReport, new MediusEndGameReportHandler());
 		mp.put(MediusMessageType.GameWorldPlayerList, new MediusGameWorldPlayerListHandler());
+		
+		// Buddies
+		mp.put(MediusMessageType.AccountGetID,  new MediusAccountGetIDHandler());
+		mp.put(MediusMessageType.AddToBuddyList,  new MediusAddToBuddyListHandler());
 		
 		// Chat
 		mp.put(MediusMessageType.TextFilter,  new MediusTextFilterHandler());
@@ -104,13 +117,7 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GetIgnoreList, new MediusGetIgnoreListHandler());
 		mp.put(MediusMessageType.GetClanInvitationsSent, new MediusGetClanInvitationsSentHandler());
 		mp.put(MediusMessageType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
-	
-		// MAS stuff
-		mp.put(MediusMessageType.SessionBegin, new MediusSessionBeginHandler());
-		mp.put(MediusMessageType.DnasSignaturePost, new MediusDnasSignaturePostHandler());
-		mp.put(MediusMessageType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
-		mp.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
-		
+
 		// added for Amplitude
 		mp.put(MediusMessageType.AccountRegistration, new MediusAccountRegistrationHandler());
 		mp.put(MediusMessageType.LadderPosition, new MediusLadderPositionHandler());
@@ -126,6 +133,29 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.FindWorldByName, new MediusFindWorldByNameHandler());
 		mp.put(MediusMessageType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
 		mp.put(MediusMessageType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
+		
+		return mp;
+	}
+
+	public static final HashMap<MediusMessageType, MediusPacketHandler> getMasMap() {
+		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
+
+		// UYA
+		mp.put(MediusMessageType.SessionBegin, new MediusSessionBeginHandler());
+		mp.put(MediusMessageType.DnasSignaturePost, new MediusDnasSignaturePostHandler());
+		mp.put(MediusMessageType.SetLocalizationParams, new MediusSetLocalizationParamsHandler());
+		mp.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
+		mp.put(MediusMessageType.SetLobbyWorldFilter, new MediusSetLobbyWorldFilterHandler());
+		
+		// Other titles
+		mp.put(MediusMessageType.GetMyIP, new MediusGetMyIPHandler());
+		mp.put(MediusMessageType.GetLocations, new MediusGetLocationsHandler());
+		mp.put(MediusMessageType.PickLocation, new MediusPickLocationHandler());
+		mp.put(MediusMessageType.GetAnnouncements, new MediusGetAnnouncementsHandler());
+		mp.put(MediusMessageType.Policy, new MediusPolicyHandler());
+		mp.put(MediusMessageType.MediusServerSessionBeginRequest, new MediusServerSessionBeginHandler());
+		mp.put(MediusMessageType.MediusServerAuthenticationRequest, new MediusServerAuthenticationHandler());
+		mp.put(MediusMessageType.VersionServer, new MediusVersionServerHandler());
 		
 		return mp;
 	}

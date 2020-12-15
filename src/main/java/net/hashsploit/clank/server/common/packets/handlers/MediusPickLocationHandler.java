@@ -24,14 +24,14 @@ public class MediusPickLocationHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		// TODO: return a valid callback status
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		
 		respPacket = new PickLocationResponse(reqPacket.getMessageId(), callbackStatus);
 		
-		return respPacket;
+       	client.sendMediusMessage(respPacket);
 	}
 
 

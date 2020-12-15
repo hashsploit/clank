@@ -27,7 +27,7 @@ public class MediusLobbyWorldPlayerListHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		MediusPlayerStatus playerStatus = MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD;
@@ -40,7 +40,7 @@ public class MediusLobbyWorldPlayerListHandler extends MediusPacketHandler {
 		
 		respPacket = new LobbyWorldPlayerListResponse(reqPacket.getMessageId(), callbackStatus, playerStatus, accountId, accountName, stats, connectionType, endOfList);
 		
-		return respPacket;
+       	client.sendMediusMessage(respPacket);
 	}
 
 

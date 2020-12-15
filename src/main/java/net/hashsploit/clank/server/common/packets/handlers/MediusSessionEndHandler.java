@@ -17,8 +17,7 @@ public class MediusSessionEndHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
-		return null;
+	public void write(MediusClient client) {
 	}
 
 

@@ -1,7 +1,11 @@
 package net.hashsploit.clank;
 
+import java.security.Security;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.bouncycastle.jce.provider.BouncyCastleProvider;
 
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
@@ -19,15 +23,18 @@ import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.common.MediusServer;
+import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
+import net.hashsploit.clank.server.dme.DmeWorld;
+import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {
 	
 	public static final String NAME = "Clank";
-	public static final String VERSION = "0.1.5";
+	public static final String VERSION = "0.1.6";
 	public static Clank instance;
-	private static final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger(Clank.class.getName());
 	
 	private boolean running;
 	private AbstractConfig config;
@@ -35,7 +42,6 @@ public class Clank {
 	private IServer server;
 	private DbManager db;
 	private EventBus eventBus;
-	//private HashMap<String, DiscordWebhook> discordWebhooks;
 	
 	public Clank(AbstractConfig config) {
 		
@@ -47,8 +53,11 @@ public class Clank {
 		this.config = config;
 		this.running = true;
 		
-		// Configure terminal
+		// Initialize server
 		System.out.println("Initializing ...");
+		
+		Security.addProvider(new BouncyCastleProvider());
+		
 		terminal = new Terminal();
 		terminal.setLevel(config.getLogLevel());
 		terminal.registerCommand(new CLIExitCommand());
@@ -82,31 +91,11 @@ public class Clank {
 		// Disable other framework logging from clogging up the console logs.
 		Logger.getLogger("io.netty").setLevel(Level.OFF);
 		Logger.getLogger("javax.net").setLevel(Level.OFF);
+		Logger.getLogger("io.grpc").setLevel(Level.OFF);
+		Logger.getLogger("io.perfmark.impl").setLevel(Level.OFF);
 		
 		terminal.init();
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
-		
-		
-		// FIXME: Configure Discord Webhook callbacks
-		/*
-		for (final Object objectKey : config.getProperties().keySet()) {
-			final String key = objectKey.toString();
-			if (key.startsWith("DiscordWebhook_")) {
-				if (config.getProperties().getProperty(key) != null && !config.getProperties().getProperty(key).isEmpty()) {
-					final String urlString = config.getProperties().getProperty(key);
-					
-					try {
-						final URL url = new URL(urlString);
-						discordWebhooks.put(key.replace("DiscordWebhook_", ""), new DiscordWebhook(url));
-					} catch (MalformedURLException e) {
-						logger.log(Level.SEVERE, "Configuration value '" + key + "' requires a valid Discord Webhook URL.");
-						return;
-					}
-					
-				}
-			}
-		}
-		*/
 		
 		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_PROXY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
 		
@@ -181,19 +170,23 @@ public class Clank {
 		// Set up the event bus
 		eventBus = new EventBus(this);
 		
+		
+		// Tick
+		Executors.newSingleThreadExecutor().submit(() -> {
+			while (running) {
+				update();
+				try {
+					Thread.sleep(30);
+				} catch (InterruptedException e) {
+					// Discard
+				}
+			}
+		});
+		
+		
 		// Start server
 		terminal.setPrompt(Terminal.colorize(terminalPrompt + AnsiColor.RESET) + " ");
 		server.start();
-		
-		// Tick
-		while (running) {
-			update();
-			try {
-				Thread.sleep(300);
-			} catch (InterruptedException e) {
-				// Discard
-			}
-		}
 	}
 	
 	
@@ -201,7 +194,33 @@ public class Clank {
 	 * Tick the server for internal event updates.
 	 */
 	public void update() {
+		// Configure the server specifics
+		switch (config.getEmulationMode()) {
+			case MEDIUS_AUTHENTICATION_SERVER:
+				break;
+			case MEDIUS_LOBBY_SERVER:
+				break;
+			case MEDIUS_PROXY_SERVER:
+				break;
+			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
+				break;
+			case NAT_SERVER:
+				break;
+			case DME_SERVER:
+				dmeUpdate();
+				break;
+			default:
+				return;
+		}
+	}
 		
+	public void dmeUpdate() {
+		DmeWorldManager dmeWorldManager = ((DmeServer) server).getDmeWorldManager();
+		for (DmeWorld dmeWorld : dmeWorldManager.getWorlds()) {
+			for (DmePlayer dmePlayer: dmeWorld.getPlayers()) {
+				dmePlayer.flushUdpData();
+			}
+		}
 	}
 	
 	/**

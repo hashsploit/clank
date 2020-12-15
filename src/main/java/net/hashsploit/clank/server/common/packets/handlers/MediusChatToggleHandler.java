@@ -34,12 +34,12 @@ public class MediusChatToggleHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 		
 		respPacket = new ChatToggleResponse(reqPacket.getMessageID(), callbackStatus);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 }

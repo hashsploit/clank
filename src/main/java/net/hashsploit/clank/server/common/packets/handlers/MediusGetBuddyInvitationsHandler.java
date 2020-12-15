@@ -25,7 +25,7 @@ public class MediusGetBuddyInvitationsHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.NO_RESULT;
 		
@@ -37,7 +37,7 @@ public class MediusGetBuddyInvitationsHandler extends MediusPacketHandler {
 		
 		respPacket = new GetBuddyInvitationsResponse(reqPacket.getMessageId(), callbackStatus, accountId, accountName, addType, endOfList);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 

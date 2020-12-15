@@ -54,7 +54,6 @@ public class NatConfig extends AbstractConfig {
 		return getJson().getInt(key);
 	}
 	
-	
 	@Override
 	public EmulationMode getEmulationMode() {
 		return EmulationMode.NAT_SERVER;

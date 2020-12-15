@@ -32,7 +32,7 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		// RESPONSE
 
 		final MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
@@ -48,10 +48,10 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		byte[] rsaKey = new byte[64]; // 00's
 		
 		byte[] sessionKey = new byte[17];
-		//sessionKey = Utils.hexStringToByteArray("4242424242424242424242424242424242");
+		sessionKey = Utils.hexStringToByteArray("4242424242424242424242424242424242");
 		
 		byte[] accessKey = new byte[17];
-		//accessKey = Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E00");
+		accessKey = Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId()));
 		final NetConnectionInfo netConnectionInfo = new NetConnectionInfo(
 				NetConnectionType.NET_CONNECTION_TYPE_CLIENT_SERVER_TCP_AUX_UDP,
 				netAddressList,
@@ -64,7 +64,8 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		respPacket = new JoinGameResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(gameHostType.getValue()),
 				netConnectionInfo);
 		
-		return respPacket;
+		client.getPlayer().setGameWorldId(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin()));
+		client.sendMediusMessage(respPacket);
 	}
 
 }

@@ -1,4 +1,4 @@
-package net.hashsploit.clank.database;
+package net.hashsploit.clank.config.objects;
 
 public class DatabaseInfo {
 

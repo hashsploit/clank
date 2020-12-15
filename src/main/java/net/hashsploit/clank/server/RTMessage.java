@@ -24,7 +24,6 @@ public class RTMessage implements IRTMessage {
 		
 		this.length = (short) payload.length;
 		
-	    // Remove RT-ID and length from the packet data
 		this.payload = payload;
 	}
 	

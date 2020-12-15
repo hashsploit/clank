@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MlsConfig;
+import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
@@ -40,9 +40,9 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 
-		String policyString = ((MlsConfig) Clank.getInstance().getConfig()).getPolicy();
+		String policyString = ((MediusConfig) Clank.getInstance().getConfig()).getPolicy();
 		List<MediusMessage> mediusMessages = new ArrayList<MediusMessage>();
 		
 		if (policyString != null && policyString.length() > 0) {
@@ -150,14 +150,10 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 		}
 		
 		
-		
-		
 		// FIXME: bad practice, this should be enqueued and the pipeline should be rewritten.
 		for (final MediusMessage mediusMessage : mediusMessages) {
 			client.sendMessage(new RTMessage(RTMessageId.SERVER_APP, mediusMessage.toBytes()));
 		}
 
-		//return new MediusMessage(responseType, outputStream.toByteArray());
-		return null;
 	}
 }

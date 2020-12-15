@@ -1,7 +1,9 @@
 {
 	"mode": "MEDIUS_LOBBY_SERVER",
 	"log_level": "INFO",
-	"address": "172.16.221.250",
+	"file_log_level": null,
+	"file_log_size": 0,
+	"address": null,
 	"port": 10078,
 	"encryption": false,
 	"capacity": 200,
@@ -11,11 +13,20 @@
 	"application_id": 10684,
 	"nat": {
 		"address": "172.16.221.250",
-		"port": 10077
+		"port": 10070
 	},
 	"dme": {
 		"address": "172.16.221.250",
 		"port": 10079
+	},
+	"rpc_server": {
+		"address": "172.16.221.250",
+		"port": 8484,
+		"encryption": {
+			"enabled": false,
+			"cert_chain": null,
+			"private_key": null
+		}
 	},
 	"policy": "Welcome, this is the default policy for the clank server emulator. \r\n\r\nhttps://github.com/hashsploit/clank",
 	"announcements": [
@@ -31,6 +42,38 @@
 		"command_prefix": "/",
 		"strip_special_chars": true
 	},
+	"channels": [
+		{
+			"id": 0,
+			"name": "Channel 1",
+			"capacity": 256
+		},
+		{
+			"id": 1,
+			"name": "Channel 2",
+			"capacity": 256
+		},
+		{
+			"id": 2,
+			"name": "Channel 3",
+			"capacity": 256
+		},
+		{
+			"id": 3,
+			"name": "Channel 4",
+			"capacity": 256
+		}
+	],
+	"locations": [
+		{
+			"id": 0,
+			"name": "Location 1"
+		},
+		{
+			"id": 1,
+			"name": "Location 2"
+		}
+	],
 	"system_message": {
 		"enabled": false,
 		"severity": 200,

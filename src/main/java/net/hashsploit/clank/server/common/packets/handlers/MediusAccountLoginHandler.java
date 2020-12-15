@@ -1,9 +1,8 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
-import java.util.Random;
-
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MasConfig;
+import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusMessageType;
@@ -29,24 +28,32 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
-
+	public void write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.LOGIN_FAILED.getValue()));
 		byte[] mlsToken = Utils.hexStringToByteArray("00000000000000000000000000000000000000");
-		
-		// TODO: handle logic elsewhere (controller/model design)
+		//byte[] mlsToken = Utils.hexStringToByteArray("12345678901234567890123456789012345678");
+		                                              
 		// TODO: Clean the username!!! add a utility to check if the username is valid, length, and characters in it.
 		final String username = Utils.parseMediusString(reqPacket.getUsernameBytes());
 		final String password = Utils.parseMediusString(reqPacket.getPasswordBytes());
 
+		int playerAccountId = Clank.getInstance().getDatabase().getAccountId(username);
+		
 		if (Clank.getInstance().getDatabase().accountExists(username)) {
 			if (Clank.getInstance().getDatabase().validateAccount(username, password)) {
 				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
+				// Add player to MLS Logic Handler (with accountId), update status to connected
+				client.getPlayer().setUsername(username);
+				
 				// TODO: Generate random auth token each connection, save in db for MLS to use.
 				// db should have a expiration UNIX time-stamp as well that needs to be updated
 				// by MLS.
-				new Random().nextBytes(mlsToken);
+				//new Random().nextBytes(mlsToken);
+				
+				// Last 3 bytes are padding
+				mlsToken = Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId()) + "000000");
+				
 				mlsToken[mlsToken.length - 1] = (byte) 0x00;
 				mlsToken[mlsToken.length - 2] = (byte) 0x00;
 				mlsToken[mlsToken.length - 3] = (byte) 0x00;
@@ -55,10 +62,15 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.INVALID_PASSWORD.getValue()));
 			}
 		}
-
-		byte[] accountID = Utils.intToBytesLittle(50);
-		byte[] accountType = Utils.intToBytesLittle(1);
-		byte[] worldID = Utils.intToBytesLittle(123);
+		
+		byte[] accountID = Utils.intToBytesLittle(playerAccountId);
+		byte[] accountType = Utils.intToBytesLittle(2);
+		
+		// FIXME: bad location
+		//final LocationConfig location = client.getServer().getLogicHandler().getLocation();
+		
+		// Default world id = 0
+		byte[] worldID = Utils.intToBytesLittle(0);
 		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress() : null;
 		String natIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getNatAddress() : null;
 
@@ -67,7 +79,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		}
 
 		if (natIpAddress == null) {
-			mlsIpAddress = Utils.getPublicIpAddress();
+			natIpAddress = Utils.getPublicIpAddress();
 		}
 
 		byte[] mlsAddress = mlsIpAddress.getBytes();
@@ -81,8 +93,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		byte[] natZeroTrail = Utils.hexStringToByteArray(natZeroString);
 
 		respPacket = new AccountLoginResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountType, worldID, mlsAddress, mlsZeroTrail, natAddress, natZeroTrail, mlsToken);
-
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 }

@@ -38,7 +38,7 @@ public class MediusPlayerInfoHandler extends MediusPacketHandler {
     }
     
     @Override
-    public MediusMessage write(MediusClient client) { 
+    public void write(MediusClient client) { 
     	
     	byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
     	byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
@@ -49,7 +49,7 @@ public class MediusPlayerInfoHandler extends MediusPacketHandler {
        	
        	respPacket = new PlayerInfoResponse(reqPacket.getMessageID(), callbackStatus, appID, accountName, playerStatus, connectionClass, stats);
 
-       	return respPacket;
+       	client.sendMediusMessage(respPacket);
     }
 
 }

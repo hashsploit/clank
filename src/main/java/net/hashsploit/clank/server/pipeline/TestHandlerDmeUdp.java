@@ -1,16 +1,20 @@
 package net.hashsploit.clank.server.pipeline;
 
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.dme.DmeUdpClient;
+import net.hashsploit.clank.server.dme.DmeUdpServer;
+import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -18,9 +22,9 @@ import net.hashsploit.clank.utils.Utils;
  */
 public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
-	private static final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger(TestHandlerDmeUdp.class.getName());
 	private final DmeUdpClient client;
-
+	
 	public TestHandlerDmeUdp(final DmeUdpClient client) {
 		super();
 		this.client = client;
@@ -39,54 +43,61 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
-
 		logger.fine("======================================================");
 		logger.fine("======================================================");
 		logger.fine("======================================================");
 
 		final DatagramPacket datagram = (DatagramPacket) msg;
-
+		
 		byte[] buff = new byte[datagram.content().readableBytes()];
 		datagram.content().readBytes(buff);
 
 		logger.finest("TOTAL RAW UDP INCOMING DATA: " + Utils.bytesToHex(buff));
+		
+		List<RTMessage> packets = Utils.decodeRTMessageFrames(buff);
 
-		checkFirstPacket(ctx, datagram, buff, datagram.sender().getPort(), datagram.sender().getAddress().toString());
+		for (RTMessage rtmsg: packets) {
+			logger.finest("RAW UDP Single packet: " + Utils.bytesToHex(rtmsg.toBytes()));
+			
+		    logger.fine("Packet ID: " + rtmsg.getId().toString());
+		    logger.fine("Packet ID: " + rtmsg.getId().getValue());
+			
+			checkFirstPacket(ctx, datagram, rtmsg.toBytes(), datagram.sender().getPort(), datagram.sender().getAddress().toString());
+			
+			checkBroadcast(ctx, datagram, rtmsg.toBytes());
+		}
 
 	}
 
-	private void checkFirstPacket(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data, int port, String clientAddr) {
-		if (Utils.bytesToHex(data).equals("161d000108017b00bc2900003139322e3136382e312e3939000000005f270100") || Utils.bytesToHex(data).equals("161d0001080165ebbc2900003139322e3136382e312e3939000000005f270100")
-				|| Utils.bytesToHex(data).equals("161d000108017b00bc2900003137322e31362e3232312e32353000005f270100")) { // this is UDP trying to connect
-
-			// ----------------------------------------- DL VERSION. 1 packet larger for DL
-			// than UYA (also different format)
-//	    	logger.info("UDP CONNECT REQ DETECTED!:");
-//	    	clientAddr = clientAddr.substring(1);
-//	    	logger.info("Client Addr: " + clientAddr);
-//	    	logger.info("Client port: " + port); 
-//    		ByteBuffer buffer = ByteBuffer.allocate(26);
-//    		buffer.put(Utils.hexStringToByteArray("0108D3010003"));
-//    		byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
-//    		buffer.put(ad);
-//    		buffer.put(Utils.shortToBytesLittle((short) port));
-//    		
-//    		DataPacket packetResponse = new DataPacket(RTPacketId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
-//			byte[] payload = packetResponse.toBytes();
-//			logger.fine("Final payload: " + Utils.bytesToHex(payload));
-//	        ctx.writeAndFlush(new DatagramPacket(
-//	                Unpooled.copiedBuffer(payload), requestDatagram.sender()));    	
-
-			logger.info("UDP CONNECT REQ DETECTED!:");
+	private void checkFirstPacket(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data, int port, String clientAddr) {	
+		if (Utils.bytesToHex(data).length() >= 56 && (Utils.bytesToHex(data).substring(56,60).equals("5f27"))) { 
+			// example: 161d000108017b00bc2900003139322e3136382e312e3939000000005f270100
 			clientAddr = clientAddr.substring(1);
-			logger.info("Client Addr: " + clientAddr);
-			logger.info("Client port: " + port);
+			//logger.info("Client Addr: " + clientAddr);
+			//logger.info("Client port: " + port);
 			ByteBuffer buffer = ByteBuffer.allocate(25);
-			buffer.put(Utils.hexStringToByteArray("0108D301000300"));
+			
+    		DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
+			int dmeWorldId = (int) Utils.bytesToShortLittle(data[6], data[7]);
+    		int playerId = (int) Utils.bytesToShortLittle(data[30], data[31]);
+    		
+			logger.info("UDP CONNECT REQ DETECTED! Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)) + " PlayerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
+
+    		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, (DatagramChannel) ctx.channel(), requestDatagram.sender());
+    		
+    		logger.info(dmeWorldManager.toString());
+
+			short playerCount = (short) dmeWorldManager.getPlayerCount(dmeWorldId);
+			
+			String hex = "010801" + 
+					Utils.bytesToHex(Utils.shortToBytesLittle((short) playerId)) + // DME PLAYER IN WORLD ID
+					Utils.bytesToHex(Utils.shortToBytesLittle(playerCount)); // PLAYER COUNT
+
+			buffer.put(Utils.hexStringToByteArray(hex));
 			byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
 			buffer.put(ad);
 			buffer.put(Utils.shortToBytesLittle((short) port));
-
+			
 			RTMessage packetResponse = new RTMessage(RTMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
 			byte[] payload = packetResponse.toBytes();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
@@ -94,12 +105,20 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		}
 	}
 
-	private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
-		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
-
-		logger.fine("Packet ID: " + packet.getId().toString());
-		logger.fine("Packet ID: " + packet.getId().getValue());
-
+	private void checkBroadcast(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data) {
+		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
+		for (RTMessage m: packets) {
+			logger.fine("UDP Packet ID: " + m.getId().toString());
+			logger.fine("UDP Packet ID: " + m.getId().getValue());
+			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
+				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
+				dmeWorldManager.broadcastUdp(requestDatagram.sender(), m.toBytes());	
+			}
+			else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
+				dmeWorldManager.clientAppSingleUdp(requestDatagram.sender(), m.toBytes());
+			}
+		}
 	}
 
 	@Override

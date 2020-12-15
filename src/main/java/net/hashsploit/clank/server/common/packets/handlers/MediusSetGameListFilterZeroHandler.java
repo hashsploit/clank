@@ -52,7 +52,7 @@ public class MediusSetGameListFilterZeroHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
 
 		logger.finest("Writing SetGameListFilter OUT:");
@@ -68,7 +68,7 @@ public class MediusSetGameListFilterZeroHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 

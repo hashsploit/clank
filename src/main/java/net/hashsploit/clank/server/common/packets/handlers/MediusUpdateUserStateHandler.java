@@ -12,9 +12,7 @@ public class MediusUpdateUserStateHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
-		// Process the packet
-		return null;
+	public void write(MediusClient client) {
 	}
 
 }

@@ -39,7 +39,22 @@ public class DbManager {
 	public boolean validateAccount(String username, String password) {
 		return db.validateAccount(username, password);
 	}
+
+	public int getAccountId(String username) {
+		return db.getAccountId(username);
+	}
+
+	public String getMlsToken(Integer accountId) {
+		return db.getMlsToken(accountId);
+	}
 	
+	public int getAccountIdFromMlsToken(String mlsToken) {
+		return db.getAccountIdFromMlsToken(mlsToken);
+	}
+
+	public String getUsername(int accountId) {
+		return db.getUsername(accountId);
+	}
 	
 	
 	

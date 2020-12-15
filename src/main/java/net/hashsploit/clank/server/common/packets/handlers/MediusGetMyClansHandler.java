@@ -37,19 +37,19 @@ public class MediusGetMyClansHandler extends MediusPacketHandler {
 	}
 
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
 		logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
 
-		byte[] statusCode = Utils.intToBytesLittle(0);
-		byte[] clanID = Utils.intToBytesLittle(5);
-		byte[] applicationID = Utils.intToBytesLittle(1);
-		byte[] clanName = Utils.buildByteArrayFromString("Test clan name", MediusConstants.CLANNAME_MAXLEN.getValue()); // 32
-		byte[] leaderAccountID = Utils.intToBytesLittle(1);
-		byte[] leaderAccountName = Utils.buildByteArrayFromString("LeaderAccountName", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-		byte[] stats = Utils.buildByteArrayFromString("0", MediusConstants.CLANSTATS_MAXLEN.getValue());
+		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.NO_RESULT.getValue());
+		byte[] clanID = Utils.intToBytesLittle(0);
+		byte[] applicationID = Utils.intToBytesLittle(0);
+		byte[] clanName = Utils.buildByteArrayFromString("", MediusConstants.CLANNAME_MAXLEN.getValue()); // 32
+		byte[] leaderAccountID = Utils.intToBytesLittle(0);
+		byte[] leaderAccountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.CLANSTATS_MAXLEN.getValue());
 		//byte[] clanStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
-		byte[] clanStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
+		byte[] clanStatus = Utils.intToBytesLittle(0);
 		// byte[] endOfList = Utils.hexStringToByteArray("01000000");
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 
@@ -71,7 +71,7 @@ public class MediusGetMyClansHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
 
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
 	}
 
 }

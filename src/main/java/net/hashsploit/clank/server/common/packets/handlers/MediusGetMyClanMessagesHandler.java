@@ -42,7 +42,7 @@ public class MediusGetMyClanMessagesHandler extends MediusPacketHandler {
     }
     
     @Override
-    public MediusMessage write(MediusClient client) { 
+    public void write(MediusClient client) { 
     	// Process the packet
 
     	byte [] message = Utils.buildByteArrayFromString("Clan message TEST", MediusConstants.CLANMSG_MAXLEN.getValue());
@@ -61,7 +61,7 @@ public class MediusGetMyClanMessagesHandler extends MediusPacketHandler {
 			e.printStackTrace();
 		}
     	
-		return new MediusMessage(responseType, outputStream.toByteArray());
+		client.sendMediusMessage(new MediusMessage(responseType, outputStream.toByteArray()));
     }
 
 }

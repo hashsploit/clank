@@ -38,13 +38,13 @@ public class MediusClearGameListFilterZeroHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		//byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.MediusSuccess.getValue());
 		byte[] callbackStatus = Utils.hexStringToByteArray("2CFCFFFF");
 
 		respPacket = new ClearGameListFilterResponse(reqPacket.getMessageID(), callbackStatus);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 

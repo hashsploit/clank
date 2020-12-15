@@ -12,11 +12,16 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.database.DbManager;
+import net.hashsploit.clank.database.SimDb;
+import net.hashsploit.clank.rt.serializers.RT_ClientConnectTcpAuxUdp;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
+import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.server.rpc.PlayerStatus;
+import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -26,6 +31,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
 	private static final Logger logger = Logger.getLogger(TestHandlerDmeTcp.class.getName());
 	private final DmeTcpClient client;
+	private int curUdpPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
 
 	public TestHandlerDmeTcp(final DmeTcpClient client) {
 		super();
@@ -36,6 +42,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
 		logger.fine("[TCP]" + ctx.channel().remoteAddress() + ": channel active");
+//		logger.fine("Updating player status to MLS...");		
+//		logger.fine("Done!");
 	}
 
 	@Override
@@ -63,10 +71,23 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 
 		for (RTMessage packet : packets) {
 			processSinglePacket(ctx, packet);
+			checkBroadcast(packet);
 		}
 		
-
     }
+    
+    
+    
+	private void checkBroadcast(RTMessage m) {
+		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+
+		if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
+			dmeWorldManager.broadcast(client.getPlayer(), m.toBytes());
+		}
+		else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+			dmeWorldManager.clientAppSingle(client.getPlayer(), m.toBytes());
+		}
+	}
     
     private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
 		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
@@ -83,9 +104,21 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     }
     
     private void checkClientReady(ChannelHandlerContext ctx, byte[] data) {
-    	if (Utils.bytesToHex(data).equals("170000")) {		  // this is UDP trying to connect
+    	if (Utils.bytesToHex(data).equals("170000")) {		  //
     		// SERVER CONNECT COMPLETE
-    		byte [] t1 = Utils.hexStringToByteArray("0100"); // connect type?
+    		
+    		//int playerId = client.getServer().getDmeWorldManager().add(client);
+    		// ---------- The player is now fully connected
+    		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+    		dmeWorldManager.playerFullyConnected(client.getPlayer());
+    		int playerId = client.getPlayer().getPlayerId();
+
+    		logger.info("Player fully connected! Player: " + client.getPlayer().toString());
+    		logger.info("World Manager:");
+    		logger.info(dmeWorldManager.toString());
+		
+    		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
+    		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		RTMessage c1 = new RTMessage(RTMessageId.SERVER_CONNECT_COMPLETE, t1);
     		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
     		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
@@ -96,8 +129,10 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		//byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");
     		ByteArrayOutputStream baos = new ByteArrayOutputStream();
     		try {
-    			baos.write(MediusMessageType.DMEServerVersion.getShortByte());
-    			baos.write(Utils.buildByteArrayFromString(Clank.NAME + " v" + Clank.VERSION, MediusConstants.SERVERVERSION_MAXLEN.getValue()));
+    			//baos.write(MediusMessageType.DMEServerVersion.getShortByte());
+    			//baos.write(Utils.buildByteArrayFromString(Clank.NAME + " v" + Clank.VERSION, MediusConstants.SERVERVERSION_MAXLEN.getValue()));
+    			//baos.write(Utils.hexStringToByteArray("0000312E32322E3031343100000000000000"));
+    			baos.write(Utils.hexStringToByteArray("0000322e31302e3030303900000000000000"));
     		} catch (IOException e) {
     			e.printStackTrace();
     		}
@@ -107,22 +142,31 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		ByteBuf msg2 = Unpooled.copiedBuffer(c2.toBytes());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
-
-    		// tnw game settings
-    		//byte[] t3 = Utils.hexStringToByteArray("00160500030001006CD501000000000000000009D771090006000000001703000000000400010000046E000000000000740D020000000000744E575F47616D6553657474696E6700506A00000000000000000000000000004433244B207B5257247D000000000000006576696E005F536D61736865720000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000080460000000000000E4D6E4C00000000003C3300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000003001300FFFFFFFFFFFFFFFFFFFFFFFF00000000FFFFFFFFFFFFFFFFFFFFFFFF00000200FFFFFFFFFFFFFFFFFFFFFFFF0000000000000000000000000000000002000000FFFFFFFFFFFFFFFF2800000000000000000000000101010101010001010000010101001403FF000000010501097D0F009C7C1000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF5881DA44AEF8D744000080BF000080BF000080BF000080BF000080BF000080BF0000C8420000DC42000080BF000080BF000080BF000080BF000080BF000080BF");
-    		//RTMessage c3 = new RTMessage(RTMessageId.SERVER_APP, t3);
-    		//logger.finest("Final Payload: " + Utils.bytesToHex(c3.toBytes()));
-    		//ByteBuf msg3 = Unpooled.copiedBuffer(c3.toBytes());
-    		//ctx.write(msg3); // (1)
-    		//ctx.flush(); // 
+    	
     	}
     }
     
     private void checkForTcpAuxUdpConnect(ChannelHandlerContext ctx, RTMessage packet) {
     	
     	if (packet.getId() == RTMessageId.CLIENT_CONNECT_TCP_AUX_UDP) {
-    		logger.info("Detected TCP AUX UDP CONNECT");
+    		RT_ClientConnectTcpAuxUdp connectPacket = new RT_ClientConnectTcpAuxUdp(packet);
+    		
+    		short dmeWorldId = connectPacket.getDmeWorldId();
+    		logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
 
+    		// ---------- Add the player to the world
+    		// Set accountId for this player -> client
+    		String mlsToken = Utils.bytesToHex(connectPacket.getMlsToken());    		
+    		client.getPlayer().setMlsToken(mlsToken);
+    		
+    		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+    		dmeWorldManager.addPlayer(dmeWorldId, client.getPlayer());
+    		int dmePlayerId = client.getPlayer().getPlayerId();
+    		int playerCount = dmeWorldManager.getPlayerCount(client.getPlayer());
+    		
+			logger.info("Player ID Generated: " + Utils.bytesToHex(Utils.intToBytesLittle(dmePlayerId)));
+    		logger.info(dmeWorldManager.toString());
+    	
     		
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
@@ -142,7 +186,11 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		// Server Accept TCP
     		ByteBuffer buffer = ByteBuffer.allocate(23);
     		//buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
-    		buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
+    		String hex = "010810" + 
+    				Utils.bytesToHex(Utils.shortToBytesLittle((short) dmePlayerId)) + // DME WORLD PLAYER ID (0,1,2 etc)
+    				Utils.bytesToHex(Utils.shortToBytesLittle((short) playerCount)); // PLAYER COUNT
+    		
+    		buffer.put(Utils.hexStringToByteArray(hex));    		
     		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);
     		buffer.put(ipAddr);
     		RTMessage d = new RTMessage(RTMessageId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
@@ -154,15 +202,19 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		// Server AUX UDP Info (IP and port)
     		ByteBuffer buf = ByteBuffer.allocate(18);
     		String udpAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
-    		int udpPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
     		
-    		logger.finest("DME config ip: " + udpAddress + ":" + udpPort);
+    		if (udpAddress == null || udpAddress.isEmpty()) {
+    			udpAddress = Utils.getPublicIpAddress();
+    		}
+    		
+    		logger.finest("DME config ip: " + udpAddress + ":" + curUdpPort);
     		
     		final byte[] udpAddr = Utils.buildByteArrayFromString(udpAddress, 16);
     		
-    		buf.put(ipAddr);
-    		buf.put(Utils.shortToBytesLittle((short) udpPort));
-    		
+    		buf.put(udpAddr);
+    		buf.put(Utils.shortToBytesLittle((short) curUdpPort));
+    		curUdpPort += 1;
+
     		RTMessage da = new RTMessage(RTMessageId.SERVER_INFO_AUX_UDP, buf.array());
     		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
     		ByteBuf msg2 = Unpooled.copiedBuffer(da.toBytes());
@@ -172,76 +224,6 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     	}
     	
     }
-   
-    
-    
-    private void checkForBroadcast(ChannelHandlerContext ctx, RTMessage packet) {
-    	RTMessage d = new RTMessage(RTMessageId.CLIENT_APP_SINGLE, packet.getPayload());
-		logger.fine("Broadcast rally: " + Utils.bytesToHex(d.toBytes()));
-		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
-		ctx.write(msg); // (1)
-		ctx.flush(); // (2)
-    }
-    
-    
-    //
-    private void checkForCitiesReconnect(ChannelHandlerContext ctx, RTMessage packet) {
-		// TODO Auto-generated method stub
-		byte[] data = packet.toBytes();
-
-		if (Utils.bytesToHex(data).equals("0049000108010b00bc29000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000")) {
-	    	
-	    	ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-			try {
-
-				// ID_14
-				// byte[] p14 =
-				// Utils.hexStringToByteArray("BE2F79946D8FFFCA8D08671D329ACDB89A488F33ABEDD83C278E8C6F4FA68CBA0A66CEEC21EB8EE6C841B725FAA913E3A6982ECAF76B85977C36C1B4538C8850");
-				final byte[] p14 = Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-				outputStream.write(RTMessageId.SERVER_CRYPTKEY_GAME.getValue());
-				outputStream.write(Utils.shortToBytesLittle((short) p14.length));
-				outputStream.write(p14);
-
-				// ID_07
-				// outputStream.write(Utils.hexStringToByteArray("0108D30000010039362E3234322E38382E333600000000"));
-				// // ip address to send back to the client
-				ByteArrayOutputStream baos = new ByteArrayOutputStream();
-
-				baos.write(Utils.hexStringToByteArray("0108D300000100"));
-
-				byte[] ipAddr = client.getIPAddressAsBytes();
-				int numZeros = 16 - client.getIPAddressAsBytes().length;
-				String zeroString = new String(new char[numZeros]).replace("\0", "00");
-				byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
-
-				baos.write(ipAddr);
-				baos.write(zeroTrail);
-				baos.write(Utils.hexStringToByteArray("00"));
-
-				outputStream.write(RTMessageId.SERVER_CONNECT_ACCEPT_TCP.getValue());
-				outputStream.write(Utils.shortToBytesLittle((short) baos.size()));
-				outputStream.write(baos.toByteArray());
-
-				// ID_1a
-				// outputStream.write(Utils.hexStringToByteArray("0100"));
-				final byte[] p1a = Utils.hexStringToByteArray("0100");
-				outputStream.write(RTMessageId.SERVER_CONNECT_COMPLETE.getValue());
-				outputStream.write(Utils.shortToBytesLittle((short) p1a.length));
-				outputStream.write(p1a);
-
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-			byte[] finalPayload = outputStream.toByteArray();
-
-			logger.fine("Cities re-connect Final payload: " + Utils.bytesToHex(finalPayload));
-			ByteBuf msg = Unpooled.copiedBuffer(finalPayload);
-			ctx.write(msg); // (1)
-			ctx.flush(); // (2)
-		}
-	}    
     
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)

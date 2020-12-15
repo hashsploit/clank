@@ -26,7 +26,7 @@ public class MediusFindWorldByNameHandler extends MediusPacketHandler {
 	}
 	
 	@Override
-	public MediusMessage write(MediusClient client) {
+	public void write(MediusClient client) {
 		
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		int appId = 10411;
@@ -39,7 +39,7 @@ public class MediusFindWorldByNameHandler extends MediusPacketHandler {
 		
 		respPacket = new FindWorldByNameResponse(reqPacket.getMessageId(), callbackStatus, appId, appName, appType, worldId, worldName, worldStatus, endOfList);
 		
-		return respPacket;
+		client.sendMediusMessage(respPacket);
 	}
 
 
