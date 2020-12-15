@@ -23,7 +23,7 @@ The component is an authentication server for handling player logins.
 | whitelist                | object  | See **Whitelist Object** below.                                                |
 | policy                   | string  | The Policy/EULA to send back to the player.                                    |
 | announcements            | array   | An array of *string* announcements to send to the player.                      |
-| database                 | object  | See **Database Object** below.                                                 |
+| database                 | object  | See **Database Object** below or `null` to use simulated-db mode.              |
 | system_message           | object  | See **System Message Object** below.                                           |
 
 
@@ -68,4 +68,82 @@ The component is an authentication server for handling player logins.
 | enabled  | boolean | If set to true, this will send an automatic system message to the player on connect. |
 | severity | integer | The message severity. Valid values are `0` to `255`.                                 |
 | message  | string  | The message to send. The message may not exceed `1000` characters.                   |
+
+
+
+
+
+### MLS configuration (config/mls.json.example)
+
+The component is an authentication server for handling player logins.
+
+| Name                     | Type    | Description                                                                    |
+|--------------------------|---------|--------------------------------------------------------------------------------|
+| encryption               | boolean | Enabled if this server should enable and enforce/require SCE-RT encryption.    |
+| capacity                 | integer | Maximum number of concurrent clients this server can support.                  |
+| timeout                  | integer | Time in milliseconds of how long a client can idle not sending a echo heartbeat before being automatically disconnected.|
+| parent_threads           | integer | Number of threads this server should use for accepting connections into the event-loop.|
+| child_threads            | integer | Number of threads to use for processing requests in the event-loop.            |
+| application_id           | integer | This is the App Id of the game to support.                                     |
+| dme                      | object  | See **DME object** below or `null` if using MAS P2P.                           |
+| nat                      | object  | See **NAT Object** above.                                                      |
+| rpc_server               | object  | See **RPC Server Object** below.                                                      |
+| whitelist                | object  | See **Whitelist Object** above.                                                |
+| policy                   | string  | The Policy/EULA to send back to the player.                                    |
+| announcements            | array   | An array of *string* announcements to send to the player.                      |
+| operators                | array   | An array of *string* usernames that will have server operator privileges.      |
+| chat                     | object  | See **Chat Object** below.                                                     |
+| channels                 | array   | See **Channels Array** below.                                                  |
+| locations                | array   | See **Locations Array** below.                                                 |
+| database                 | object  | See **Database Object** above or `null` to use simulated-db mode.              |
+| system_message           | object  | See **System Message Object** above.                                           |
+
+
+**DME Object:**
+
+| Name                     | Type    | Description                                                                      |
+|--------------------------|---------|----------------------------------------------------------------------------------|
+| address                  | string  | IPv4 address of the MLS server, or `null` to use the current public IPv4 Address.|
+| port                     | integer | Port of the MLS server.                                                          |
+
+
+**RPC Server Object:**
+
+| Name                     | Type    | Description                                                                      |
+|--------------------------|---------|----------------------------------------------------------------------------------|
+| address                  | string  | IPv4 address of the RPC server, or `null` to use the current public IPv4 Address.|
+| port                     | integer | Port of the RPC server.                                                          |
+| encryption               | object  | Details that must be filled out if you want to enable TLS over RPC.              |
+
+
+**Chat Object:**
+
+| Name                     | Type    | Description                                                                      |
+|--------------------------|---------|----------------------------------------------------------------------------------|
+| enabled                  | boolean | If chat should be enabled or disabled.                                           |
+| blacklist                | string  | Refer to a text file that has a list of blacklisted words separated by new-lines.|
+| command_prefix           | string  | Chat command prefix.                                                             |
+| strip_special_chars      | boolean | If enabled, this will strip non ASCII characters from non-operators              |
+
+
+**Channels Array:**
+
+Each channel object must consist of the following fields:
+
+| Name                     | Type    | Description                                                                      |
+|--------------------------|---------|----------------------------------------------------------------------------------|
+| id                       | integer | Numerical ID of the Medius Channel Id.                                           |
+| name                     | string  | Name of the channel.                                                             |
+| capacity                 | integer | Capacity of the channel. Valid values can be `1` to `256`.                       |
+
+
+**Locations Array:**
+
+Each location object must consist of the following fields:
+
+| Name                     | Type    | Description                                                                      |
+|--------------------------|---------|----------------------------------------------------------------------------------|
+| id                       | integer | Numerical ID of the Medius Location Id.                                          |
+| name                     | string  | Name of the Location.                                                            |
+
 
