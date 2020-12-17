@@ -25,6 +25,16 @@
 			"fourbolt"
 		]
 	},
+	"locations": [
+		{
+			"id": 1,
+			"name": "Location 1"
+		},
+		{
+			"id": 2,
+			"name": "Location 2"
+		}
+	],
 	"database": {
 		"host": "",
 		"database": "",
