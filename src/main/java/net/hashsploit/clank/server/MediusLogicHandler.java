@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.config.objects.ChannelConfig;
 import net.hashsploit.clank.config.objects.LocationConfig;
+import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
@@ -18,6 +20,7 @@ public class MediusLogicHandler {
 	private PlayerList playerList;
 	
 	public MediusLogicHandler() {
+		// FIXME: pass in Clank as a constructor parameters and use it locally.
 		this.gameList = new GameList();
 		this.playerList = new PlayerList();
 	}
@@ -40,7 +43,19 @@ public class MediusLogicHandler {
 	}
 
 	public LocationConfig getLocation() {
-		return ((MlsConfig) Clank.getInstance().getConfig()).getLocations().get(0);
+		// FIXME: bad
+		if (Clank.getInstance().getServer() instanceof MediusServer) {
+			MediusServer mediusServer = (MediusServer) Clank.getInstance().getServer();
+			switch (mediusServer.getEmulationMode()) {
+			case MEDIUS_AUTHENTICATION_SERVER:
+				return ((MasConfig) Clank.getInstance().getConfig()).getLocations().get(0);
+			case MEDIUS_LOBBY_SERVER:
+				return ((MlsConfig) Clank.getInstance().getConfig()).getLocations().get(0);
+			default:
+				return null;
+			}
+		}
+		return null;
 	}
 	
 	public ChannelConfig getChannel() {

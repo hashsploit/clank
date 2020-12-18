@@ -22,6 +22,11 @@ public abstract class AbstractRpcServer {
 	public AbstractRpcServer(String address, int port) {
 		this.address = address;
 		this.port = port;
+		
+		if (address == null) {
+			address = "0.0.0.0";
+		}
+		
 		builder = NettyServerBuilder.forAddress(new InetSocketAddress(address, port));
 
 		// TODO: builder.useTransportSecurity(certChain, privateKey);
