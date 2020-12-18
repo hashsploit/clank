@@ -6,6 +6,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.GameHostType;
@@ -34,8 +35,9 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 	@Override
 	public void write(MediusClient client) {
 
-		
-		ArrayList<MediusGame> games = client.getServer().getLogicHandler().getGames();
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+
+		ArrayList<MediusGame> games = server.getGames();
 		
 //		byte[] mediusWorldID = Utils.hexStringToByteArray("65eb0000");
 		byte[] callbackStatus;
@@ -47,7 +49,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 			byte[] maxPlayers = Utils.shortToBytesLittle((short) 8);
 			
 			// FIXME: bad
-			byte[] gameLevel = Utils.intToBytesLittle(client.getServer().getLogicHandler().getChannel().getId()); // channel id
+			byte[] gameLevel = Utils.intToBytesLittle(server.getChannel().getId()); // channel id
 			
 			byte[] playerSkillLevel = Utils.hexStringToByteArray("00000004");
 			byte[] rulesSet = Utils.intToBytesLittle(0);

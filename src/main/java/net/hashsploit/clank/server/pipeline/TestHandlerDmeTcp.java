@@ -20,8 +20,6 @@ import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
-import net.hashsploit.clank.server.rpc.PlayerStatus;
-import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**

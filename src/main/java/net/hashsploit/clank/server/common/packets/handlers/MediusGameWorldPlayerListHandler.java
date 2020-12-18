@@ -7,6 +7,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -35,9 +36,10 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 
     	int worldIdRequested = Utils.bytesToIntLittle(reqPacket.getWorldID());
     	
+    	MediusLobbyServer server = (MediusLobbyServer) client.getServer();
     	
     	ArrayList<MediusMessage> messagesToWrite = new ArrayList<MediusMessage>();
-		ArrayList<Player> playersInWorld = client.getServer().getLogicHandler().getGameWorldPlayers(worldIdRequested);
+		ArrayList<Player> playersInWorld = server.getGameWorldPlayers(worldIdRequested);
 		for (int i = 0; i < playersInWorld.size(); i++) {
 			Player player = playersInWorld.get(i);
 			

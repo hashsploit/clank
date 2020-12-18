@@ -3,6 +3,7 @@ package net.hashsploit.clank.server.common.packets.handlers;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -28,13 +29,14 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 	@Override
 	public void write(MediusClient client) {
 
-		int cityWorldId = client.getServer().getLogicHandler().getChannel().getId();
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		int cityWorldId = server.getChannel().getId();
 
 		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] mediusWorldID = Utils.intToBytesLittle(cityWorldId);
 		
 		// FIXME: bad
-		byte[] playerCount = Utils.shortToBytesLittle((short) client.getServer().getLogicHandler().getChannelActivePlayerCountById(cityWorldId));
+		byte[] playerCount = Utils.shortToBytesLittle((short) server.getChannelActivePlayerCountById(cityWorldId));
 		byte[] maxPlayers = Utils.shortToBytesLittle((short) 224);
 		
 		byte[] worldSecurityLevelType = Utils.intToBytesLittle(0);
@@ -43,7 +45,7 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 		byte[] genericField3 = Utils.intToBytesLittle(0);
 		byte[] genericField4 = Utils.intToBytesLittle(0);
 		byte[] genericFieldFilter = Utils.intToBytesLittle(32);
-		byte[] lobbyName = Utils.buildByteArrayFromString(client.getServer().getLogicHandler().getChannelById(cityWorldId).getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
+		byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(cityWorldId).getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 
 		respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageID(), callbackStatus, mediusWorldID, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);

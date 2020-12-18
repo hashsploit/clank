@@ -8,6 +8,7 @@ import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -36,7 +37,8 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 	public void write(MediusClient client) {
 
 		// FIXME: bad location
-		final LocationConfig location = client.getServer().getLogicHandler().getLocation();
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		final LocationConfig location = server.getLocation();
 		
 		byte[] locationId = Utils.intToBytesLittle(location.getId()); // random location
 		byte[] locationName = Utils.buildByteArrayFromString(location.getName(), MediusConstants.LOCATIONNAME_MAXLEN.getValue());

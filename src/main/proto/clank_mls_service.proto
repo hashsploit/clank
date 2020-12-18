@@ -17,7 +17,12 @@ service ClankMlsService {
 	
 	// BOT: This RPC endpoint exposes all players in the lobby.
 	rpc PlayersOnline(PlayersOnlineRequest) returns (PlayersOnlineResponse) {}
-	
+
+	// MAS: Check player login
+	rpc PlayerLogin(PlayerLoginRequest) returns (PlayerLoginResponse) {}
+
+	// Generic: Get player info from MLS
+	//rpc PlayerInfo(PlayerInfoRequest) returns (PlayerInfoResponse) {}
 }
 
 message PlayersOnlineRequest {
@@ -66,3 +71,13 @@ message WorldUpdateResponse {
 	bool success = 1;
 }
 
+message PlayerLoginRequest {
+	string username = 1; 
+	string password = 2;
+}
+
+message PlayerLoginResponse {
+	bool success = 1;
+	int32 account_id = 2;
+	string mls_token = 3;
+}

@@ -33,46 +33,16 @@ import net.hashsploit.clank.utils.Utils;
  */
 public class MediusServer extends TcpServer {
 
-	private static final Logger logger = Logger.getLogger(MediusServer.class.getName());
+	protected static final Logger logger = Logger.getLogger(MediusServer.class.getName());
 	
-	private AbstractRpcServer rpcServer;
 	private final EmulationMode emulationMode;
-	private final HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
-	private final MediusLogicHandler logicHandler = new MediusLogicHandler();
+	
+	protected AbstractRpcServer rpcServer;
+	protected HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
 
 	public MediusServer(final EmulationMode emulationMode, final String address, final int port, final int parentThreads, final int childThreads) {
 		super(address, port, parentThreads, childThreads);
 		this.emulationMode = emulationMode;
-
-		switch (emulationMode) {
-			case MEDIUS_AUTHENTICATION_SERVER:
-				this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();
-				break;
-			case MEDIUS_LOBBY_SERVER:
-				this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
-				
-				final RpcServerConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcServerConfig();
-				String rpcAddress = rpcConfig.getAddress();
-				final int rpcPort = rpcConfig.getPort();
-				
-				if (rpcAddress == null) {
-					Utils.getPublicIpAddress();
-				}
-				
-				try {
-					rpcServer = new ClankMlsRpcServer(rpcAddress, rpcPort, this);
-				} catch (IOException e) {
-					logger.severe(String.format("Failed to create RPC service: %s", e.getMessage()));
-					Clank.getInstance().shutdown();
-				}
-				break;
-			default:
-				this.mediusMessageMap = null;
-		}
-		
-		if (rpcServer != null) {
-			rpcServer.start();
-		}
 
 		setChannelInitializer(new MediusClientChannelInitializer(this));
 	}
@@ -139,10 +109,6 @@ public class MediusServer extends TcpServer {
 
 	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
 		return mediusMessageMap;
-	}
-
-	public synchronized MediusLogicHandler getLogicHandler() {
-		return logicHandler;
 	}
 
 	/**

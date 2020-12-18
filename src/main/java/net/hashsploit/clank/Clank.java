@@ -22,6 +22,8 @@ import net.hashsploit.clank.config.configs.NatConfig;
 import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
+import net.hashsploit.clank.server.common.MediusAuthenticationServer;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
@@ -100,25 +102,14 @@ public class Clank {
 		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_PROXY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
 		
 		// This is a *Medius server, set up the generic Medius components
+		MediusConfig mediusConfig = null;
 		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
 			
 			// Register generic *Medius CLI commands
 			terminal.registerCommand(new CLIPlayersCommand());
 			
 			// Set up the basic configuration for *Medius servers
-			MediusConfig mediusConfig = (MediusConfig) config;
-			server = new MediusServer(
-				mediusConfig.getEmulationMode(),
-				mediusConfig.getAddress(),
-				mediusConfig.getPort(),
-				mediusConfig.getParentThreads(),
-				mediusConfig.getChildThreads()
-			);
-			
-			// Initialize the database for generic Medius servers
-			// TODO: check if the database config value is null, if so
-			// this shouild use the SimDb object instead of the regular MySQL object.
-			db = new DbManager(this, new SimDb());
+			mediusConfig = (MediusConfig) config;
 		}
 		
 		String terminalPrompt = ">";
@@ -127,10 +118,25 @@ public class Clank {
 		switch (config.getEmulationMode()) {
 			case MEDIUS_AUTHENTICATION_SERVER:
 				terminalPrompt = "MAS>";
+				server = new MediusAuthenticationServer(
+						mediusConfig.getEmulationMode(),
+						mediusConfig.getAddress(),
+						mediusConfig.getPort(),
+						mediusConfig.getParentThreads(),
+						mediusConfig.getChildThreads()
+					);
 				break;
 			case MEDIUS_LOBBY_SERVER:
 				terminalPrompt = "MLS>";
 				terminal.registerCommand(new CLIBroadcastCommand());
+				server = new MediusLobbyServer(
+						mediusConfig.getEmulationMode(),
+						mediusConfig.getAddress(),
+						mediusConfig.getPort(),
+						mediusConfig.getParentThreads(),
+						mediusConfig.getChildThreads()
+					);
+				db = new DbManager(this, new SimDb());
 				break;
 			case MEDIUS_PROXY_SERVER:
 				terminalPrompt = "MPS>";

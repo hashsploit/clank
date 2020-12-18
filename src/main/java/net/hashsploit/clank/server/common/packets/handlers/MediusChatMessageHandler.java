@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusChatMessageType;
@@ -60,7 +61,8 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 .<1.......................I...Z3r0x...............................G...............................................................
 		 */
 		int playerWorldId = client.getPlayer().getChatWorldId();
-		ArrayList<Player> playersInWorld = client.getServer().getLogicHandler().getLobbyWorldPlayers(playerWorldId);
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		ArrayList<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
 
 		for (Player player: playersInWorld) {
 			if (player != client.getPlayer()) // Dont send to self

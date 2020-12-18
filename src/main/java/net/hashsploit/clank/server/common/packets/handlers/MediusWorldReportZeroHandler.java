@@ -13,6 +13,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -39,11 +40,12 @@ public class MediusWorldReportZeroHandler extends MediusPacketHandler {
 	@Override
 	public void write(MediusClient client) {
 		// Update the logichandler with the world
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		
 		int worldId = Utils.bytesToIntLittle(reqPacket.getWorldID());
 		int worldStatus = Utils.bytesToIntLittle(reqPacket.getWorldStatus());
 		if (worldStatus == 2) {
-			client.getServer().getLogicHandler().updateDmeWorldStatus(worldId, MediusWorldStatus.WORLD_ACTIVE);
+			server.updateDmeWorldStatus(worldId, MediusWorldStatus.WORLD_ACTIVE);
 		}
 		
 	}

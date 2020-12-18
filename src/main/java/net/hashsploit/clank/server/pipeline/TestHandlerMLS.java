@@ -15,6 +15,7 @@ import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
@@ -119,9 +120,10 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("Initial connect to MLS!");
 			String mlsToken = Utils.bytesToHex(Arrays.copyOfRange(data, 186/2, (186+32)/2));
 			
+			MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 			
 			logger.finest("Players before:");
-			logger.finest(client.getServer().getLogicHandler().playersToString());
+			logger.finest(server.playersToString());
 
 			// Update the player with the MLS playerlist
 			logger.info("MLS TOKEN: " + mlsToken);
@@ -131,12 +133,12 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			int worldIdToJoin = (int) data[6];
 			logger.info("World Id To Join: " + Integer.toString(worldIdToJoin));
 			client.getPlayer().setChatWorld(worldIdToJoin);
-			client.getServer().getLogicHandler().updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
+			server.updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
 			logger.info("Player username detected:" + client.getPlayer().getUsername());
 
 			
 			logger.finest("Players after:");
-			logger.finest(client.getServer().getLogicHandler().playersToString());
+			logger.finest(server.playersToString());
 			
 			logger.fine(Utils.bytesToHex(data));
 			byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
