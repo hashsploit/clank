@@ -11,7 +11,6 @@ import net.hashsploit.clank.config.objects.ChannelConfig;
 import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.GameList;
 import net.hashsploit.clank.server.MediusGame;
-import net.hashsploit.clank.server.MediusLogicHandler;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.PlayerList;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
