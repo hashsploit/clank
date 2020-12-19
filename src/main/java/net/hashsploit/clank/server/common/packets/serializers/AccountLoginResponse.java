@@ -58,11 +58,12 @@ public class AccountLoginResponse extends MediusMessage {
 			
 			outputStream.write(natAddress); // NAT server Addr
 			outputStream.write(natZeroTrail); // Padding for address
-			outputStream.write(Utils.hexStringToByteArray("5627000005000000")); // NAT Port + padding
+			outputStream.write(Utils.hexStringToByteArray("56270000")); // NAT Port + padding
+			outputStream.write(Utils.hexStringToByteArray("00000000")); // World ID to join. Default is zero when you login
 			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
 			
 			// TODO: These last two byte arrays might be part of the smae thing, a session key perhaps.
-			outputStream.write(Utils.hexStringToByteArray("3133")); // World ID and Player ID
+			outputStream.write(Utils.hexStringToByteArray("3133")); // ???
 			outputStream.write(Utils.hexStringToByteArray("000000000000000000000000000000")); // Padding 
 			outputStream.write(mlsToken); // MLS Acess Token
 		} catch (IOException e) {
