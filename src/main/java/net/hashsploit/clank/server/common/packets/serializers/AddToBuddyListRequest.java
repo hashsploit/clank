@@ -19,6 +19,7 @@ public class AddToBuddyListRequest extends MediusMessage {
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.get(messageID);
 		buf.get(sessionKey);
+		buf.getShort();
 		buf.get(accountID);
 	}
 	
