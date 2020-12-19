@@ -32,6 +32,7 @@ public class MediusGetLadderStatsWideHandler extends MediusPacketHandler {
 		// Process the packet
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageID);
+		buf.get(new byte[3]);
 		buf.get(accountOrClanID);
 		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
 		logger.fine("Account or Clan ID: " + Utils.bytesToHex(accountOrClanID));
@@ -45,6 +46,7 @@ public class MediusGetLadderStatsWideHandler extends MediusPacketHandler {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageID);
+			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue()));
 			outputStream.write(accountOrClanID);
 			outputStream.write(stats);
