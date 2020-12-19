@@ -162,4 +162,9 @@ public class MediusLobbyServer extends MediusServer{
 		return result;
 	}
 
+
+	public MediusPlayerStatus getPlayerStatus(int accountId) {
+		return playerList.getPlayerStatus(accountId);
+	}
+
 }
