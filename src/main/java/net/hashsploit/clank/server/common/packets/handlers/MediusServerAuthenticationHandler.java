@@ -4,6 +4,7 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusServer;
@@ -51,7 +52,8 @@ public class MediusServerAuthenticationHandler extends MediusPacketHandler {
 		}
 
 		// FIXME: fucking bad
-		int worldId = ((MediusServer) Clank.getInstance().getServer()).getLogicHandler().getChannel().getId();
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		int worldId = server.getChannel().getId();
 
 		byte[] serverKey = new byte[64];
 		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());

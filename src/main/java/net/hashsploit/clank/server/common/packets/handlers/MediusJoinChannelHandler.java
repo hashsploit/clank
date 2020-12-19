@@ -8,6 +8,7 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -42,12 +43,13 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 	@Override
 	public void write(MediusClient client) {
 		// RESPONSE
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 
-		logger.finest(client.getServer().getLogicHandler().playersToString());
+		logger.finest(server.playersToString());
 
 		// Update player status to joined channel
 		client.getPlayer().setChatWorld(Utils.bytesToIntLittle(worldId));
-		client.getServer().getLogicHandler().updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
+		server.updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);

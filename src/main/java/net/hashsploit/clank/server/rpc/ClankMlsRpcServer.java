@@ -5,17 +5,19 @@ import java.util.logging.Logger;
 
 import io.grpc.stub.StreamObserver;
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
+import net.hashsploit.clank.utils.Utils;
 
 public class ClankMlsRpcServer extends AbstractRpcServer {
 
 	private static final Logger logger = Logger.getLogger(ClankMlsRpcServer.class.getName());
 	
-	private final MediusServer mlsServer;
+	private final MediusLobbyServer mlsServer;
 
-	public ClankMlsRpcServer(String address, int port, MediusServer mlsServer) throws IOException {
+	public ClankMlsRpcServer(String address, int port, MediusLobbyServer mlsServer) throws IOException {
 		super(address, port);
 		this.mlsServer = mlsServer;
 		addService(new ClankMlsService());
@@ -50,15 +52,28 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			responseObserver.onNext(updateWorld(request));
 			responseObserver.onCompleted();
 		}
+		
+		/**
+		 * Player login requested from MAS.
+		 */
+		@Override
+		public void playerLogin(PlayerLoginRequest request, StreamObserver<PlayerLoginResponse> responseObserver) {
+			responseObserver.onNext(processPlayerLogin(request));
+			responseObserver.onCompleted();
+		}
+		
+		
+		
+		
+		// Methods
 
 		private PlayerUpdateResponse updatePlayer(PlayerUpdateRequest request) {
 			PlayerUpdateResponse response = PlayerUpdateResponse.newBuilder().setSuccess(true).build();
 			logger.severe("Data received: " + request.getMlsToken());
 			logger.severe("Data received: " + Integer.toString(request.getWorldId()));
 			logger.severe("Data received: " + request.getPlayerStatus().toString());
-			MediusServer mlsServer = (MediusServer) (Clank.getInstance().getServer());
-			
-			
+			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
+						
 			MediusPlayerStatus status;
 			switch (request.getPlayerStatus()) {
 			case DISCONNECTED:
@@ -77,7 +92,7 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 				status = null;
 			}
 			
-			mlsServer.getLogicHandler().updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
+			mlsServer.updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
 			return response;
 		}
 
@@ -104,8 +119,24 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 				status = null;
 			}
 			
-			MediusServer mlsServer = (MediusServer) (Clank.getInstance().getServer());
-			mlsServer.getLogicHandler().updateDmeWorldStatus(request.getWorldId(), status);
+			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
+			mlsServer.updateDmeWorldStatus(request.getWorldId(), status);
+			return response;
+		}
+		
+		private PlayerLoginResponse processPlayerLogin(PlayerLoginRequest request) {
+			int accountId = Clank.getInstance().getDatabase().getAccountId(request.getUsername());
+			PlayerLoginResponse response;
+			String mlsToken = "00000000000000000000000000000000";
+
+			if (accountId == 0) {
+				response = PlayerLoginResponse.newBuilder().setSuccess(false).setAccountId(accountId).setMlsToken(mlsToken).build();
+			}
+			else {
+				mlsToken = Clank.getInstance().getDatabase().getMlsToken(accountId);
+				response = PlayerLoginResponse.newBuilder().setSuccess(true).setAccountId(accountId).setMlsToken(mlsToken).build();
+			}
+			
 			return response;
 		}
 

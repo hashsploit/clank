@@ -8,7 +8,6 @@ import java.util.Map;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
-import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class GameList {
 	

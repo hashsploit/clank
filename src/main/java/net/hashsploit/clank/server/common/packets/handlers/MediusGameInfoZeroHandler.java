@@ -4,6 +4,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -30,8 +31,10 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 	@Override
 	public void write(MediusClient client) {		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
+		
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 
-		MediusGame game = client.getServer().getLogicHandler().getGame(Utils.bytesToIntLittle(reqPacket.getWorldID()));
+		MediusGame game = server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldID()));
 		CreateGameOneRequest req = game.getReqPacket();
 		
 		respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, req.getAppID(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), 

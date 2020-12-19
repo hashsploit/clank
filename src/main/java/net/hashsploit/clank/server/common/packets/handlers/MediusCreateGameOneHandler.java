@@ -13,6 +13,7 @@ import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -39,8 +40,10 @@ public class MediusCreateGameOneHandler extends MediusPacketHandler {
     
     @Override
     public void write(MediusClient client) {
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+
     	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
-    	byte[] newWorldID = Utils.intToBytesLittle(client.getServer().getLogicHandler().getNewGameId(reqPacket));
+    	byte[] newWorldID = Utils.intToBytesLittle(server.getNewGameId(reqPacket));
 
     	respPacket = new CreateGameResponse(reqPacket.getMessageID(), callbackStatus, newWorldID);
 		client.sendMediusMessage(respPacket);

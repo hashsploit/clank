@@ -1,18 +1,18 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
 import java.util.ArrayList;
+import java.util.List;
 
-import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.GameWorldPlayerListRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GameWorldPlayerListResponse;
-import net.hashsploit.clank.server.common.packets.serializers.GetLobbyPlayerNames_ExtraInfoResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
@@ -35,9 +35,10 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 
     	int worldIdRequested = Utils.bytesToIntLittle(reqPacket.getWorldID());
     	
+    	MediusLobbyServer server = (MediusLobbyServer) client.getServer();
     	
-    	ArrayList<MediusMessage> messagesToWrite = new ArrayList<MediusMessage>();
-		ArrayList<Player> playersInWorld = client.getServer().getLogicHandler().getGameWorldPlayers(worldIdRequested);
+    	List<MediusMessage> messagesToWrite = new ArrayList<MediusMessage>();
+		List<Player> playersInWorld = server.getGameWorldPlayers(worldIdRequested);
 		for (int i = 0; i < playersInWorld.size(); i++) {
 			Player player = playersInWorld.get(i);
 			

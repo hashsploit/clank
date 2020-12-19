@@ -8,7 +8,6 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
-import net.hashsploit.clank.server.MediusLogicHandler;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.server.UdpServer;
 

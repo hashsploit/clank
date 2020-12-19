@@ -9,7 +9,6 @@ public class SimDb implements IDatabase {
 	
 	private static final ArrayList<Triplet<Integer, String, String>> users = new ArrayList<Triplet<Integer, String, String>>();
 
-
 	public class Triplet<T, U, V> {
 	    private final T first;
 	    private final U second;
@@ -24,9 +23,6 @@ public class SimDb implements IDatabase {
 	    public V getThird() { return third; }
 	}
 
-	
-	
-	
 	public SimDb() {
 		users.add(new Triplet(50, "Smily", "11111111111111111111111111111111"));
 		users.add(new Triplet(51, "hashsploit", "22222222222222222222222222222222"));
