@@ -41,7 +41,7 @@ public class MediusGetLadderStatsWideHandler extends MediusPacketHandler {
 	@Override
 	public void write(MediusClient client) {
 
-		byte[] stats = Utils.buildByteArrayFromString("0", MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue());
+		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue());
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
