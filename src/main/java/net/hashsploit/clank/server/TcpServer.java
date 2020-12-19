@@ -62,6 +62,7 @@ public class TcpServer extends AbstractServer {
 		if (!Utils.tcpPortIsAvailable(this.getAddress(), this.getPort())) {
 			logger.severe(String.format("Port %d is currently in use, or attempting to bind to an illegal address.", this.getPort()));
 			Clank.getInstance().shutdown();
+			return;
 		}
 		
 		try {
@@ -91,7 +92,9 @@ public class TcpServer extends AbstractServer {
 	public void stop() {
 		parentEventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
 		childEventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
-		channelFuture.channel().close();
+		if (channelFuture != null) {
+			channelFuture.channel().close();
+		}
 		super.stop();
 	}
 	
