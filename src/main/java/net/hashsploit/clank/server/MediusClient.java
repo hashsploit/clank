@@ -9,6 +9,7 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
@@ -234,7 +235,9 @@ public class MediusClient implements IClient {
 	private void onDisconnect() {
 		
 		// Tell medius logic handler that this player disconnected
-		((MediusLobbyServer) server).updatePlayerStatus(player, MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED);
+		if (server.getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {
+			((MediusLobbyServer) server).updatePlayerStatus(player, MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED);
+		}
 		
 		logger.info("Client disconnect: " + socketChannel.remoteAddress());
 		server.removeClient(this);
