@@ -44,33 +44,33 @@
 	},
 	"channels": [
 		{
-			"id": 0,
+			"id": 1,
 			"name": "Channel 1",
 			"capacity": 256
 		},
 		{
-			"id": 1,
+			"id": 2,
 			"name": "Channel 2",
 			"capacity": 256
 		},
 		{
-			"id": 2,
+			"id": 3,
 			"name": "Channel 3",
 			"capacity": 256
 		},
 		{
-			"id": 3,
+			"id": 4,
 			"name": "Channel 4",
 			"capacity": 256
 		}
 	],
 	"locations": [
 		{
-			"id": 0,
+			"id": 1,
 			"name": "Location 1"
 		},
 		{
-			"id": 1,
+			"id": 2,
 			"name": "Location 2"
 		}
 	],

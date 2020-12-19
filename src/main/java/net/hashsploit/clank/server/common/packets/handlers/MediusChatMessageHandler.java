@@ -1,20 +1,16 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
+import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.MediusChatMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.ChatFwdMessageResponse;
 import net.hashsploit.clank.server.common.packets.serializers.ChatMessageRequest;
-import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
-import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.server.common.packets.serializers.GenericChatFwdMessageResponse;
 import net.hashsploit.clank.utils.Utils;
 
@@ -62,7 +58,7 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 		 */
 		int playerWorldId = client.getPlayer().getChatWorldId();
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		ArrayList<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
+		List<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
 
 		for (Player player: playersInWorld) {
 			if (player != client.getPlayer()) // Dont send to self

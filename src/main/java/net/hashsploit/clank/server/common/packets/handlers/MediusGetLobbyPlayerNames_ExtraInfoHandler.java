@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
@@ -38,8 +39,8 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		logger.info(server.playersToString());
 		
-		ArrayList<MediusMessage> messagesToWrite = new ArrayList<MediusMessage>();
-		ArrayList<Player> playersInWorld = server.getLobbyWorldPlayers(worldId);
+		List<MediusMessage> messagesToWrite = new ArrayList<MediusMessage>();
+		List<Player> playersInWorld = server.getLobbyWorldPlayers(worldId);
 		for (int i = 0; i < playersInWorld.size(); i++) {
 			Player player = playersInWorld.get(i);
 			
