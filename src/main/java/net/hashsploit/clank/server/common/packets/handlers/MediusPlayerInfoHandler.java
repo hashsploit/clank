@@ -46,12 +46,11 @@ public class MediusPlayerInfoHandler extends MediusPacketHandler {
     	
     	int accountId;
     	if (Utils.bytesToHex(reqPacket.getAccountID()).equals("ffffffff")) {
-    		accountId = 50;
+    		accountId = 0;
     	}
     	else {
     		accountId = Utils.bytesToIntLittle(reqPacket.getAccountID());
     	}
-    	accountId = 52;
     	
     	DbManager db = Clank.getInstance().getDatabase();
     	
