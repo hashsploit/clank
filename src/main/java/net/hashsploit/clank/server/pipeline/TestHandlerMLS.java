@@ -130,7 +130,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(mlsToken);
 			logger.info("Player account id detected:" + Integer.toString(accountId));
 			client.getPlayer().setAccountId(accountId);
-			int worldIdToJoin = (int) data[6];
+			int worldIdToJoin = (int) Utils.bytesToShortLittle(data[6], data[7]);
 			logger.info("World Id To Join: " + Integer.toString(worldIdToJoin));
 			client.getPlayer().setChatWorld(worldIdToJoin);
 			server.updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);

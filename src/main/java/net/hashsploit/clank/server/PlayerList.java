@@ -72,5 +72,13 @@ public class PlayerList {
 		}
 		return result;	}
 
+	public MediusPlayerStatus getPlayerStatus(int accountId) {
+		Player p = players.get(accountId);
+		if (p == null) {
+			return MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED;
+		}
+		return p.getStatus();
+	}
+
 
 }
