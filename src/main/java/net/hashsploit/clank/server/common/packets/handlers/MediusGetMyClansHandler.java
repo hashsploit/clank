@@ -41,14 +41,13 @@ public class MediusGetMyClansHandler extends MediusPacketHandler {
 		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
 		logger.fine("Session Key: " + Utils.bytesToHex(sessionKey));
 
-		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.NOT_CLAN_MEMBER.getValue());
+		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.NO_RESULT.getValue());
 		byte[] clanID = Utils.intToBytesLittle(0);
 		byte[] applicationID = Utils.intToBytesLittle(0);
 		byte[] clanName = Utils.buildByteArrayFromString("", MediusConstants.CLANNAME_MAXLEN.getValue()); // 32
 		byte[] leaderAccountID = Utils.intToBytesLittle(0);
 		byte[] leaderAccountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
 		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.CLANSTATS_MAXLEN.getValue());
-		//byte[] clanStatus = Utils.intToBytesLittle(MediusCallbackStatus.MediusSuccess.getValue());
 		byte[] clanStatus = Utils.intToBytesLittle(0);
 		// byte[] endOfList = Utils.hexStringToByteArray("01000000");
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
