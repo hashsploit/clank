@@ -1,4 +1,5 @@
 #!/bin/bash
+
 # Build the base Docker image for Clank to be deployed as a micro-service.
 
 DOCKER_IMAGE="clank"
@@ -8,7 +9,7 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 
 # Reference config
-source ./settings.sh
+source ./docker-settings.sh
 
 # Check if Docker is installed
 if ! command -v docker &> /dev/null; then
@@ -21,13 +22,10 @@ if [[ "$(docker images -q ${DOCKER_IMAGE} 2>/dev/null)" -ne "" ]]; then
 	docker rmi --force ${DOCKER_IMAGE}
 fi
 
-# Important: change directory to the project root, that way the docker daemon can grab
-# the entire project when building.
-cd ../
 docker build \
 	--force-rm \
 	--build-arg GRAALVM_SOURCE="${GRAALVM_SOURCE}" \
 	--build-arg MAVEN_SOURCE="${MAVEN_SOURCE}" \
 	--tag ${DOCKER_IMAGE} \
-	--file $DIR/Dockerfile \
 	${ADDITIONAL_BUILD_PARAMS} .
+

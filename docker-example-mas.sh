@@ -1,5 +1,6 @@
 #!/bin/bash
-# Build the base Docker image for Clank to be deployed as a micro-service.
+
+# Run an example Clank MAS server as a container using the `config/mas.json` file.
 
 HOSTNAME="clank-mas"
 CONTAINER_NAME="clank-mas"

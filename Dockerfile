@@ -76,14 +76,24 @@ ADD ./ /home/ratchet
 # Build project and clean up
 RUN echo "Building Clank ..." \
 	&& cd /home/ratchet/ \
-	&& cp docker/run.sh . \
-	&& chmod +x build.sh run.sh \
+	&& chmod +x build.sh docker-run.sh \
 	&& ./build.sh \
-	&& rm -rf bin/ target/ docker/ src/ .settings/ /tmp/* \
-	&& rm -f launch.sh build.sh compile-protobufs.sh pom.xml .classpath .project \
+	&& rm -rf bin/ target/ src/ .settings/ /tmp/* .git/ \
+	&& rm -f *.bat \
+	&& rm -f *.md \
+	&& rm -f Dockerfile \
+	&& rm -f docker-build.sh \
+	&& rm -f docker-example-*.sh \
+	&& rm -f docker-settings.sh \
+	&& rm -f launch.sh \
+	&& rm -f build.sh \
+	&& rm -f compile-protobufs.sh \
+	&& rm -f pom.xml \
+	&& rm -f .classpath \
+	&& rm -f .project \
 	&& chown ratchet:ratchet -R /home/ratchet
 
 USER ratchet
 WORKDIR /home/ratchet
-ENTRYPOINT ["/bin/bash", "./run.sh"]
+ENTRYPOINT ["/bin/bash", "./docker-run.sh"]
 

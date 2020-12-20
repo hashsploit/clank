@@ -1,4 +1,6 @@
 #!/bin/bash
+
+# Set launch arguments
 INIT_MEM="512m"
 MAX_MEM="1024m"
 JAR="clank.jar"
