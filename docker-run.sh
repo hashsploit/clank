@@ -1,6 +1,9 @@
 #!/bin/bash
-# This script is copied and ran inside the container,
-# modify it accordingly.
+#
+# NOTE: This script is copied and ran inside the container.
+# It is not supposed to be run manually or by the host machine.
+# Modify it accordingly.
+#
 
 INIT_MEM="512m"
 MAX_MEM="1024m"

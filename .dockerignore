@@ -3,5 +3,8 @@ bin/
 target/
 clank.jar
 LICENSE
-README.md
+*.md
+*.bat
+docker-build.sh
+docker-example-*.sh
 

@@ -1,6 +1,8 @@
 #!/bin/bash
 
+# Change directory to the current script directory
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $DIR
 
 # Check if maven is installed
 if ! command -v mvn &> /dev/null; then

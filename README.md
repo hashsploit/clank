@@ -69,22 +69,32 @@ The focus of the table below is based on a title's ability to get from login to 
 
 ## How to build/compile and run Clank
 
-To build clank you will need `maven` and Java 8+ (optionally `graalvm` to compile the
-executable jar to a native linux binary using `native-image`)
 
+### Build Clank Docker image
+Clank can be built as a Docker-container micro-service stack, see
+[Docker.md](Docker.md) for more info.
+
+### Build Clank
+
+To build clank manually you will need to install the JDK 8+ and Maven.
+You can now run `./build.sh` to build Clank on Linux, or `build.bat`
+to build Clank if you are on Windows.
+
+### Run Clank
 In order to run Clank you will need to create a JSON configuration file, there are
 "example" configuration files located in `config/`, that can be used as a starting
 place. For example, make a copy of `config/mas.json.example` named `config/mas.json`.
 
 You can then use `./launch.sh config/mas.json` to run a Clank MAS server.
 
-1. Run `./build.sh` to build Clank (requires maven).
-2. Copy an example configuration file `config/mas.json.example` -> `config/mas.json`.
-3. Run `./launch.sh config/mas.json`.
+1. Copy an example configuration file `config/mas.json.example` -> `config/mas.json`.
+2. (Linux) Run `./launch.sh config/mas.json`.
+3. (Windows) Run `launch.bat config/mas.json`.
 
 If you cloned the repo and are pulling from time-to-time, make note that
 any changes to the `src/main/proto/` files will require the protocol buffers
-to be recompiled, this can easily be run by running `./compile-protobufs.sh`.
+to be recompiled, this can easily be run by running `./compile-protobufs.sh`
+if you are on Linux or `compile-protobufs.bat` on Windows.
 
 
 ## Clank components
@@ -155,7 +165,7 @@ Read more about reverse-engineering the SCE-RT/Medius protocol here:
 
 ## Special thanks
 
-A huge thanks to the following people in the PlayStation 2/PlayStation 3 community that made this project possible.
+A huge thanks to [Game Fuckery Inc.](https://discord.gg/KE8G5FA) and the following people in the PlayStation 2/PlayStation 3 community that made this project possible.
 
 - **hashsploit** - reverse engineer, developer, documentation, UYA community.
 - **FourBolt** - developer, UYA community.
@@ -176,3 +186,4 @@ A huge thanks to the following people in the PlayStation 2/PlayStation 3 communi
 - **Megalia1** - medius broker, documentation.
 - **Cristian** - DNAS/DNS host, documentation.
 - **shad** - developer, documentation.
+
