@@ -1,6 +1,8 @@
 {
 	"mode": "DME_SERVER",
 	"log_level": "INFO",
+	"file_log_level": null,
+	"file_log_size": 0,
 	"address": "172.16.221.250",
 	"udp_address": "172.16.221.250",
 	"port": 10079,
@@ -15,9 +17,5 @@
 	"parent_threads": 1,
 	"child_threads": 4,
 	"udp_threads": 8,
-	"application_id": 10684,
-	"discord_webhooks": {
-		"start": "",
-		"shutdown": ""
-	}
+	"application_id": 10684
 }
