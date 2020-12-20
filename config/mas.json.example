@@ -1,6 +1,8 @@
 {
 	"mode": "MEDIUS_AUTHENTICATION_SERVER",
 	"log_level": "INFO",
+	"file_log_level": null,
+	"file_log_size": 0,
 	"address": "172.16.221.250",
 	"port": 10075,
 	"encryption": false,
@@ -35,23 +37,10 @@
 			"name": "Location 2"
 		}
 	],
-	"database": {
-		"host": "",
-		"database": "",
-		"username": "",
-		"password": ""
-	},
 	"system_message": {
 		"enabled": false,
 		"severity": 200,
 		"message": ""
-	},
-	"discord_webhooks": {
-		"start": "",
-		"shutdown": "",
-		"login": "",
-		"register": "",
-		"ban": ""
 	},
 	"rpc": {
 		"address": "172.16.221.250",

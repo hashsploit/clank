@@ -84,12 +84,5 @@
 		"database": "",
 		"username": "",
 		"password": ""
-	},
-	"discord_webhooks": {
-		"start": null,
-		"shutdown": null,
-		"connect": null,
-		"disconnect": null,
-		"chat_message": null
 	}
 }
