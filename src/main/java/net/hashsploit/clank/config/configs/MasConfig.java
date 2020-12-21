@@ -1,6 +1,7 @@
 package net.hashsploit.clank.config.configs;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -62,9 +63,18 @@ public class MasConfig extends MediusConfig {
 	 * Get a list of whitelisted usernames.
 	 * @return
 	 */
-	public List<String> getWhitelistedUsernames() {
-		final String key = ConfigNames.WHITELIST_PLAYERS.toString();
+	public HashMap<String, String> getWhitelist() {
+		HashMap<String, String> whitelist = new HashMap<String, String>();
+
 		
+		final String key = ConfigNames.WHITELIST_PLAYERS.toString();
+//		"whitelist": {
+//			"enabled": true,
+//			"players": {
+//				"hashsploit": "hashpass",
+//				"fourbolt": "fourpass"
+//			}
+//		},
 		if (getJson().isNull(ConfigNames.WHITELIST.toString())) {
 			return null; 
 		}
@@ -73,7 +83,13 @@ public class MasConfig extends MediusConfig {
 			return null;
 		}
 		
-		return getArrayOfStrings(getJson().getJSONObject(ConfigNames.WHITELIST.toString()), key);
+		JSONObject names = getJson().getJSONObject(ConfigNames.WHITELIST.toString()).getJSONObject(ConfigNames.WHITELIST_PLAYERS.toString());
+		for(Iterator iterator = names.keySet().iterator(); iterator.hasNext();) {
+		    String name = (String) iterator.next();
+		    String password = names.get(name).toString();
+		    whitelist.put(name.toLowerCase(), password);
+		}
+		return whitelist;
 	}
 	
 	@Override

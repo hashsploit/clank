@@ -22,10 +22,11 @@
 	},
 	"whitelist": {
 		"enabled": true,
-		"players": [
-			"hashsploit",
-			"fourbolt"
-		]
+		"players": {
+			"exampleUsername", "examplePassword",
+			"hashsploit": "hashpass",
+			"fourbolt": "fourpass"
+		}
 	},
 	"locations": [
 		{

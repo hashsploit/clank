@@ -1,5 +1,7 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
+import java.util.HashMap;
+
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.objects.LocationConfig;
@@ -41,11 +43,11 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 
 		PlayerLoginResponse response = ((MediusAuthenticationServer) client.getServer()).playerLogin(username, password);
 		int playerAccountId = response.getAccountId();
-		boolean success = response.getSuccess();
+		boolean rpcSuccess = response.getSuccess();
 		String mlsTokenString = response.getMlsToken();
 		
 		logger.info("PlayerLoginRPC AccountId: " + Integer.toString(playerAccountId));
-		logger.info("PlayerLoginRPC success: " + success);
+		logger.info("PlayerLoginRPC success: " + rpcSuccess);
 		logger.info("PlayerLoginRPC mlsTokenString: " + mlsTokenString);
 		
 		// TODO: Generate random auth token each connection, save in db for MLS to use.
@@ -61,12 +63,32 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		mlsToken[mlsToken.length - 1] = (byte) 0x00;
 		mlsToken[mlsToken.length - 2] = (byte) 0x00;
 		mlsToken[mlsToken.length - 3] = (byte) 0x00;
+	
+		// If player login is successful, check if the username/pass is in whitelist also
+		boolean whitelistSuccess = false;
 		
-		if (success) {
-				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
-				// TODO: Update player status to MLS
+		MasConfig masConfig;
+		if (Clank.getInstance().getConfig() instanceof MasConfig) {
+			masConfig = (MasConfig) Clank.getInstance().getConfig();	
+			if (!masConfig.isWhitelistEnabled()) { // Whitelist is disabled
+				whitelistSuccess = true;
+			}
+			else { // Whitelist is enabled. Check username/pass with whitelist
+				HashMap<String, String> whitelist = masConfig.getWhitelist();
+				if (whitelist.keySet().contains(username.toLowerCase())) {
+					if (whitelist.get(username.toLowerCase()).equals(password)) {
+						whitelistSuccess = true;
+					}
+				}
+			}
+		}
+		
+		logger.info("Whitelist success: " + whitelistSuccess);
+		// gRPC Login success
+		if (rpcSuccess && whitelistSuccess) {
+			callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 		} else {
-				callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.INVALID_PASSWORD.getValue()));
+			callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.INVALID_PASSWORD.getValue()));
 		}
 		
 		byte[] accountID = Utils.intToBytesLittle(playerAccountId);

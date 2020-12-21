@@ -3,6 +3,7 @@ package net.hashsploit.clank.server.common;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
 import net.hashsploit.clank.server.rpc.ClankMasRpcClient;
@@ -32,6 +33,13 @@ public class MediusAuthenticationServer extends MediusServer{
 		}
 		
 		rpcClient = new ClankMasRpcClient(rpcAddress, rpcPort);
+		
+		if (Clank.getInstance().getConfig() instanceof MasConfig) {
+			final MasConfig masConfig = (MasConfig) Clank.getInstance().getConfig();
+			for (String key: masConfig.getWhitelist().keySet()) {
+				logger.info("Whitelist username/pass: " + key + " / " + masConfig.getWhitelist().get(key));
+			}
+		}
 	}
 	
 	
