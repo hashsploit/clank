@@ -1,7 +1,7 @@
 {
 	"mode": "MEDIUS_LOBBY_SERVER",
 	"log_level": "INFO",
-	"file_log_size": 0,
+	"file_log_level": null,
 	"address": null,
 	"port": 10078,
 	"encryption": false,
