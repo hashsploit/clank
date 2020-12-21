@@ -20,13 +20,13 @@
 		"address": "172.16.221.250",
 		"port": 10077
 	},
-	"whitelist": {
-		"enabled": true,
-		"players": [
-			"hashsploit",
-			"fourbolt"
-		]
-	},
+	 "whitelist": {
+        "enabled": true,
+        "players": {
+            "hashsploit": "hashpass",
+            "fourbolt": "fourpass"
+        }
+    },
 	"locations": [
 		{
 			"id": 1,
