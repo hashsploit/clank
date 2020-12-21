@@ -24,7 +24,6 @@ import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.common.MediusAuthenticationServer;
 import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeWorld;
