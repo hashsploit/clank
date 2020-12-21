@@ -113,12 +113,6 @@
 			<artifactId>luaj-jse</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-		<!-- https://github.com/MinnDevelopment/discord-webhooks/ -->
-		<dependency>
-			<groupId>club.minnced</groupId>
-			<artifactId>discord-webhooks</artifactId>
-			<version>0.3.2</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -160,6 +154,12 @@
 			<groupId>javax.annotation</groupId>
 			<artifactId>javax.annotation-api</artifactId>
 			<version>1.2</version>
+		</dependency>
+		<!-- # -->
+		<dependency>
+			<groupId>net.hashsploit</groupId>
+			<artifactId>medius-crypto</artifactId>
+			<version>0.1.1</version>
 		</dependency>
 	</dependencies>
 </project>

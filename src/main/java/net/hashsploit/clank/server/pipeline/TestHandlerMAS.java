@@ -1,4 +1,5 @@
 package net.hashsploit.clank.server.pipeline;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -20,33 +21,30 @@ import net.hashsploit.clank.utils.Utils;
  * Handles a server-side channel.
  */
 public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
-	
-	private static final Logger logger = Logger.getLogger("");
+
+	private static final Logger logger = Logger.getLogger(TestHandlerMAS.class.getName());
 	private final MediusClient client;
-	
+
 	public TestHandlerMAS(final MediusClient client) {
 		super();
 		this.client = client;
 	}
-	
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) {
 		logger.fine(ctx.channel().remoteAddress() + ": channel active");
 	}
 
-
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) {
 		logger.fine(ctx.channel().remoteAddress() + ": channel inactive");
 	}
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {      
+	@Override
+	public void channelRead(ChannelHandlerContext ctx, Object msg) {
 		final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
 		final byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
-
 
 		// No valid packet is < 3 or > 2048 bytes, drop the connection
 		if (data.length < 3 || data.length > 2048) {
@@ -56,53 +54,53 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 
 		// Get RT Packet ID
 		RTMessageId rtid = null;
-		
+
 		for (RTMessageId p : RTMessageId.values()) {
 			if (p.getValue() == data[0]) {
 				rtid = p;
 				break;
 			}
 		}
-		
+
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
 		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
 
-		for (RTMessage packet: packets) {
+		for (RTMessage packet : packets) {
 
-		    logger.fine("Packet ID: " + rtid.toString());
-		    logger.fine("Packet ID: " + rtid.getValue());
+			logger.fine("Packet ID: " + rtid.toString());
+			logger.fine("Packet ID: " + rtid.getValue());
 			// =============================================
-			//              IF STATEMENTS
-			// =============================================	  	    
-		    checkRTConnect(ctx, packet);
-			
-		    checkMediusPackets(ctx, packet);
+			// IF STATEMENTS
+			// =============================================
+			checkRTConnect(ctx, packet);
+
+			checkMediusPackets(ctx, packet);
 		}
 
-    }
-    
-    private void checkMediusPackets(ChannelHandlerContext ctx, RTMessage packet) {
-	    // ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
-    	MediusMessage mm = null;
-	    if (packet.getId().toString().contains("APP")) {
-	    	
-	    	MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
+	}
+
+	private void checkMediusPackets(ChannelHandlerContext ctx, RTMessage packet) {
+		// ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
+		MediusMessage mm = null;
+		if (packet.getId().toString().contains("APP")) {
+
+			MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
 
 			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
-			
+
 			// Detect which medius packet is being parsed
-		    MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
-		    
-		    // Process this medius packet
-		    mediusPacket.read(incomingMessage);
-		    mediusPacket.write(client);	    
-	    }
-    }
-    
-    private void checkRTConnect(ChannelHandlerContext ctx, RTMessage packet) {
+			MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
+
+			// Process this medius packet
+			mediusPacket.read(incomingMessage);
+			mediusPacket.write(client);
+		}
+	}
+
+	private void checkRTConnect(ChannelHandlerContext ctx, RTMessage packet) {
 		if (packet.getId().getValue() == (byte) 0x00) {
 			// =============================================
 			// CLIENT_CONNECT_TCP (0x00)
@@ -110,7 +108,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			String clientIP = client.getIPAddress().substring(1);
 			logger.fine(clientIP);
 			RTMessageId resultrtid = RTMessageId.SERVER_CONNECT_ACCEPT_TCP;
-			
+
 			byte[] header = Utils.hexStringToByteArray("01081000000100");
 			byte[] ipAddr = clientIP.getBytes();
 			int numZeros = 16 - client.getIPAddress().substring(1).length();
@@ -121,21 +119,21 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			buff.put(header);
 			buff.put(ipAddr);
 			buff.put(zeroTrail);
-			
+
 			logger.fine("Data header: " + Utils.bytesToHex(header));
 			logger.fine("IP: " + Utils.bytesToHex(ipAddr));
 			logger.fine("IP Padding encode/decode: " + Utils.bytesToHex(zeroTrail));
 
 			byte[] payload = buff.array();
-			
+
 			logger.fine("Payload: " + Utils.bytesToHex(payload));
-			
+
 			RTMessage dataPacket = new RTMessage(resultrtid, payload);
 			byte[] dataPacketBuffer = dataPacket.toBytes();
-			
+
 			byte[] extraPacket = Utils.hexStringToByteArray("1A02000100");
-			
-			ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );
+
+			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {
 				outputStream.write(dataPacketBuffer);
 				outputStream.write(extraPacket);
@@ -143,21 +141,21 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			byte[] finalPayload = outputStream.toByteArray();
 			logger.fine("Final payload: " + Utils.bytesToHex(finalPayload));
-	        ctx.write(Unpooled.copiedBuffer(finalPayload)); // (1)
-	        ctx.flush(); // (2)
+			ctx.write(Unpooled.copiedBuffer(finalPayload)); // (1)
+			ctx.flush(); // (2)
 		}
-    }
+	}
 
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        // Close the connection when an exception is raised.
-        cause.printStackTrace();
-        ctx.close();
-    }
-    
+	@Override
+	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
+		// Close the connection when an exception is raised.
+		cause.printStackTrace();
+		ctx.close();
+	}
+
 	private static ByteBuffer toNioBuffer(final ByteBuf buffer) {
 		if (buffer.isDirect()) {
 			return buffer.nioBuffer();
