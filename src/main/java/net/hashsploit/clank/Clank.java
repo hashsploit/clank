@@ -24,7 +24,6 @@ import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.common.MediusAuthenticationServer;
 import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeWorld;
@@ -97,6 +96,12 @@ public class Clank {
 		Logger.getLogger("io.perfmark.impl").setLevel(Level.OFF);
 		
 		terminal.init();
+		
+		// Check if file logging is enabled
+		if (config.getFileLogLevel() != null) {
+			terminal.startFile("logs/" + config.getEmulationMode().name().toLowerCase() +"/latest.log", config.getFileLogLevel());
+		}
+		
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
 		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_PROXY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
