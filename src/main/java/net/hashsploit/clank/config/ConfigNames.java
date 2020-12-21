@@ -11,6 +11,11 @@ public enum ConfigNames {
 	 * The server's logger level.
 	 */
 	LOG_LEVEL("log_level"),
+	
+	/**
+	 * The server's file logger level.
+	 */
+	FILE_LOG_LEVEL("file_log_level"),
 
 	/**
 	 * The server's IP Address it should bind to.

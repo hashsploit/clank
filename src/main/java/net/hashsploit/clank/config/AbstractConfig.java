@@ -15,11 +15,19 @@ public class AbstractConfig {
 	private final JSONObject jsonConfig;
 	private final EmulationMode emulationMode;
 	private final Level logLevel;
+	private final Level fileLogLevel;
 	
 	public AbstractConfig(final JSONObject json) {
 		this.jsonConfig = json;
 		this.emulationMode = EmulationMode.valueOf(json.getString(ConfigNames.EMULATION_MODE.toString()));
 		this.logLevel = Level.parse(json.getString(ConfigNames.LOG_LEVEL.toString()));
+		
+		if (!json.isNull(ConfigNames.FILE_LOG_LEVEL.toString())) {
+			this.fileLogLevel = Level.parse(json.getString(ConfigNames.FILE_LOG_LEVEL.toString()));
+		} else {
+			this.fileLogLevel = null;
+		}
+		
 	}
 	
 	/**
@@ -91,6 +99,13 @@ public class AbstractConfig {
 	 */
 	public Level getLogLevel() {
 		return logLevel;
+	}
+	
+	/**
+	 * Get the config's file logger level.
+	 */
+	public Level getFileLogLevel() {
+		return fileLogLevel;
 	}
 	
 }

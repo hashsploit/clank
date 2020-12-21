@@ -1,7 +1,6 @@
 {
 	"mode": "DME_SERVER",
 	"log_level": "INFO",
-	"file_log_level": null,
 	"file_log_size": 0,
 	"address": "172.16.221.250",
 	"udp_address": "172.16.221.250",
