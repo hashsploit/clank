@@ -23,7 +23,7 @@
 	"whitelist": {
 		"enabled": true,
 		"players": {
-			"exampleUsername", "examplePassword",
+			"exampleUsername": "examplePassword",
 			"hashsploit": "hashpass",
 			"fourbolt": "fourpass"
 		}
