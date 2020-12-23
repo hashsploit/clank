@@ -12,9 +12,9 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.objects.MediusMessage;
+import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -53,9 +53,9 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		}
 
 		// Get RT Packet ID
-		RTMessageId rtid = null;
+		RtMessageId rtid = null;
 
-		for (RTMessageId p : RTMessageId.values()) {
+		for (RtMessageId p : RtMessageId.values()) {
 			if (p.getValue() == data[0]) {
 				rtid = p;
 				break;
@@ -107,7 +107,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			// =============================================
 			String clientIP = client.getIPAddress().substring(1);
 			logger.fine(clientIP);
-			RTMessageId resultrtid = RTMessageId.SERVER_CONNECT_ACCEPT_TCP;
+			RtMessageId resultrtid = RtMessageId.SERVER_CONNECT_ACCEPT_TCP;
 
 			byte[] header = Utils.hexStringToByteArray("01081000000100");
 			byte[] ipAddr = clientIP.getBytes();

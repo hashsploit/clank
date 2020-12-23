@@ -7,7 +7,7 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
-import net.hashsploit.clank.server.common.MediusServer;
+import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.utils.Utils;
 
 public class CLIBroadcastCommand implements ICLICommand {

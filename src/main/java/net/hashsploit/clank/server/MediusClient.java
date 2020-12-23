@@ -13,14 +13,16 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MediusConfig;
-import net.hashsploit.clank.server.common.MediusConstants;
-import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusServer;
-import net.hashsploit.clank.server.common.objects.MediusMessage;
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.medius.MediusConstants;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
+import net.hashsploit.clank.server.medius.MediusServer;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.pipeline.MasHandler;
 import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
+import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
-import net.hashsploit.clank.server.pipeline.TestHandlerMAS;
+import net.hashsploit.clank.server.pipeline.RtFrameEncoderHandler;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
 import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
@@ -39,10 +41,10 @@ public class MediusClient implements IClient {
 	private long unixConnectTime;
 	private long txPacketCount;
 	private long rxPacketCount;
-	
+
 	private PS2_RSA rsaKey;
 	private PS2_RC4 rc4Key;
-	
+
 	private Player player;
 
 	public MediusClient(MediusServer server, SocketChannel channel) {
@@ -53,23 +55,22 @@ public class MediusClient implements IClient {
 		this.unixConnectTime = System.currentTimeMillis();
 		this.txPacketCount = 0L;
 		this.rxPacketCount = 0L;
-		this.player = new Player(this, MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED);
+		this.player = null;
 
 		logger.fine(String.format("Client connected: %s:%d", getIPAddress(), getPort()));
-		
+
 		// Decode the packet into frames
-		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue(), 1, 2, 0 ,0, false));
+		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue(), 1, 2, 0, 0, false));
 
 		// Decrypt the packet
 		if (((MediusConfig) Clank.getInstance().getConfig()).isEncrypted()) {
-			//channel.pipeline().addLast(new RtDecryptionHandler(this, rc4Key, rsaKey));
 			channel.pipeline().addLast(new RtDecryptionHandler(this));
 		}
 
-		// If so, initialize the correct pipeline for it.
+		// Initialize the correct pipeline handler for this server.
 		switch (server.getEmulationMode()) {
 			case MEDIUS_AUTHENTICATION_SERVER:
-				channel.pipeline().addLast(new TestHandlerMAS(this));
+				channel.pipeline().addLast(new MasHandler(this));
 				break;
 			case MEDIUS_LOBBY_SERVER:
 				channel.pipeline().addLast(new TestHandlerMLS(this));
@@ -80,14 +81,12 @@ public class MediusClient implements IClient {
 
 		// Re-encrypt the packet
 		if (((MediusConfig) Clank.getInstance().getConfig()).isEncrypted()) {
-			//channel.pipeline().addLast(new RtEncryptionHandler(this));
+			channel.pipeline().addLast(new RtEncryptionHandler(this));
 		}
 
 		// Re-frame the packets
-		//channel.pipeline().addLast(new InboundOutboundRtFrameEncoderHandler(this));
+		channel.pipeline().addLast(new RtFrameEncoderHandler());
 
-		
-		
 		ChannelFuture closeFuture = channel.closeFuture();
 		closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
 			@Override
@@ -230,7 +229,7 @@ public class MediusClient implements IClient {
 	}
 
 	public void sendMediusMessage(MediusMessage msg) {
-		RTMessage packet = new RTMessage(RTMessageId.SERVER_APP, msg.toBytes());
+		RTMessage packet = new RTMessage(RtMessageId.SERVER_APP, msg.toBytes());
 
 		byte[] finalPayload = packet.toBytes();
 
@@ -261,7 +260,7 @@ public class MediusClient implements IClient {
 		logger.fine(String.format("Client disconnected: %s:%d", getIPAddress(), getPort()));
 		server.removeClient(this);
 	}
-	
+
 	private void generateRc4Key(CipherContext context) {
 		Random rng = new Random();
 		byte[] randomBytes = new byte[64];

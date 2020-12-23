@@ -11,7 +11,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.server.dme.DmeUdpServer;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
@@ -98,7 +98,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			buffer.put(ad);
 			buffer.put(Utils.shortToBytesLittle((short) port));
 			
-			RTMessage packetResponse = new RTMessage(RTMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
+			RTMessage packetResponse = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
 			byte[] payload = packetResponse.toBytes();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(payload), requestDatagram.sender()));
@@ -129,9 +129,9 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	}
 
 	public void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
-		if (packet.getId() == RTMessageId.CLIENT_ECHO) {
+		if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 			// Combine RT id and len
-			RTMessage packetResponse = new RTMessage(RTMessageId.CLIENT_ECHO, packet.getPayload());
+			RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
 			byte[] payload = packetResponse.toBytes();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ByteBuf msg = Unpooled.copiedBuffer(payload);

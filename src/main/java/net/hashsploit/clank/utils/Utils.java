@@ -20,7 +20,7 @@ import javax.net.ssl.HttpsURLConnection;
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.RtMessageId;
 
 public class Utils {
 
@@ -113,9 +113,9 @@ public class Utils {
 				// logger.warning("PLAIN DATA PACKET");
 				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
 
-				RTMessageId rtid = null;
+				RtMessageId rtid = null;
 
-				for (RTMessageId p : RTMessageId.values()) {
+				for (RtMessageId p : RtMessageId.values()) {
 					if (p.getValue() == id) {
 						rtid = p;
 						break;

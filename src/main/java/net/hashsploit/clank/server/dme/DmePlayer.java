@@ -10,7 +10,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.SocketChannel;
-import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
+import net.hashsploit.clank.server.medius.objects.DmePlayerStatus;
 
 public class DmePlayer {
 	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());

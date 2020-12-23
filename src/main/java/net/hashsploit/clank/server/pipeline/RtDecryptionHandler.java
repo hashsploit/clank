@@ -21,13 +21,13 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 	}
 
 	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-		final Object decoded = this.decode(ctx, in);
+	protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> output) throws Exception {
+		final Object decoded = this.decode(ctx, input);
 		if (decoded != null) {
-			out.add(decoded);
+			output.add(decoded);
 		}
 	}
-	
+
 	private Object decode(ChannelHandlerContext ctx, ByteBuf input) {
 		byte id = input.getByte(input.readerIndex());
 		byte[] hash = null;
@@ -35,9 +35,10 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		int totalLength = 3;
 
 		logger.severe(RtDecryptionHandler.class.getName() + ": " + Utils.bytesToHex(Utils.byteBufToNioBuffer(input).array()));
-		
+
 		if (frameLength <= 0) {
-			//return BaseScertMessage.Instantiate((RT_MSG_TYPE) (id & 0x7F), null, new byte[0], _getCipher);
+
+			// return BaseScertMessage.Instantiate((RT_MSG_TYPE) (id & 0x7F), null, new byte[0], _getCipher);
 		}
 
 		if (id >= 0x80) {
@@ -54,7 +55,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		// never overflows because it's less than maxFrameLength
 		int frameLengthInt = (int) frameLength;
 		if (input.readableBytes() < frameLengthInt) {
-			// input.ResetReaderIndex();
+			input.resetReaderIndex();
 			return null;
 		}
 
@@ -62,9 +63,8 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		byte[] messageContents = new byte[frameLengthInt];
 		input.getBytes(input.readableBytes() + totalLength, messageContents);
 
-		//
 		input.readerIndex(input.readableBytes() + totalLength + frameLengthInt);
-		//return BaseScertMessage.Instantiate((RT_MSG_TYPE) id, hash, messageContents, _getCipher);
+		// return BaseScertMessage.Instantiate((RT_MSG_TYPE) id, hash, messageContents, _getCipher);
 		return null;
 	}
 

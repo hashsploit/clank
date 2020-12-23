@@ -3,7 +3,7 @@ package net.hashsploit.clank.rt.serializers;
 import java.util.Arrays;
 
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.utils.Utils;
 
 public class RT_ClientAppBroadcast extends RTMessage {
@@ -12,7 +12,7 @@ public class RT_ClientAppBroadcast extends RTMessage {
 	private byte[] appPayload;
 
 	public RT_ClientAppBroadcast(byte[] packetData) {
-		super(RTMessageId.CLIENT_APP_BROADCAST, Arrays.copyOfRange(packetData, 3, packetData.length));
+		super(RtMessageId.CLIENT_APP_BROADCAST, Arrays.copyOfRange(packetData, 3, packetData.length));
 
 		byte[] payload = this.getPayload();
 		// FIXME: don't assume

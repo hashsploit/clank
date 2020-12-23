@@ -5,9 +5,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
-import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
-import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
+import net.hashsploit.clank.server.medius.packets.serializers.CreateGameOneRequest;
 
 public class GameList {
 	

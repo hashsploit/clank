@@ -1,7 +1,7 @@
 package net.hashsploit.clank.server;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 
 public class Player {
 	

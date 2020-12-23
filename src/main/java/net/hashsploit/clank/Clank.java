@@ -22,12 +22,12 @@ import net.hashsploit.clank.config.configs.NatConfig;
 import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
-import net.hashsploit.clank.server.common.MediusAuthenticationServer;
-import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {

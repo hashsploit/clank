@@ -11,7 +11,7 @@ import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.TooLongFrameException;
-import net.hashsploit.clank.server.RTMessageId;
+import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.utils.Utils;
 
 public class RtFrameDecoderHandler extends ByteToMessageDecoder {
@@ -66,9 +66,9 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	}
 
 	@Override
-	protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
+	protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> output) throws Exception {
 
-		final ByteBuffer buffer = Utils.byteBufToNioBuffer(in);
+		final ByteBuffer buffer = Utils.byteBufToNioBuffer(input);
 		final byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
 		
@@ -82,9 +82,9 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		}
 
 		// Get RT Packet ID
-		RTMessageId rtid = null;
+		RtMessageId rtid = null;
 
-		for (final RTMessageId p : RTMessageId.values()) {
+		for (final RtMessageId p : RtMessageId.values()) {
 			if (p.getValue() == data[0] || p.getValue() == (data[0] & 0x7F)) {
 				rtid = p;
 				break;
@@ -98,10 +98,10 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			return;
 		}
 
-		Object decoded = this.decode(ctx, in);
+		Object decoded = this.decode(ctx, input);
 
 		if (decoded != null) {
-			out.add(decoded);
+			output.add(decoded);
 		}
 	}
 

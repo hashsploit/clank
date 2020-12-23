@@ -5,10 +5,10 @@ import java.util.logging.Logger;
 
 import io.grpc.stub.StreamObserver;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusServer;
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
-import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
+import net.hashsploit.clank.server.medius.MediusServer;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 public class ClankMlsRpcServer extends AbstractRpcServer {

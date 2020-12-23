@@ -11,8 +11,8 @@ import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
-import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.objects.DmePlayerStatus;
+import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.objects.DmePlayerStatus;
 import net.hashsploit.clank.server.pipeline.TestHandlerDmeUdp;
 import net.hashsploit.clank.utils.Utils;
 
@@ -124,7 +124,7 @@ public class DmeWorld {
 	}
 	
 	private byte[] insertId(byte[] payload, byte id) {
-		payload[0] = RTMessageId.CLIENT_APP_SINGLE.getValue();
+		payload[0] = RtMessageId.CLIENT_APP_SINGLE.getValue();
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		try {

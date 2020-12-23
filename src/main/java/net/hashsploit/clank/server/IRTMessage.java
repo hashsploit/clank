@@ -6,7 +6,7 @@ public interface IRTMessage {
 	 * Get the SCE-RT/RTIME packet ID.
 	 * @return
 	 */
-	public RTMessageId getId();
+	public RtMessageId getId();
 	
 	/**
 	 * Get the data length.

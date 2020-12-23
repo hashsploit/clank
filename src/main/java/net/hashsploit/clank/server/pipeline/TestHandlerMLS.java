@@ -14,11 +14,11 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.objects.MediusMessage;
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -185,9 +185,9 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	}
 
 	public void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
-		if (packet.getId() == RTMessageId.CLIENT_ECHO) {
+		if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 			// Combine RT id and len
-			RTMessage packetResponse = new RTMessage(RTMessageId.CLIENT_ECHO, packet.getPayload());
+			RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
 			byte[] payload = packetResponse.toBytes();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ByteBuf msg = Unpooled.copiedBuffer(payload);

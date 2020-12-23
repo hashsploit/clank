@@ -5,7 +5,7 @@ import java.nio.ByteOrder;
 
 public class RTMessage implements IRTMessage {
 	
-	private final RTMessageId id;
+	private final RtMessageId id;
 	private final short length;
 	private final byte[] payload;
 	
@@ -15,7 +15,7 @@ public class RTMessage implements IRTMessage {
 	 * @param checksum
 	 * @param payload
 	 */
-	public RTMessage(RTMessageId id, byte[] payload) {
+	public RTMessage(RtMessageId id, byte[] payload) {
 		this.id = id;
 		
 		if (payload == null) {
@@ -31,7 +31,7 @@ public class RTMessage implements IRTMessage {
 	 * Get the packet id.
 	 * @return
 	 */
-	public RTMessageId getId() {
+	public RtMessageId getId() {
 		return id;
 	}
 	
