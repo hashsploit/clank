@@ -51,6 +51,7 @@ public class MediusMessage {
 		return bb.array();
 	}
 	
+	// FIXME: make this abstract
 	public String getDebugString() {
 		return null;
 	}

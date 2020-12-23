@@ -2,6 +2,8 @@ package net.hashsploit.clank;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -9,6 +11,7 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +24,7 @@ import java.util.logging.Handler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
+import java.util.logging.StreamHandler;
 
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Attribute;
@@ -38,9 +42,10 @@ import net.hashsploit.clank.cli.ICLIInvalidCommand;
 
 public final class Terminal {
 
-	private static final String CONSOLE_DATE = "HH:mm:ss";
+	private static final String CONSOLE_DATE = "HH:mm:ss.SSS";
+	private static final String FILE_DATE = "yyyy/MM/dd HH:mm:ss.SSS";
 	private static Logger logger = Logger.getLogger("");
-
+	private static Logger fileLogger = Logger.getLogger("");
 	private final Terminal instance;
 	private Thread thread;
 	private String prompt;
@@ -121,7 +126,7 @@ public final class Terminal {
 
 		for (Handler handler : logger.getHandlers()) {
 			if (handler.getClass() == FancyConsoleHandler.class) {
-				handler.setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+				handler.setFormatter(new ConsoleDateOutputFormatter(CONSOLE_DATE, true));
 			}
 		}
 
@@ -135,12 +140,33 @@ public final class Terminal {
 						reader.println();
 						reader = null;
 					}
-				} catch (Exception e) {
-				}
+				} catch (Exception e) {}
 			}
 		});
 	}
 	
+	
+	/**
+	 * Adds a console-log handler writing to the given file.
+	 *
+	 * @param logfile the file path
+	 */
+	public void startFile(String logfile, Level level) {
+		File parent = new File(logfile).getParentFile();
+		if (!parent.isDirectory() && !parent.mkdirs()) {
+			logger.warning("Could not create log folder: " + parent);
+		}
+		Handler fileHandler = new RotatingFileHandler(logfile);
+		fileHandler.setFormatter(new DateOutputFormatter(FILE_DATE, false));
+		fileHandler.setLevel(level);
+		fileLogger.setLevel(level);
+		fileLogger.addHandler(fileHandler);
+	}
+
+	/**
+	 * Get the console reader object.
+	 * @return
+	 */
 	public ConsoleReader getConsoleReader() {
 		return reader;
 	}
@@ -165,6 +191,14 @@ public final class Terminal {
 			return;
 		}
 		running = false;
+		for (final Handler handler : logger.getHandlers()) {
+			handler.flush();
+			handler.close();
+		}
+		for (final Handler handler : fileLogger.getHandlers()) {
+			handler.flush();
+			handler.close();
+		}
 		if (reader != null) {
 			try {
 				reader.getTerminal().restore();
@@ -279,6 +313,9 @@ public final class Terminal {
 	 */
 	public synchronized void setLevel(Level level) {
 		logger.setLevel(level);
+		for (Handler handler : logger.getHandlers()) {
+			handler.setLevel(level);
+		}
 	}
 
 	/**
@@ -447,7 +484,7 @@ public final class Terminal {
 	private class FancyConsoleHandler extends ConsoleHandler {
 
 		public FancyConsoleHandler() {
-			setFormatter(new DateOutputFormatter(CONSOLE_DATE, true));
+			setFormatter(new ConsoleDateOutputFormatter(CONSOLE_DATE, true));
 			setOutputStream(System.out);
 			setLevel(Level.ALL);
 		}
@@ -473,6 +510,62 @@ public final class Terminal {
 			} catch (IOException ex) {
 				System.err.println(ex.getMessage());
 			}
+		}
+	}
+	
+	private static class RotatingFileHandler extends StreamHandler {
+
+		private final SimpleDateFormat dateFormat;
+		private final String template;
+		private final boolean rotate;
+		private String filename;
+
+		public RotatingFileHandler(String template) {
+			this.template = template;
+			rotate = template.contains("%D");
+			dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+			filename = calculateFilename();
+			updateOutput();
+		}
+
+		private void updateOutput() {
+			try {
+				setOutputStream(new FileOutputStream(filename, true));
+			} catch (IOException ex) {
+				logger.log(Level.SEVERE, "Unable to open " + filename + " for writing", ex);
+			}
+		}
+
+		private void checkRotate() {
+			if (rotate) {
+				String newFilename = calculateFilename();
+				if (!filename.equals(newFilename)) {
+					filename = newFilename;
+					// note that the console handler doesn't see this message
+					super.publish(new LogRecord(Level.INFO, "Log rotating to: " + filename));
+					updateOutput();
+				}
+			}
+		}
+
+		private String calculateFilename() {
+			return template.replace("%D", dateFormat.format(new Date()));
+		}
+
+		@Override
+		public synchronized void publish(LogRecord record) {
+			if (!isLoggable(record)) {
+				return;
+			}
+			checkRotate();
+			super.publish(record);
+			super.flush();
+		}
+
+		@Override
+		public synchronized void flush() {
+			checkRotate();
+			super.flush();
 		}
 	}
 
@@ -501,6 +594,56 @@ public final class Terminal {
 		private final boolean color;
 
 		public DateOutputFormatter(String pattern, boolean color) {
+			date = new SimpleDateFormat(pattern);
+			this.color = color;
+		}
+
+		@Override
+		public String format(LogRecord record) {
+			StringBuilder builder = new StringBuilder();
+
+			builder.append(date.format(record.getMillis())).append(' ');
+			
+			if (color) {
+				if (record.getLevel().intValue() <= Level.CONFIG.intValue()) {
+					builder.append(AnsiColor.BLUE);
+				} else if (record.getLevel().intValue() == Level.INFO.intValue()) {
+					// do nothing
+				} else if (record.getLevel().intValue() == Level.WARNING.intValue()) {
+					builder.append(AnsiColor.YELLOW);
+				} else if (record.getLevel().intValue() >= Level.SEVERE.intValue()) {
+					builder.append(AnsiColor.RED);
+				}
+			}
+
+			builder.append('[');
+			builder.append(record.getLevel().getLocalizedName().toUpperCase());
+			builder.append("]" + AnsiColor.RESET + " ");
+
+			if (color) {
+				builder.append(colorize(AnsiColor.RESET + formatMessage(record) + AnsiColor.RESET));
+			} else {
+				builder.append(formatMessage(record));
+			}
+
+			builder.append('\n');
+
+			if (record.getThrown() != null) {
+				// StringWriter's close() is trivial
+				StringWriter writer = new StringWriter();
+				record.getThrown().printStackTrace(new PrintWriter(writer));
+				builder.append(writer);
+			}
+
+			return AnsiColor.stripColor(builder.toString());
+		}
+	}
+	
+	private class ConsoleDateOutputFormatter extends Formatter {
+		private final SimpleDateFormat date;
+		private final boolean color;
+
+		public ConsoleDateOutputFormatter(String pattern, boolean color) {
 			date = new SimpleDateFormat(pattern);
 			this.color = color;
 		}

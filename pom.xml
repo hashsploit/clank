@@ -58,11 +58,9 @@
 					<protocArtifact>com.google.protobuf:protoc:3.14.0:exe:${os.detected.classifier}</protocArtifact>
 					<pluginId>grpc-java</pluginId>
 					<pluginArtifact>io.grpc:protoc-gen-grpc-java:1.34.0:exe:${os.detected.classifier}</pluginArtifact>
-					<!--
-					This becomes a mess, if you decide to enable this, update the proto files package.
-					<protoSourceRoot>${basedir}/src/main/proto</protoSourceRoot>
-                    <outputDirectory>${basedir}/src/main/java/net/hashsploit/clank/rpc</outputDirectory>
-                    -->
+					<!-- This becomes a mess, if you decide to enable this, update the proto 
+						files package. <protoSourceRoot>${basedir}/src/main/proto</protoSourceRoot> 
+						<outputDirectory>${basedir}/src/main/java/net/hashsploit/clank/rpc</outputDirectory> -->
 				</configuration>
 				<executions>
 					<execution>
@@ -155,7 +153,13 @@
 			<artifactId>javax.annotation-api</artifactId>
 			<version>1.2</version>
 		</dependency>
-		<!-- # -->
+		<!-- https://mvnrepository.com/artifact/io.perfmark/perfmark-impl -->
+		<dependency>
+			<groupId>io.perfmark</groupId>
+			<artifactId>perfmark-impl</artifactId>
+			<version>0.23.0</version>
+		</dependency>
+		<!-- Medius Crypto -->
 		<dependency>
 			<groupId>net.hashsploit</groupId>
 			<artifactId>medius-crypto</artifactId>

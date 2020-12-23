@@ -19,24 +19,19 @@ public enum EmulationMode {
 	MEDIUS_LOBBY_SERVER(2),
 	
 	/**
-	 * Handles non p2p in-game communication.
-	 */
-	MEDIUS_PROXY_SERVER(4),
-	
-	/**
 	 * Handles universe information synchronization component.
 	 */
-	MEDIUS_UNIVERSE_INFORMATION_SERVER(8),
+	MEDIUS_UNIVERSE_INFORMATION_SERVER(4),
 	
 	/**
 	 * NAT server component.
 	 */
-	NAT_SERVER(16),
+	NAT_SERVER(8),
 
 	/**
 	 * DME server component.
 	 */
-	DME_SERVER(32);
+	DME_SERVER(16);
 	
 	private final int modeId;
 	

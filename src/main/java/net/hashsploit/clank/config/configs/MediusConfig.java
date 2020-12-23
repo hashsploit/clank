@@ -43,6 +43,17 @@ public class MediusConfig extends AbstractConfig {
 	}
 
 	/**
+	 * Returns true if encryption should be enforced.
+	 * 
+	 * @return
+	 */
+	public boolean isEncrypted() {
+		final String key = ConfigNames.ENCRYPTION.toString();
+
+		return getJson().getBoolean(key);
+	}
+	
+	/**
 	 * Get the parent thread count that this server should use.
 	 * 
 	 * @return

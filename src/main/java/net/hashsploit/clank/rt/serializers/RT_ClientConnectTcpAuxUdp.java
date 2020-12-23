@@ -9,11 +9,12 @@ public class RT_ClientConnectTcpAuxUdp {
 
 	private final short dmeWorldId;
 	private final byte[] mlsToken;
-	
+
 	public RT_ClientConnectTcpAuxUdp(RTMessage packet) {
 		byte[] bytes = packet.toBytes();
+		// FIXME: don't assume
 		dmeWorldId = Utils.bytesToShortLittle(bytes[6], bytes[7]);
-		mlsToken = Arrays.copyOfRange(bytes, bytes.length-17, bytes.length-1);
+		mlsToken = Arrays.copyOfRange(bytes, bytes.length - 17, bytes.length - 1);
 	}
 
 	public synchronized short getDmeWorldId() {

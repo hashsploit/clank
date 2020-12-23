@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
@@ -521,4 +522,13 @@ public class Utils {
 		return sb.toString();
 	}
 
+	public static ByteBuffer byteBufToNioBuffer(final ByteBuf buffer) {
+		if (buffer.isDirect()) {
+			return buffer.nioBuffer();
+		}
+		final byte[] bytes = new byte[buffer.readableBytes()];
+		buffer.getBytes(buffer.readerIndex(), bytes);
+		return ByteBuffer.wrap(bytes);
+	}
+	
 }
