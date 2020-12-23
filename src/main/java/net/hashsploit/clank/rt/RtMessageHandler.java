@@ -18,6 +18,10 @@ public abstract class RtMessageHandler {
 		this.id = id;
 	}
 	
+	/**
+	 * Get the client tied to this message handler.
+	 * @return
+	 */
 	public MediusClient getClient() {
 		return client;
 	}

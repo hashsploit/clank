@@ -17,7 +17,7 @@ import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.PlayerList;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
-import net.hashsploit.clank.server.medius.packets.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.server.rpc.ClankMlsRpcServer;
 import net.hashsploit.clank.server.rpc.RpcServerConfig;
 import net.hashsploit.clank.utils.MediusMessageMapInitializer;

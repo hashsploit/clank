@@ -3,8 +3,8 @@ package net.hashsploit.clank.server;
 import java.util.ArrayList;
 
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
-import net.hashsploit.clank.server.medius.packets.serializers.CreateGameOneRequest;
-import net.hashsploit.clank.server.medius.packets.serializers.GameInfoZeroResponse;
+import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.medius.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGame {

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.CorruptedFrameException;
@@ -38,7 +39,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	}
 
 	public RtFrameDecoderHandler(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int lengthAdjustment, int initialBytesToStrip, boolean failFast) {
-		this(ByteOrder.LITTLE_ENDIAN, maxFrameLength, lengthFieldOffset, lengthFieldLength, lengthAdjustment, initialBytesToStrip, failFast);
+		this(ByteOrder.BIG_ENDIAN, maxFrameLength, lengthFieldOffset, lengthFieldLength, lengthAdjustment, initialBytesToStrip, failFast);
 	}
 
 	public RtFrameDecoderHandler(ByteOrder byteOrder, int maxFrameLength, int lengthFieldOffset, int lengthFieldLength, int lengthAdjustment, int initialBytesToStrip, boolean failFast) {
@@ -68,14 +69,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> output) throws Exception {
 
-		final ByteBuffer buffer = Utils.byteBufToNioBuffer(input);
-		final byte[] data = new byte[buffer.remaining()];
-		buffer.get(data);
-		
-		logger.severe(RtFrameDecoderHandler.class.getName() + ": " + Utils.bytesToHex(data));
-
 		// No valid packet is < 3 or > 2048 bytes, drop the connection
-		if (data.length < 3 || data.length > 2048) {
+		if (input.readableBytes() < 3 || input.readableBytes() > 2048) {
 			logger.warning("Invalid protocol request from: " + ctx.channel().remoteAddress().toString());
 			ctx.close();
 			return;
@@ -85,7 +80,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		RtMessageId rtid = null;
 
 		for (final RtMessageId p : RtMessageId.values()) {
-			if (p.getValue() == data[0] || p.getValue() == (data[0] & 0x7F)) {
+			if (p.getValue() == input.getByte(0) || p.getValue() == (input.getByte(0) & 0x7F)) {
 				rtid = p;
 				break;
 			}
@@ -98,7 +93,9 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			return;
 		}
 
-		Object decoded = this.decode(ctx, input);
+		ByteBuf buffer = Unpooled.buffer(input.capacity());
+		buffer.writeBytes(input);
+		Object decoded = this.decode(ctx, buffer);
 
 		if (decoded != null) {
 			output.add(decoded);
@@ -116,7 +113,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			this.failIfNessesary(false);
 		}
 
-		if (input.readerIndex() < this.lengthFieldEndOffset) {
+		if (input.readableBytes() < this.lengthFieldEndOffset) {
 			return null;
 		}
 
@@ -221,6 +218,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		// Close the connection when an exception is raised.
 		logger.warning(String.format("Exception in %s from %s: %s", RtFrameDecoderHandler.class.getName(), ctx.channel().remoteAddress().toString(), cause.getMessage()));
+		cause.printStackTrace();
 		ctx.close();
 	}
 

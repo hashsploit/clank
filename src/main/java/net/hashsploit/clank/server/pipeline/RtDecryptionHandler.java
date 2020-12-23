@@ -72,6 +72,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 		// Close the connection when an exception is raised.
 		logger.warning(String.format("Exception in %s from %s: %s", RtDecryptionHandler.class.getName(), ctx.channel().remoteAddress().toString(), cause.getMessage()));
+		cause.printStackTrace();
 		ctx.close();
 	}
 
