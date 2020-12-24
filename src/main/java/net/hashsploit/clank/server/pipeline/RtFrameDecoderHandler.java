@@ -1,6 +1,5 @@
 package net.hashsploit.clank.server.pipeline;
 
-import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.List;
 import java.util.logging.Logger;
@@ -13,7 +12,6 @@ import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.TooLongFrameException;
 import net.hashsploit.clank.server.RtMessageId;
-import net.hashsploit.clank.utils.Utils;
 
 public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 
@@ -69,6 +67,10 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> output) throws Exception {
 
+		if (!ctx.pipeline().channel().isActive()) {
+			//return;
+		}
+		
 		// No valid packet is < 3 or > 2048 bytes, drop the connection
 		if (input.readableBytes() < 3 || input.readableBytes() > 2048) {
 			logger.warning("Invalid protocol request from: " + ctx.channel().remoteAddress().toString());
@@ -76,11 +78,13 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			return;
 		}
 
-		// Get RT Packet ID
 		RtMessageId rtid = null;
-
+		
+		// Convert the current id (-0x80 if it's encrypted)
+		byte id = (byte) (input.getByte(0) & (byte) 0x7F);
+		
 		for (final RtMessageId p : RtMessageId.values()) {
-			if (p.getValue() == input.getByte(0) || p.getValue() == (input.getByte(0) & 0x7F)) {
+			if (p.getValue() == id) {
 				rtid = p;
 				break;
 			}
@@ -93,7 +97,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			return;
 		}
 
-		ByteBuf buffer = Unpooled.buffer(input.capacity());
+		ByteBuf buffer = Unpooled.buffer(input.readableBytes());
 		buffer.writeBytes(input);
 		Object decoded = this.decode(ctx, buffer);
 
@@ -125,7 +129,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			throw new CorruptedFrameException("Negative pre-adjustment length field: " + frameLength);
 		}
 
-		boolean signed = input.getByte(input.readerIndex()) >= 0x80;
+		boolean signed = input.getByte(input.readerIndex()) >= (byte) 0x80;
 		frameLength += this.lengthAdjustment + this.lengthFieldEndOffset + ((signed && frameLength > 0) ? 4 : 0);
 
 		if (frameLength < this.lengthFieldEndOffset) {

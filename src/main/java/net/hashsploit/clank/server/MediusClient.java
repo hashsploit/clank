@@ -265,7 +265,6 @@ public class MediusClient implements IClient {
 		Random rng = new Random();
 		byte[] randomBytes = new byte[64];
 		rng.nextBytes(randomBytes);
-		randomBytes[63] = 0x00;
 		rc4Key = new PS2_RC4(randomBytes, context);
 	}
 

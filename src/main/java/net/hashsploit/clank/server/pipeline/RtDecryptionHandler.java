@@ -8,6 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.utils.Utils;
 
 public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
@@ -29,23 +30,35 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 	}
 
 	private Object decode(ChannelHandlerContext ctx, ByteBuf input) {
-		byte id = input.getByte(input.readerIndex());
+		
+		// Convert the current id (-0x80 if it's encrypted)
+		byte id = (byte) (input.getByte(input.readerIndex()) & (byte) 0x7F);
 		byte[] hash = null;
 		long frameLength = input.getShortLE(input.readerIndex() + 1);
 		int totalLength = 3;
 
 		logger.severe(RtDecryptionHandler.class.getName() + ": " + Utils.bytesToHex(Utils.byteBufToNioBuffer(input).array()));
 
-		if (frameLength <= 0) {
-
-			// return BaseScertMessage.Instantiate((RT_MSG_TYPE) (id & 0x7F), null, new byte[0], _getCipher);
+		// add mapping
+		RtMessageId rtid = null;
+		for (final RtMessageId p : RtMessageId.values()) {
+			if (p.getValue() == id) {
+				rtid = p;
+				break;
+			}
 		}
 
-		if (id >= 0x80) {
+		if (frameLength <= 0) {
+			// return BaseScertMessage.Instantiate((RT_MSG_TYPE) (id & 0x7F), null, new byte[0], _getCipher);
+			// use mapping
+			instantiate(rtid, hash, new byte[0]);
+		}
+
+		if (id >= (byte) 0x80) {
 			hash = new byte[4];
 			input.getBytes(input.readerIndex() + 3, hash);
 			totalLength += 4;
-			id &= 0x7F;
+			id &= (byte) 0x7F;
 		}
 
 		if (frameLength < 0) {
@@ -61,11 +74,15 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 		// extract frame
 		byte[] messageContents = new byte[frameLengthInt];
-		input.getBytes(input.readableBytes() + totalLength, messageContents);
+		input.getBytes(input.readerIndex() + totalLength, messageContents);
 
-		input.readerIndex(input.readableBytes() + totalLength + frameLengthInt);
+		input.readerIndex(input.readerIndex() + totalLength + frameLengthInt);
 		// return BaseScertMessage.Instantiate((RT_MSG_TYPE) id, hash, messageContents, _getCipher);
 		return null;
+	}
+
+	private void instantiate(RtMessageId id, byte[] hash, byte[] messageBuffer) {
+
 	}
 
 	@Override
