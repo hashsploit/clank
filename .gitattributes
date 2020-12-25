@@ -1,0 +1,5 @@
+*.sh linguist-language=Shell
+*.bat linguist-language=Batchfile
+*.java linguist-language=Java
+*.proto linguist-language=Protocol_Buffer
+Dockerfile linguist-language=Dockerfile
