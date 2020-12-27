@@ -47,7 +47,7 @@ public class MediusFindPlayerHandler extends MediusPacketHandler {
 		byte[] endOfList = Utils.intToBytesLittle(1);
 
 		respPacket = new FindPlayerResponse(reqPacket.getMessageID(), callbackStatus, applicationId, applicationName, applicationType, worldId, accountID,
-				accountName, endOfList);
+				reqPacket.getAccountName(), endOfList);
 		client.sendMediusMessage(respPacket);
 	}
 

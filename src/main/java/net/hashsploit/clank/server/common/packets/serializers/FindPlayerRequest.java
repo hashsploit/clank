@@ -44,5 +44,9 @@ public class FindPlayerRequest extends MediusMessage {
 		return messageID;
 	}
 
+	public byte[] getAccountName() {
+		return accountName;
+	}
+
 	
 }
