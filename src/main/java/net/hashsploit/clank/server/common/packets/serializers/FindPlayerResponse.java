@@ -27,6 +27,7 @@ public class FindPlayerResponse extends MediusMessage {
 		super(MediusMessageType.FindPlayerResponse);
 		
 		this.messageID = messageID;
+		this.callbackStatus = callbackStatus;
 		this.applicatonId = applicatonId;
 		this.applicationName = applicationName;
 		this.applicationType = applicationType;
