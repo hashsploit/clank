@@ -43,6 +43,7 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusGetWorldSecurit
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinChannelHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinGameHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusLadderPositionHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusLadderPosition_ExtraInfoHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusLobbyWorldPlayerListHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPickLocationHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPlayerInfoHandler;
@@ -119,6 +120,7 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GetClanInvitationsSent, new MediusGetClanInvitationsSentHandler());
 		mp.put(MediusMessageType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
 		mp.put(MediusMessageType.FindPlayer, new MediusFindPlayerHandler());
+		mp.put(MediusMessageType.LadderPosition_ExtraInfo, new MediusLadderPosition_ExtraInfoHandler());
 		
 		// added for Amplitude
 		mp.put(MediusMessageType.AccountRegistration, new MediusAccountRegistrationHandler());
