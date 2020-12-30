@@ -10,6 +10,7 @@ import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
+import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetIgnoreListHandler extends MediusPacketHandler {
@@ -48,6 +49,7 @@ public class MediusGetIgnoreListHandler extends MediusPacketHandler {
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.NO_RESULT.getValue()));	 // give no result for now		
 			outputStream.write(Utils.intToBytesLittle(0)); // ignoreAccountID
 			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue())); // IgnoreAccountName
+			outputStream.write(Utils.intToBytesLittle(MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED.getValue()));
 			outputStream.write(Utils.hexStringToByteArray("01000000")); // end of list
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

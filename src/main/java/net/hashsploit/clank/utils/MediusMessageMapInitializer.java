@@ -20,6 +20,7 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusClearGameListFi
 import net.hashsploit.clank.server.common.packets.handlers.MediusCreateGameOneHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusDnasSignaturePostHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusEndGameReportHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusFindPlayerHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusFindWorldByNameHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusGameInfoZeroHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusGameListHandler;
@@ -42,6 +43,7 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusGetWorldSecurit
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinChannelHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinGameHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusLadderPositionHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusLadderPosition_ExtraInfoHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusLobbyWorldPlayerListHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPickLocationHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusPlayerInfoHandler;
@@ -117,7 +119,9 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GetIgnoreList, new MediusGetIgnoreListHandler());
 		mp.put(MediusMessageType.GetClanInvitationsSent, new MediusGetClanInvitationsSentHandler());
 		mp.put(MediusMessageType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
-
+		mp.put(MediusMessageType.FindPlayer, new MediusFindPlayerHandler());
+		mp.put(MediusMessageType.LadderPosition_ExtraInfo, new MediusLadderPosition_ExtraInfoHandler());
+		
 		// added for Amplitude
 		mp.put(MediusMessageType.AccountRegistration, new MediusAccountRegistrationHandler());
 		mp.put(MediusMessageType.LadderPosition, new MediusLadderPositionHandler());
