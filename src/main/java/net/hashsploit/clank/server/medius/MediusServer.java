@@ -23,6 +23,7 @@ import net.hashsploit.clank.server.scert.objects.RTMsgEncodingType;
 import net.hashsploit.clank.server.scert.objects.RTMsgLanguageType;
 import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 import net.hashsploit.clank.utils.Utils;
+import net.hashsploit.medius.crypto.rsa.PS2_RSA;
 
 /**
  * A generic Medius Server (TCP)

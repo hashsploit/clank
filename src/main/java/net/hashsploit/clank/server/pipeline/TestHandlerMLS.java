@@ -100,7 +100,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
 
 			// Process this medius packet
-			mediusPacket.read(incomingMessage);
+			mediusPacket.read(client, incomingMessage);
 			mediusPacket.write(client);
 		}
 	}
