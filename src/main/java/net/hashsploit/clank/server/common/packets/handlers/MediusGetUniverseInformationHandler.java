@@ -11,6 +11,7 @@ import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.GetUniverseInformationRequest;
 import net.hashsploit.clank.server.common.packets.serializers.GetUniverseInformationResponse;
 import net.hashsploit.clank.server.muis.UniverseInfo;
+import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetUniverseInformationHandler extends MediusPacketHandler {
 
@@ -52,9 +53,10 @@ public class MediusGetUniverseInformationHandler extends MediusPacketHandler {
 			 * Bit 6:   Set If the UniverseDescription field exists
 			 * Bit 7:   Set If the Status & UserCount & MaxUser fields exist
 			 * Bit 8:   Set If the UniverseBilling & BillingSystemName fields exist
-			 * Bit 9:   Set If the ExtendedInfo field exists Bit 10: Set If the SvoURL field exists  
+			 * Bit 9:   Set If the ExtendedInfo field exists
+			 * Bit 10:  Set If the SvoURL field exists  
 			 */
-			int infoFilter = 0;
+			int infoFilter = Utils.bytesToIntLittle(reqPacket.getInfoType());
 			
 			int universeId = universe.getUniverseId();
 			String universeName = universe.getName();

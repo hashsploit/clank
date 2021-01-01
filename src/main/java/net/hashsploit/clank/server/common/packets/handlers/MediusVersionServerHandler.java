@@ -26,7 +26,7 @@ public class MediusVersionServerHandler extends MediusPacketHandler {
 	@Override
 	public void write(MediusClient client) {
 		
-		String serverVersion = Clank.NAME + " v" + Clank.VERSION;
+		String serverVersion = Clank.NAME + " v" + Clank.VERSION + " " + client.getServer().getEmulationMode().name();
 		
 		respPacket = new VersionServerResponse(reqPacket.getMessageId(), serverVersion);
 		
