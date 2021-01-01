@@ -75,7 +75,7 @@ public class GetUniverseInformationResponse extends MediusMessage {
 			 * Bit 7:   Set If the Status & UserCount & MaxUser fields exist
 			 * Bit 8:   Set If the UniverseBilling & BillingSystemName fields exist
 			 * Bit 9:   Set If the ExtendedInfo field exists
-			 * Bit 10:  Set If the SvoURL field exists  
+			 * Bit 10:  Set If the SvoURL field exists
 			 */
 			
 			// If the 3rd bit is set, include UniverseId

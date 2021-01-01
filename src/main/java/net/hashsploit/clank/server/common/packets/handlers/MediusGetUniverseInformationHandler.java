@@ -66,18 +66,17 @@ public class MediusGetUniverseInformationHandler extends MediusPacketHandler {
 			
 			int status = 1; // Universe up/down status field
 			int userCount = 1; // Number of users in this universe
-			int maxUsers = 1000; // Maximum number of users allowed in this universe;
+			int maxUsers = 1000; // Maximum number of users allowed in this universe
 			
-			BillingServiceProvider bsp = BillingServiceProvider.SCEA;
+			BillingServiceProvider bsp = BillingServiceProvider.SCEE;
 			String billingSystemName = "Nah, this shit is free";
 			String extendedInfo = "";
 			String svoUrl = "";
 			
-			boolean endOfList = i == config.getUniverseInformation().size();
+			boolean endOfList = i == config.getUniverseInformation().size() - 1;
 			
 			respPacket = new GetUniverseInformationResponse(messageId, callbackStatus, infoFilter, universeId, universeName, dns, port, universeDescription, status, userCount, maxUsers, bsp, billingSystemName, extendedInfo, svoUrl, endOfList);
-			client.sendMediusMessage(respPacket);	
-			
+			client.sendMediusMessage(respPacket);
 		}
 		
 		

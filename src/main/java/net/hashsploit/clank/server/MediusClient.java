@@ -25,9 +25,10 @@ public class MediusClient implements IClient {
 
 	private final MediusServer server;
 	private final SocketChannel socketChannel;
-	private Player player;
 	private ClientState state;
 	private boolean encrypted;
+	private int appId;
+	private Player player;
 
 	private long unixConnectTime;
 	private long txPacketCount;
@@ -165,6 +166,22 @@ public class MediusClient implements IClient {
 	 */
 	protected void setPlayer(final Player player) {
 		this.player = player;
+	}
+	
+	/**
+	 * Get the application id of this client.
+	 * @return
+	 */
+	public int getApplicationId() {
+		return appId;
+	}
+	
+	/**
+	 * Get the application id of this client.
+	 * @param appId
+	 */
+	public void setApplicationId(int appId) {
+		this.appId = appId;
 	}
 
 	/**
