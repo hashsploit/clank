@@ -1,0 +1,46 @@
+{
+	"mode": "MEDIUS_UNIVERSE_INFORMATION_SERVER",
+	"log_level": "INFO",
+	"file_log_level": null,
+	"address": "172.16.222.5",
+	"port": 10071,
+	"encryption": false,
+	"capacity": 200,
+	"timeout": 15000,
+	"parent_threads": 1,
+	"child_threads": 4,
+	"universes": [
+		{
+			"application_id": 11184,
+			"name": "R&C DL Production",
+			"description": "Ratchet: Deadlocked Production",
+			"universe_id": 1,
+			"hostname": "ratchetdl-prod.pdonline.scea.com",
+			"port": 10075
+		},
+		{
+			"application_id": 10994,
+			"name": "Jak X NTSC Production",
+			"description": "Jak X: Combat Racing US",
+			"universe_id": 1,
+			"hostname": "jakx-prod.muis.pdonline.scea.com",
+			"port": 10075
+		},
+		{
+			"application_id": 11204,
+			"name": "Jak X PAL Production",
+			"description": "Jak X: Combat Racing EU",
+			"universe_id": 2,
+			"hostname": "jakx-palmaster.muis.online.scee.com",
+			"port": 10075
+		},
+		{
+			"application_id": 10724,
+			"name": "Killzone Production",
+			"description": "Killzone Production US",
+			"universe_id": 1,
+			"hostname": "killzone-prod.muis.pdonline.scea.com",
+			"port": 10075
+		}
+	]
+}

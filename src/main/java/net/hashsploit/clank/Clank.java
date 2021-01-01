@@ -28,6 +28,7 @@ import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.server.muis.MediusUniverseInformationServer;
 import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {
@@ -104,7 +105,7 @@ public class Clank {
 		
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
-		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_PROXY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
+		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
 		
 		// This is a *Medius server, set up the generic Medius components
 		MediusConfig mediusConfig = null;
@@ -121,33 +122,34 @@ public class Clank {
 		
 		// Configure the server specifics
 		switch (config.getEmulationMode()) {
+			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
+				terminalPrompt = "MUIS>";
+				server = new MediusUniverseInformationServer(
+					mediusConfig.getAddress(),
+					mediusConfig.getPort(),
+					mediusConfig.getParentThreads(),
+					mediusConfig.getChildThreads()
+				);
+				break;
 			case MEDIUS_AUTHENTICATION_SERVER:
 				terminalPrompt = "MAS>";
 				server = new MediusAuthenticationServer(
-						mediusConfig.getEmulationMode(),
-						mediusConfig.getAddress(),
-						mediusConfig.getPort(),
-						mediusConfig.getParentThreads(),
-						mediusConfig.getChildThreads()
-					);
+					mediusConfig.getAddress(),
+					mediusConfig.getPort(),
+					mediusConfig.getParentThreads(),
+					mediusConfig.getChildThreads()
+				);
 				break;
 			case MEDIUS_LOBBY_SERVER:
 				terminalPrompt = "MLS>";
 				terminal.registerCommand(new CLIBroadcastCommand());
 				server = new MediusLobbyServer(
-						mediusConfig.getEmulationMode(),
-						mediusConfig.getAddress(),
-						mediusConfig.getPort(),
-						mediusConfig.getParentThreads(),
-						mediusConfig.getChildThreads()
-					);
+					mediusConfig.getAddress(),
+					mediusConfig.getPort(),
+					mediusConfig.getParentThreads(),
+					mediusConfig.getChildThreads()
+				);
 				db = new DbManager(this, new SimDb());
-				break;
-			case MEDIUS_PROXY_SERVER:
-				terminalPrompt = "MPS>";
-				break;
-			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-				terminalPrompt = "MUIS>";
 				break;
 			case NAT_SERVER:
 				terminalPrompt = "NAT>";
