@@ -37,7 +37,7 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		MediusGame game = server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldID()));
 		CreateGameOneRequest req = game.getReqPacket();
 		
-		respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, req.getAppID(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), 
+		respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, req.getAppId(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), 
 				req.getPlayerSkillLevel(), game.getPlayerCount(), game.getStats(), req.getGameName(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(),
 				game.getWorldStatusBytes(), req.getGameHostType());
 		

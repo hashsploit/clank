@@ -9,49 +9,32 @@ import net.hashsploit.clank.utils.Utils;
 
 public class GameList_ExtraInfoZeroRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] pageID = new byte[2];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] pageId = new byte[2];
 	private byte[] pageSize = new byte[2];
-	
+
 	public GameList_ExtraInfoZeroRequest(byte[] data) {
 		super(MediusMessageType.GameList_ExtraInfo0, data);
 		ByteBuffer buf = ByteBuffer.wrap(data);
-		buf.get(messageID);
-		buf.get(pageID);
+		buf.get(messageId);
+		buf.get(pageId);
 		buf.get(pageSize);
 	}
-	
+
 	public String toString() {
-		return "GameList_ExtraInfoZeroRequest: \n" + 
-				"messageID: " + Utils.bytesToHex(messageID) + '\n' + 
-				"pageID: " + Utils.bytesToHex(pageID) + '\n' + 
-				"pageSize: " + Utils.bytesToHex(pageSize);		
+		return "GameList_ExtraInfoZeroRequest: \n" + "messageId: " + Utils.bytesToHex(messageId) + '\n' + "pageId: " + Utils.bytesToHex(pageId) + '\n' + "pageSize: " + Utils.bytesToHex(pageSize);
 	}
 
-	public synchronized byte[] getMessageID() {
-		return messageID;
+	public byte[] getMessageId() {
+		return messageId;
 	}
 
-	public synchronized void setMessageID(byte[] messageID) {
-		this.messageID = messageID;
+	public byte[] getPageId() {
+		return pageId;
 	}
 
-	public synchronized byte[] getPageID() {
-		return pageID;
-	}
-
-	public synchronized void setPageID(byte[] pageID) {
-		this.pageID = pageID;
-	}
-
-	public synchronized byte[] getPageSize() {
+	public byte[] getPageSize() {
 		return pageSize;
 	}
 
-	public synchronized void setPageSize(byte[] pageSize) {
-		this.pageSize = pageSize;
-	}
-	
-
-	
 }

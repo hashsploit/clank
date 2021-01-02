@@ -4,7 +4,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.GameHostType;
+import net.hashsploit.clank.server.common.objects.MediusGameHostType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.GameListRequest;
@@ -32,7 +32,7 @@ public class MediusGameListHandler extends MediusPacketHandler {
 		int mediusWorldId = 1;
 		String gameName = "AEQLITUDE";
 		MediusWorldStatus worldStatus = MediusWorldStatus.WORLD_STAGING;
-		GameHostType gameHostType = GameHostType.HOST_CLIENT_SERVER_AUX_UDP;
+		MediusGameHostType gameHostType = MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP;
 		int playerCount = 3;
 		boolean endOfList = true;
 		

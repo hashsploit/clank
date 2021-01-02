@@ -1,61 +1,44 @@
 package net.hashsploit.clank.server;
 
-import java.util.ArrayList;
-
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
-import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGame {
-	
+
 	private int worldId;
 	private CreateGameOneRequest req;
-	private int playerCount = 1; // TODO: Update this when DME sends a "PlayerConnected" gRPC
-	
-//	WORLD_INACTIVE(0)
-//	WORLD_STAGING(1)
-//	WORLD_ACTIVE(2)
-//	WORLD_CLOSED(3)
-//	WORLD_PENDING_CREATION(4)
-//	WORLD_PENDING_CONNECT_TO_GAME(5)
+	private short playerCount = 1; // TODO: Update this when DME sends a "PlayerConnected" gRPC
 	private MediusWorldStatus worldStatus;
-	
-	private ArrayList<String> players = new ArrayList<String>();
 
 	public MediusGame(int worldId, CreateGameOneRequest req) {
 		this.worldId = worldId;
 		this.req = req;
 		this.worldStatus = MediusWorldStatus.WORLD_PENDING_CREATION;
 	}
-	
+
 	public CreateGameOneRequest getReqPacket() {
 		return req;
 	}
 
-	public byte[] getPlayerCount() {
-		return Utils.intToBytesLittle(playerCount);
+	public short getPlayerCount() {
+		return playerCount;
 	}
 
 	public byte[] getStats() {
 		return Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
 	}
 
-	public byte[] getWorldStatusBytes() {
-		return Utils.intToBytesLittle(worldStatus.getValue());
-	}
-	
 	public MediusWorldStatus getWorldStatus() {
 		return worldStatus;
 	}
 
-	public byte[] getWorldId() {
-		return Utils.intToBytesLittle(worldId);
+	public int getWorldId() {
+		return worldId;
 	}
 
-	public void updateStatus(MediusWorldStatus worldStatus) {
+	public synchronized void updateStatus(MediusWorldStatus worldStatus) {
 		this.worldStatus = worldStatus;
 	}
-	
-	
+
 }

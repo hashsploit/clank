@@ -133,11 +133,10 @@ public class Utils {
 		return packets;
 	}
 
-	public static short bytesToShortLittle(final byte byte1, final byte byte2) {
+	public static short bytesToShortLittle(final byte[] bytes) {
 		ByteBuffer bb = ByteBuffer.allocate(2);
 		bb.order(ByteOrder.LITTLE_ENDIAN);
-		bb.put(byte1);
-		bb.put(byte2);
+		bb.put(bytes);
 		short shortVal = bb.getShort(0);
 		return shortVal;
 	}

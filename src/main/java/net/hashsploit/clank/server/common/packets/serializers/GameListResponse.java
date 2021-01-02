@@ -6,7 +6,7 @@ import java.io.IOException;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.GameHostType;
+import net.hashsploit.clank.server.common.objects.MediusGameHostType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.utils.Utils;
@@ -18,11 +18,11 @@ public class GameListResponse extends MediusMessage {
 	private int mediusWorldId;
 	private String gameName;
 	private MediusWorldStatus worldStatus;
-	private GameHostType gameHostType;
+	private MediusGameHostType gameHostType;
 	private int playerCount;
 	private boolean endOfList;
 
-	public GameListResponse(byte[] messageID, MediusCallbackStatus callbackStatus, int mediusWorldId, String gameName, MediusWorldStatus worldStatus, GameHostType gameHostType, int playerCount, boolean endOfList) {
+	public GameListResponse(byte[] messageID, MediusCallbackStatus callbackStatus, int mediusWorldId, String gameName, MediusWorldStatus worldStatus, MediusGameHostType gameHostType, int playerCount, boolean endOfList) {
 		super(MediusMessageType.GameListResponse);
 
 		this.messageID = messageID;

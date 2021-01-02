@@ -8,7 +8,7 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.GameHostType;
+import net.hashsploit.clank.server.common.objects.MediusGameHostType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.NetAddress;
 import net.hashsploit.clank.server.common.objects.NetAddressList;

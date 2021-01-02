@@ -9,7 +9,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class CreateGameOneRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
 	private byte[] appID = new byte[4];
 	private byte[] minPlayers = new byte[4];
@@ -31,8 +31,9 @@ public class CreateGameOneRequest extends MediusMessage {
 		super(MediusMessageType.CreateGame1, data);
     	ByteBuffer buf = ByteBuffer.wrap(data);
     	
+    	// Support multi-version responses.
     	if (data.length == 212) {
-    		buf.get(messageID);
+    		buf.get(messageId);
         	buf.get(sessionKey);
         	buf.getShort(); //buffer
         	buf.get(appID);
@@ -50,7 +51,7 @@ public class CreateGameOneRequest extends MediusMessage {
         	buf.get(gameHostType);
         	buf.get(attributes);
     	} else {
-    		buf.get(messageID);
+    		buf.get(messageId);
         	buf.get(sessionKey);
         	buf.getShort(); //buffer
         	buf.get(appID);
@@ -74,7 +75,7 @@ public class CreateGameOneRequest extends MediusMessage {
 	
 	public String toString() {
 		return "CreateGame1Request: \n" + 
-				"messageID: " + Utils.bytesToHex(messageID) + '\n' + 
+				"messageID: " + Utils.bytesToHex(messageId) + '\n' + 
 				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
 				"appID: " + Utils.bytesToHex(appID) + '\n' + 
 				"minPlayers: " + Utils.bytesToHex(minPlayers) + '\n' + 
@@ -93,133 +94,68 @@ public class CreateGameOneRequest extends MediusMessage {
 	}
 	
 
-	public synchronized byte[] getMessageID() {
-		return messageID;
+	public byte[] getMessageId() {
+		return messageId;
 	}
 
-	public synchronized void setMessageID(byte[] messageID) {
-		this.messageID = messageID;
-	}
-
-	public synchronized byte[] getSessionKey() {
+	public byte[] getSessionKey() {
 		return sessionKey;
 	}
 
-	public synchronized void setSessionKey(byte[] sessionKey) {
-		this.sessionKey = sessionKey;
-	}
-
-	public synchronized byte[] getAppID() {
+	public byte[] getAppId() {
 		return appID;
 	}
 
-	public synchronized void setAppID(byte[] appID) {
-		this.appID = appID;
-	}
-
-	public synchronized byte[] getMinPlayers() {
+	public byte[] getMinPlayers() {
 		return minPlayers;
 	}
 
-	public synchronized void setMinPlayers(byte[] minPlayers) {
-		this.minPlayers = minPlayers;
-	}
-
-	public synchronized byte[] getMaxPlayers() {
+	public byte[] getMaxPlayers() {
 		return maxPlayers;
 	}
 
-	public synchronized void setMaxPlayers(byte[] maxPlayers) {
-		this.maxPlayers = maxPlayers;
-	}
-
-	public synchronized byte[] getGameLevel() {
+	public byte[] getGameLevel() {
 		return gameLevel;
 	}
 
-	public synchronized void setGameLevel(byte[] gameLevel) {
-		this.gameLevel = gameLevel;
-	}
-
-	public synchronized byte[] getGameName() {
+	public byte[] getGameName() {
 		return gameName;
 	}
 
-	public synchronized void setGameName(byte[] gameName) {
-		this.gameName = gameName;
-	}
-
-	public synchronized byte[] getGamePassword() {
+	public byte[] getGamePassword() {
 		return gamePassword;
 	}
 
-	public synchronized void setGamePassword(byte[] gamePassword) {
-		this.gamePassword = gamePassword;
-	}
-
-	public synchronized byte[] getSpectatorPassword() {
+	public byte[] getSpectatorPassword() {
 		return spectatorPassword;
 	}
 
-	public synchronized void setSpectatorPassword(byte[] spectatorPassword) {
-		this.spectatorPassword = spectatorPassword;
-	}
-
-	public synchronized byte[] getPlayerSkillLevel() {
+	public byte[] getPlayerSkillLevel() {
 		return playerSkillLevel;
 	}
 
-	public synchronized void setPlayerSkillLevel(byte[] playerSkillLevel) {
-		this.playerSkillLevel = playerSkillLevel;
-	}
-
-	public synchronized byte[] getRulesSet() {
+	public byte[] getRulesSet() {
 		return rulesSet;
 	}
 
-	public synchronized void setRulesSet(byte[] rulesSet) {
-		this.rulesSet = rulesSet;
-	}
-
-	public synchronized byte[] getGenField1() {
+	public byte[] getGenField1() {
 		return genField1;
 	}
 
-	public synchronized void setGenField1(byte[] genField1) {
-		this.genField1 = genField1;
-	}
-
-	public synchronized byte[] getGenField2() {
+	public byte[] getGenField2() {
 		return genField2;
 	}
 
-	public synchronized void setGenField2(byte[] genField2) {
-		this.genField2 = genField2;
-	}
-
-	public synchronized byte[] getGenField3() {
+	public byte[] getGenField3() {
 		return genField3;
 	}
 
-	public synchronized void setGenField3(byte[] genField3) {
-		this.genField3 = genField3;
-	}
-
-	public synchronized byte[] getGameHostType() {
+	public byte[] getGameHostType() {
 		return gameHostType;
-	}
-
-	public synchronized void setGameHostType(byte[] gameHostType) {
-		this.gameHostType = gameHostType;
 	}
 
 	public synchronized byte[] getAttributes() {
 		return attributes;
 	}
-
-	public synchronized void setAttributes(byte[] attributes) {
-		this.attributes = attributes;
-	}
-
 	
 }

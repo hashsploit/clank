@@ -6,7 +6,7 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
-import net.hashsploit.clank.server.common.objects.GameHostType;
+import net.hashsploit.clank.server.common.objects.MediusGameHostType;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.NetAddress;
 import net.hashsploit.clank.server.common.objects.NetAddressList;
@@ -37,7 +37,7 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 
 		final MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 
-		final GameHostType gameHostType = GameHostType.HOST_CLIENT_SERVER_AUX_UDP;
+		final MediusGameHostType gameHostType = MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP;
 		
 		final NetAddress firstNetAddress = new NetAddress(NetAddressType.NET_ADDRESS_TYPE_EXTERNAL, ((MlsConfig) Clank.getInstance().getConfig()).getDmeAddress(), ((MlsConfig) Clank.getInstance().getConfig()).getDmePort());
 		//final NetAddress secondNetAddress = new NetAddress(NetAddressType.NET_ADDRESS_NAT_SERVICE, Clank.getInstance().getConfig().getAddress(), 10080); // SET TO MLS.CONF/MLS.JSON NAT ADDR
