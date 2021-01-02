@@ -66,16 +66,18 @@ public class Player {
 		return playerStatus;
 	}
 
-	public int getGameWorldId() {
-		return gameWorldId;
-	}
-
 	public int getChatWorldId() {
 		return chatWorldId;
 	}
 
+	public int getGameWorldId() {
+		return gameWorldId;
+	}
+	
 	public void setGameWorldId(int gameWorldId) {
 		this.gameWorldId = gameWorldId;
 	}
+	
+	
 		
 }

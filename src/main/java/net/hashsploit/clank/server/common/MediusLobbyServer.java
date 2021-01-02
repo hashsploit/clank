@@ -10,12 +10,12 @@ import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
-import net.hashsploit.clank.config.objects.ChannelConfig;
-import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.GameList;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
+import net.hashsploit.clank.server.common.objects.ChannelConfig;
 import net.hashsploit.clank.server.common.objects.Clan;
+import net.hashsploit.clank.server.common.objects.LocationConfig;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
@@ -27,6 +27,8 @@ import net.hashsploit.clank.utils.Utils;
 public class MediusLobbyServer extends MediusServer {
 
 	private final GameList gameList;
+	private final HashSet<Location> locations;
+	private final HashSet<Channel> channels;
 	private final HashSet<Player> players;
 	private final HashSet<Clan> clans;
 
@@ -36,6 +38,8 @@ public class MediusLobbyServer extends MediusServer {
 		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
 
 		this.gameList = new GameList();
+		this.locations = new HashSet<Location>();
+		this.channels = new HashSet<Channel>();
 		this.players = new HashSet<Player>();
 		this.clans = new HashSet<Clan>();
 
@@ -112,11 +116,10 @@ public class MediusLobbyServer extends MediusServer {
 	public synchronized void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
 		for (final Player player : players) {
 			if (player.getAccountId() == accountId) {
-				this.updatePlayerStatus(player, status);
+				player.updateStatus(status);
 				return;
 			}
 		}
-
 	}
 
 	/**
@@ -134,6 +137,7 @@ public class MediusLobbyServer extends MediusServer {
 		}
 
 		// Make sure player has logged in
+		// FIXME: ???
 		if (player.getAccountId() == null) {
 			throw new IllegalStateException("Player did not login yet!");
 		}

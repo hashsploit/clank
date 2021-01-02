@@ -1,12 +1,12 @@
-package net.hashsploit.clank.config.objects;
+package net.hashsploit.clank.server.common.objects;
 
-public class ChannelConfig {
+public class Channel {
 	
 	private final int id;
 	private final String name;
 	private final int capacity;
 	
-	public ChannelConfig(final int id, final String name, final int capacity) {
+	public Channel(final int id, final String name, final int capacity) {
 		this.id = id;
 		this.name = name;
 		this.capacity = capacity;

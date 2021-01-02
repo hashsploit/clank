@@ -11,7 +11,7 @@ import org.json.JSONObject;
 
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.ConfigNames;
-import net.hashsploit.clank.config.objects.LocationConfig;
+import net.hashsploit.clank.server.common.objects.LocationConfig;
 
 public class MasConfig extends MediusConfig {
 

@@ -12,7 +12,7 @@ public class Clan {
 	private int losses;
 	private int kills;
 	private int deaths;
-	private int challenger;
+	private int challengeClan;
 	
 	public Clan(int id, String name, String tag, String message, boolean colorsAllowed, int leaderId, int wins, int losses, int kills, int deaths, int challenger) {
 		this.id = id;
@@ -25,7 +25,7 @@ public class Clan {
 		this.losses = losses;
 		this.kills = kills;
 		this.deaths = deaths;
-		this.challenger = challenger;
+		this.challengeClan = challenger;
 	}
 
 	public int getId() {
@@ -109,11 +109,11 @@ public class Clan {
 	}
 
 	public int getChallenger() {
-		return challenger;
+		return challengeClan;
 	}
 
 	public void setChallenger(int challenger) {
-		this.challenger = challenger;
+		this.challengeClan = challenger;
 	}
 	
 }

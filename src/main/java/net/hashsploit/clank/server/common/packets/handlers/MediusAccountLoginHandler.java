@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MasConfig;
-import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusAuthenticationServer;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.objects.LocationConfig;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginRequest;
 import net.hashsploit.clank.server.common.packets.serializers.AccountLoginResponse;

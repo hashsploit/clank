@@ -8,8 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import net.hashsploit.clank.config.ConfigNames;
-import net.hashsploit.clank.config.objects.ChannelConfig;
-import net.hashsploit.clank.config.objects.LocationConfig;
+import net.hashsploit.clank.server.common.objects.ChannelConfig;
+import net.hashsploit.clank.server.common.objects.LocationConfig;
 
 public class MlsConfig extends MediusConfig {
 
