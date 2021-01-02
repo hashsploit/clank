@@ -2,6 +2,7 @@ package net.hashsploit.clank.server.common;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
@@ -14,7 +15,7 @@ import net.hashsploit.clank.config.objects.LocationConfig;
 import net.hashsploit.clank.server.GameList;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
-import net.hashsploit.clank.server.PlayerList;
+import net.hashsploit.clank.server.common.objects.Clan;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
@@ -26,7 +27,8 @@ import net.hashsploit.clank.utils.Utils;
 public class MediusLobbyServer extends MediusServer {
 
 	private final GameList gameList;
-	private final PlayerList playerList;
+	private final HashSet<Player> players;
+	private final HashSet<Clan> clans;
 
 	public MediusLobbyServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_LOBBY_SERVER, address, port, parentThreads, childThreads);
@@ -34,7 +36,8 @@ public class MediusLobbyServer extends MediusServer {
 		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
 
 		this.gameList = new GameList();
-		this.playerList = new PlayerList();
+		this.players = new HashSet<Player>();
+		this.clans = new HashSet<Clan>();
 
 		final RpcServerConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcServerConfig();
 		String rpcAddress = rpcConfig.getAddress();
@@ -52,16 +55,6 @@ public class MediusLobbyServer extends MediusServer {
 			Clank.getInstance().shutdown();
 		}
 
-	}
-
-	/*
-	 *
-	 * Logic
-	 *
-	 */
-
-	public String playersToString() {
-		return playerList.toString();
 	}
 
 	public ArrayList<MediusGame> getGames() {
@@ -110,22 +103,48 @@ public class MediusLobbyServer extends MediusServer {
 		return 1;
 	}
 
-	/*
-	 * ================================================================== Player
-	 * update methods
-	 * ==================================================================
+	/**
+	 * Update a player's status by their Account Id.
+	 * 
+	 * @param accountId
+	 * @param status
 	 */
+	public synchronized void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
+		for (final Player player : players) {
+			if (player.getAccountId() == accountId) {
+				this.updatePlayerStatus(player, status);
+				return;
+			}
+		}
 
-	public synchronized void updatePlayerStatus(Player player, MediusPlayerStatus status) {
-		playerList.updatePlayerStatus(player, status);
 	}
 
-	/*
-	 * ================================================================== gRPC
-	 * Update methods from DME
-	 * ==================================================================
+	/**
+	 * Update a player's status by their player object.
 	 * 
+	 * @param player
+	 * @param status
 	 */
+	public synchronized void updatePlayerStatus(Player player, MediusPlayerStatus status) {
+
+		// Check if player is disconnecting, remove player from list
+		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+			players.remove(player);
+			return;
+		}
+
+		// Make sure player has logged in
+		if (player.getAccountId() == null) {
+			throw new IllegalStateException("Player did not login yet!");
+		}
+
+		// If player isn't in the players, add it
+		if (!players.contains(player)) {
+			players.add(player);
+		}
+
+		player.updateStatus(status);
+	}
 
 	/**
 	 * Update a DME World status identified by the world Id.
@@ -134,8 +153,8 @@ public class MediusLobbyServer extends MediusServer {
 	 * @param worldStatus
 	 */
 	public synchronized void updateDmeWorldStatus(int worldId, MediusWorldStatus worldStatus) {
-		logger.info("Updating world from DME worldId: " + Integer.toString(worldId));
-		logger.info("Updating world from DME World Status: " + worldStatus.toString());
+		logger.finest("Updating world from DME worldId: " + Integer.toString(worldId));
+		logger.finest("Updating world from DME World Status: " + worldStatus.toString());
 		gameList.updateGameWorldStatus(worldId, worldStatus);
 	}
 
@@ -149,42 +168,62 @@ public class MediusLobbyServer extends MediusServer {
 	public synchronized void updatePlayerStatusFromDme(String mlsToken, int worldId, MediusPlayerStatus status) {
 		// PlayerStatus is from gRPC
 		// This method is called from gRPC DME -> MLS
-		/*
-		 * PlayerStatus: DISCONNECTED(0), CONNECTED(1), STAGING(2), ACTIVE(3),
-		 * UNRECOGNIZED(-1),
-		 */
-		// Update the gameWorld. Update the playerList
-		logger.info("Updating player from DME mlsToken: " + mlsToken);
-		logger.info("Updating player from DME world: " + Integer.toString(worldId));
-		logger.info("Updating player from DME Status: " + status.toString());
+		// PlayerStatus: DISCONNECTED(0), CONNECTED(1), STAGING(2), ACTIVE(3), UNRECOGNIZED(-1)
+
+		logger.finest("Updating player from DME mlsToken: " + mlsToken);
+		logger.finest("Updating player from DME world: " + Integer.toString(worldId));
+		logger.finest("Updating player from DME Status: " + status.toString());
 		int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(mlsToken);
-		playerList.updatePlayerStatus(accountId, status);
 
+		this.updatePlayerStatus(accountId, status);
 	}
 
 	/**
-	 * Get players in-game/staging.
-	 * 
-	 * @param worldIdRequested
-	 * @return
-	 */
-	public List<Player> getGameWorldPlayers(int worldIdRequested) {
-		return playerList.getPlayersByGameWorld(worldIdRequested);
-	}
-
-	/**
-	 * Get players in lobby.
+	 * Get a list of players in staging or in-game.
 	 * 
 	 * @param worldId
 	 * @return
 	 */
-	public List<Player> getLobbyWorldPlayers(int worldId) {
-		ArrayList<Player> result = playerList.getPlayersByLobbyWorld(worldId);
+	public HashSet<Player> getGameWorldPlayers(int worldId) {
+		final HashSet<Player> result = new HashSet<Player>();
+		for (final Player player : players) {
+			if (player.getGameWorldId() == worldId) {
+				result.add(player);
+			}
+		}
 		return result;
 	}
 
+	/**
+	 * Get a list of players in a lobby World Id.
+	 * 
+	 * @param worldId
+	 * @return
+	 */
+	public HashSet<Player> getLobbyWorldPlayers(int worldId) {
+		final HashSet<Player> result = new HashSet<Player>();
+		for (final Player player : players) {
+			if (player.getChatWorldId() == worldId) {
+				result.add(player);
+			}
+		}
+		return result;
+	}
+
+	/**
+	 * Get a player's status via their Account Id, this will return null if the
+	 * Account Id is not found.
+	 * 
+	 * @param accountId
+	 * @return
+	 */
 	public MediusPlayerStatus getPlayerStatus(int accountId) {
-		return playerList.getPlayerStatus(accountId);
+		for (final Player player : players) {
+			if (player.getAccountId() == accountId) {
+				return player.getStatus();
+			}
+		}
+		return null;
 	}
 
 }

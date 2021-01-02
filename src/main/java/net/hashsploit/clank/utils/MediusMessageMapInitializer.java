@@ -17,6 +17,7 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusChatMessageHand
 import net.hashsploit.clank.server.common.packets.handlers.MediusChatToggleHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusCheckMyClanInvitationsHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusClearGameListFilterZeroHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusCreateClanHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusCreateGameOneHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusDnasSignaturePostHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusEndGameReportHandler;
@@ -39,6 +40,7 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusGetLocationsHan
 import net.hashsploit.clank.server.common.packets.handlers.MediusGetMyClanMessagesHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusGetMyClansHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusGetMyIPHandler;
+import net.hashsploit.clank.server.common.packets.handlers.MediusGetUniverseInformationHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusGetWorldSecurityLevelHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinChannelHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusJoinGameHandler;
@@ -57,7 +59,6 @@ import net.hashsploit.clank.server.common.packets.handlers.MediusSetGameListFilt
 import net.hashsploit.clank.server.common.packets.handlers.MediusSetLobbyWorldFilterHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusSetLocalizationParamsHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusTextFilterHandler;
-import net.hashsploit.clank.server.common.packets.handlers.MediusGetUniverseInformationHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusUpdateLadderStatsWideHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusUpdateUserStateHandler;
 import net.hashsploit.clank.server.common.packets.handlers.MediusVersionServerHandler;
@@ -136,6 +137,9 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.FindWorldByName, new MediusFindWorldByNameHandler());
 		mp.put(MediusMessageType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
 		mp.put(MediusMessageType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
+		
+		mp.put(MediusMessageType.CreateClan, new MediusCreateClanHandler());
+		
 
 		return mp;
 	}
