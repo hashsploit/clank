@@ -1,5 +1,7 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
+import java.util.HashSet;
+
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.common.MediusCallbackStatus;
 import net.hashsploit.clank.server.common.MediusConstants;
@@ -30,14 +32,19 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 	public void write(MediusClient client) {
 
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		int cityWorldId = server.getChannel().getId();
+		HashSet<Channel> channels = server.getChannels();
+		
+		for (int i=0; i<channels.size(); i++) {
+			
+		}
+		
+		int cityWorldId = client.getPlayer().getChatWorldId();
 
 		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] mediusWorldID = Utils.intToBytesLittle(cityWorldId);
 		
-		// FIXME: bad
 		byte[] playerCount = Utils.shortToBytesLittle((short) server.getChannelActivePlayerCountById(cityWorldId));
-		byte[] maxPlayers = Utils.shortToBytesLittle((short) 224);
+		byte[] maxPlayers = Utils.shortToBytesLittle((short) server.getChannelById(client.getPlayer().getChatWorldId()).getCapacity());
 		
 		byte[] worldSecurityLevelType = Utils.intToBytesLittle(0);
 		byte[] genericField1 = Utils.intToBytesLittle(1);
@@ -51,5 +58,8 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 		respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageID(), callbackStatus, mediusWorldID, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
 
 		client.sendMediusMessage(respPacket);
+		
+		
+		
 	}
 }

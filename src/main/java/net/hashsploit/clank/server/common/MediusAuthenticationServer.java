@@ -8,6 +8,7 @@ import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.common.objects.Channel;
+import net.hashsploit.clank.server.common.objects.Location;
 import net.hashsploit.clank.server.rpc.ClankMasRpcClient;
 import net.hashsploit.clank.server.rpc.PlayerLoginResponse;
 import net.hashsploit.clank.server.rpc.RpcConfig;
@@ -49,6 +50,10 @@ public class MediusAuthenticationServer extends MediusServer {
 
 	public HashSet<Channel> getChannels() {
 		return ((MasConfig) Clank.getInstance().getConfig()).getChannels();
+	}
+	
+	public HashSet<Location> getLocations() {
+		return ((MasConfig) Clank.getInstance().getConfig()).getLocations();
 	}
 
 }

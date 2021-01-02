@@ -6,6 +6,7 @@ import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
+import net.hashsploit.clank.server.common.objects.Channel;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.ChannelInfoRequest;
 import net.hashsploit.clank.server.common.packets.serializers.ChannelInfoResponse;
@@ -32,12 +33,11 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-
-		byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID())).getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
+		Channel channel = server.getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID()));
+		
+		byte[] lobbyName = Utils.buildByteArrayFromString(channel.getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
 		byte[] activePlayerCount = Utils.intToBytesLittle(server.getChannelActivePlayerCountById(Utils.bytesToIntLittle(reqPacket.getWorldID())));
-
-		// FIXME: hardcoded (bad)
-		byte[] maxPlayers = Utils.intToBytesLittle(224);
+		byte[] maxPlayers = Utils.intToBytesLittle(channel.getCapacity());
 
 		respPacket = new ChannelInfoResponse(reqPacket.getMessageID(), callbackStatus, lobbyName, activePlayerCount, maxPlayers);
 		client.sendMediusMessage(respPacket);
