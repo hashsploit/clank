@@ -1,13 +1,14 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.common.MediusAuthenticationServer;
 import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusLobbyServer;
 import net.hashsploit.clank.server.common.MediusMessageType;
 import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.MediusServer;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.NetAddress;
 import net.hashsploit.clank.server.common.objects.NetAddressList;
@@ -51,9 +52,13 @@ public class MediusServerSessionBeginHandler extends MediusPacketHandler {
 			mlsAddress = Utils.getPublicIpAddress();
 		}
 		
-		// FIXME: fucking bad
-		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		int worldId = server.getChannel().getId();
+		int worldId = 0;
+		
+		if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
+			worldId = ((MediusAuthenticationServer) client.getServer()).getChannel().getId();
+		} else if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {
+			worldId = ((MediusLobbyServer) client.getServer()).getChannel().getId();
+		}
 
 		byte[] serverKey = new byte[64];
 		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
