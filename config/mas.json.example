@@ -27,6 +27,28 @@
 			"fourbolt": "fourpass"
 		}
 	},
+	"channels": [
+		{
+			"id": 1,
+			"name": "Channel 1",
+			"capacity": 256
+		},
+		{
+			"id": 2,
+			"name": "Channel 2",
+			"capacity": 256
+		},
+		{
+			"id": 3,
+			"name": "Channel 3",
+			"capacity": 256
+		},
+		{
+			"id": 4,
+			"name": "Channel 4",
+			"capacity": 256
+		}
+	],
 	"locations": [
 		{
 			"id": 1,
