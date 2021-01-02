@@ -3,10 +3,10 @@ package net.hashsploit.clank.server.common;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
-import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.server.GameList;
@@ -25,29 +25,29 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusLobbyServer extends MediusServer {
 
-	private final GameList gameList;
-	private final HashSet<Location> locations;
-	private final HashSet<Channel> channels;
 	private final HashSet<Player> players;
 	private final HashSet<Clan> clans;
+	private final List<Location> locations;
+	private final List<Channel> channels;
+	private final GameList gameList;
 
 	public MediusLobbyServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_LOBBY_SERVER, address, port, parentThreads, childThreads);
 
 		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
 
-		this.gameList = new GameList();
-		this.locations = new HashSet<Location>();
-		this.channels = new HashSet<Channel>();
 		this.players = new HashSet<Player>();
 		this.clans = new HashSet<Clan>();
+		this.locations = new ArrayList<Location>();
+		this.channels = new ArrayList<Channel>();
+		this.gameList = new GameList();
 
 		final RpcServerConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcServerConfig();
 		String rpcAddress = rpcConfig.getAddress();
 		final int rpcPort = rpcConfig.getPort();
 
 		if (rpcAddress == null) {
-			Utils.getPublicIpAddress();
+			rpcAddress = Utils.getPublicIpAddress();
 		}
 
 		try {
@@ -60,6 +60,30 @@ public class MediusLobbyServer extends MediusServer {
 
 	}
 
+	/**
+	 * Get all locations.
+	 * @return
+	 */
+	public List<Location> getLocations() {
+		return locations;
+	}
+
+	/**
+	 * Get all channels.
+	 * @return
+	 */
+	public List<Channel> getChannels() {
+		return channels;
+	}
+	
+	/**
+	 * Get all clans.
+	 * @return
+	 */
+	public HashSet<Clan> getClans() {
+		return clans;
+	}
+	
 	/**
 	 * Returns a list of games.
 	 * @return
