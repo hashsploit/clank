@@ -34,7 +34,8 @@ public class GameList_ExtraInfoZeroResponse extends MediusMessage {
 	private byte[] gameStats;
 	private boolean endOfList;
 
-	public GameList_ExtraInfoZeroResponse(byte[] messageId, int mediusWorldId, MediusCallbackStatus callbackStatus, short playerCount, short minPlayers, short maxPlayers, int gameLevel, int playerSkillLevel, int rulesSet, int genericField1, int genericField2, int genericField3, MediusWorldSecurityLevelType worldSecurityLevelType, MediusWorldStatus worldStatus, MediusGameHostType gameHostType, String gameName, byte[] gameStats, boolean endOfList) {
+	public GameList_ExtraInfoZeroResponse(byte[] messageId, int mediusWorldId, MediusCallbackStatus callbackStatus, short playerCount, short minPlayers, short maxPlayers, int gameLevel, int playerSkillLevel, int rulesSet, int genericField1, int genericField2, int genericField3,
+			MediusWorldSecurityLevelType worldSecurityLevelType, MediusWorldStatus worldStatus, MediusGameHostType gameHostType, String gameName, byte[] gameStats, boolean endOfList) {
 		super(MediusMessageType.GameList_ExtraInfoResponse0);
 		this.messageId = messageId;
 		this.mediusWorldId = mediusWorldId;
