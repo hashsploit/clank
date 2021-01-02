@@ -1,10 +1,13 @@
 package net.hashsploit.clank.server.common;
 
+import java.util.Arrays;
+import java.util.HashSet;
+
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
-import net.hashsploit.clank.config.objects.ChannelConfig;
+import net.hashsploit.clank.server.common.objects.Channel;
 import net.hashsploit.clank.server.rpc.ClankMasRpcClient;
 import net.hashsploit.clank.server.rpc.PlayerLoginResponse;
 import net.hashsploit.clank.server.rpc.RpcConfig;
@@ -33,18 +36,19 @@ public class MediusAuthenticationServer extends MediusServer {
 
 		if (Clank.getInstance().getConfig() instanceof MasConfig) {
 			final MasConfig masConfig = (MasConfig) Clank.getInstance().getConfig();
-			for (String key : masConfig.getWhitelist().keySet()) {
-				logger.info("Whitelist username/pass: " + key + " / " + masConfig.getWhitelist().get(key));
+			if (masConfig.isWhitelistEnabled()) {
+				logger.info(String.format("Whitelisted users: %s", Arrays.toString(masConfig.getWhitelist().keySet().toArray())));
 			}
 		}
+		
 	}
 
 	public PlayerLoginResponse playerLogin(String username, String password) {
 		return rpcClient.loginPlayer(username, password);
 	}
 
-	public ChannelConfig getChannel() {
-		return ((MasConfig) Clank.getInstance().getConfig()).getChannels().get(0);
+	public HashSet<Channel> getChannels() {
+		return ((MasConfig) Clank.getInstance().getConfig()).getChannels();
 	}
 
 }

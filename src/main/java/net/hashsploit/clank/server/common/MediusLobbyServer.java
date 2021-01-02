@@ -3,7 +3,6 @@ package net.hashsploit.clank.server.common;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
@@ -13,9 +12,9 @@ import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.server.GameList;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
-import net.hashsploit.clank.server.common.objects.ChannelConfig;
+import net.hashsploit.clank.server.common.objects.Channel;
 import net.hashsploit.clank.server.common.objects.Clan;
-import net.hashsploit.clank.server.common.objects.LocationConfig;
+import net.hashsploit.clank.server.common.objects.Location;
 import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.common.packets.serializers.CreateGameOneRequest;
@@ -61,50 +60,73 @@ public class MediusLobbyServer extends MediusServer {
 
 	}
 
+	/**
+	 * Returns a list of games.
+	 * @return
+	 */
 	public ArrayList<MediusGame> getGames() {
-		// Get games in staging
 		return gameList.getGames();
 	}
 
-	public MediusGame getGame(int worldID) {
-		return gameList.getGame(worldID);
+	/**
+	 * Get a MediusGame by World Id.
+	 * @param worldId
+	 * @return
+	 */
+	public MediusGame getGame(int worldId) {
+		return gameList.getGame(worldId);
 	}
 
+	/**
+	 * Get a new game id from a CreateGameOne request.
+	 * @param req
+	 * @return
+	 */
 	public int getNewGameId(CreateGameOneRequest req) {
 		return gameList.getNewGameId(req);
 	}
 
-	public LocationConfig getLocation() {
-		// FIXME: bad
-		if (Clank.getInstance().getServer() instanceof MediusServer) {
-			MediusServer mediusServer = (MediusServer) Clank.getInstance().getServer();
-			switch (mediusServer.getEmulationMode()) {
-				case MEDIUS_AUTHENTICATION_SERVER:
-					return ((MasConfig) Clank.getInstance().getConfig()).getLocations().get(0);
-				case MEDIUS_LOBBY_SERVER:
-					return ((MlsConfig) Clank.getInstance().getConfig()).getLocations().get(0);
-				default:
-					return null;
+	/**
+	 * Get a Location by its id.
+	 * @param locationId
+	 * @return
+	 */
+	public Location getLocationById(int locationId) {
+		for (final Location location : ((MlsConfig) Clank.getInstance().getConfig()).getLocations()) {
+			if (location.getId() == locationId) {
+				return location;
 			}
 		}
 		return null;
 	}
 
-	public ChannelConfig getChannel() {
-		return ((MlsConfig) Clank.getInstance().getConfig()).getChannels().get(0);
-	}
-
-	public ChannelConfig getChannelById(int id) {
-		for (final ChannelConfig channel : ((MlsConfig) Clank.getInstance().getConfig()).getChannels()) {
-			if (channel.getId() == id) {
+	/**
+	 * Get a Channel by its id.
+	 * @param channelId
+	 * @return
+	 */
+	public Channel getChannelById(int channelId) {
+		for (final Channel channel : ((MlsConfig) Clank.getInstance().getConfig()).getChannels()) {
+			if (channel.getId() == channelId) {
 				return channel;
 			}
 		}
 		return null;
 	}
 
+	/**
+	 * Get the number of active players in a specific channel by its id.
+	 * @param id
+	 * @return
+	 */
 	public int getChannelActivePlayerCountById(int id) {
-		return 1;
+		int count = 0;
+		for (final Player player : players) {
+			if (player.getChatWorldId() == id && player.getStatus() == MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD) {
+				count++;
+			}
+		}
+		return count;
 	}
 
 	/**
@@ -151,7 +173,7 @@ public class MediusLobbyServer extends MediusServer {
 	}
 
 	/**
-	 * Update a DME World status identified by the world Id.
+	 * Update a DME World status identified by the World Id.
 	 * 
 	 * @param worldId
 	 * @param worldStatus
