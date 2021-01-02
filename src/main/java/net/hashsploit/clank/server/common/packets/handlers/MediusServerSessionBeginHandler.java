@@ -52,9 +52,7 @@ public class MediusServerSessionBeginHandler extends MediusPacketHandler {
 			mlsAddress = Utils.getPublicIpAddress();
 		}
 		
-		
-		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		int worldId = 0;//server.getChannel().getId();
+		int worldId = 0;
 		
 		if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
 			worldId = ((MediusAuthenticationServer) client.getServer()).getChannel().getId();
