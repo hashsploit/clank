@@ -57,16 +57,6 @@ public class ChatMessageRequest extends MediusMessage {
 			}
 		);
 	}
-	
-	@Override
-	public String toString() {
-		return "ChatMessageRequest: \n" + 
-				"messageId: " + Utils.bytesToHex(messageId) + '\n' + 
-				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
-				"mediusChatMessageType: " + mediusChatMessageType.name() + " (" + mediusChatMessageType.getValue() + ")" + "\n" + 
-				"targetId: " + targetId + '\n' + 
-				"text: " + Utils.bytesToHex(text);		
-	}
 
 	public synchronized byte[] getMessageId() {
 		return messageId;

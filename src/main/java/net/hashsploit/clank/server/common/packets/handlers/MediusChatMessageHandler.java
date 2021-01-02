@@ -1,7 +1,8 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
-import java.util.List;
+import java.util.HashSet;
 
+import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.common.MediusConstants;
@@ -11,13 +12,11 @@ import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.packets.serializers.ChatFwdMessageResponse;
 import net.hashsploit.clank.server.common.packets.serializers.ChatMessageRequest;
-import net.hashsploit.clank.server.common.packets.serializers.GenericChatFwdMessageResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusChatMessageHandler extends MediusPacketHandler {
 
-	private ChatMessageRequest reqPacket;
-	private GenericChatFwdMessageResponse respPacket;
+	private ChatMessageRequest requestPacket;
 
 	public MediusChatMessageHandler() {
 		super(MediusMessageType.ChatMessage, MediusMessageType.ChatFwdMessage);
@@ -25,44 +24,34 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 
 	@Override
 	public void read(MediusMessage mm) {
-		reqPacket = new ChatMessageRequest(mm.getPayload());
-
-		logger.finest(reqPacket.getDebugString());
-
+		requestPacket = new ChatMessageRequest(mm.getPayload());
+		logger.finest(requestPacket.getDebugString());
 	}
 
 	@Override
 	public void write(MediusClient client) {
 
-		/*
-		 * 
-		 *  Send this chat message to each client in the same world
-		*/
-		logger.info("CHAT MESSAGE HANDLER");
 		String username = client.getPlayer().getUsername();
-		String chatMsg = Utils.bytesToStringClean(reqPacket.getText());
-		logger.info(username);
-		logger.info(chatMsg);
+		String chatMsg = Utils.bytesToStringClean(requestPacket.getText());
 		
-		ChatFwdMessageResponse msg = new ChatFwdMessageResponse(
-				reqPacket.getMessageId(), 
-				Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.getValue()),
-				Utils.buildByteArrayFromString(chatMsg, MediusConstants.CHATMESSAGE_MAXLEN.getValue()));
-				
-		/*
-		 * Example:
-		 * PACKET: 160.33.33.245:10078 => 192.168.0.50:53689
-[SUCCESS] ID:ID_0a PLAINTEXT: 
-01 3C 31 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 CF 84 13 00 5A 33 72 30 78 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 47 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
-.<1.......................I...Z3r0x...............................G...............................................................
-		 */
+		// FIXME: sanitize input, check for color parsing, check for muted, etc.
+		
+		logger.finest(username + ": " + chatMsg);
+		
+		// This should be ChatColor.strip() unless the player is an operator.
+		byte[] byteMsg = Utils.padByteArray(ChatColor.parse(chatMsg), MediusConstants.CHATMESSAGE_MAXLEN.getValue());
+
+		ChatFwdMessageResponse responsePacket = new ChatFwdMessageResponse(requestPacket.getMessageId(), Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.getValue()), byteMsg);
+
 		int playerWorldId = client.getPlayer().getChatWorldId();
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		List<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
+		HashSet<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
 
-		for (Player player: playersInWorld) {
-			if (player != client.getPlayer()) // Dont send to self
-				player.getClient().sendMediusMessage(msg);
+		for (Player player : playersInWorld) {
+			// Send the message to everyone but yourself.
+			if (player != client.getPlayer()) {
+				player.getClient().sendMediusMessage(responsePacket);
+			}
 		}
 	}
 

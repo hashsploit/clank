@@ -36,10 +36,12 @@ public class MediusLobbyServer extends MediusServer {
 
 		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
 
+		MlsConfig config = ((MlsConfig) Clank.getInstance().getConfig());
+		
 		this.players = new HashSet<Player>();
 		this.clans = new HashSet<Clan>();
-		this.locations = new ArrayList<Location>();
-		this.channels = new ArrayList<Channel>();
+		this.locations = new ArrayList<Location>(config.getLocations());
+		this.channels = new ArrayList<Channel>(config.getChannels());
 		this.gameList = new GameList();
 
 		final RpcServerConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcServerConfig();
@@ -60,6 +62,14 @@ public class MediusLobbyServer extends MediusServer {
 
 	}
 
+	/**
+	 * Get all players.
+	 * @return
+	 */
+	public HashSet<Player> getPlayers() {
+		return players;
+	}
+	
 	/**
 	 * Get all locations.
 	 * @return

@@ -1,9 +1,8 @@
 package net.hashsploit.clank.config.configs;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -61,9 +60,9 @@ public class MlsConfig extends MediusConfig {
 	 * 
 	 * @return
 	 */
-	public Set<Channel> getChannels() {
+	public List<Channel> getChannels() {
 		final String key = ConfigNames.CHANNELS.toString();
-		final Set<Channel> channels = new HashSet<Channel>();
+		final List<Channel> channels = new ArrayList<Channel>();
 
 		if (getJson().isNull(key)) {
 			return null;
@@ -99,9 +98,9 @@ public class MlsConfig extends MediusConfig {
 	 * 
 	 * @return
 	 */
-	public HashSet<Location> getLocations() {
+	public List<Location> getLocations() {
 		final String key = ConfigNames.LOCATIONS.toString();
-		final HashSet<Location> locations = new HashSet<Location>();
+		final List<Location> locations = new ArrayList<Location>();
 
 		if (getJson().isNull(key)) {
 			return null;
