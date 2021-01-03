@@ -19,9 +19,9 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusUpdateLadderStatsWideHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] ladderType = new byte[4];
-	private byte[] stats = new byte[MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue()];
+	private byte[] stats = new byte[MediusConstants.LADDERSTATSWIDE_MAXLEN.value];
 	
 	public MediusUpdateLadderStatsWideHandler() {
 		super(MediusMessageType.UpdateLadderStatsWide,MediusMessageType.UpdateLadderStatsWideResponse);

@@ -33,7 +33,7 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 
-		byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID())).getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
+		byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID())).getName(), MediusConstants.LOBBYNAME_MAXLEN.value);
 		byte[] activePlayerCount = Utils.intToBytesLittle(server.getChannelActivePlayerCountById(Utils.bytesToIntLittle(reqPacket.getWorldID())));
 
 		// FIXME: hardcoded (bad)

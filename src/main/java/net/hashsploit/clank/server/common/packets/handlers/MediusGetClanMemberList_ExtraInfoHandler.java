@@ -14,7 +14,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetClanMemberList_ExtraInfoHandler extends MediusPacketHandler {
 	
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] clanID = new byte[4];
 	private byte[] ladderStatIndex = new byte[4];
 	private byte[] sortOrder = new byte[4];
@@ -46,8 +46,8 @@ public class MediusGetClanMemberList_ExtraInfoHandler extends MediusPacketHandle
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.NO_RESULT.getValue()));	 // give no result for now		
 			outputStream.write(Utils.intToBytesLittle(0)); // accountID
-			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue())); // 
-			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue())); // 
+			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.value)); // 
+			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.value)); // 
 			outputStream.write(Utils.intToBytesLittle(0)); // mediusPlayerOnlineStats
 			outputStream.write(Utils.intToBytesLittle(0)); // ladderStat
 			outputStream.write(Utils.intToBytesLittle(0)); // ladderPosition

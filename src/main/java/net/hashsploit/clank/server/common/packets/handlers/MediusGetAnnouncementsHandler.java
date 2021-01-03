@@ -40,7 +40,7 @@ public class MediusGetAnnouncementsHandler extends MediusPacketHandler {
 			for (int i = 0; i < announcements.size(); i++) {
 				String announcementString = announcements.get(i);
 
-				final int maxSegmentedAnnouncementLength = MediusConstants.ANNOUNCEMENT_MAXLEN.getValue() - 1; // leave one byte of room for the null terminator
+				final int maxSegmentedAnnouncementLength = MediusConstants.ANNOUNCEMENT_MAXLEN.value - 1; // leave one byte of room for the null terminator
 
 				final List<String> segmentedAnnouncementStrings = new ArrayList<String>();
 
@@ -86,7 +86,7 @@ public class MediusGetAnnouncementsHandler extends MediusPacketHandler {
 		} else {
 			final MediusCallbackStatus callbackStatus = MediusCallbackStatus.NO_RESULT;
 			final int announcementId = 1;
-			final byte[] announcement = Utils.padByteArray(new byte[0], MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());
+			final byte[] announcement = Utils.padByteArray(new byte[0], MediusConstants.ANNOUNCEMENT_MAXLEN.value);
 			final boolean endOfList = true;
 
 			final GetAnnouncementsResponse announcementResponse = new GetAnnouncementsResponse(reqPacket.getMessageId(), callbackStatus, announcementId, announcement, endOfList);

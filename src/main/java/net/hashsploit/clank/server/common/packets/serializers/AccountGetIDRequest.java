@@ -9,9 +9,9 @@ import net.hashsploit.clank.utils.Utils;
 
 public class AccountGetIDRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
-	private byte[] accountName = new byte[MediusConstants.ACCOUNTNAME_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
+	private byte[] accountName = new byte[MediusConstants.ACCOUNTNAME_MAXLEN.value];
 	
 	public AccountGetIDRequest(byte[] data) {
 		super(MediusMessageType.AccountGetID, data);

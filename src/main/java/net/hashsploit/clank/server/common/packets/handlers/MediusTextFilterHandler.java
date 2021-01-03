@@ -14,10 +14,10 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusTextFilterHandler extends MediusPacketHandler {
 	
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] mediusTextFilterType = new byte[4];
-	private byte[] text = new byte[MediusConstants.CHATMESSAGE_MAXLEN.getValue()];
+	private byte[] text = new byte[MediusConstants.CHATMESSAGE_MAXLEN.value];
 	
     public MediusTextFilterHandler() {
         super(MediusMessageType.TextFilter, MediusMessageType.TextFilterResponse);

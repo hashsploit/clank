@@ -17,8 +17,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetLocationsHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 		
 	public MediusGetLocationsHandler() {
 		super(MediusMessageType.GetLocations,MediusMessageType.GetLocationsResponse);
@@ -42,7 +42,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 		final LocationConfig location = server.getLocation();
 		
 		byte[] locationId = Utils.intToBytesLittle(location.getId()); // random location
-		byte[] locationName = Utils.padByteArray(ChatColor.parse(location.getName()), MediusConstants.LOCATIONNAME_MAXLEN.getValue());
+		byte[] locationName = Utils.padByteArray(ChatColor.parse(location.getName()), MediusConstants.LOCATIONNAME_MAXLEN.value);
 		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 

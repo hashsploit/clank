@@ -20,9 +20,9 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusSetGameListFilterZeroHandler extends MediusPacketHandler {
 
-	private static final Logger logger = Logger.getLogger("");
+	private static final Logger logger = Logger.getLogger(MediusSetGameListFilterZeroHandler.class.getName());
 	
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] filterField = new byte[4];
 	private byte[] mask = new byte[4];
 	private byte[] comparisonOperator = new byte[4];

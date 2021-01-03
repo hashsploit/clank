@@ -6,14 +6,10 @@ public enum MediusApplicationType {
 	
 	LOBBY_CHAT_CHANNEL(1);
 	
-	private final int value;
+	public final int value;
 	
 	private MediusApplicationType(int value) {
 		this.value = value;
-	}
-	
-	public final int getValue() {
-		return value;
 	}
 	
 }

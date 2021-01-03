@@ -14,7 +14,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusSessionBeginHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] connectionType = new byte[4];
 	
 	public MediusSessionBeginHandler() {
@@ -38,7 +38,7 @@ public class MediusSessionBeginHandler extends MediusPacketHandler {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
-    	byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
+    	byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.value);
     	
 				
 		try {

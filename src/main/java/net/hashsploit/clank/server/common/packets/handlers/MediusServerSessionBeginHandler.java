@@ -61,8 +61,8 @@ public class MediusServerSessionBeginHandler extends MediusPacketHandler {
 		}
 
 		byte[] serverKey = new byte[64];
-		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
-		byte[] accessKey = new byte[MediusConstants.ACCESSKEY_MAXLEN.getValue()];
+		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.value);
+		byte[] accessKey = new byte[MediusConstants.ACCESSKEY_MAXLEN.value];
 
 		// FIXME: hardcoded values
 		byte[] connectInfo = new NetConnectionInfo(

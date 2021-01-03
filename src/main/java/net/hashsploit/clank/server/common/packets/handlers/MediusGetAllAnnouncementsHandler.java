@@ -52,7 +52,7 @@ public class MediusGetAllAnnouncementsHandler extends MediusPacketHandler {
 		
 		
 		final int announcementId = 1;
-		final byte[] announcement = Utils.padByteArray(ChatColor.parse(announcementStr), MediusConstants.ANNOUNCEMENT_MAXLEN.getValue());
+		final byte[] announcement = Utils.padByteArray(ChatColor.parse(announcementStr), MediusConstants.ANNOUNCEMENT_MAXLEN.value);
 		
 		final GetAnnouncementsResponse announcementResponse = new GetAnnouncementsResponse(reqPacket.getMessageId(), callbackStatus, announcementId, announcement, true);
 		

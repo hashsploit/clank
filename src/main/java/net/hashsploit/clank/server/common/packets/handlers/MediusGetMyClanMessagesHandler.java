@@ -20,8 +20,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetMyClanMessagesHandler extends MediusPacketHandler {
 	
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] clanID = new byte[4];
 	private byte[] start = new byte[4];
 	private byte[] pageSize= new byte[4];    
@@ -45,7 +45,7 @@ public class MediusGetMyClanMessagesHandler extends MediusPacketHandler {
     public void write(MediusClient client) { 
     	// Process the packet
 
-    	byte [] message = Utils.buildByteArrayFromString("Clan message TEST", MediusConstants.CLANMSG_MAXLEN.getValue());
+    	byte [] message = Utils.buildByteArrayFromString("Clan message TEST", MediusConstants.CLANMSG_MAXLEN.value);
     	byte [] endOfList = Utils.hexStringToByteArray("01000000");
     	
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream( );

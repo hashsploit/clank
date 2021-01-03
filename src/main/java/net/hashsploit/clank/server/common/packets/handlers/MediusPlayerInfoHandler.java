@@ -59,11 +59,11 @@ public class MediusPlayerInfoHandler extends MediusPacketHandler {
     	byte[] accountNameArr;
     	if (accountName == null) {
         	callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue()); // TODO: Fix this
-        	accountNameArr = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+        	accountNameArr = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.value);
     	}
     	else {
         	callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
-        	accountNameArr = Utils.buildByteArrayFromString(accountName, MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+        	accountNameArr = Utils.buildByteArrayFromString(accountName, MediusConstants.ACCOUNTNAME_MAXLEN.value);
     	}
     	
     	MediusLobbyServer server = (MediusLobbyServer) client.getServer();

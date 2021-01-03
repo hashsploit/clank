@@ -20,8 +20,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetLadderStatsWideHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] accountOrClanID = new byte[4]; // int
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] accountOrClanId = new byte[4]; // int
 	
 	public MediusGetLadderStatsWideHandler() {
 		super(MediusMessageType.GetLadderStatsWide,MediusMessageType.GetLadderStatsWideResponse);
@@ -31,24 +31,24 @@ public class MediusGetLadderStatsWideHandler extends MediusPacketHandler {
 	public void read(MediusMessage mm) {
 		// Process the packet
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
-		buf.get(messageID);
+		buf.get(messageId);
 		buf.get(new byte[3]);
-		buf.get(accountOrClanID);
-		logger.fine("Message ID : " + Utils.bytesToHex(messageID));
-		logger.fine("Account or Clan ID: " + Utils.bytesToHex(accountOrClanID));
+		buf.get(accountOrClanId);
+		logger.fine("Message ID : " + Utils.bytesToHex(messageId));
+		logger.fine("Account or Clan ID: " + Utils.bytesToHex(accountOrClanId));
 	}
 	
 	@Override
 	public void write(MediusClient client) {
 
-		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.LADDERSTATSWIDE_MAXLEN.getValue());
+		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.LADDERSTATSWIDE_MAXLEN.value);
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
-			outputStream.write(messageID);
+			outputStream.write(messageId);
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue()));
-			outputStream.write(accountOrClanID);
+			outputStream.write(accountOrClanId);
 			outputStream.write(stats);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

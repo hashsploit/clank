@@ -13,8 +13,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusSetLocalizationParamsHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] characterEncoding = new byte[4];
 	private byte[] language = new byte[4];
 	

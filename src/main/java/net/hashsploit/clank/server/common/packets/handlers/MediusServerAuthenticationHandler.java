@@ -61,8 +61,8 @@ public class MediusServerAuthenticationHandler extends MediusPacketHandler {
 		}
 
 		byte[] serverKey = new byte[64];
-		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
-		byte[] accessKey = new byte[MediusConstants.ACCESSKEY_MAXLEN.getValue()];
+		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.value);
+		byte[] accessKey = new byte[MediusConstants.ACCESSKEY_MAXLEN.value];
 
 		byte[] connectInfo = new NetConnectionInfo(
 				NetConnectionType.NET_CONNECTION_TYPE_CLIENT_SERVER_TCP_AUX_UDP,
