@@ -140,6 +140,15 @@ public class Utils {
 		short shortVal = bb.getShort(0);
 		return shortVal;
 	}
+	
+	public static short bytesToShortLittle(final byte byte1, final byte byte2) {
+		ByteBuffer bb = ByteBuffer.allocate(2);
+		bb.order(ByteOrder.LITTLE_ENDIAN);
+		bb.put(byte1);
+		bb.put(byte2);
+		short shortVal = bb.getShort(0);
+		return shortVal;
+	}
 
 	public static int bytesToIntLittle(final byte[] data) {
 
