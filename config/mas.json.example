@@ -10,6 +10,8 @@
 	"parent_threads": 1,
 	"child_threads": 4,
 	"max_login_attempts": 20,
+	"max_accounts_per_ip": 6,
+	"username_blacklist": null,
 	"application_id": 10684,
 	"mls": {
 		"address": "172.16.221.250",

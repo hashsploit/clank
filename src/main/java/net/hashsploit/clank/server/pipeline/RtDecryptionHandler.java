@@ -1,5 +1,6 @@
 package net.hashsploit.clank.server.pipeline;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,6 +20,9 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	private static final Logger logger = Logger.getLogger(RtDecryptionHandler.class.getName());
 	private MediusClient client;
+	private final BigInteger N = new BigInteger("101177020773116032450768434219907665711628442914109359705930212851485814671757");
+	private final BigInteger E = new BigInteger("101959470976625878182337603500729946859798449583099010462249380230433894289641");
+	private final BigInteger D = new BigInteger("4854567300243763614870687120476899445974505675147434999327174747312047455575182761195687859800492317495944895566174677168271650454805328075020357360662513");
 
 	public RtDecryptionHandler(MediusClient client) {
 		super();
