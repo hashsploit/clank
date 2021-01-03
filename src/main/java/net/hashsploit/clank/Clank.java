@@ -105,11 +105,11 @@ public class Clank {
 		
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
-		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
+		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.value | EmulationMode.MEDIUS_LOBBY_SERVER.value | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.value;
 		
 		// This is a *Medius server, set up the generic Medius components
 		MediusConfig mediusConfig = null;
-		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
+		if ((config.getEmulationMode().value & mediusBitmask) != 0) {
 			
 			// Register generic *Medius CLI commands
 			terminal.registerCommand(new CLIPlayersCommand());
@@ -212,8 +212,6 @@ public class Clank {
 			case MEDIUS_AUTHENTICATION_SERVER:
 				break;
 			case MEDIUS_LOBBY_SERVER:
-				break;
-			case MEDIUS_PROXY_SERVER:
 				break;
 			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
 				break;

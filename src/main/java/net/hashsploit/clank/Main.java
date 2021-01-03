@@ -55,9 +55,6 @@ public class Main {
 				case MEDIUS_LOBBY_SERVER:
 					config = new MlsConfig(jsonConfig);
 					break;
-				case MEDIUS_PROXY_SERVER:
-					config = new MpsConfig(jsonConfig);
-					break;
 				case DME_SERVER:
 					config = new DmeConfig(jsonConfig);
 					break;
