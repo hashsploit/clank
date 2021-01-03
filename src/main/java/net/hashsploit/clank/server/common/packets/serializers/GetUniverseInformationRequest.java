@@ -8,7 +8,7 @@ import net.hashsploit.clank.server.common.objects.MediusMessage;
 
 public class GetUniverseInformationRequest extends MediusMessage {
 
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] infoType = new byte[4];
 	private byte[] mediusCharacterEncodingType = new byte[4];
 	private byte[] mediusLanguageType = new byte[4];

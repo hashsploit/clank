@@ -8,8 +8,8 @@ import net.hashsploit.clank.server.common.objects.MediusMessage;
 
 public class PickLocationRequest extends MediusMessage {
 
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private int locationId;
 	
 	public PickLocationRequest(byte[] data) {

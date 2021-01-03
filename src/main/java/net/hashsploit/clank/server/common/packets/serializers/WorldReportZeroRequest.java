@@ -9,11 +9,11 @@ import net.hashsploit.clank.utils.Utils;
 
 public class WorldReportZeroRequest extends MediusMessage {
 
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] worldID = new byte[4];
 	private byte[] playerCount = new byte[4];
-	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.getValue()];
-	private byte[] gameStats = new byte[MediusConstants.GAMESTATS_MAXLEN.getValue()];
+	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.value];
+	private byte[] gameStats = new byte[MediusConstants.GAMESTATS_MAXLEN.value];
 	private byte[] minPlayers = new byte[4];
 	private byte[] maxPlayers = new byte[4];
 	private byte[] gameLevel = new byte[4];

@@ -9,11 +9,11 @@ import net.hashsploit.clank.utils.Utils;
 
 public class FindPlayerRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] searchType = new byte[4];
 	private byte[] accountId = new byte[4];
-	private byte[] accountName = new byte[MediusConstants.PLAYERNAME_MAXLEN.getValue()];
+	private byte[] accountName = new byte[MediusConstants.PLAYERNAME_MAXLEN.value];
 	
 	public FindPlayerRequest(byte[] data) {
 		super(MediusMessageType.FindPlayer, data);

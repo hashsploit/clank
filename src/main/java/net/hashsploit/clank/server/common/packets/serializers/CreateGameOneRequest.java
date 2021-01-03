@@ -9,15 +9,15 @@ import net.hashsploit.clank.utils.Utils;
 
 public class CreateGameOneRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] appID = new byte[4];
 	private byte[] minPlayers = new byte[4];
 	private byte[] maxPlayers = new byte[4];
 	private byte[] gameLevel = new byte[4];
-	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.getValue()];
-	private byte[] gamePassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.getValue()];
-	private byte[] spectatorPassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.getValue()];
+	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.value];
+	private byte[] gamePassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
+	private byte[] spectatorPassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
 	private byte[] playerSkillLevel = new byte[4];
 	private byte[] rulesSet = new byte[4];
 	private byte[] genField1 = new byte[4];

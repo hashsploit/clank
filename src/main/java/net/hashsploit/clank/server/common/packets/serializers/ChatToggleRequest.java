@@ -9,7 +9,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class ChatToggleRequest extends MediusMessage {
 	
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 
 	
 	public ChatToggleRequest(byte[] data) {

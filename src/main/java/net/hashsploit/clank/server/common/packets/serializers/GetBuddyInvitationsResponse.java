@@ -38,7 +38,7 @@ public class GetBuddyInvitationsResponse extends MediusMessage {
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(accountId));
-			outputStream.write(Utils.buildByteArrayFromString(accountName, MediusConstants.ACCOUNTNAME_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(accountName, MediusConstants.ACCOUNTNAME_MAXLEN.value));
 			outputStream.write(Utils.intToBytesLittle(addType.getValue()));
 			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00")); // EndOfList (char) 00 or 01
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding

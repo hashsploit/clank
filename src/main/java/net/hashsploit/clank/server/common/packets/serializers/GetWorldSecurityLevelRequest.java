@@ -9,7 +9,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class GetWorldSecurityLevelRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] callbackStatus = new byte[4];
 	private byte[] worldId = new byte[4];
 	private byte[] applicationType = new byte[4];

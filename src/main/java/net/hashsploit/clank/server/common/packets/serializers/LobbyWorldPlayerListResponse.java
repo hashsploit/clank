@@ -44,7 +44,7 @@ public class LobbyWorldPlayerListResponse extends MediusMessage {
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(playerStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(accountId));
-			outputStream.write(Utils.buildByteArrayFromString(accountName, MediusConstants.ACCOUNTNAME_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(accountName, MediusConstants.ACCOUNTNAME_MAXLEN.value));
 			outputStream.write(stats);
 			outputStream.write(Utils.intToBytesLittle(connectionType.getValue()));
 			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00"));

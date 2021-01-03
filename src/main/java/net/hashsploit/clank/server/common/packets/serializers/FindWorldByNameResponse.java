@@ -45,10 +45,10 @@ public class FindWorldByNameResponse extends MediusMessage {
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(appId));
-			outputStream.write(Utils.buildByteArrayFromString(appName, MediusConstants.APPNAME_MAXLEN.getValue()));
-			outputStream.write(Utils.intToBytesLittle(appType.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(appName, MediusConstants.APPNAME_MAXLEN.value));
+			outputStream.write(Utils.intToBytesLittle(appType.value));
 			outputStream.write(Utils.intToBytesLittle(worldId));
-			outputStream.write(Utils.buildByteArrayFromString(worldName, MediusConstants.WORLDNAME_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(worldName, MediusConstants.WORLDNAME_MAXLEN.value));
 			outputStream.write(Utils.intToBytesLittle(worldStatus.getValue()));
 			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00")); // EndOfList (char) 00 or 01
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding

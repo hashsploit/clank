@@ -85,18 +85,18 @@ public class GetUniverseInformationResponse extends MediusMessage {
 			
 			// If the 4th bit is set, include the UniverseName
 			if ((infoFilter & 8) != 0) {
-				outputStream.write(Utils.buildByteArrayFromString(universeName, MediusConstants.UNIVERSENAME_MAXLEN.getValue()));
+				outputStream.write(Utils.buildByteArrayFromString(universeName, MediusConstants.UNIVERSENAME_MAXLEN.value));
 			}
 			
 			// If the 5th bit is set, include the DNS & Port
 			if ((infoFilter & 16) != 0) {
-				outputStream.write(Utils.buildByteArrayFromString(dns, MediusConstants.UNIVERSEDNS_MAXLEN.getValue()));
+				outputStream.write(Utils.buildByteArrayFromString(dns, MediusConstants.UNIVERSEDNS_MAXLEN.value));
 				outputStream.write(Utils.intToBytesLittle(port));
 			}
 			
 			// If the 6th bit is set, include UniverseDescription
 			if ((infoFilter & 32) != 0) {
-				outputStream.write(Utils.buildByteArrayFromString(universeDescription, MediusConstants.UNIVERSEDESCRIPTION_MAXLEN.getValue()));
+				outputStream.write(Utils.buildByteArrayFromString(universeDescription, MediusConstants.UNIVERSEDESCRIPTION_MAXLEN.value));
 			}
 			
 			// If the 7th bit is set, include Status & UserCount & MaxUser
@@ -108,18 +108,18 @@ public class GetUniverseInformationResponse extends MediusMessage {
 			
 			// If the 8th bit is set, include UniverseBilling & BillingSystemName
 			if ((infoFilter & 128) != 0) {
-				outputStream.write(Utils.buildByteArrayFromString(bsp.value, MediusConstants.UNIVERSE_BSP_MAXLEN.getValue()));
-				outputStream.write(Utils.buildByteArrayFromString(billingSystemName, MediusConstants.UNIVERSE_BSP_NAME_MAXLEN.getValue()));
+				outputStream.write(Utils.buildByteArrayFromString(bsp.value, MediusConstants.UNIVERSE_BSP_MAXLEN.value));
+				outputStream.write(Utils.buildByteArrayFromString(billingSystemName, MediusConstants.UNIVERSE_BSP_NAME_MAXLEN.value));
 			}
 
 			// If the 9th bit is set, include ExtendedInfo
 			if ((infoFilter & 256) != 0) {
-				outputStream.write(Utils.buildByteArrayFromString(extendedInfo, MediusConstants.UNIVERSE_EXTENDED_INFO_MAXLEN.getValue()));
+				outputStream.write(Utils.buildByteArrayFromString(extendedInfo, MediusConstants.UNIVERSE_EXTENDED_INFO_MAXLEN.value));
 			}
 
 			// If the 10th bit is set, include ExtendedInfo
 			if ((infoFilter & 512) != 0) {
-				outputStream.write(Utils.buildByteArrayFromString(svoUrl, MediusConstants.UNIVERSE_SVO_URL_MAXLEN.getValue()));
+				outputStream.write(Utils.buildByteArrayFromString(svoUrl, MediusConstants.UNIVERSE_SVO_URL_MAXLEN.value));
 			}
 			
 			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00")); // EndOfList (char) 00 or 01

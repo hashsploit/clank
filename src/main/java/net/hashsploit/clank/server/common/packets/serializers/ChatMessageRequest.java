@@ -10,11 +10,11 @@ import net.hashsploit.clank.utils.Utils;
 
 public class ChatMessageRequest extends MediusMessage {
 
-	private final byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private final byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private final byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private final byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private final MediusChatMessageType mediusChatMessageType;
 	private final int targetId;
-	private final byte[] text = new byte[MediusConstants.CHATMESSAGE_MAXLEN.getValue()];
+	private final byte[] text = new byte[MediusConstants.CHATMESSAGE_MAXLEN.value];
 
 	public ChatMessageRequest(byte[] data) {
 		super(MediusMessageType.ChatMessage, data);

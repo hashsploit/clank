@@ -9,7 +9,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class ChannelList_ExtraInfoOneRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] pageID = new byte[2];
 	private byte[] pageSize = new byte[2];
 	

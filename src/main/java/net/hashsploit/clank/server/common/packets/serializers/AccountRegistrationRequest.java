@@ -9,8 +9,8 @@ import net.hashsploit.clank.server.common.objects.MediusMessage;
 
 public class AccountRegistrationRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private MediusAccountType accountType;
 	private String username;
 	private String password;
