@@ -1,25 +1,11 @@
 package net.hashsploit.clank.server.common.packets.handlers;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.logging.Logger;
-
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
-import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.MediusConstants;
 import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.MediusMessageType;
+import net.hashsploit.clank.server.common.MediusPacketHandler;
 import net.hashsploit.clank.server.common.objects.MediusMessage;
 import net.hashsploit.clank.server.common.objects.MediusWorldStatus;
-import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroRequest;
-import net.hashsploit.clank.server.common.packets.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.server.common.packets.serializers.WorldReportZeroRequest;
 import net.hashsploit.clank.utils.Utils;
 
@@ -46,6 +32,11 @@ public class MediusWorldReportZeroHandler extends MediusPacketHandler {
 		int worldStatus = Utils.bytesToIntLittle(reqPacket.getWorldStatus());
 		if (worldStatus == 2) {
 			server.updateDmeWorldStatus(worldId, MediusWorldStatus.WORLD_ACTIVE);
+			
+			server.getGame(worldId).updateStats(reqPacket.getGameStats());
+			server.getGame(worldId).setGenericField1(reqPacket.getGenField1());
+			server.getGame(worldId).setGenericField2(reqPacket.getGenField2());
+			server.getGame(worldId).setGenericField3(reqPacket.getGenField3());
 		}
 		
 	}

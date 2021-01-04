@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
-import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
-import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.MediusClient;
@@ -15,14 +13,9 @@ import net.hashsploit.clank.server.MediusClientChannelInitializer;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RTMessageId;
 import net.hashsploit.clank.server.TcpServer;
-import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.rpc.AbstractRpcServer;
-import net.hashsploit.clank.server.rpc.ClankMlsRpcServer;
-import net.hashsploit.clank.server.rpc.RpcServerConfig;
 import net.hashsploit.clank.server.scert.objects.RTMsgEncodingType;
 import net.hashsploit.clank.server.scert.objects.RTMsgLanguageType;
-import net.hashsploit.clank.utils.MediusMessageMapInitializer;
-import net.hashsploit.clank.utils.Utils;
 
 /**
  * A generic Medius Server (TCP)
