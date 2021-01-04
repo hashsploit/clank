@@ -30,14 +30,16 @@ public class MediusWorldReportZeroHandler extends MediusPacketHandler {
 		
 		int worldId = Utils.bytesToIntLittle(reqPacket.getWorldID());
 		int worldStatus = Utils.bytesToIntLittle(reqPacket.getWorldStatus());
+		
+		// FIXME: what does this even mean?
 		if (worldStatus == 2) {
 			server.updateDmeWorldStatus(worldId, MediusWorldStatus.WORLD_ACTIVE);
-			
-			server.getGame(worldId).updateStats(reqPacket.getGameStats());
-			server.getGame(worldId).setGenericField1(reqPacket.getGenField1());
-			server.getGame(worldId).setGenericField2(reqPacket.getGenField2());
-			server.getGame(worldId).setGenericField3(reqPacket.getGenField3());
 		}
+		
+		server.getGame(worldId).updateStats(reqPacket.getGameStats());
+		server.getGame(worldId).setGenericField1(reqPacket.getGenField1());
+		server.getGame(worldId).setGenericField2(reqPacket.getGenField2());
+		server.getGame(worldId).setGenericField3(reqPacket.getGenField3());
 		
 	}
 
