@@ -109,7 +109,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 			
 			switch (context) {
 				case RSA_AUTH:
-					PS2_RSA rsa = new PS2_RSA(client.getServer().getCryptoConfig().getN(), client.getServer().getCryptoConfig().getE(), client.getServer().getCryptoConfig().getD());
+					PS2_RSA rsa = new PS2_RSA(N, E, D);
 					rsa.getContext();
 					decryptedData = rsa.decrypt(message, hash);
 					break;
