@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server.pipeline;
 
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -14,15 +15,16 @@ import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
 import net.hashsploit.medius.crypto.SCERTDecryptedData;
+import net.hashsploit.medius.crypto.SCERTEncryptedData;
 import net.hashsploit.medius.crypto.rsa.PS2_RSA;
 
 public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	private static final Logger logger = Logger.getLogger(RtDecryptionHandler.class.getName());
 	private MediusClient client;
-	private final BigInteger N = new BigInteger("101177020773116032450768434219907665711628442914109359705930212851485814671757");
-	private final BigInteger E = new BigInteger("101959470976625878182337603500729946859798449583099010462249380230433894289641");
-	private final BigInteger D = new BigInteger("4854567300243763614870687120476899445974505675147434999327174747312047455575182761195687859800492317495944895566174677168271650454805328075020357360662513");
+	private final BigInteger N = new BigInteger("10315955513017997681600210131013411322695824559688299373570246338038100843097466504032586443986679280716603540690692615875074465586629501752500179100369237",10);
+	private final BigInteger E = new BigInteger("17",10);
+	private final BigInteger D = new BigInteger("4854567300243763614870687120476899445974505675147434999327174747312047455575182761195687859800492317495944895566174677168271650454805328075020357360662513",10);
 
 	public RtDecryptionHandler(MediusClient client) {
 		super();
@@ -31,6 +33,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> output) throws Exception {
+		logger.info("Got pipeline!");
 		final Object decoded = this.decode(ctx, input);
 		if (decoded != null) {
 			output.add(decoded);
@@ -98,8 +101,11 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		if (hash != null) {
 			CipherContext context = null;
 			
+			logger.info("Incoming hash: " + Utils.bytesToHex(hash));			
+			logger.info("Incoming hash context: " + (hash[3] & 0xff >> 5));
+			
 			for (final CipherContext ctx : CipherContext.values()) {
-				if (ctx.id == hash[3] >> 5) {
+				if (ctx.id == (hash[3] & 0xff >> 5)) {
 					context = ctx;
 					break;
 				}
@@ -107,11 +113,21 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 			
 			SCERTDecryptedData decryptedData = null;
 			
+			logger.info("Pre decryption message: " + Utils.bytesToHex(message));
+			//Utils.flipByteArray(message);
+			
 			switch (context) {
 				case RSA_AUTH:
 					PS2_RSA rsa = new PS2_RSA(N, E, D);
-					rsa.getContext();
+					//rsa.setContext(CipherContext.ID_00);
+					rsa.setContext(context);
 					decryptedData = rsa.decrypt(message, hash);
+					logger.info("Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
+					logger.info("Post decryption status: " + decryptedData.isSuccessful());
+					
+					SCERTEncryptedData enc = rsa.encrypt(decryptedData.getData());
+					logger.info("Reencrypted: " + Utils.bytesToHex(enc.getData()));
+					
 					break;
 				case RC_CLIENT_SESSION:
 					break;
@@ -120,9 +136,6 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 				default:
 					return null;
 			}
-			
-			
-			
 			
 		}
 		
