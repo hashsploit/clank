@@ -1,6 +1,6 @@
-# Clank - A high-performance SCE-RT Medius server
+# Clank
 
-This project is an Open Source implementation of the
+Clank is a high-performance and Open Source implementation of the
 proprietary SCE-RT Medius server stack used in many PlayStation 2
 and PlayStation 3 multiplayer titles. The project was originally
 intended for *Ratchet & Clank: Up Your Arsenal* for the
@@ -17,13 +17,8 @@ Join our [R&C Online Discord community](https://discord.gg/mUQzqGu) for more inf
 ![GitHub repo size](https://img.shields.io/github/repo-size/hashsploit/clank) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/hashsploit/clank) ![Discord](https://img.shields.io/discord/711614240120766474?logo=Discord&logoColor=9999FF) ![GitHub Repo stars](https://img.shields.io/github/stars/hashsploit/clank?style=social)
 
 ## Features
-
 Server features that are complete will be checked, features that are still in progress or planned are un-checked.
 
-- [x] Modular design.
-- [x] Inbound handlers for incoming packets.
-- [x] Oubound handlers for outgoing packets.
-- [x] Medius packet handling (Medius structs).
 - [x] gRPC back-end communication between servers.
 - [x] Emulates Medius Authentication Server (MAS).
 - [x] Emulates NAT Server (NAT).
@@ -31,9 +26,8 @@ Server features that are complete will be checked, features that are still in pr
 - [x] Emulates DME Server (DME).
 - [x] Emulates Medius Universe Information Server (MUIS).
 - [x] SCE-RT encryption/decryption. (Using [medius-crypto](https://github.com/hashsploit/medius-crypto)).
-- [x] SCE-RT packet frames.
 - [ ] Lua sandbox.
-- [ ] Lua scripting API.
+- [ ] Lua plugin API.
 - [ ] Database integration (MySQL/MariaDB).
 - [x] Simulated database mode.
 - [ ] Server operator chat commands.
@@ -41,7 +35,6 @@ Server features that are complete will be checked, features that are still in pr
 - [x] Chat.
 - [x] Custom Channels and Locations support.
 - [x] Configurable player server operators.
-- [x] Non-blocking async handling of incoming data.
 
 
 ## Game titles tested so far
@@ -68,18 +61,25 @@ The focus of the table below is based on a title's ability to get from login to 
 | Syphon Filter: The Omega Strain NTSC-U (2004)               | PARTIAL    | Lobby mostly works, MAS is missing P2P.        |
 
 
-## How to build/compile and run Clank
-
-
-### Build Clank Docker image
-Clank can be built as a Docker-container micro-service stack, see
-[Docker.md](Docker.md) for more info.
+## Building and Running Clank
 
 ### Build Clank
+Ensure you have the JDK 8+ and Maven installed first.
 
-To build clank manually you will need to install the JDK 8+ and Maven.
-You can now run `./build.sh` to build Clank on Linux, or `build.bat`
-to build Clank if you are on Windows.
+Note: any changes to the `src/main/proto/` files will require the protocol buffers
+to be recompiled, this can easily be run by running `./compile-protobufs.sh` on Linux
+or `compile-protobufs.bat` on Windows. Running either `build.sh` or `build.bat` automatically
+invokes the protobuf to be recompiled.
+
+#### Linux
+1. Run `./build.sh`.
+
+#### Windows
+1. Run `build.bat`.
+
+#### Docker
+1. See [Docker.md](Docker.md) for more info.
+
 
 ### Run Clank
 In order to run Clank you will need to create a JSON configuration file, there are
@@ -88,18 +88,16 @@ place. For example, make a copy of `config/mas.json.example` named `config/mas.j
 
 You can then use `./launch.sh config/mas.json` to run a Clank MAS server.
 
+#### Linux
 1. Copy an example configuration file `config/mas.json.example` -> `config/mas.json`.
-2. (Linux) Run `./launch.sh config/mas.json`.
-3. (Windows) Run `launch.bat config/mas.json`.
+2. Run `./launch.sh config/mas.json`.
 
-If you cloned the repo and are pulling from time-to-time, make note that
-any changes to the `src/main/proto/` files will require the protocol buffers
-to be recompiled, this can easily be run by running `./compile-protobufs.sh`
-if you are on Linux or `compile-protobufs.bat` on Windows.
+#### Windows
+1. Copy an example configuration file `config/mas.json.example` -> `config/mas.json`.
+2. Run `launch.bat config/mas.json`.
 
 
 ## Clank components
-
 This server supports emulating the following components:
 - The **MUIS (Medius Universe Information Server)** is the entrypoint for several
   games that may have "multiverses", this is generally used before MAS. This server
@@ -120,14 +118,12 @@ This server supports emulating the following components:
 
 You can read more about these components [here](https://wiki.hashsploit.net/PlayStation_2#Medius).
 
-## Configuration
 
+## Configuration
 You can read more about the JSON configuration files [here](config/README.md).
 
 
-
 ## Console commands
-
 Each component of Clank has different built-in commands as
 they differ per context and implementation, however you can
 always use the `help` command to view all commands available in
@@ -144,12 +140,10 @@ For *MAS*, *MLS* and *MUIS* servers:
 
 
 ## Lua plugin API
-
 Under construction.
 
 
 ## About the SCE-RT / RTIME / Medius Protocol
-
 SCE-RT is the underlying protocol of Medius titles for the PlayStation 2 and PlayStation 3.
 SCE-RT was developed by the acquisition of RTIME Inc. by Sony Computer Entertainment
 America for their underlying game networking engine for PlayStation 2 games.
@@ -165,7 +159,6 @@ Read more about reverse-engineering the SCE-RT/Medius protocol here:
 
 
 ## Special thanks
-
 A huge thanks to [Game Fuckery Inc.](https://discord.gg/KE8G5FA) and the following people in the PlayStation 2/PlayStation 3 community that made this project possible.
 
 - **hashsploit** - reverse engineer, developer, documentation, UYA community.
