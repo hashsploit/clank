@@ -50,8 +50,6 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 		ByteBuf msg = null;
 
-		logger.severe(RtDecryptionHandler.class.getName() + ": " + Utils.bytesToHex(Utils.byteBufToNioBuffer(input).array()));
-
 		// add mapping
 		RtMessageId rtid = null;
 		for (final RtMessageId p : RtMessageId.values()) {
@@ -65,6 +63,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 			msg = process(rtid, hash, new byte[0]);
 		}
 
+		// Convert the RT ID if encrypted to a normal RT ID -0x80
 		if (id >= (byte) 0x80) {
 			hash = new byte[4];
 			input.getBytes(input.readerIndex() + 3, hash);
@@ -89,9 +88,10 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 		input.readerIndex(input.readerIndex() + totalLength + frameLengthInt);
 
-		logger.finest("Decryption handler detected ID: " + rtid.toString());
-
-		msg = process(rtid, hash, messageContents);
+		// If the hash is not null, this packet can be decrypted, so decrypt it
+		if (hash != null) {
+			msg = process(rtid, hash, messageContents);
+		}
 
 		return msg;
 	}
@@ -118,13 +118,14 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 			logger.finest("Pre decryption message: " + Utils.bytesToHex(message));
 
+			
 			switch (context) {
 				case RSA_AUTH:
 					PS2_RSA rsa = new PS2_RSA(N, E, D);
 					rsa.setContext(context);
 					decryptedData = rsa.decrypt(message, hash);
-					logger.finest("Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
-					logger.finest("Post decryption status: " + decryptedData.isSuccessful());
+					logger.finest("RSA Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
+					logger.finest("RSA Post decryption status: " + decryptedData.isSuccessful());
 
 					SCERTEncryptedData enc = rsa.encrypt(decryptedData.getData());
 					// byte[] newEnc = Utils.flipByteArray(enc.getData());
@@ -145,10 +146,14 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 					return data;
 
 				case RC_CLIENT_SESSION:
-					logger.info("RC CLIENT SESSION");
+					
 					PS2_RC4 clientSessionKey = client.getRc4Key();
 					SCERTDecryptedData scertData = clientSessionKey.decrypt(message, hash);
-					logger.info(Utils.bytesToHex(scertData.getData()));
+					
+					logger.finest("RC4 Post decryption: " + Utils.bytesToHex(scertData.getData()));
+					logger.finest("RC4 Post decryption status: " + scertData.isSuccessful());
+					
+					
 					break;
 				case RC_SERVER_SESSION:
 					break;

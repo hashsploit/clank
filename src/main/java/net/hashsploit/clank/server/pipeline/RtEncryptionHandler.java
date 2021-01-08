@@ -39,7 +39,11 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<RTMessage>> {
 	
 	
 	private void sendSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
+		
+		// Add 0x80 to the RT ID if the packet is encrypted.
 		byte id = (byte) (msg.getId().getValue() | (byte) 0x80);
+		
+		// If the RT ID is a CLIENT DISCONNECT, do not add 0x80 to the ID.
 		if (msg.getId() == RtMessageId.CLIENT_DISCONNECT) {
 			id = msg.getId().getValue();
 		}
