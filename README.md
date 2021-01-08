@@ -14,6 +14,7 @@ adding support for Medius v1.9 and v1.10 (2.10) soon.
 
 Join our [R&C Online Discord community](https://discord.gg/mUQzqGu) for more information.
 
+![GitHub repo size](https://img.shields.io/github/repo-size/hashsploit/clank) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/hashsploit/clank) ![Discord](https://img.shields.io/discord/711614240120766474?logo=Discord&logoColor=9999FF) ![GitHub Repo stars](https://img.shields.io/github/stars/hashsploit/clank?style=social)
 
 ## Features
 
@@ -28,8 +29,8 @@ Server features that are complete will be checked, features that are still in pr
 - [x] Emulates NAT Server (NAT).
 - [x] Emulates Medius Lobby Server (MLS).
 - [x] Emulates DME Server (DME).
-- [ ] Emulates Medius Universe Information Server (MUIS).
-- [ ] SCE-RT encryption/decryption. (Using [medius-crypto](https://github.com/hashsploit/medius-crypto)).
+- [x] Emulates Medius Universe Information Server (MUIS).
+- [x] SCE-RT encryption/decryption. (Using [medius-crypto](https://github.com/hashsploit/medius-crypto)).
 - [x] SCE-RT packet frames.
 - [ ] Lua sandbox.
 - [ ] Lua scripting API.
