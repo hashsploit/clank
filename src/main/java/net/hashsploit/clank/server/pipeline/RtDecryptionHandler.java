@@ -106,11 +106,14 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		if (hash != null) {
 			CipherContext context = null;
 			
+			int hashCtx = hash[3] & 0xFF;
+			int hashCtxAdjusted = hashCtx >>> 0x05;
+			
 			logger.finest("Incoming hash: " + Utils.bytesToHex(hash));			
-			logger.finest("Incoming hash context: " + (hash[3] & 0xff >> 5));
+			logger.finest("Incoming hash context: " + (byte) hashCtxAdjusted);
 			
 			for (final CipherContext ctx : CipherContext.values()) {
-				if (ctx.id == (hash[3] & 0xff >> 5)) {
+				if (ctx.id == (byte) hashCtxAdjusted) {
 					context = ctx;
 					break;
 				}
