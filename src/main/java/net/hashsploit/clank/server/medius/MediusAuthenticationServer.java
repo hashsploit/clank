@@ -5,6 +5,7 @@ import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.rt.RtPacketMap;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
 import net.hashsploit.clank.server.rpc.ClankMasRpcClient;
 import net.hashsploit.clank.server.rpc.PlayerLoginResponse;
@@ -21,6 +22,7 @@ public class MediusAuthenticationServer extends MediusServer{
 		super(emulationMode, address, port, parentThreads, childThreads);
 		
 		this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();
+		this.rtMessageMap = RtPacketMap.buildRtPacketMap();
 		
 		
 		// Start RPC client

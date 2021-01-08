@@ -85,7 +85,7 @@ public class MediusClient implements IClient {
 		}
 
 		// Re-frame the packets
-		channel.pipeline().addLast(new RtFrameEncoderHandler());
+		//channel.pipeline().addLast(new RtFrameEncoderHandler());
 
 		ChannelFuture closeFuture = channel.closeFuture();
 		closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
@@ -267,5 +267,16 @@ public class MediusClient implements IClient {
 		rng.nextBytes(randomBytes);
 		rc4Key = new PS2_RC4(randomBytes, context);
 	}
+
+	public void setRsaKey(PS2_RSA rsaKey) {
+		this.rsaKey = rsaKey;
+	}
+
+	public PS2_RSA getPs2RsaKey() {
+		return rsaKey;
+	}
+
+	
+	
 
 }

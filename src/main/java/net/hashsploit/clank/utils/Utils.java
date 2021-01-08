@@ -61,6 +61,24 @@ public class Utils {
 		return sb.toString();
 	}
 	
+	public static RtMessageId getRtMessageId(byte id) {
+		for (final RtMessageId p : RtMessageId.values()) {
+			if (p.getValue() == id) {
+				return p;
+			}
+		}
+		return null;
+	}
+	
+	public static ByteBuffer toNioBuffer(final ByteBuf buffer) {
+		if (buffer.isDirect()) {
+			return buffer.nioBuffer();
+		}
+		final byte[] bytes = new byte[buffer.readableBytes()];
+		buffer.getBytes(buffer.readerIndex(), bytes);
+		return ByteBuffer.wrap(bytes);
+	}
+	
 	/**
 	 * Reads a byte array up until a null-terminator and convert it to a string.
 	 * 

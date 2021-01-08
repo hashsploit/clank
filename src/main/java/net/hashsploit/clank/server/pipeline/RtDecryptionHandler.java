@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -47,7 +48,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		long frameLength = input.getShortLE(input.readerIndex() + 1);
 		int totalLength = 3;
 		
-		RTMessage msg = null;
+		ByteBuf msg = null;
 
 		logger.severe(RtDecryptionHandler.class.getName() + ": " + Utils.bytesToHex(Utils.byteBufToNioBuffer(input).array()));
 
@@ -99,7 +100,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		return msg;
 	}
 
-	private RTMessage process(RtMessageId id, byte[] hash, byte[] message) {
+	private ByteBuf process(RtMessageId id, byte[] hash, byte[] message) {
 		
 		if (hash != null) {
 			CipherContext context = null;
@@ -132,7 +133,17 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 					if (!Utils.sequenceEquals(newEnc, message)) {
 						throw new IllegalStateException("RSA_AUTH: Re-encryption does not match original encryption for: \nOriginal message: " + Utils.bytesToHex(message) + "\nRe-encrypted    : " + Utils.bytesToHex(newEnc));
 					}
-					return new RTMessage(id, decryptedData.getData());
+					
+					byte[] nn = decryptedData.getData();
+					nn = Utils.flipByteArray(nn);
+					
+					BigInteger newN = new BigInteger(1, nn);
+					BigInteger newE = new BigInteger("17",10);
+					PS2_RSA rsaKey = new PS2_RSA(newN, newE, null);
+					rsaKey.setContext(context);
+					client.setRsaKey(rsaKey);
+					ByteBuf data = Unpooled.copiedBuffer(new RTMessage(id, decryptedData.getData()).toBytes());
+					return data;
 				case RC_CLIENT_SESSION:
 					break;
 				case RC_SERVER_SESSION:

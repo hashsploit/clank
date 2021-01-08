@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.rt.RtMessageHandler;
 import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.MediusClient;
@@ -39,6 +40,7 @@ public class MediusServer extends TcpServer {
 	
 	protected AbstractRpcServer rpcServer;
 	protected HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
+	protected HashMap<RtMessageId, RtMessageHandler> rtMessageMap;
 
 	public MediusServer(final EmulationMode emulationMode, final String address, final int port, final int parentThreads, final int childThreads) {
 		super(address, port, parentThreads, childThreads);
@@ -119,5 +121,10 @@ public class MediusServer extends TcpServer {
 	public AbstractRpcServer getRpcServer() {
 		return rpcServer;
 	}
+
+	public RtMessageHandler getRtHandler(RtMessageId id) {
+		return rtMessageMap.get(id);
+	}
+
 
 }
