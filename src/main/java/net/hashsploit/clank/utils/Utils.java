@@ -531,20 +531,12 @@ public class Utils {
 		return ByteBuffer.wrap(bytes);
 	}
 
-	public static void flipByteArray(byte[] array) {
-	      if (array == null) {
-	          return;
+	public static byte[] flipByteArray(byte[] array) {
+	      byte[] result = new byte[array.length];
+	      for (int i = 0; i < array.length; i++) {
+	    	  result[array.length-1-i] = array[i];
 	      }
-	      int i = 0;
-	      int j = array.length - 1;
-	      byte tmp;
-	      while (j > i) {
-	          tmp = array[j];
-	          array[j] = array[i];
-	          array[i] = tmp;
-	          j--;
-	          i++;
-	      }
+	      return result;
 	}
 	
 }

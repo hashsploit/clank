@@ -33,7 +33,6 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> output) throws Exception {
-		logger.info("Got pipeline!");
 		final Object decoded = this.decode(ctx, input);
 		if (decoded != null) {
 			output.add(decoded);
@@ -77,6 +76,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		if (frameLength < 0) {
 			throw new CorruptedFrameException("negative pre-adjustment length field: " + frameLength);
 		}
+		
 
 		// never overflows because it's less than maxFrameLength
 		int frameLengthInt = (int) frameLength;
@@ -91,6 +91,9 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 		input.readerIndex(input.readerIndex() + totalLength + frameLengthInt);
 		// return BaseScertMessage.Instantiate((RT_MSG_TYPE) id, hash, messageContents, _getCipher);
+		
+		logger.finest("Decryption handler detected ID: " + rtid.toString());
+
 		msg = process(rtid, hash, messageContents);
 		
 		return msg;
@@ -100,9 +103,9 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		
 		if (hash != null) {
 			CipherContext context = null;
-			
-			logger.info("Incoming hash: " + Utils.bytesToHex(hash));			
-			logger.info("Incoming hash context: " + (hash[3] & 0xff >> 5));
+
+			logger.finest("Incoming hash: " + Utils.bytesToHex(hash));			
+			logger.finest("Incoming hash context: " + (hash[3] & 0xff >> 5));
 			
 			for (final CipherContext ctx : CipherContext.values()) {
 				if (ctx.id == (hash[3] & 0xff >> 5)) {
@@ -113,22 +116,23 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 			
 			SCERTDecryptedData decryptedData = null;
 			
-			logger.info("Pre decryption message: " + Utils.bytesToHex(message));
-			//Utils.flipByteArray(message);
+			logger.finest("Pre decryption message: " + Utils.bytesToHex(message));
 			
 			switch (context) {
 				case RSA_AUTH:
 					PS2_RSA rsa = new PS2_RSA(N, E, D);
-					//rsa.setContext(CipherContext.ID_00);
 					rsa.setContext(context);
 					decryptedData = rsa.decrypt(message, hash);
-					logger.info("Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
-					logger.info("Post decryption status: " + decryptedData.isSuccessful());
+					logger.finest("Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
+					logger.finest("Post decryption status: " + decryptedData.isSuccessful());
 					
 					SCERTEncryptedData enc = rsa.encrypt(decryptedData.getData());
-					logger.info("Reencrypted: " + Utils.bytesToHex(enc.getData()));
-					
-					break;
+					//byte[] newEnc = Utils.flipByteArray(enc.getData());
+					byte[] newEnc = enc.getData();
+					if (!Utils.sequenceEquals(newEnc, message)) {
+						throw new IllegalStateException("RSA_AUTH: Re-encryption does not match original encryption for: \nOriginal message: " + Utils.bytesToHex(message) + "\nRe-encrypted    : " + Utils.bytesToHex(newEnc));
+					}
+					return new RTMessage(id, decryptedData.getData());
 				case RC_CLIENT_SESSION:
 					break;
 				case RC_SERVER_SESSION:

@@ -30,12 +30,12 @@ public class MasHandler extends MessageToMessageDecoder<MediusMessage> {
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) {
-		logger.finest("-> " + msg.toString());
+		logger.finest("Mas handler recv -> " + msg.toString());
 	}
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, MediusMessage msg, List<Object> out) throws Exception {
-		
+		logger.fine("MAS HANDLER GOT SOMETHING!");
 	}
 
 }

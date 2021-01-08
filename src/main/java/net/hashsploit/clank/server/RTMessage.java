@@ -3,6 +3,8 @@ package net.hashsploit.clank.server;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
+import net.hashsploit.medius.crypto.Utils;
+
 public class RTMessage implements IRTMessage {
 	
 	private final RtMessageId id;
@@ -66,6 +68,10 @@ public class RTMessage implements IRTMessage {
 		
 		buffer.flip();
 		return buffer.array();
+	}
+	
+	public String toString() {
+		return "RTMessage[ id: " + id.toString() + ", len: " + length + " payload: " + Utils.bytesToHex(payload) + "]";
 	}
 	
 }
