@@ -17,6 +17,7 @@ import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
 import net.hashsploit.medius.crypto.SCERTDecryptedData;
 import net.hashsploit.medius.crypto.SCERTEncryptedData;
+import net.hashsploit.medius.crypto.rc.PS2_RC4;
 import net.hashsploit.medius.crypto.rsa.PS2_RSA;
 
 public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
@@ -104,7 +105,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 		
 		if (hash != null) {
 			CipherContext context = null;
-
+			
 			logger.finest("Incoming hash: " + Utils.bytesToHex(hash));			
 			logger.finest("Incoming hash context: " + (hash[3] & 0xff >> 5));
 			
@@ -144,7 +145,12 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 					client.setRsaKey(rsaKey);
 					ByteBuf data = Unpooled.copiedBuffer(new RTMessage(id, decryptedData.getData()).toBytes());
 					return data;
+					
 				case RC_CLIENT_SESSION:
+					logger.info("RC CLIENT SESSION");
+					PS2_RC4 clientSessionKey = client.getRc4Key();
+					SCERTDecryptedData scertData = clientSessionKey.decrypt(message, hash);
+					logger.info(Utils.bytesToHex(scertData.getData()));
 					break;
 				case RC_SERVER_SESSION:
 					break;

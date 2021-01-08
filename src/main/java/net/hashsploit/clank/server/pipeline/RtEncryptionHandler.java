@@ -1,10 +1,13 @@
 package net.hashsploit.clank.server.pipeline;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import io.netty.handler.codec.MessageToMessageEncoder;
@@ -38,7 +41,7 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<RTMessage>> {
 	
 	private void sendSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
 		byte id = (byte) (msg.getId().getValue() | (byte) 0x80);
-		if (msg.getId() != RtMessageId.CLIENT_DISCONNECT) {
+		if (msg.getId() == RtMessageId.CLIENT_DISCONNECT) {
 			id = msg.getId().getValue();
 		}
 
@@ -65,6 +68,23 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<RTMessage>> {
 		logger.info("length: " + Utils.bytesToHex(length));
 		logger.info("hash: " + Utils.bytesToHex(hash));
 		logger.info("encryptedData: " + Utils.bytesToHex(encryptedData));
+		
+		// Creates an output stream
+		ByteArrayOutputStream out = new ByteArrayOutputStream();		
+		// Writes data to the output stream
+		try {
+			out.write(id);
+			out.write(length);
+			out.write(hash);
+			out.write(encryptedData);
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+
+		logger.info("FINAL OUT: " + Utils.bytesToHex(out.toByteArray()));
+		ByteBuf bb = Unpooled.copiedBuffer(out.toByteArray());
+		ctx.channel().pipeline().writeAndFlush(bb);
 	}
 	
 }

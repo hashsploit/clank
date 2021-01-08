@@ -44,7 +44,7 @@ public class MediusClient implements IClient {
 
 	private PS2_RSA rsaKey;
 	private PS2_RC4 rc4Key;
-
+	
 	private Player player;
 
 	public MediusClient(MediusServer server, SocketChannel channel) {
@@ -274,6 +274,14 @@ public class MediusClient implements IClient {
 
 	public PS2_RSA getPs2RsaKey() {
 		return rsaKey;
+	}
+
+	public synchronized PS2_RC4 getRc4Key() {
+		return rc4Key;
+	}
+
+	public synchronized void setRc4Key(PS2_RC4 rc4Key) {
+		this.rc4Key = rc4Key;
 	}
 
 	
