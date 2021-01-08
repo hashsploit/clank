@@ -150,7 +150,9 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 					PS2_RC4 clientSessionKey = client.getRc4Key();
 					SCERTDecryptedData scertData = clientSessionKey.decrypt(message, hash);
 					
-					logger.finest("RC4 Post decryption: " + Utils.bytesToHex(scertData.getData()));
+					byte[] encryptedData = scertData.getData();
+					
+					logger.finest("RC4 Post decryption: " + Utils.bytesToHex(encryptedData));
 					logger.finest("RC4 Post decryption status: " + scertData.isSuccessful());
 					
 					
