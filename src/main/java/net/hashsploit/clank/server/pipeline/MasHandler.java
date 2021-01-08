@@ -12,7 +12,6 @@ import net.hashsploit.clank.rt.RtMessageHandler;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
-import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 public class MasHandler extends MessageToMessageDecoder<ByteBuf> {

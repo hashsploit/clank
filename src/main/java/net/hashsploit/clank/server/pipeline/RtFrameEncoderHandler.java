@@ -5,7 +5,6 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
-import net.hashsploit.clank.server.MediusClient;
 
 public class RtFrameEncoderHandler extends MessageToByteEncoder<ByteBuf> {
 

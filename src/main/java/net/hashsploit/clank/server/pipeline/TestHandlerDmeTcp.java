@@ -12,8 +12,6 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
-import net.hashsploit.clank.database.DbManager;
-import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.rt.serializers.RT_ClientConnectTcpAuxUdp;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
