@@ -9,9 +9,7 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -19,7 +17,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
 
 public class Utils {
@@ -96,60 +93,6 @@ public class Utils {
 		}
 		
 		return sb.toString();
-	}
-
-	/**
-	 * Decode an array of bytes into RT message frames.
-	 * 
-	 * @param data
-	 * @return
-	 */
-	public static List<RTMessage> decodeRTMessageFrames(byte[] data) {
-		final List<RTMessage> packets = new ArrayList<RTMessage>();
-
-		int index = 0;
-
-		try {
-			while (index < data.length) {
-				final byte id = data[index + 0];
-
-				ByteBuffer bb = ByteBuffer.allocate(2);
-				bb.order(ByteOrder.LITTLE_ENDIAN);
-				bb.put(data[index + 1]);
-				bb.put(data[index + 2]);
-				short length = bb.getShort(0);
-
-				// logger.fine("Length: " + Integer.toString(length));
-				byte[] finalData = new byte[length];
-				int offset = 0;
-
-				if (length > 0) {
-					// ID(1) + Length(2)
-					offset += 1 + 2;
-				}
-
-				// logger.warning("PLAIN DATA PACKET");
-				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
-
-				RtMessageId rtid = null;
-
-				for (RtMessageId p : RtMessageId.values()) {
-					if (p.getValue() == id) {
-						rtid = p;
-						break;
-					}
-				}
-
-				packets.add(new RTMessage(rtid, finalData));
-
-				index += length + 3;
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-			return null;
-		}
-
-		return packets;
 	}
 
 	public static short bytesToShortLittle(final byte byte1, final byte byte2) {
@@ -293,6 +236,25 @@ public class Utils {
 		return b.array();
 	}
 
+	/**
+	 * This is a safe function which takes in a Netty ByteBuf object
+	 * and returns a byte[] from it, regardless if it has a backing array or not.
+	 * 
+	 * @param buf
+	 * @return
+	 */
+	public static byte[] nettyByteBufToByteArray(ByteBuf buf) {
+		byte[] bytes;
+		int length = buf.readableBytes();
+		if (buf.hasArray()) {
+		    bytes = buf.array();
+		} else {
+		    bytes = new byte[length];
+		    buf.getBytes(buf.readerIndex(), bytes);
+		}
+		return bytes;
+	}
+	
 	/**
 	 * Check if a TCP port is already in use.
 	 * 

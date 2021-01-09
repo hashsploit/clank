@@ -6,7 +6,6 @@ import net.hashsploit.clank.rt.handlers.RtMsgClientConnectTcp;
 import net.hashsploit.clank.rt.handlers.RtMsgClientCryptKeyPeerHandler;
 import net.hashsploit.clank.rt.handlers.RtMsgClientCryptKeyPublicHandler;
 import net.hashsploit.clank.rt.handlers.RtMsgClientDisconnect;
-import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RtMessageId;
 
 public class RtPacketMap {

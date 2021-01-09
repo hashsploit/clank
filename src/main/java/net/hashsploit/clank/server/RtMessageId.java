@@ -133,4 +133,13 @@ public enum RtMessageId {
 		return id;
 	}
 	
+	public static RtMessageId getIdByByte(byte id) {
+		for (final RtMessageId rtid: values()) {
+			if (rtid.id == id) {
+				return rtid;
+			}
+		}
+		return null;
+	}
+	
 }

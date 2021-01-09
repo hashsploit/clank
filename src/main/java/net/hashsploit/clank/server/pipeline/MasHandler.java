@@ -34,31 +34,42 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-		logger.finest("Mas handler recv -> " + msg.toString());
-		
+
 		final ByteBuffer buffer = Utils.toNioBuffer(msg);
 		final byte[] data = new byte[buffer.remaining()];
 		buffer.get(data);
-		
+
 		RtMessageId rtid = Utils.getRtMessageId(data[0]);
-		
+
 		if (rtid == null) {
 			throw new IllegalStateException("Unknown rtid for packet: " + Utils.bytesToHex(data));
 		}
-		
+
 		RtMessageHandler handler = client.getServer().getRtHandler(rtid);
-		
+
 		ByteBuf outData = Unpooled.copiedBuffer(data);
-		handler.read(outData);
-		List<RTMessage> messages = handler.write(client);
 		
+		// Handle reading
+		handler.read(outData);
+		
+		// Handle writing
+		List<RTMessage> messages = handler.write(client);
+
 		if (messages != null) {
-			for (RTMessage message: messages) {
-				logger.finest("Writing out:");
-				logger.finest(message.toString());
+			//int packetSize = 0;
+			for (final RTMessage message : messages) {
+				
+				// TODO: Consider framing multiple messages into a single packet.
+				//packetSize += message.toBytes().length;
+				//ctx.pipeline().write(messages);
+				//if (packetSize > 2048) {
+				//	ctx.pipeline().flush();
+				//}
+				
+				ctx.pipeline().writeAndFlush(message.getFullMessage());
+				
 			}
-			//out.add(messages);	
-			ctx.pipeline().write(messages);
+			
 		}
 	}
 

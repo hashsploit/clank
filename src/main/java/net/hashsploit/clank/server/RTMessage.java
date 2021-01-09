@@ -1,36 +1,48 @@
 package net.hashsploit.clank.server;
 
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
-
-import net.hashsploit.medius.crypto.Utils;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.hashsploit.clank.utils.Utils;
 
 public class RTMessage implements IRTMessage {
 	
 	private final RtMessageId id;
 	private final short length;
-	private final byte[] payload;
+	private ByteBuf payload;
 	
 	/**
-	 * Represents a single plain-text raw data packet from a Medius client.
+	 * Create an RT message from raw ByteBuf data.
+	 * 
+	 * Expects:
+	 * id (1 byte)
+	 * length (2 bytes LE)
+	 * payload (n bytes)
+	 * 
 	 * @param id
 	 * @param checksum
 	 * @param payload
 	 */
-	public RTMessage(RtMessageId id, byte[] payload) {
-		this.id = id;
-		
-		if (payload == null) {
-			payload = new byte[0];
-		}
-		
-		this.length = (short) payload.length;
-		
-		this.payload = payload;
+	public RTMessage(ByteBuf data) {
+		this.id = RtMessageId.getIdByByte(data.readByte());
+		this.length = data.readShortLE();
+		data.readBytes(payload);
 	}
 	
 	/**
+	 * Create an RT message from an RT ID and a byte[] of data.
+	 * 
+	 * @param id
+	 * @param data
+	 */
+	public RTMessage(RtMessageId id, byte[] data) {
+		this.id = id;
+		this.length = (short) data.length;
+		this.payload = Unpooled.wrappedBuffer(data);
+	}
+
+	/**
 	 * Get the packet id.
+	 * 
 	 * @return
 	 */
 	public RtMessageId getId() {
@@ -39,6 +51,7 @@ public class RTMessage implements IRTMessage {
 	
 	/**
 	 * Get the data length.
+	 * 
 	 * @return
 	 */
 	public int getLength() {
@@ -46,32 +59,30 @@ public class RTMessage implements IRTMessage {
 	}
 	
 	/**
-	 * Get the raw data itself.
+	 * Get the data payload.
+	 * 
 	 * @return
 	 */
-	public byte[] getPayload() {
+	public ByteBuf getPayload() {
 		return payload;
 	}
 	
 	/**
 	 * Get the full representation of the data.
+	 * 
 	 * @return
 	 */
-	public byte[] toBytes() {
-		ByteBuffer buffer = ByteBuffer.allocate(length + 2 + 1); // Payload length + 3 for RT ID and RT Len
-		
-		buffer.order(ByteOrder.LITTLE_ENDIAN);
-
-		buffer.put(id.getValue());
-		buffer.putShort(length);
-		buffer.put(payload);
-		
-		buffer.flip();
-		return buffer.array();
+	public ByteBuf getFullMessage() {
+		ByteBuf buffer = Unpooled.buffer(length + 2 + 1);
+		buffer.writeByte(id.getValue());
+		buffer.writeShortLE(length);
+		buffer.writeBytes(payload);
+		return buffer;
 	}
 	
+	@Override
 	public String toString() {
-		return "RTMessage[ id: " + id.toString() + ", len: " + length + " payload: " + Utils.bytesToHex(payload) + "]";
+		return "RTMessage[ id: " + id.toString() + ", len: " + length + " payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(payload)) + "]";
 	}
 	
 }

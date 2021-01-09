@@ -48,7 +48,7 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<RTMessage>> {
 			id = msg.getId().getValue();
 		}
 
-		PS2_RSA keyToEncryptWith = client.getPs2RsaKey();
+		PS2_RSA keyToEncryptWith = client.getRSAKey();
 		
 		BigInteger n = keyToEncryptWith.getN();
 		BigInteger e = keyToEncryptWith.getE();

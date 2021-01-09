@@ -5,7 +5,6 @@ import java.util.Random;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.util.concurrent.Future;
@@ -22,7 +21,6 @@ import net.hashsploit.clank.server.pipeline.MasHandler;
 import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
-import net.hashsploit.clank.server.pipeline.RtFrameEncoderHandler;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
 import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
@@ -43,7 +41,8 @@ public class MediusClient implements IClient {
 	private long rxPacketCount;
 
 	private PS2_RSA rsaKey;
-	private PS2_RC4 rc4Key;
+	private PS2_RC4 rc4ClientSessionKey;
+	private PS2_RC4 rc4ServerSessionKey;
 	
 	private Player player;
 
@@ -213,28 +212,30 @@ public class MediusClient implements IClient {
 	 * 
 	 * @param data
 	 */
-	public void sendRaw(byte[] data) {
-		ByteBuf msg = Unpooled.copiedBuffer(data);
-		socketChannel.pipeline().writeAndFlush(msg);
+	public void sendRaw(ByteBuf data) {
+		socketChannel.pipeline().writeAndFlush(data);
 		txPacketCount++;
 	}
 
 	/**
-	 * Send a data packet to the client.
+	 * Send a RT message to the client.
 	 * 
 	 * @param msg
 	 */
 	public void sendMessage(RTMessage msg) {
-		sendRaw(msg.toBytes());
+		sendRaw(msg.getFullMessage());
 	}
 
+	/**
+	 * Send a Medius (RT SERVER_APP) message.
+	 * 
+	 * @param msg
+	 */
 	public void sendMediusMessage(MediusMessage msg) {
 		RTMessage packet = new RTMessage(RtMessageId.SERVER_APP, msg.toBytes());
 
-		byte[] finalPayload = packet.toBytes();
-
 		logger.finer(String.format("Sending %s:%d: ", getIPAddress(), getPort(), msg.toString()));
-		logger.finest(String.format("Sending %s:%d byte payload: ", getIPAddress(), getPort(), Utils.bytesToHex(finalPayload)));
+		logger.finest(String.format("Sending %s:%d byte payload: ", getIPAddress(), getPort(), Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage()))));
 		this.sendMessage(packet);
 	}
 
@@ -261,30 +262,84 @@ public class MediusClient implements IClient {
 		server.removeClient(this);
 	}
 
-	private void generateRc4Key(CipherContext context) {
+	/**
+	 * Generate an RC4 key using a context.
+	 * @param context
+	 */
+	private void generateRC4Key(CipherContext context) {
 		Random rng = new Random();
 		byte[] randomBytes = new byte[64];
 		rng.nextBytes(randomBytes);
-		rc4Key = new PS2_RC4(randomBytes, context);
+		rc4ClientSessionKey = new PS2_RC4(randomBytes, context);
+	}
+	
+	/**
+	 * Set this client's app id.
+	 * 
+	 * @param applicationId
+	 */
+	public void setApplicationId(int applicationId) {
+		this.applicationId = applicationId;
+	}
+	
+	/**
+	 * Get this client's app id.
+	 * 
+	 * @return
+	 */
+	public int getApplicationId() {
+		return applicationId;
 	}
 
-	public void setRsaKey(PS2_RSA rsaKey) {
+	/**
+	 * Set the Client RSA key.
+	 * @param rsaKey
+	 */
+	public void setRSAKey(PS2_RSA rsaKey) {
 		this.rsaKey = rsaKey;
 	}
 
-	public PS2_RSA getPs2RsaKey() {
+	/**
+	 * Get the Client RSA key.
+	 * @return
+	 */
+	public PS2_RSA getRSAKey() {
 		return rsaKey;
 	}
 
-	public synchronized PS2_RC4 getRc4Key() {
-		return rc4Key;
+	/**
+	 * GEt the RC4 Client Session Key.
+	 * May be null if not initialized.
+	 * @return
+	 */
+	public PS2_RC4 getRC4ClientSessionKey() {
+		return rc4ClientSessionKey;
 	}
 
-	public synchronized void setRc4Key(PS2_RC4 rc4Key) {
-		this.rc4Key = rc4Key;
+	/**
+	 * Set the RC4 Client Session Key.
+	 * @param rc4Key
+	 */
+	public synchronized void setRC4ClientSessionKey(PS2_RC4 rc4Key) {
+		this.rc4ClientSessionKey = rc4Key;
 	}
 
-	
+	/**
+	 * Get the RC4 Server Session Key.
+	 * May be null if not initialized.
+	 * @return
+	 */
+	public PS2_RC4 getRC4ServerSessionKey() {
+		return rc4ServerSessionKey;
+	}
+
+	/**
+	 * Set the RC4 Server Session Key.
+	 * @param rc4Key
+	 */
+	public synchronized void setRC4ServerSessionKey(PS2_RC4 rc4Key) {
+		this.rc4ServerSessionKey = rc4Key;
+	}
 	
 
 }

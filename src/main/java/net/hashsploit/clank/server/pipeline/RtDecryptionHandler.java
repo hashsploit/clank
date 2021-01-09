@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -104,9 +103,6 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 			int hashCtx = hash[3] & 0xFF;
 			int hashCtxAdjusted = hashCtx >>> 0x05;
 
-			logger.finest("Incoming hash: " + Utils.bytesToHex(hash));
-			logger.finest("Incoming hash context: " + (byte) hashCtxAdjusted);
-
 			for (final CipherContext ctx : CipherContext.values()) {
 				if (ctx.id == (byte) hashCtxAdjusted) {
 					context = ctx;
@@ -116,47 +112,65 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 			SCERTDecryptedData decryptedData = null;
 
-			logger.finest("Pre decryption message: " + Utils.bytesToHex(message));
-
-			
 			switch (context) {
 				case RSA_AUTH:
-					PS2_RSA rsa = new PS2_RSA(N, E, D);
-					rsa.setContext(context);
-					decryptedData = rsa.decrypt(message, hash);
-					logger.finest("RSA Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
-					logger.finest("RSA Post decryption status: " + decryptedData.isSuccessful());
-
-					SCERTEncryptedData enc = rsa.encrypt(decryptedData.getData());
-					// byte[] newEnc = Utils.flipByteArray(enc.getData());
-					byte[] newEnc = enc.getData();
-					if (!Utils.sequenceEquals(newEnc, message)) {
-						throw new IllegalStateException("RSA_AUTH: Re-encryption does not match original encryption for: \nOriginal message: " + Utils.bytesToHex(message) + "\nRe-encrypted    : " + Utils.bytesToHex(newEnc));
+					{
+						PS2_RSA rsa = new PS2_RSA(N, E, D);
+						rsa.setContext(context);
+						decryptedData = rsa.decrypt(message, hash);
+						logger.finest("RSA Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
+						logger.finest("RSA Post decryption status: " + decryptedData.isSuccessful());
+	
+						SCERTEncryptedData enc = rsa.encrypt(decryptedData.getData());
+						// byte[] newEnc = Utils.flipByteArray(enc.getData());
+						byte[] newEnc = enc.getData();
+						
+						if (!Utils.sequenceEquals(newEnc, message)) {
+							throw new IllegalStateException("RSA_AUTH: Re-encryption does not match original encryption for: \nOriginal message: " + Utils.bytesToHex(message) + "\nRe-encrypted    : " + Utils.bytesToHex(newEnc));
+						}
+	
+						byte[] nn = decryptedData.getData();
+						nn = Utils.flipByteArray(nn);
+	
+						BigInteger newN = new BigInteger(1, nn);
+						BigInteger newE = new BigInteger("17", 10);
+						PS2_RSA rsaKey = new PS2_RSA(newN, newE, null);
+						rsaKey.setContext(context);
+						client.setRSAKey(rsaKey);
+						ByteBuf data = new RTMessage(id, decryptedData.getData()).getFullMessage();
+						return data;
 					}
-
-					byte[] nn = decryptedData.getData();
-					nn = Utils.flipByteArray(nn);
-
-					BigInteger newN = new BigInteger(1, nn);
-					BigInteger newE = new BigInteger("17", 10);
-					PS2_RSA rsaKey = new PS2_RSA(newN, newE, null);
-					rsaKey.setContext(context);
-					client.setRsaKey(rsaKey);
-					ByteBuf data = Unpooled.copiedBuffer(new RTMessage(id, decryptedData.getData()).toBytes());
-					return data;
-
 				case RC_CLIENT_SESSION:
-					
-					PS2_RC4 clientSessionKey = client.getRc4Key();
-					SCERTDecryptedData scertData = clientSessionKey.decrypt(message, hash);
-					
-					byte[] encryptedData = scertData.getData();
-					
-					logger.finest("RC4 Post decryption: " + Utils.bytesToHex(encryptedData));
-					logger.finest("RC4 Post decryption status: " + scertData.isSuccessful());
-					
-					
-					break;
+					{
+						PS2_RC4 clientSessionKey = client.getRC4ClientSessionKey();
+						
+						if (clientSessionKey == null) {
+							logger.warning(String.format("Client Session Key not initialized %s:%d", client.getIPAddress(), client.getPort()));
+							throw new IllegalStateException();
+						}
+						
+						SCERTDecryptedData scertData = clientSessionKey.decrypt(message, hash);
+	
+						byte[] decryptedBytes = scertData.getData();
+	
+						logger.finest("RC4 Post decryption: " + Utils.bytesToHex(decryptedBytes));
+						logger.finest("RC4 Post decryption status: " + scertData.isSuccessful());
+						
+						SCERTEncryptedData scertReEncrypted = clientSessionKey.encrypt(decryptedBytes);
+	
+						// TODO: REMOVE THIS IN PRODUCTION
+						byte[] toReEncrypt = scertReEncrypted.getData();
+						
+						//logger.finest("Rencrypted hash: " + Utils.bytesToHex(scertReEncrypted.getHash()));
+						//logger.finest("Reencrypted data: " + Utils.bytesToHex(scertReEncrypted.getData()));
+						
+						if (!Utils.sequenceEquals(message, toReEncrypt)) {
+							throw new IllegalStateException("RC_CLIENT_SESSION: Re-encryption does not match original encryption for: \nOriginal encrypted: " + Utils.bytesToHex(message) + "\nRe-encrypted      : " + Utils.bytesToHex(toReEncrypt));
+						}
+						
+						ByteBuf data2 = new RTMessage(id, scertData.getData()).getFullMessage();
+						return data2;
+					}
 				case RC_SERVER_SESSION:
 					break;
 				default:

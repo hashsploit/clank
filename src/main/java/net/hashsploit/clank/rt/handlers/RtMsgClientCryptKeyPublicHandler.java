@@ -25,7 +25,7 @@ public class RtMsgClientCryptKeyPublicHandler extends RtMessageHandler {
 
 	@Override
 	public void read(ByteBuf buffer) {
-		reqPacket = new RT_ClientCryptKeyPublic(buffer.array());
+		reqPacket = new RT_ClientCryptKeyPublic(buffer);
 		logger.finest(reqPacket.toString());
 	}
 	
@@ -40,7 +40,7 @@ public class RtMsgClientCryptKeyPublicHandler extends RtMessageHandler {
 		
 		byte[] key = Utils.hexStringToByteArray(keyString);
 		PS2_RC4 rc4Key = new PS2_RC4(key, CipherContext.RC_CLIENT_SESSION);
-		client.setRc4Key(rc4Key);
+		client.setRC4ClientSessionKey(rc4Key);
 		
 		byte[] generatedKey = Utils.hexStringToByteArray("000000" + keyString);
 		RT_ServerCryptKeyPeer response = new RT_ServerCryptKeyPeer(generatedKey);

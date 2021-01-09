@@ -1,5 +1,7 @@
 package net.hashsploit.clank.server;
 
+import io.netty.buffer.ByteBuf;
+
 public interface IRTMessage {
 	
 	/**
@@ -18,6 +20,6 @@ public interface IRTMessage {
 	 * Get the raw data.
 	 * @return
 	 */
-	public byte[] getPayload();
+	public ByteBuf getPayload();
 	
 }
