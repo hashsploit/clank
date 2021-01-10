@@ -125,7 +125,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			byte [] payload = new byte[length];
 			input.readBytes(payload);
 			
-			ByteBuf buffer = Unpooled.buffer(length + 2 + 1);
+			ByteBuf buffer = Unpooled.buffer(length + 4 + 2 + 1);
 			buffer.writeByte(id);
 			buffer.writeShortLE(length);
 			buffer.writeBytes(hash);
