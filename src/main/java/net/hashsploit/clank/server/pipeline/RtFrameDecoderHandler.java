@@ -124,8 +124,10 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			byte id = input.readByte();
 
 			// Check if encrypted or decrypted
-			int val = Byte.compare((byte) (id & 0xFF),(byte) 0x80);
-			boolean signed = (val >= 0) && (Byte.compare(id, (byte) 0x00) != 0);
+			int idCheckInt = id & 0xFF;
+			boolean signed = idCheckInt >= 128;
+			logger.severe("idCheckInt: " + idCheckInt);
+			logger.severe("signed: " + signed);
 			
 			short length = input.readShortLE();
 			byte[] hash = new byte[4];

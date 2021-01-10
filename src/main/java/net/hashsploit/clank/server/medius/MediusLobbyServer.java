@@ -11,6 +11,7 @@ import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.config.objects.ChannelConfig;
 import net.hashsploit.clank.config.objects.LocationConfig;
+import net.hashsploit.clank.rt.RtPacketMap;
 import net.hashsploit.clank.server.GameList;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
@@ -32,7 +33,8 @@ public class MediusLobbyServer extends MediusServer {
 		super(emulationMode, address, port, parentThreads, childThreads);
 
 		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
-
+		this.rtMessageMap = RtPacketMap.buildRtPacketMap(); // TODO: Change this to ne different per medius server
+		
 		this.gameList = new GameList();
 		this.playerList = new PlayerList();
 

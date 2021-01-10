@@ -18,6 +18,7 @@ import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.server.pipeline.MasHandler;
+import net.hashsploit.clank.server.pipeline.MlsHandler;
 import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
@@ -73,7 +74,7 @@ public class MediusClient implements IClient {
 				channel.pipeline().addLast(new MasHandler(this));
 				break;
 			case MEDIUS_LOBBY_SERVER:
-				channel.pipeline().addLast(new TestHandlerMLS(this));
+				channel.pipeline().addLast(new MlsHandler(this));
 				break;
 			default:
 				break;
