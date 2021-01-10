@@ -115,20 +115,39 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	
 	private List<ByteBuf> basicDeframe(ByteBuf input) {
 		// TODO: ADD ERROR CHECKING
+		
+		logger.severe("Deframe input: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(input)));
+		
 		List<ByteBuf> results = new ArrayList<ByteBuf>();
 		
 		while (input.readableBytes() > 3) {
 			byte id = input.readByte();
+
+			// Check if encrypted or decrypted
+			int val = Byte.compare((byte) (id & 0xFF),(byte) 0x80);
+			boolean signed = (val >= 0) && (Byte.compare(id, (byte) 0x00) != 0);
+			
 			short length = input.readShortLE();
 			byte[] hash = new byte[4];
-			input.readBytes(hash);
+			if (signed) {
+				input.readBytes(hash);
+			}
 			byte [] payload = new byte[length];
 			input.readBytes(payload);
 			
-			ByteBuf buffer = Unpooled.buffer(length + 4 + 2 + 1);
+			// Write data to out
+			ByteBuf buffer;
+			if (signed) {
+				buffer = Unpooled.buffer(length + 4 + 2 + 1);
+			}
+			else {
+				buffer = Unpooled.buffer(length + 2 + 1);
+			}
 			buffer.writeByte(id);
 			buffer.writeShortLE(length);
-			buffer.writeBytes(hash);
+			if (signed) {
+				buffer.writeBytes(hash);
+			}
 			buffer.writeBytes(payload);
 			buffer.resetReaderIndex();
 			results.add(buffer);
