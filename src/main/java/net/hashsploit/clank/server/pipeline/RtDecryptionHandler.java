@@ -94,7 +94,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 	private ByteBuf process(RtMessageId id, byte[] hash, byte[] message) {
 
 		logger.finest("DECRYPT HANDLER DATA IN: " + Utils.bytesToHex(message));
-		logger.finest("DECRYPT HANDLER hash IN: " + Utils.bytesToHex(hash));
+		logger.finest("DECRYPT HANDLER hash IN: " + Utils.bytesToHex((hash == null ? new byte[0] : hash)));
 		
 		if (hash != null) {
 			CipherContext context = null;

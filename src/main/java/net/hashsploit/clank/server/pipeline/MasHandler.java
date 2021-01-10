@@ -36,6 +36,10 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 		
 		RtMessageHandler handler = client.getServer().getRtHandler(msg.getByte(0));
 		
+		if (handler == null) {
+			logger.severe("Missing RT Handler: 0x" + Utils.byteToHex(msg.getByte(0)));
+		}
+		
 		// Handle reading
 		handler.read(msg);
 		

@@ -400,7 +400,7 @@ public enum MediusMessageType {
 	
 	public static MediusMessageType getTypeByShort(short id) {
 		for (final MediusMessageType mmt : values()) {
-			if (mmt.id == id) {
+			if ((short) mmt.id == id) {
 				return mmt;
 			}
 		}

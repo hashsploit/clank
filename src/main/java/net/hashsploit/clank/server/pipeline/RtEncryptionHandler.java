@@ -57,7 +57,7 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 			encryptRc4client(ctx, msg);
 			break;
 		case SERVER_APP:
-			encryptRc4server(ctx, msg);
+			encryptRc4client(ctx, msg);
 			break;
 		case CLIENT_APP_TOSERVER:
 			encryptRc4client(ctx, msg);

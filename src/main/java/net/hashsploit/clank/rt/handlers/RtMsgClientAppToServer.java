@@ -1,0 +1,55 @@
+package net.hashsploit.clank.rt.handlers;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import io.netty.buffer.ByteBuf;
+import net.hashsploit.clank.rt.RtMessageHandler;
+import net.hashsploit.clank.rt.serializers.RT_ClientAppToServer;
+import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.RTMessage;
+import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.utils.Utils;
+
+public class RtMsgClientAppToServer extends RtMessageHandler {
+
+	private RT_ClientAppToServer reqPacket;
+	
+	public RtMsgClientAppToServer() {
+		super(RtMessageId.CLIENT_APP_TOSERVER);
+	}
+
+	@Override
+	public void read(ByteBuf buffer) {
+		reqPacket = new RT_ClientAppToServer(buffer);		
+	}
+	
+	@Override
+	public List<RTMessage> write(MediusClient client) {
+		
+		if (reqPacket.getMediusMessageType() == null) {
+			byte[] mediusMessageTypeShort = new byte[2];
+			reqPacket.getPayload().getBytes(0, mediusMessageTypeShort);
+			logger.severe("Medius type not found: 0x" + Utils.bytesToHex(mediusMessageTypeShort));
+			return null;
+		}
+		
+		List<RTMessage> responses = new ArrayList<RTMessage>();
+		
+		// Detect which medius packet is being parsed
+		MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(reqPacket.getMediusMessageType());
+
+		// Process this medius packet
+		mediusPacket.read(client, new MediusMessage(reqPacket.getMediusPayload()));
+		List<MediusMessage> mediusMessages = mediusPacket.write(client);
+		
+		for (MediusMessage mm : mediusMessages) {
+			responses.add(new RTMessage(RtMessageId.SERVER_APP, mm.toBytes()));
+		}
+		
+		return responses;
+	}
+	
+}

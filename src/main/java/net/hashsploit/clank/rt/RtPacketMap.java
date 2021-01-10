@@ -2,9 +2,11 @@ package net.hashsploit.clank.rt;
 
 import java.util.HashMap;
 
+import net.hashsploit.clank.rt.handlers.RtMsgClientAppToServer;
 import net.hashsploit.clank.rt.handlers.RtMsgClientConnectTcp;
 import net.hashsploit.clank.rt.handlers.RtMsgClientCryptKeyPublicHandler;
 import net.hashsploit.clank.rt.handlers.RtMsgClientDisconnect;
+import net.hashsploit.clank.rt.handlers.RtMsgClientEcho;
 import net.hashsploit.clank.rt.handlers.RtMsgServerCryptKeyPeerHandler;
 import net.hashsploit.clank.server.RtMessageId;
 
@@ -29,9 +31,9 @@ public class RtPacketMap {
 		mp.put(RtMessageId.CLIENT_CRYPTKEY_PUBLIC, new RtMsgClientCryptKeyPublicHandler());
 		mp.put(RtMessageId.SERVER_CRYPTKEY_PEER, new RtMsgServerCryptKeyPeerHandler());
 		
-		mp.put(RtMessageId.SERVER_APP, new RtMsgServerApp());
-		mp.put(RtMessageId.SERVER_APP, new RtMsgClientAppToServer());
+		mp.put(RtMessageId.CLIENT_APP_TOSERVER, new RtMsgClientAppToServer());
 		
+		mp.put(RtMessageId.CLIENT_ECHO, new RtMsgClientEcho());
 		
 		return mp;
 	}

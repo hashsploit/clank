@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusConstants;
@@ -54,8 +55,14 @@ public class MediusServerAuthenticationHandler extends MediusPacketHandler {
 		}
 
 		// FIXME: fucking bad
-		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		int worldId = server.getChannel().getId();
+		int worldId = 0;
+		
+		if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {
+			MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+			worldId = server.getChannel().getId();
+		}
+		
+		
 
 		byte[] serverKey = new byte[64];
 		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
