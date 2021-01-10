@@ -34,7 +34,7 @@ public class RTMessage implements IRTMessage {
 	 */
 	public RTMessage(RtMessageId id, ByteBuf data) {
 		this.id = id;
-		this.length = (short) data.readableBytes();
+		this.length = (short) data.readShortLE();
 		this.payload = data;
 	}
 	
