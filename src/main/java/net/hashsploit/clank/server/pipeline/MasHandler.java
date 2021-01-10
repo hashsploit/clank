@@ -35,22 +35,13 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
 
-		final ByteBuffer buffer = Utils.toNioBuffer(msg);
-		final byte[] data = new byte[buffer.remaining()];
-		buffer.get(data);
-
-		RtMessageId rtid = Utils.getRtMessageId(data[0]);
-
-		if (rtid == null) {
-			throw new IllegalStateException("Unknown rtid for packet: " + Utils.bytesToHex(data));
-		}
+		RtMessageId rtid = Utils.getRtMessageId(msg.getByte(msg.readerIndex()));
 
 		RtMessageHandler handler = client.getServer().getRtHandler(rtid);
-
-		ByteBuf outData = Unpooled.copiedBuffer(data);
 		
 		// Handle reading
-		handler.read(outData);
+		logger.finest("Data to read: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(msg)));
+		handler.read(msg);
 		
 		// Handle writing
 		List<RTMessage> messages = handler.write(client);

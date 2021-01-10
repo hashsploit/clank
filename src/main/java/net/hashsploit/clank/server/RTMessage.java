@@ -23,9 +23,19 @@ public class RTMessage implements IRTMessage {
 	 * @param payload
 	 */
 	public RTMessage(ByteBuf data) {
-		this.id = RtMessageId.getIdByByte(data.readByte());
-		this.length = data.readShortLE();
-		data.readBytes(payload);
+		this(RtMessageId.getIdByByte(data.readByte()), data);
+	}
+	
+	/**
+	 * Create an RT message from an RT ID and a ByteBuf.
+	 * 
+	 * @param id
+	 * @param data
+	 */
+	public RTMessage(RtMessageId id, ByteBuf data) {
+		this.id = id;
+		this.length = (short) data.readableBytes();
+		this.payload = data;
 	}
 	
 	/**
@@ -40,6 +50,19 @@ public class RTMessage implements IRTMessage {
 		this.payload = Unpooled.wrappedBuffer(data);
 	}
 
+	/**
+	 * Create an empty payload RT message.
+	 * 
+	 * @param id
+	 * @param data
+	 */
+	public RTMessage(RtMessageId id) {
+		this.id = id;
+		this.length = (short) 0;
+		this.payload = Unpooled.wrappedBuffer(new byte[0]);
+	}
+
+	
 	/**
 	 * Get the packet id.
 	 * 

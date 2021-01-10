@@ -1,23 +1,27 @@
 package net.hashsploit.clank.rt.serializers;
 
-import java.util.Arrays;
-
+import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.utils.Utils;
+import net.hashsploit.clank.server.RtMessageId;
 
-public class RT_ClientConnectTcpAuxUdp {
+public class RT_ClientConnectTcpAuxUdp extends RTMessage {
 
 	private final short dmeWorldId;
 	private final byte[] mlsToken;
 
-	public RT_ClientConnectTcpAuxUdp(RTMessage packet) {
-		byte[] bytes = packet.toBytes();
-		// FIXME: don't assume
-		dmeWorldId = Utils.bytesToShortLittle(bytes[6], bytes[7]);
-		mlsToken = Arrays.copyOfRange(bytes, bytes.length - 17, bytes.length - 1);
+	public RT_ClientConnectTcpAuxUdp(ByteBuf payload) {
+		super(RtMessageId.CLIENT_CONNECT_TCP_AUX_UDP, payload);
+		
+		payload.skipBytes(5);
+		
+		dmeWorldId = payload.readShortLE();
+		mlsToken = new byte[0];
+		
+		//dmeWorldId = Utils.bytesToShortLittle(bytes[6], bytes[7]);
+		//mlsToken = Arrays.copyOfRange(bytes, bytes.length - 17, bytes.length - 1);
 	}
 
-	public synchronized short getDmeWorldId() {
+	public short getDmeWorldId() {
 		return dmeWorldId;
 	}
 

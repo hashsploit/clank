@@ -62,7 +62,7 @@ public class MediusServer extends TcpServer {
 		for (IClient c : getClients()) {
 			if (c instanceof MediusClient) {
 				final MediusClient client = (MediusClient) c;
-				client.sendMessage(new RTMessage(RtMessageId.CLIENT_DISCONNECT, null));
+				client.sendMessage(new RTMessage(RtMessageId.CLIENT_DISCONNECT));
 				client.disconnect();
 			}
 		}

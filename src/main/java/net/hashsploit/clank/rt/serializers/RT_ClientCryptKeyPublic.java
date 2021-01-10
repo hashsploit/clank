@@ -6,16 +6,20 @@ import net.hashsploit.clank.utils.Utils;
 
 public class RT_ClientCryptKeyPublic extends RTMessage {
 
-	private static final int KEY_SIZE = 64;
+	private static final int RSA_KEY_SIZE = 64;
 	private final byte[] key;
 
 	public RT_ClientCryptKeyPublic(ByteBuf payload) {
 		super(payload);
-		key = new byte[KEY_SIZE];
+		key = new byte[RSA_KEY_SIZE];
 		payload.readBytes(key);
 	}
 
-	public byte[] getKey() {
+	/**
+	 * Returns the RSA key the client sent to us encrypted.
+	 * @return
+	 */
+	public byte[] getRSAKey() {
 		return key;
 	}
 	

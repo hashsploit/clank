@@ -22,9 +22,6 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	private static final Logger logger = Logger.getLogger(RtDecryptionHandler.class.getName());
 	private MediusClient client;
-	private final BigInteger N = new BigInteger("10315955513017997681600210131013411322695824559688299373570246338038100843097466504032586443986679280716603540690692615875074465586629501752500179100369237", 10);
-	private final BigInteger E = new BigInteger("17", 10);
-	private final BigInteger D = new BigInteger("4854567300243763614870687120476899445974505675147434999327174747312047455575182761195687859800492317495944895566174677168271650454805328075020357360662513", 10);
 
 	public RtDecryptionHandler(MediusClient client) {
 		super();
@@ -115,28 +112,35 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 			switch (context) {
 				case RSA_AUTH:
 					{
-						PS2_RSA rsa = new PS2_RSA(N, E, D);
+						final PS2_RSA rsa = new PS2_RSA();
 						rsa.setContext(context);
 						decryptedData = rsa.decrypt(message, hash);
+						
 						logger.finest("RSA Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
 						logger.finest("RSA Post decryption status: " + decryptedData.isSuccessful());
+						
+						if (!decryptedData.isSuccessful()) {
+							throw new IllegalStateException("Decryption failure!");
+						}
 	
+						
+						
+						// TODO: Remove in production
+						// This is a test to re-encrypt the data
 						SCERTEncryptedData enc = rsa.encrypt(decryptedData.getData());
-						// byte[] newEnc = Utils.flipByteArray(enc.getData());
 						byte[] newEnc = enc.getData();
 						
 						if (!Utils.sequenceEquals(newEnc, message)) {
-							throw new IllegalStateException("RSA_AUTH: Re-encryption does not match original encryption for: \nOriginal message: " + Utils.bytesToHex(message) + "\nRe-encrypted    : " + Utils.bytesToHex(newEnc));
+							//throw new IllegalStateException("RSA_AUTH: Re-encryption does not match original encryption for: \nOriginal message: " + Utils.bytesToHex(message) + "\nRe-encrypted    : " + Utils.bytesToHex(newEnc));
+							throw new IllegalStateException(String.format("Client RSA re-encryption test failure! {Original: %s, Re-Encrypted: %s} %s:%d", client.getIPAddress(), client.getPort()));
 						}
-	
-						byte[] nn = decryptedData.getData();
-						nn = Utils.flipByteArray(nn);
-	
-						BigInteger newN = new BigInteger(1, nn);
-						BigInteger newE = new BigInteger("17", 10);
-						PS2_RSA rsaKey = new PS2_RSA(newN, newE, null);
-						rsaKey.setContext(context);
-						client.setRSAKey(rsaKey);
+						
+						
+						
+						
+						
+						
+						
 						ByteBuf data = new RTMessage(id, decryptedData.getData()).getFullMessage();
 						return data;
 					}
@@ -145,8 +149,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						PS2_RC4 clientSessionKey = client.getRC4ClientSessionKey();
 						
 						if (clientSessionKey == null) {
-							logger.warning(String.format("Client Session Key not initialized %s:%d", client.getIPAddress(), client.getPort()));
-							throw new IllegalStateException();
+							throw new IllegalStateException(String.format("Client RC4 session key not initialized! %s:%d", client.getIPAddress(), client.getPort()));
 						}
 						
 						SCERTDecryptedData scertData = clientSessionKey.decrypt(message, hash);
