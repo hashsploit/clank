@@ -11,6 +11,7 @@ import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.utils.Utils;
 
 public class RtMsgServerApp extends RtMessageHandler {
 
