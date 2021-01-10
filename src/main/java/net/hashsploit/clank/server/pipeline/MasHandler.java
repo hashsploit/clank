@@ -47,7 +47,7 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 		List<RTMessage> messages = handler.write(client);
 		List<ByteBuf> buffers = new ArrayList<ByteBuf>();
 
-		if (messages != null) {
+		if (messages != null && messages.size() > 0) {
 			//int packetSize = 0;
 			for (final RTMessage message : messages) {
 				

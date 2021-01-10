@@ -12,6 +12,7 @@ import io.netty.handler.codec.CorruptedFrameException;
 import io.netty.handler.codec.DecoderException;
 import io.netty.handler.codec.TooLongFrameException;
 import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.utils.Utils;
 
 public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 
@@ -100,6 +101,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		ByteBuf buffer = Unpooled.buffer(input.readableBytes());
 		buffer.writeBytes(input);
 		Object decoded = this.decode(ctx, buffer);
+		
+		logger.severe(decoded.toString());
 
 		if (decoded != null) {
 			output.add(decoded);
@@ -117,6 +120,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			this.failIfNessesary(false);
 		}
 
+		logger.severe("===== 1");
+		
 		if (input.readableBytes() < this.lengthFieldEndOffset) {
 			return null;
 		}
@@ -129,7 +134,12 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			throw new CorruptedFrameException("Negative pre-adjustment length field: " + frameLength);
 		}
 
-		boolean signed = input.getByte(input.readerIndex()) >= (byte) 0x80;
+		logger.severe("===== 2 / " + input.readerIndex()  + " / " + Utils.byteToHex(input.getByte(input.readerIndex())) );
+		
+		boolean signed = (input.getByte(input.readerIndex()) & 0xFF) >= 0x80;
+		
+		logger.severe("===== " + signed);
+		
 		frameLength += this.lengthAdjustment + this.lengthFieldEndOffset + ((signed && frameLength > 0) ? 4 : 0);
 
 		if (frameLength < this.lengthFieldEndOffset) {
@@ -141,12 +151,16 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			int startOff = (int) Math.min(20, input.arrayOffset());
 			throw new CorruptedFrameException(String.format("Frame Length exceeds max frame length on buffer: startOffset: %d", startOff));
 		}
+		
+		logger.severe("===== 3");
 
 		// never overflows because it's less than maxFrameLength
 		int frameLengthInt = (int) frameLength;
 		if (input.readableBytes() < frameLengthInt) {
 			return null;
 		}
+		
+		logger.severe("===== 4");
 
 		if (this.initialBytesToStrip > frameLengthInt) {
 			input.skipBytes(frameLengthInt);
@@ -154,6 +168,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		}
 		input.skipBytes(this.initialBytesToStrip);
 
+		logger.severe("===== 5");
+		
 		// extract frame
 		int readerIndex = input.readerIndex();
 		int actualFrameLength = frameLengthInt - this.initialBytesToStrip;

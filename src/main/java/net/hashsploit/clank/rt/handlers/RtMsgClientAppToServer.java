@@ -36,6 +36,8 @@ public class RtMsgClientAppToServer extends RtMessageHandler {
 			return null;
 		}
 		
+		logger.finest("--------- MEDIUS TYPE: " + reqPacket.getMediusMessageType().name());
+		
 		List<RTMessage> responses = new ArrayList<RTMessage>();
 		
 		// Detect which medius packet is being parsed
@@ -45,8 +47,11 @@ public class RtMsgClientAppToServer extends RtMessageHandler {
 		mediusPacket.read(client, new MediusMessage(reqPacket.getMediusPayload()));
 		List<MediusMessage> mediusMessages = mediusPacket.write(client);
 		
-		for (MediusMessage mm : mediusMessages) {
-			responses.add(new RTMessage(RtMessageId.SERVER_APP, mm.toBytes()));
+		if (mediusMessages != null) {
+			for (MediusMessage mm : mediusMessages) {
+				logger.finest("--------- MEDIUS MESSAGE: " + mm.toString() + "\n" + mm.getDebugString());
+				responses.add(new RTMessage(RtMessageId.SERVER_APP, mm.toBytes()));
+			}
 		}
 		
 		return responses;

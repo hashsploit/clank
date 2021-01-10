@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.codec.MessageToByteEncoder;
+import io.netty.handler.codec.MessageToMessageEncoder;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
@@ -18,7 +18,7 @@ import net.hashsploit.medius.crypto.SCERTEncryptedData;
 import net.hashsploit.medius.crypto.rc.PS2_RC4;
 import net.hashsploit.medius.crypto.rsa.PS2_RSA;
 
-public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
+public class RtEncryptionHandler extends MessageToMessageEncoder<List<ByteBuf>> {
 
 	private static final Logger logger = Logger.getLogger(RtEncryptionHandler.class.getName());
 	private final MediusClient client;
@@ -30,67 +30,56 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 
 	// TODO: don't write directly to the pipeline, use ByteBuf out \/
 	@Override
-	protected void encode(ChannelHandlerContext ctx, List<ByteBuf> msg, ByteBuf out) throws Exception {
+	protected void encode(ChannelHandlerContext ctx, List<ByteBuf> msg, List<Object> out) throws Exception {
+		
 		for (ByteBuf m : msg) {
 			logger.finest("ENCRYPTION PIPELINE IN: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(m)));
-			
+
 			RTMessage rtMsg = new RTMessage(m);
+
 			
-			sendSinglePacket(ctx, rtMsg);
-		}		
-	}
-	
-	
-	private void sendSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
-		
-		switch(msg.getId()) {
-		case SERVER_CRYPTKEY_PEER:
-			encryptRsa(ctx, msg);
-			break;
-		case SERVER_CRYPTKEY_GAME:
-			encryptRc4client(ctx, msg);
-			break;
-		case SERVER_CONNECT_ACCEPT_TCP:
-			encryptRc4client(ctx, msg);
-			break;
-		case SERVER_CONNECT_COMPLETE:
-			encryptRc4client(ctx, msg);
-			break;
-		case SERVER_APP:
-			encryptRc4client(ctx, msg);
-			break;
-		case CLIENT_APP_TOSERVER:
-			encryptRc4client(ctx, msg);
-			break;
-		default:
-			break;
+			ByteBuf bb = sendSinglePacket(ctx, rtMsg);
+			
+			if (bb != null) {
+				out.add(bb);
+			}
 		}
-	}
-	
-	
-	
-	
-	private void writeToPipeline(ChannelHandlerContext ctx, byte[] output) {
-		logger.finest("ENCRYPTION OUT: " + Utils.bytesToHex(output));
-		ByteBuf bb = Unpooled.copiedBuffer(output);
-		ctx.channel().pipeline().writeAndFlush(bb);
-	}
-
-
-	
-	
-	
-	private void encryptRsa(ChannelHandlerContext ctx, RTMessage msg) {
 		
+	}
+
+	private ByteBuf sendSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
+
+		switch (msg.getId()) {
+			case SERVER_CRYPTKEY_PEER:
+				return encryptRsa(ctx, msg);
+			case SERVER_CRYPTKEY_GAME:
+				return encryptRc4client(ctx, msg);
+			case SERVER_CONNECT_ACCEPT_TCP:
+				return encryptRc4client(ctx, msg);
+			case SERVER_CONNECT_COMPLETE:
+				return encryptRc4client(ctx, msg);
+			case SERVER_APP:
+				return encryptRc4client(ctx, msg);
+			case CLIENT_APP_TOSERVER:
+				return encryptRc4client(ctx, msg);
+			default:
+				break;
+		}
+		
+		return null;
+	}
+
+	private ByteBuf encryptRsa(ChannelHandlerContext ctx, RTMessage msg) {
+
 		// Add 0x80 to the RT ID if the packet is encrypted.
 		byte id = (byte) (msg.getId().getValue() | (byte) 0x80);
-		
+
 		// If the RT ID is a CLIENT DISCONNECT, do not add 0x80 to the ID.
 		if (msg.getId() == RtMessageId.CLIENT_DISCONNECT) {
 			id = msg.getId().getValue();
 		}
 		PS2_RSA keyToEncryptWith = client.getRSAKey();
-		
+
 		if (keyToEncryptWith == null) {
 			logger.severe("ENCRYPT_RSA FUNCTION RSA KEY IS NULL!");
 		}
@@ -105,14 +94,14 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 		byte[] hash = scertData.getHash();
 
 		byte[] encryptedData = scertData.getData();
-		
+
 		logger.info("ID: " + Utils.byteToHex(id));
 		logger.info("length: " + Utils.bytesToHex(length));
 		logger.info("hash: " + Utils.bytesToHex(hash));
 		logger.info("encryptedData: " + Utils.bytesToHex(encryptedData));
-		
+
 		// Creates an output stream
-		ByteArrayOutputStream out = new ByteArrayOutputStream();		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// Writes data to the output stream
 		try {
 			out.write(id);
@@ -124,15 +113,10 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 			e1.printStackTrace();
 		}
 
-		this.writeToPipeline(ctx, out.toByteArray());
+		return Unpooled.wrappedBuffer(out.toByteArray());
 	}
-	
-	
-	
-	
-	
-	
-	private void encryptRc4client(ChannelHandlerContext ctx, RTMessage msg) {
+
+	private ByteBuf encryptRc4client(ChannelHandlerContext ctx, RTMessage msg) {
 		byte id = (byte) (msg.getId().getValue() | (byte) 0x80);
 
 		// If the RT ID is a CLIENT DISCONNECT, do not add 0x80 to the ID.
@@ -149,18 +133,18 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 		SCERTEncryptedData scertData = keyToEncryptWith.encrypt(key);
 		byte[] hash = scertData.getHash();
 		byte[] encryptedData = scertData.getData();
-		
+
 		if (!scertData.isSuccessful()) {
 			logger.severe("Encryption not successful!");
 		}
-		
+
 		logger.info("ID: " + Utils.byteToHex(id));
 		logger.info("length: " + Utils.bytesToHex(length));
 		logger.info("hash: " + Utils.bytesToHex(hash));
 		logger.info("encryptedData: " + Utils.bytesToHex(encryptedData));
-		
+
 		// Creates an output stream
-		ByteArrayOutputStream out = new ByteArrayOutputStream();		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// Writes data to the output stream
 		try {
 			out.write(id);
@@ -172,16 +156,10 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 			e1.printStackTrace();
 		}
 
-		this.writeToPipeline(ctx, out.toByteArray());
+		return Unpooled.wrappedBuffer(out.toByteArray());
 	}
-	
-	
-	
-	
-	
-	
-	
-	private void encryptRc4server(ChannelHandlerContext ctx, RTMessage msg) {
+
+	private ByteBuf encryptRc4server(ChannelHandlerContext ctx, RTMessage msg) {
 		byte id = (byte) (msg.getId().getValue() | (byte) 0x80);
 
 		// If the RT ID is a CLIENT DISCONNECT, do not add 0x80 to the ID.
@@ -198,18 +176,18 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 		SCERTEncryptedData scertData = keyToEncryptWith.encrypt(key);
 		byte[] hash = scertData.getHash();
 		byte[] encryptedData = scertData.getData();
-		
+
 		if (!scertData.isSuccessful()) {
 			logger.severe("Encryption not successful!");
 		}
-		
+
 		logger.info("ID: " + Utils.byteToHex(id));
 		logger.info("length: " + Utils.bytesToHex(length));
 		logger.info("hash: " + Utils.bytesToHex(hash));
 		logger.info("encryptedData: " + Utils.bytesToHex(encryptedData));
-		
+
 		// Creates an output stream
-		ByteArrayOutputStream out = new ByteArrayOutputStream();		
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		// Writes data to the output stream
 		try {
 			out.write(id);
@@ -221,25 +199,7 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<ByteBuf>> {
 			e1.printStackTrace();
 		}
 
-		this.writeToPipeline(ctx, out.toByteArray());
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-		// Close the connection when an exception is raised.
-		logger.warning(String.format("Exception in %s from %s: %s", RtFrameDecoderHandler.class.getName(), ctx.channel().remoteAddress().toString(), cause.getMessage()));
-		cause.printStackTrace();
-		ctx.close();
+		return Unpooled.wrappedBuffer(out.toByteArray());
 	}
 
 }
-	
-	

@@ -21,6 +21,7 @@ import net.hashsploit.clank.server.pipeline.MasHandler;
 import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
+import net.hashsploit.clank.server.pipeline.RtFrameEncoderHandler;
 import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
 import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
@@ -84,8 +85,9 @@ public class MediusClient implements IClient {
 		}
 
 		// Re-frame the packets
-		//channel.pipeline().addLast(new RtFrameEncoderHandler());
+		channel.pipeline().addLast(new RtFrameEncoderHandler());
 
+		
 		ChannelFuture closeFuture = channel.closeFuture();
 		closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
 			@Override
