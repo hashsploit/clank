@@ -1,6 +1,5 @@
 package net.hashsploit.clank.server.pipeline;
 
-import java.math.BigInteger;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -133,7 +132,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						
 						if (!Utils.sequenceEquals(newEnc, message)) {
 							//throw new IllegalStateException("RSA_AUTH: Re-encryption does not match original encryption for: \nOriginal message: " + Utils.bytesToHex(message) + "\nRe-encrypted    : " + Utils.bytesToHex(newEnc));
-							throw new IllegalStateException(String.format("Client RSA re-encryption test failure! {Original: %s, Re-Encrypted: %s} %s:%d", client.getIPAddress(), client.getPort()));
+							throw new IllegalStateException(String.format("Client RSA re-encryption test failure! {Original: %s, Re-Encrypted: %s} %s:%d", Utils.bytesToHex(message), Utils.bytesToHex(newEnc), client.getIPAddress(), client.getPort()));
 						}
 						
 						

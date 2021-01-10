@@ -29,6 +29,9 @@ public class RtPacketMap {
 		mp.put(RtMessageId.CLIENT_CRYPTKEY_PUBLIC, new RtMsgClientCryptKeyPublicHandler());
 		mp.put(RtMessageId.SERVER_CRYPTKEY_PEER, new RtMsgServerCryptKeyPeerHandler());
 		
+		mp.put(RtMessageId.SERVER_APP, new RtMsgServerApp());
+		mp.put(RtMessageId.SERVER_APP, new RtMsgClientAppToServer());
+		
 		
 		return mp;
 	}

@@ -1,5 +1,6 @@
 package net.hashsploit.clank.rt.handlers;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,7 @@ import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
 import net.hashsploit.medius.crypto.rc.PS2_RC4;
+import net.hashsploit.medius.crypto.rsa.PS2_RSA;
 
 public class RtMsgClientCryptKeyPublicHandler extends RtMessageHandler {
 	
@@ -33,6 +35,12 @@ public class RtMsgClientCryptKeyPublicHandler extends RtMessageHandler {
 	public List<RTMessage> write(MediusClient client) {
 		// we already set the PS2_RSA key in the RtDecryptionHandler
 		// return a packet with the RC4 key that is encrypted using the new PS2_RSA
+		
+		byte[] nn = reqPacket.getRSAKey();
+		nn = Utils.flipByteArray(nn);
+		
+		client.setRSAKey(new PS2_RSA(new BigInteger(1, nn), new BigInteger("17", 10)));
+		
 		
 		List<RTMessage> result = new ArrayList<RTMessage>();
 		

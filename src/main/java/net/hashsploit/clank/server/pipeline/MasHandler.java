@@ -1,17 +1,15 @@
 package net.hashsploit.clank.server.pipeline;
 
-import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.hashsploit.clank.rt.RtMessageHandler;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.utils.Utils;
 
 public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
@@ -43,6 +41,7 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 		
 		// Handle writing
 		List<RTMessage> messages = handler.write(client);
+		List<ByteBuf> buffers = new ArrayList<ByteBuf>();
 
 		if (messages != null) {
 			//int packetSize = 0;
@@ -57,10 +56,14 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 				
 				logger.finest("MAS HANDLER OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(message.getFullMessage())));
 				
-				ctx.pipeline().writeAndFlush(message.getFullMessage());
-				
+				//ctx.pipeline().writeAndFlush(message.getFullMessage());
+				//out.add(message.getFullMessage());
+				buffers.add(message.getFullMessage());
 			}
 			
+			// In order for this to be passed to the RtEncryptionHandler or
+			// RtFrameEncoder it must be writtenAndFlushed rather than passed to List<Object> out.
+			ctx.pipeline().writeAndFlush(buffers);
 		}
 	}
 

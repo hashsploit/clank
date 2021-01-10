@@ -107,7 +107,10 @@ public class RTMessage implements IRTMessage {
 	 * @return
 	 */
 	public ByteBuf getPayload() {
-		return payload;
+		ByteBuf buffer = Unpooled.buffer(length);
+		payload.resetReaderIndex();
+		buffer.writeBytes(payload);
+		return buffer;
 	}
 	
 	/**
