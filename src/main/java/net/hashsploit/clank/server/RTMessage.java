@@ -1,11 +1,14 @@
 package net.hashsploit.clank.server;
 
+import java.util.logging.Logger;
+
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import net.hashsploit.clank.utils.Utils;
 
 public class RTMessage implements IRTMessage {
-	
+	protected static final Logger logger = Logger.getLogger(RTMessage.class.getName());
+
 	private final RtMessageId id;
 	private final short length;
 	private ByteBuf payload;
@@ -36,6 +39,21 @@ public class RTMessage implements IRTMessage {
 		this.id = id;
 		this.length = (short) data.readShortLE();
 		this.payload = data;
+		this.payload.markReaderIndex();
+	}
+	
+	/**
+	 * Create an RT message from an RT ID, lenght, and a ByteBuf.
+	 * 
+	 * @param id
+	 * @param length
+	 * @param data
+	 */
+	public RTMessage(RtMessageId id, int length, ByteBuf data) {
+		this.id = id;
+		this.length = (short) length;
+		this.payload = data;
+		this.payload.markReaderIndex();
 	}
 	
 	/**
@@ -48,6 +66,7 @@ public class RTMessage implements IRTMessage {
 		this.id = id;
 		this.length = (short) data.length;
 		this.payload = Unpooled.wrappedBuffer(data);
+		this.payload.markReaderIndex();
 	}
 
 	/**
@@ -60,6 +79,7 @@ public class RTMessage implements IRTMessage {
 		this.id = id;
 		this.length = (short) 0;
 		this.payload = Unpooled.wrappedBuffer(new byte[0]);
+		this.payload.markReaderIndex();
 	}
 
 	
@@ -99,6 +119,7 @@ public class RTMessage implements IRTMessage {
 		ByteBuf buffer = Unpooled.buffer(length + 2 + 1);
 		buffer.writeByte(id.getValue());
 		buffer.writeShortLE(length);
+		payload.resetReaderIndex();
 		buffer.writeBytes(payload);
 		return buffer;
 	}

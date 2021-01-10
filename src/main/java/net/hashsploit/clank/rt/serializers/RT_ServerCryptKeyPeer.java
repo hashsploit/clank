@@ -11,7 +11,7 @@ public class RT_ServerCryptKeyPeer extends RTMessage {
 	private byte[] key;
 	
 	public RT_ServerCryptKeyPeer(ByteBuf payload) {
-		super(RtMessageId.SERVER_CRYPTKEY_PEER, payload);
+		super(RtMessageId.SERVER_CRYPTKEY_PEER, payload.readableBytes(), payload);
 		key = new byte[RC_KEY_SIZE];
 		payload.readBytes(key);
 	}

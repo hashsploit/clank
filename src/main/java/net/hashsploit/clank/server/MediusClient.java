@@ -261,17 +261,6 @@ public class MediusClient implements IClient {
 		logger.fine(String.format("Client disconnected: %s:%d", getIPAddress(), getPort()));
 		server.removeClient(this);
 	}
-
-	/**
-	 * Generate an RC4 key using a context.
-	 * @param context
-	 */
-	private void generateRC4Key(CipherContext context) {
-		Random rng = new Random();
-		byte[] randomBytes = new byte[64];
-		rng.nextBytes(randomBytes);
-		rc4ClientSessionKey = new PS2_RC4(randomBytes, context);
-	}
 	
 	/**
 	 * Set this client's app id.

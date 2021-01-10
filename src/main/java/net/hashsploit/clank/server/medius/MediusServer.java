@@ -122,8 +122,9 @@ public class MediusServer extends TcpServer {
 		return rpcServer;
 	}
 
-	public RtMessageHandler getRtHandler(RtMessageId id) {
-		return rtMessageMap.get(id);
+	public RtMessageHandler getRtHandler(byte byteIn) {
+		RtMessageId rtId = RtMessageId.getIdByByte(byteIn);
+		return rtMessageMap.get(rtId);
 	}
 
 

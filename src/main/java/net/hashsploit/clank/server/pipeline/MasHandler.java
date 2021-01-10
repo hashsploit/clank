@@ -34,13 +34,11 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-
-		RtMessageId rtid = Utils.getRtMessageId(msg.getByte(msg.readerIndex()));
-
-		RtMessageHandler handler = client.getServer().getRtHandler(rtid);
+		logger.finest("MAS HANDLER IN: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(msg)));
+		
+		RtMessageHandler handler = client.getServer().getRtHandler(msg.getByte(0));
 		
 		// Handle reading
-		logger.finest("Data to read: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(msg)));
 		handler.read(msg);
 		
 		// Handle writing
@@ -56,6 +54,8 @@ public class MasHandler extends MessageToMessageDecoder<ByteBuf> {
 				//if (packetSize > 2048) {
 				//	ctx.pipeline().flush();
 				//}
+				
+				logger.finest("MAS HANDLER OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(message.getFullMessage())));
 				
 				ctx.pipeline().writeAndFlush(message.getFullMessage());
 				

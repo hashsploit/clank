@@ -10,6 +10,7 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Date;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -18,6 +19,8 @@ import javax.net.ssl.HttpsURLConnection;
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.medius.crypto.CipherContext;
+import net.hashsploit.medius.crypto.rc.PS2_RC4;
 
 public class Utils {
 
@@ -29,6 +32,17 @@ public class Utils {
 
 	// Prevent instantiation
 	private Utils() {
+	}
+	
+	/**
+	 * Generate an RC4 key using a context.
+	 * @param context
+	 */
+	public static PS2_RC4 generateRC4Key(CipherContext context) {
+		Random rng = new Random();
+		byte[] randomBytes = new byte[64];
+		rng.nextBytes(randomBytes);
+		return new PS2_RC4(randomBytes, context);
 	}
 
 	/**

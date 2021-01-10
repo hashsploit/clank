@@ -94,6 +94,9 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	private ByteBuf process(RtMessageId id, byte[] hash, byte[] message) {
 
+		logger.finest("DECRYPT HANDLER DATA IN: " + Utils.bytesToHex(message));
+		logger.finest("DECRYPT HANDLER hash IN: " + Utils.bytesToHex(hash));
+		
 		if (hash != null) {
 			CipherContext context = null;
 
@@ -122,8 +125,6 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						if (!decryptedData.isSuccessful()) {
 							throw new IllegalStateException("Decryption failure!");
 						}
-	
-						
 						
 						// TODO: Remove in production
 						// This is a test to re-encrypt the data
@@ -136,12 +137,8 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						}
 						
 						
-						
-						
-						
-						
-						
 						ByteBuf data = new RTMessage(id, decryptedData.getData()).getFullMessage();
+						logger.finest("DECRYPT HANDLER OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(data)));
 						return data;
 					}
 				case RC_CLIENT_SESSION:
@@ -156,8 +153,13 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 	
 						byte[] decryptedBytes = scertData.getData();
 	
-						logger.finest("RC4 Post decryption: " + Utils.bytesToHex(decryptedBytes));
-						logger.finest("RC4 Post decryption status: " + scertData.isSuccessful());
+//						logger.finest("RC4 Post decryption: " + Utils.bytesToHex(decryptedBytes));
+//						logger.finest("RC4 Post decryption status: " + scertData.isSuccessful());
+			
+						if (!scertData.isSuccessful()) {
+							throw new IllegalStateException("RC4 Post decryption status is FALSE: Decrypted message: \nDecrypted: " + Utils.bytesToHex(decryptedBytes));
+						}
+						
 						
 						SCERTEncryptedData scertReEncrypted = clientSessionKey.encrypt(decryptedBytes);
 	
@@ -172,6 +174,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						}
 						
 						ByteBuf data2 = new RTMessage(id, scertData.getData()).getFullMessage();
+						logger.finest("DECRYPT HANDLER OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(data2)));
 						return data2;
 					}
 				case RC_SERVER_SESSION:
