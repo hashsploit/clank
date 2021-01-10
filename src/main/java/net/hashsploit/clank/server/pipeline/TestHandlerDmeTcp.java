@@ -63,12 +63,12 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
-
-		for (RTMessage packet : packets) {
-			processSinglePacket(ctx, packet);
-			checkBroadcast(packet);
-		}
+//		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
+//
+//		for (RTMessage packet : packets) {
+//			processSinglePacket(ctx, packet);
+//			checkBroadcast(packet);
+//		}
 		
     }
     
@@ -78,15 +78,15 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
 
 		if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
-			dmeWorldManager.broadcast(client.getPlayer(), m.toBytes());
+			dmeWorldManager.broadcast(client.getPlayer(), m.getFullMessage().array());
 		}
 		else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
-			dmeWorldManager.clientAppSingle(client.getPlayer(), m.toBytes());
+			dmeWorldManager.clientAppSingle(client.getPlayer(), m.getFullMessage().array());
 		}
 	}
     
     private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
-		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
+		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.getFullMessage().array()));
 		
 	    logger.fine("Packet ID: " + packet.getId().toString());
 	    logger.fine("Packet ID: " + packet.getId().getValue());
@@ -94,7 +94,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	    
 	    checkForTcpAuxUdpConnect(ctx, packet);
 	    	    
-		checkClientReady(ctx, packet.toBytes());
+		checkClientReady(ctx, packet.getFullMessage().array());
 		
 		checkEcho(ctx, packet);
     }
@@ -116,8 +116,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		RTMessage c1 = new RTMessage(RtMessageId.SERVER_CONNECT_COMPLETE, t1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
-    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.getFullMessage().array()));
+    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.getFullMessage().array());
     		ctx.write(msg1); // (1)
     		ctx.flush(); // 
     		
@@ -134,8 +134,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		}
     		
     		RTMessage c2 = new RTMessage(RtMessageId.SERVER_APP, baos.toByteArray());
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
-    		ByteBuf msg2 = Unpooled.copiedBuffer(c2.toBytes());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.getFullMessage().array()));
+    		ByteBuf msg2 = Unpooled.copiedBuffer(c2.getFullMessage().array());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
     	
@@ -145,7 +145,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     private void checkForTcpAuxUdpConnect(ChannelHandlerContext ctx, RTMessage packet) {
     	
     	if (packet.getId() == RtMessageId.CLIENT_CONNECT_TCP_AUX_UDP) {
-    		RT_ClientConnectTcpAuxUdp connectPacket = new RT_ClientConnectTcpAuxUdp(packet);
+    		RT_ClientConnectTcpAuxUdp connectPacket = new RT_ClientConnectTcpAuxUdp(packet.getFullMessage());
     		
     		short dmeWorldId = connectPacket.getDmeWorldId();
     		logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
@@ -167,15 +167,15 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
     		RTMessage c1 = new RTMessage(RtMessageId.SERVER_CRYPTKEY_GAME, emptyCrypto1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.toBytes()));
-    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.toBytes());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.getFullMessage().array()));
+    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.getFullMessage().array());
     		ctx.write(msg1); // (1)
     		ctx.flush(); // 
     		
     		// Second crypto leave empty
     		RTMessage c2 = new RTMessage(RtMessageId.SERVER_CRYPTKEY_PEER, emptyCrypto1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.toBytes()));
-    		ByteBuf msg3 = Unpooled.copiedBuffer(c2.toBytes());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.getFullMessage().array()));
+    		ByteBuf msg3 = Unpooled.copiedBuffer(c2.getFullMessage().array());
     		ctx.write(msg3); // (1)
     		ctx.flush(); // 
 
@@ -190,8 +190,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);
     		buffer.put(ipAddr);
     		RTMessage d = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
-    		logger.finest("Final Payload: " + Utils.bytesToHex(d.toBytes()));
-    		ByteBuf msg = Unpooled.copiedBuffer(d.toBytes());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(d.getFullMessage().array()));
+    		ByteBuf msg = Unpooled.copiedBuffer(d.getFullMessage().array());
     		ctx.write(msg); // (1)
     		ctx.flush(); // 
     		
@@ -212,8 +212,8 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     		curUdpPort += 1;
 
     		RTMessage da = new RTMessage(RtMessageId.SERVER_INFO_AUX_UDP, buf.array());
-    		logger.finest("Final Payload: " + Utils.bytesToHex(da.toBytes()));
-    		ByteBuf msg2 = Unpooled.copiedBuffer(da.toBytes());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(da.getFullMessage().array()));
+    		ByteBuf msg2 = Unpooled.copiedBuffer(da.getFullMessage().array());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
     		
@@ -243,7 +243,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 			 if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 				// Combine RT id and len
 				 RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
-				byte[] payload = packetResponse.toBytes();
+				byte[] payload = packetResponse.getFullMessage().array();
 				logger.fine("Final payload: " + Utils.bytesToHex(payload));
 				ByteBuf msg = Unpooled.copiedBuffer(payload);
 				ctx.write(msg);

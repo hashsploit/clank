@@ -59,7 +59,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		logger.fine("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
+		List<RTMessage> packets = null; //Utils.decodeRTMessageFrames(data);
 
 		for (RTMessage packet : packets) {
 			processSinglePacket(ctx, packet);
@@ -69,7 +69,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 
 	private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
 		// Get the raw data
-		logger.fine("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
+		//logger.fine("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
 
 		logger.fine("Packet ID: " + packet.getId().toString());
 		logger.fine("Packet ID: " + packet.getId().getValue());
@@ -91,7 +91,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		// ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
 		if (packet.getId().toString().contains("APP")) {
 
-			MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
+			MediusMessage incomingMessage = null; //new MediusMessage(packet.getPayload());
 
 			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
@@ -106,7 +106,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	}
 
 	public void checkInitialConnect(ChannelHandlerContext ctx, RTMessage packet) {
-		byte[] data = packet.toBytes();
+		byte[] data = packet.getFullMessage().array();
 
 		// RT ID 00, Length 6b00
 		// if
@@ -188,7 +188,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 			// Combine RT id and len
 			RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
-			byte[] payload = packetResponse.toBytes();
+			byte[] payload = packetResponse.getFullMessage().array();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ByteBuf msg = Unpooled.copiedBuffer(payload);
 			ctx.write(msg);

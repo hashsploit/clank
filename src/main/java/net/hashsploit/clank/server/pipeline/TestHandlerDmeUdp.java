@@ -54,17 +54,17 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 		logger.finest("TOTAL RAW UDP INCOMING DATA: " + Utils.bytesToHex(buff));
 		
-		List<RTMessage> packets = Utils.decodeRTMessageFrames(buff);
+		List<RTMessage> packets = null; //Utils.decodeRTMessageFrames(buff);
 
 		for (RTMessage rtmsg: packets) {
-			logger.finest("RAW UDP Single packet: " + Utils.bytesToHex(rtmsg.toBytes()));
+			logger.finest("RAW UDP Single packet: " + Utils.bytesToHex(rtmsg.getFullMessage().array()));
 			
 		    logger.fine("Packet ID: " + rtmsg.getId().toString());
 		    logger.fine("Packet ID: " + rtmsg.getId().getValue());
 			
-			checkFirstPacket(ctx, datagram, rtmsg.toBytes(), datagram.sender().getPort(), datagram.sender().getAddress().toString());
+			checkFirstPacket(ctx, datagram, rtmsg.getFullMessage().array(), datagram.sender().getPort(), datagram.sender().getAddress().toString());
 			
-			checkBroadcast(ctx, datagram, rtmsg.toBytes());
+			checkBroadcast(ctx, datagram, rtmsg.getFullMessage().array());
 		}
 
 	}
@@ -99,24 +99,24 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			buffer.put(Utils.shortToBytesLittle((short) port));
 			
 			RTMessage packetResponse = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
-			byte[] payload = packetResponse.toBytes();
+			byte[] payload = packetResponse.getFullMessage().array();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(payload), requestDatagram.sender()));
 		}
 	}
 
 	private void checkBroadcast(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data) {
-		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
+		List<RTMessage> packets = null; //Utils.decodeRTMessageFrames(data);
 		for (RTMessage m: packets) {
 			logger.fine("UDP Packet ID: " + m.getId().toString());
 			logger.fine("UDP Packet ID: " + m.getId().getValue());
 			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
-				dmeWorldManager.broadcastUdp(requestDatagram.sender(), m.toBytes());	
+				dmeWorldManager.broadcastUdp(requestDatagram.sender(), m.getFullMessage().array());	
 			}
 			else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
-				dmeWorldManager.clientAppSingleUdp(requestDatagram.sender(), m.toBytes());
+				dmeWorldManager.clientAppSingleUdp(requestDatagram.sender(), m.getFullMessage().array());
 			}
 		}
 	}
@@ -132,7 +132,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 			// Combine RT id and len
 			RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
-			byte[] payload = packetResponse.toBytes();
+			byte[] payload = packetResponse.getFullMessage().array();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ByteBuf msg = Unpooled.copiedBuffer(payload);
 			ctx.write(msg);

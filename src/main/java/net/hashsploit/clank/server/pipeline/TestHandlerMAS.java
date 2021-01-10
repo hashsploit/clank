@@ -65,7 +65,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
+		List<RTMessage> packets = null; //Utils.decodeRTMessageFrames(data);
 
 		for (RTMessage packet : packets) {
 
@@ -86,7 +86,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 		MediusMessage mm = null;
 		if (packet.getId().toString().contains("APP")) {
 
-			MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
+			MediusMessage incomingMessage = null; //new MediusMessage(packet.getPayload());
 
 			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
@@ -129,7 +129,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("Payload: " + Utils.bytesToHex(payload));
 
 			RTMessage dataPacket = new RTMessage(resultrtid, payload);
-			byte[] dataPacketBuffer = dataPacket.toBytes();
+			byte[] dataPacketBuffer = dataPacket.getFullMessage().array();
 
 			byte[] extraPacket = Utils.hexStringToByteArray("1A02000100");
 

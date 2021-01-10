@@ -40,7 +40,6 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<RTMessage>> {
 	
 	private void sendSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
 		
-		/*
 		// Add 0x80 to the RT ID if the packet is encrypted.
 		byte id = (byte) (msg.getId().getValue() | (byte) 0x80);
 		
@@ -59,7 +58,7 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<RTMessage>> {
 
 		byte[] length = Utils.shortToBytesLittle((short) msg.getLength());
 
-		byte[] key = msg.getPayload();
+		byte[] key = msg.getFullMessage().array();
 		//key = Utils.flipByteArray(key);
 
 		logger.info("RC4 key to encrypt [hex]: " + Utils.bytesToHex(key));
@@ -89,7 +88,6 @@ public class RtEncryptionHandler extends MessageToByteEncoder<List<RTMessage>> {
 		logger.info("FINAL OUT: " + Utils.bytesToHex(out.toByteArray()));
 		ByteBuf bb = Unpooled.copiedBuffer(out.toByteArray());
 		ctx.channel().pipeline().writeAndFlush(bb);
-		*/
 	}
 	
 }
