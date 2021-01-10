@@ -2,6 +2,7 @@ package net.hashsploit.clank.server.pipeline;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -32,6 +33,8 @@ public class RtEncryptionHandler extends MessageToMessageEncoder<List<ByteBuf>> 
 	@Override
 	protected void encode(ChannelHandlerContext ctx, List<ByteBuf> msg, List<Object> out) throws Exception {
 		
+		List<ByteBuf> encryptedMsgs = new ArrayList<ByteBuf>();
+		
 		for (ByteBuf m : msg) {
 			logger.finest("ENCRYPTION PIPELINE IN: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(m)));
 
@@ -41,10 +44,13 @@ public class RtEncryptionHandler extends MessageToMessageEncoder<List<ByteBuf>> 
 			ByteBuf bb = encryptSinglePacket(ctx, rtMsg);
 			
 			if (bb != null) {
-				out.add(bb);
+				logger.finest("ENCRYPTION PIPELINE OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(bb)));
+				encryptedMsgs.add(bb);
 			}
 		}
 		
+		
+		out.add(encryptedMsgs);
 	}
 
 	private ByteBuf encryptSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
