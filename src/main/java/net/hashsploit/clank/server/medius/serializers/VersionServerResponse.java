@@ -25,7 +25,7 @@ public class VersionServerResponse extends MediusMessage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageId);
-			outputStream.write(Utils.buildByteArrayFromString(serverVersion, MediusConstants.SERVERVERSION_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(serverVersion, 56));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

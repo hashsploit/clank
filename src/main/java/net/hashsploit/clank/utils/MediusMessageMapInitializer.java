@@ -20,6 +20,7 @@ import net.hashsploit.clank.server.medius.handlers.MediusClearGameListFilterZero
 import net.hashsploit.clank.server.medius.handlers.MediusCreateGameOneHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusDnasSignaturePostHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusEndGameReportHandler;
+import net.hashsploit.clank.server.medius.handlers.MediusFindPlayerHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusFindWorldByNameHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusGameInfoZeroHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusGameListHandler;
@@ -42,6 +43,7 @@ import net.hashsploit.clank.server.medius.handlers.MediusGetWorldSecurityLevelHa
 import net.hashsploit.clank.server.medius.handlers.MediusJoinChannelHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusJoinGameHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusLadderPositionHandler;
+import net.hashsploit.clank.server.medius.handlers.MediusLadderPosition_ExtraInfoHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusLobbyWorldPlayerListHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusPickLocationHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusPlayerInfoHandler;
@@ -59,6 +61,7 @@ import net.hashsploit.clank.server.medius.handlers.MediusUpdateLadderStatsWideHa
 import net.hashsploit.clank.server.medius.handlers.MediusUpdateUserStateHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusVersionServerHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusWorldReportZeroHandler;
+
 
 public class MediusMessageMapInitializer {
 	
@@ -117,7 +120,9 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GetIgnoreList, new MediusGetIgnoreListHandler());
 		mp.put(MediusMessageType.GetClanInvitationsSent, new MediusGetClanInvitationsSentHandler());
 		mp.put(MediusMessageType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
-
+		mp.put(MediusMessageType.FindPlayer, new MediusFindPlayerHandler());
+		mp.put(MediusMessageType.LadderPosition_ExtraInfo, new MediusLadderPosition_ExtraInfoHandler());
+		
 		// added for Amplitude
 		mp.put(MediusMessageType.AccountRegistration, new MediusAccountRegistrationHandler());
 		mp.put(MediusMessageType.LadderPosition, new MediusLadderPositionHandler());
