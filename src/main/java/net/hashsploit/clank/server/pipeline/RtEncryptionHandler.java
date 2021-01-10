@@ -38,7 +38,7 @@ public class RtEncryptionHandler extends MessageToMessageEncoder<List<ByteBuf>> 
 			RTMessage rtMsg = new RTMessage(m);
 
 			
-			ByteBuf bb = sendSinglePacket(ctx, rtMsg);
+			ByteBuf bb = encryptSinglePacket(ctx, rtMsg);
 			
 			if (bb != null) {
 				out.add(bb);
@@ -47,7 +47,7 @@ public class RtEncryptionHandler extends MessageToMessageEncoder<List<ByteBuf>> 
 		
 	}
 
-	private ByteBuf sendSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
+	private ByteBuf encryptSinglePacket(ChannelHandlerContext ctx, RTMessage msg) {
 
 		switch (msg.getId()) {
 			case SERVER_CRYPTKEY_PEER:

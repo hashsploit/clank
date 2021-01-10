@@ -102,9 +102,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		buffer.writeBytes(input);
 		Object decoded = this.decode(ctx, buffer);
 		
-		logger.severe(decoded.toString());
-
 		if (decoded != null) {
+			logger.severe("INCOMING MESSAGE FRAME: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray((ByteBuf) decoded)));
 			output.add(decoded);
 		}
 	}
@@ -119,8 +118,6 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 
 			this.failIfNessesary(false);
 		}
-
-		logger.severe("===== 1");
 		
 		if (input.readableBytes() < this.lengthFieldEndOffset) {
 			return null;
@@ -134,11 +131,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			throw new CorruptedFrameException("Negative pre-adjustment length field: " + frameLength);
 		}
 
-		logger.severe("===== 2 / " + input.readerIndex()  + " / " + Utils.byteToHex(input.getByte(input.readerIndex())) );
-		
+		// FIXME: this isn't detecting if the packet is signed or not properly
 		boolean signed = (input.getByte(input.readerIndex()) & 0xFF) >= 0x80;
-		
-		logger.severe("===== " + signed);
 		
 		frameLength += this.lengthAdjustment + this.lengthFieldEndOffset + ((signed && frameLength > 0) ? 4 : 0);
 
@@ -152,23 +146,17 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			throw new CorruptedFrameException(String.format("Frame Length exceeds max frame length on buffer: startOffset: %d", startOff));
 		}
 		
-		logger.severe("===== 3");
-
 		// never overflows because it's less than maxFrameLength
 		int frameLengthInt = (int) frameLength;
 		if (input.readableBytes() < frameLengthInt) {
 			return null;
 		}
-		
-		logger.severe("===== 4");
 
 		if (this.initialBytesToStrip > frameLengthInt) {
 			input.skipBytes(frameLengthInt);
 			throw new CorruptedFrameException("Adjusted frame length (" + frameLength + ") is less " + "than initialBytesToStrip: " + this.initialBytesToStrip);
 		}
 		input.skipBytes(this.initialBytesToStrip);
-
-		logger.severe("===== 5");
 		
 		// extract frame
 		int readerIndex = input.readerIndex();
