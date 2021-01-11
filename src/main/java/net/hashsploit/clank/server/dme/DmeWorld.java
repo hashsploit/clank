@@ -9,16 +9,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.objects.DmePlayerStatus;
-import net.hashsploit.clank.server.pipeline.TestHandlerDmeUdp;
 import net.hashsploit.clank.utils.Utils;
 
 public class DmeWorld {
+	
 	private static final Logger logger = Logger.getLogger(DmeWorld.class.getName());
-
 	
 	private int worldId;
 		

@@ -6,7 +6,7 @@ import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGame {
-	
+
 	private int worldId;
 	private CreateGameOneRequest req;
 	private int playerCount = 1; // TODO: Update this when DME sends a "PlayerConnected" gRPC
@@ -36,13 +36,13 @@ public class MediusGame {
 		this.req = req;
 		this.worldStatus = MediusWorldStatus.WORLD_PENDING_CREATION;
 	}
-	
+
 	public CreateGameOneRequest getReqPacket() {
 		return req;
 	}
 
-	public byte[] getPlayerCount() {
-		return Utils.intToBytesLittle(playerCount);
+	public short getPlayerCount() {
+		return (short) playerCount;
 	}
 
 	public byte[] getStats() {
@@ -119,22 +119,20 @@ public class MediusGame {
 		this.genericField8 = genericField8;
 	}
 	
-
 	public byte[] getWorldStatusBytes() {
 		return Utils.intToBytesLittle(worldStatus.getValue());
 	}
-	
+
 	public MediusWorldStatus getWorldStatus() {
 		return worldStatus;
 	}
 
-	public byte[] getWorldId() {
-		return Utils.intToBytesLittle(worldId);
+	public int getWorldId() {
+		return worldId;
 	}
 
-	public void updateStatus(MediusWorldStatus worldStatus) {
+	public synchronized void updateStatus(MediusWorldStatus worldStatus) {
 		this.worldStatus = worldStatus;
 	}
-	
-	
+
 }

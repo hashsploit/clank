@@ -9,7 +9,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class CreateGameOneRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] appID = new byte[4];
 	private byte[] minPlayers = new byte[4];
@@ -31,8 +31,9 @@ public class CreateGameOneRequest extends MediusMessage {
 		super(MediusMessageType.CreateGame1, data);
     	ByteBuffer buf = ByteBuffer.wrap(data);
     	
+    	// Support multi-version responses.
     	if (data.length == 212) {
-    		buf.get(messageID);
+    		buf.get(messageId);
         	buf.get(sessionKey);
         	buf.getShort(); //buffer
         	buf.get(appID);
@@ -50,7 +51,7 @@ public class CreateGameOneRequest extends MediusMessage {
         	buf.get(gameHostType);
         	buf.get(attributes);
     	} else {
-    		buf.get(messageID);
+    		buf.get(messageId);
         	buf.get(sessionKey);
         	buf.getShort(); //buffer
         	buf.get(appID);
@@ -74,7 +75,7 @@ public class CreateGameOneRequest extends MediusMessage {
 	
 	public String toString() {
 		return "CreateGame1Request: \n" + 
-				"messageID: " + Utils.bytesToHex(messageID) + '\n' + 
+				"messageID: " + Utils.bytesToHex(messageId) + '\n' + 
 				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
 				"appID: " + Utils.bytesToHex(appID) + '\n' + 
 				"minPlayers: " + Utils.bytesToHex(minPlayers) + '\n' + 
@@ -93,63 +94,63 @@ public class CreateGameOneRequest extends MediusMessage {
 	}
 	
 
-	public synchronized byte[] getMessageID() {
-		return messageID;
+	public byte[] getMessageId() {
+		return messageId;
 	}
 
-	public synchronized byte[] getSessionKey() {
+	public byte[] getSessionKey() {
 		return sessionKey;
 	}
 
-	public synchronized byte[] getAppID() {
+	public byte[] getAppId() {
 		return appID;
 	}
 
-	public synchronized byte[] getMinPlayers() {
+	public byte[] getMinPlayers() {
 		return minPlayers;
 	}
 
-	public synchronized byte[] getMaxPlayers() {
+	public byte[] getMaxPlayers() {
 		return maxPlayers;
 	}
 
-	public synchronized byte[] getGameLevel() {
+	public byte[] getGameLevel() {
 		return gameLevel;
 	}
 
-	public synchronized byte[] getGameName() {
+	public byte[] getGameName() {
 		return gameName;
 	}
 
-	public synchronized byte[] getGamePassword() {
+	public byte[] getGamePassword() {
 		return gamePassword;
 	}
 
-	public synchronized byte[] getSpectatorPassword() {
+	public byte[] getSpectatorPassword() {
 		return spectatorPassword;
 	}
 
-	public synchronized byte[] getPlayerSkillLevel() {
+	public byte[] getPlayerSkillLevel() {
 		return playerSkillLevel;
 	}
 
-	public synchronized byte[] getRulesSet() {
+	public byte[] getRulesSet() {
 		return rulesSet;
 	}
 
-	public synchronized byte[] getGenField1() {
+	public byte[] getGenField1() {
 		return genField1;
 	}
 
-	public synchronized byte[] getGenField2() {
+	public byte[] getGenField2() {
 		return genField2;
 	}
 
-	public synchronized byte[] getGenField3() {
+	public byte[] getGenField3() {
 		return genField3;
 	}
 
-	public synchronized byte[] getGameHostType() {
+	public byte[] getGameHostType() {
 		return gameHostType;
 	}
 

@@ -5,10 +5,10 @@ import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
-import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.Channel;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.serializers.ChannelList_ExtraInfoOneRequest;
 import net.hashsploit.clank.server.medius.serializers.ChannelList_ExtraInfoOneResponse;
@@ -33,28 +33,50 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 	public List<MediusMessage> write(MediusClient client) {
 
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		int cityWorldId = server.getChannel().getId();
-
-		byte[] callbackStatus = Utils.intToBytes(MediusCallbackStatus.SUCCESS.getValue());
-		byte[] mediusWorldID = Utils.intToBytesLittle(cityWorldId);
+		List<Channel> channels = server.getChannels();
+		List<MediusMessage> responses = new ArrayList<MediusMessage>();
 		
-		// FIXME: bad
-		byte[] playerCount = Utils.shortToBytesLittle((short) server.getChannelActivePlayerCountById(cityWorldId));
-		byte[] maxPlayers = Utils.shortToBytesLittle((short) 224);
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.NO_RESULT;
+		int mediusWorldId = 0;
+		int playerCount = 0;
+		int maxPlayers = 0;
+		int worldSecurityLevelType = 0;
+		byte[] genericField1 = new byte[4];
+		byte[] genericField2 = new byte[4];
+		byte[] genericField3 = new byte[4];
+		byte[] genericField4 = new byte[4];
+		byte[] genericFieldFilter = new byte[4];
+		String lobbyName = "";
+		boolean endOfList = true;
 		
-		byte[] worldSecurityLevelType = Utils.intToBytesLittle(0);
-		byte[] genericField1 = Utils.intToBytesLittle(1);
-		byte[] genericField2 = Utils.intToBytesLittle(1);
-		byte[] genericField3 = Utils.intToBytesLittle(0);
-		byte[] genericField4 = Utils.intToBytesLittle(0);
-		byte[] genericFieldFilter = Utils.intToBytesLittle(32);
-		byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(cityWorldId).getName(), MediusConstants.LOBBYNAME_MAXLEN.value);
-		byte[] endOfList = Utils.hexStringToByteArray("01000000");
-
-		respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageID(), callbackStatus, mediusWorldID, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
-
-		List<MediusMessage> response = new ArrayList<MediusMessage>();
-		response.add(respPacket);
-		return response;
+		if (channels.size() > 0) {
+			for (int i=0; i<channels.size(); i++) {
+				final Channel channel = channels.get(i);
+				
+				callbackStatus = MediusCallbackStatus.SUCCESS;
+				mediusWorldId = channel.getId();
+				playerCount = server.getChannelActivePlayerCountById(channel.getId());
+				maxPlayers = channel.getCapacity();
+				
+				// FIXME: hardcoded
+				worldSecurityLevelType = 0;
+				genericField1 = Utils.intToBytesLittle(1);
+				genericField2 = Utils.intToBytesLittle(1);
+				genericField3 = Utils.intToBytesLittle(0);
+				genericField4 = Utils.intToBytesLittle(0);
+				genericFieldFilter = Utils.intToBytesLittle(32);
+				
+				lobbyName = channel.getName();
+				endOfList = i == channels.size() - 1;
+				
+				respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
+				responses.add(respPacket);
+			}
+		} else {
+			respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
+			responses.add(respPacket);
+		}
+		
+		return responses;
 	}
 }

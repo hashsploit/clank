@@ -1,6 +1,8 @@
 package net.hashsploit.clank.server.medius.handlers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
@@ -38,10 +40,12 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     	MediusLobbyServer server = (MediusLobbyServer) client.getServer();
     	
     	List<MediusMessage> messagesToWrite = new ArrayList<MediusMessage>();
-		List<Player> playersInWorld = server.getGameWorldPlayers(worldIdRequested);
+		HashSet<Player> playersInWorld = server.getGameWorldPlayers(worldIdRequested);
+		
+		Iterator<Player> iterator = playersInWorld.iterator();
 		
 		for (int i = 0; i < playersInWorld.size(); i++) {
-			Player player = playersInWorld.get(i);
+			Player player = iterator.next();
 			
 	    	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 	    	byte[] accountID = Utils.intToBytesLittle(player.getAccountId());
@@ -80,16 +84,6 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 		
 		response.add(respPacket);
 		return response;
-		
-//    	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
-//    	byte[] accountID = Utils.intToBytesLittle(Clank.getInstance().getDatabase().getAccountId("Smily"));
-//    	byte[] accountName = Utils.buildByteArrayFromString("Smily", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-//    	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());
-//    	byte[] connectionClass = Utils.intToBytesLittle(1);
-//    	byte[] endOfList = Utils.hexStringToByteArray("01000000");
-    	
-		//respPacket = new GameWorldPlayerListResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountName, stats, connectionClass, endOfList);
-		//client.sendMediusMessage(respPacket);
     }
 
 }

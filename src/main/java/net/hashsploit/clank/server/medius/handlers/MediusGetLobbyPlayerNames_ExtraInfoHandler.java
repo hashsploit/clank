@@ -1,6 +1,8 @@
 package net.hashsploit.clank.server.medius.handlers;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
@@ -38,11 +40,12 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 		logger.info("Searching for players in worldid: " + Integer.toString(worldId));
 		
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		logger.info(server.playersToString());
 		
-		List<Player> playersInWorld = server.getLobbyWorldPlayers(worldId);
+		HashSet<Player> playersInWorld = server.getLobbyWorldPlayers(worldId);
+		Iterator<Player> iterator = playersInWorld.iterator();
+		
 		for (int i = 0; i < playersInWorld.size(); i++) {
-			Player player = playersInWorld.get(i);
+			Player player = iterator.next();
 			
 			logger.info("Player in the world: " + player.toString());
 			byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());

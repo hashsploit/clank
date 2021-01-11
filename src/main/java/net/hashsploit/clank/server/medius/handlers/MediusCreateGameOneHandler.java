@@ -35,7 +35,7 @@ public class MediusCreateGameOneHandler extends MediusPacketHandler {
     	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
     	byte[] newWorldID = Utils.intToBytesLittle(server.getNewGameId(reqPacket));
 
-    	respPacket = new CreateGameResponse(reqPacket.getMessageID(), callbackStatus, newWorldID);
+    	respPacket = new CreateGameResponse(reqPacket.getMessageId(), callbackStatus, newWorldID);
     	
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		response.add(respPacket);

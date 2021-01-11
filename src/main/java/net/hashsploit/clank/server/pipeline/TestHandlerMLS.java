@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -123,7 +124,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 			
 			logger.finest("Players before:");
-			logger.finest(server.playersToString());
+			logger.finest(Arrays.toString(server.getPlayers().stream().map(p -> p.getUsername()).collect(Collectors.toList()).toArray()));
 
 			// Update the player with the MLS playerlist
 			logger.info("MLS TOKEN: " + mlsToken);
@@ -138,7 +139,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 
 			
 			logger.finest("Players after:");
-			logger.finest(server.playersToString());
+			logger.finest(Arrays.toString(server.getPlayers().stream().map(p -> p.getUsername()).collect(Collectors.toList()).toArray()));
 			
 			logger.fine(Utils.bytesToHex(data));
 			byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");

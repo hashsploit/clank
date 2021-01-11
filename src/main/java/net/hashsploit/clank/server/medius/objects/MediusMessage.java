@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server.medius.objects;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
 
 import net.hashsploit.clank.server.medius.MediusMessageType;

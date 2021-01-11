@@ -17,6 +17,7 @@ import net.hashsploit.clank.server.medius.handlers.MediusChatMessageHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusChatToggleHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusCheckMyClanInvitationsHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusClearGameListFilterZeroHandler;
+import net.hashsploit.clank.server.medius.handlers.MediusCreateClanHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusCreateGameOneHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusDnasSignaturePostHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusEndGameReportHandler;
@@ -135,6 +136,9 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.FindWorldByName, new MediusFindWorldByNameHandler());
 		mp.put(MediusMessageType.GetBuddyInvitations, new MediusGetBuddyInvitationsHandler());
 		mp.put(MediusMessageType.CheckMyClanInvitations, new MediusCheckMyClanInvitationsHandler());
+		
+		mp.put(MediusMessageType.CreateClan, new MediusCreateClanHandler());
+		
 
 		return mp;
 	}

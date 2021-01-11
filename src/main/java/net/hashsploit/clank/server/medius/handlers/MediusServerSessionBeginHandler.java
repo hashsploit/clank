@@ -57,11 +57,14 @@ public class MediusServerSessionBeginHandler extends MediusPacketHandler {
 		
 		int worldId = 0;
 		
+		// FIXME: which channel?
+		/*
 		if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
 			worldId = ((MediusAuthenticationServer) client.getServer()).getChannel().getId();
 		} else if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {
 			worldId = ((MediusLobbyServer) client.getServer()).getChannel().getId();
 		}
+		*/
 
 		byte[] serverKey = new byte[64];
 		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.value);

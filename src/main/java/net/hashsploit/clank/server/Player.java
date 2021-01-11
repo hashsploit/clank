@@ -9,10 +9,9 @@ public class Player {
 	private MediusPlayerStatus playerStatus;
 	private String username;
 	private int accountId;
-	
 	private int gameWorldId;
-	
 	private int chatWorldId;
+	private int clanId;
 	
 	public Player(MediusClient client, MediusPlayerStatus status) {
 		this.client = client;
@@ -67,16 +66,18 @@ public class Player {
 		return playerStatus;
 	}
 
-	public int getGameWorldId() {
-		return gameWorldId;
-	}
-
 	public int getChatWorldId() {
 		return chatWorldId;
 	}
 
+	public int getGameWorldId() {
+		return gameWorldId;
+	}
+	
 	public void setGameWorldId(int gameWorldId) {
 		this.gameWorldId = gameWorldId;
 	}
+	
+	
 		
 }

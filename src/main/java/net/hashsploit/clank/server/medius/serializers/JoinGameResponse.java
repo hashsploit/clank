@@ -2,19 +2,10 @@ package net.hashsploit.clank.server.medius.serializers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
-import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.medius.MediusCallbackStatus;
-import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
-import net.hashsploit.clank.server.medius.objects.GameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
-import net.hashsploit.clank.server.medius.objects.NetAddress;
-import net.hashsploit.clank.server.medius.objects.NetAddressList;
-import net.hashsploit.clank.server.medius.objects.NetAddressType;
 import net.hashsploit.clank.server.medius.objects.NetConnectionInfo;
-import net.hashsploit.clank.server.medius.objects.NetConnectionType;
 import net.hashsploit.clank.utils.Utils;
 
 public class JoinGameResponse extends MediusMessage {

@@ -9,10 +9,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.ConfigNames;
-import net.hashsploit.clank.config.objects.ChannelConfig;
-import net.hashsploit.clank.config.objects.LocationConfig;
+import net.hashsploit.clank.server.medius.objects.Channel;
+import net.hashsploit.clank.server.medius.objects.Location;
 
 public class MasConfig extends MediusConfig {
 
@@ -91,19 +90,14 @@ public class MasConfig extends MediusConfig {
 		return whitelist;
 	}
 
-	@Override
-	public EmulationMode getEmulationMode() {
-		return EmulationMode.MEDIUS_AUTHENTICATION_SERVER;
-	}
-
 	/**
 	 * Get a list of available channels.
 	 * 
 	 * @return
 	 */
-	public List<ChannelConfig> getChannels() {
+	public List<Channel> getChannels() {
 		final String key = ConfigNames.CHANNELS.toString();
-		final List<ChannelConfig> channels = new ArrayList<ChannelConfig>();
+		final List<Channel> channels = new ArrayList<Channel>();
 
 		if (getJson().isNull(key)) {
 			return null;
@@ -126,7 +120,7 @@ public class MasConfig extends MediusConfig {
 					final String name = jsonObj.getString(ConfigNames.CHANNELS_NAME.toString());
 					final int capacity = jsonObj.getInt(ConfigNames.CHANNELS_CAPACITY.toString());
 
-					channels.add(new ChannelConfig(id, name, capacity));
+					channels.add(new Channel(id, name, capacity));
 				}
 			}
 		}
@@ -139,9 +133,9 @@ public class MasConfig extends MediusConfig {
 	 * 
 	 * @return
 	 */
-	public List<LocationConfig> getLocations() {
+	public List<Location> getLocations() {
 		final String key = ConfigNames.LOCATIONS.toString();
-		final List<LocationConfig> locations = new ArrayList<LocationConfig>();
+		final List<Location> locations = new ArrayList<Location>();
 
 		if (getJson().isNull(key)) {
 			return null;
@@ -163,7 +157,7 @@ public class MasConfig extends MediusConfig {
 					final int id = jsonObj.getInt(ConfigNames.LOCATIONS_ID.toString());
 					final String name = jsonObj.getString(ConfigNames.LOCATIONS_NAME.toString());
 
-					locations.add(new LocationConfig(id, name));
+					locations.add(new Location(id, name));
 				}
 			}
 		}
