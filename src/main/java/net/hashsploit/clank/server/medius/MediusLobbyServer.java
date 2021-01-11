@@ -29,8 +29,8 @@ public class MediusLobbyServer extends MediusServer {
 	private final GameList gameList;
 	private final PlayerList playerList;
 
-	public MediusLobbyServer(EmulationMode emulationMode, String address, int port, int parentThreads, int childThreads) {
-		super(emulationMode, address, port, parentThreads, childThreads);
+	public MediusLobbyServer(String address, int port, int parentThreads, int childThreads) {
+		super(EmulationMode.MEDIUS_LOBBY_SERVER, address, port, parentThreads, childThreads);
 
 		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
 		this.rtMessageMap = RtPacketMap.buildRtPacketMap(); // TODO: Change this to ne different per medius server
@@ -131,6 +131,7 @@ public class MediusLobbyServer extends MediusServer {
 
 	/**
 	 * Update a DME World status identified by the world Id.
+	 * 
 	 * @param worldId
 	 * @param worldStatus
 	 */
@@ -142,6 +143,7 @@ public class MediusLobbyServer extends MediusServer {
 
 	/**
 	 * Update the player status from DME.
+	 * 
 	 * @param mlsToken
 	 * @param worldId
 	 * @param status
@@ -182,7 +184,6 @@ public class MediusLobbyServer extends MediusServer {
 		ArrayList<Player> result = playerList.getPlayersByLobbyWorld(worldId);
 		return result;
 	}
-
 
 	public MediusPlayerStatus getPlayerStatus(int accountId) {
 		return playerList.getPlayerStatus(accountId);

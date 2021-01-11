@@ -14,7 +14,7 @@ public class RT_ServerApp extends RTMessage {
 	public RT_ServerApp(ByteBuf payload) {
 		super(RtMessageId.SERVER_APP, payload.readableBytes(), payload);
 		type = MediusMessageType.getTypeByShort(payload.readShortLE());
-		mediusPayload = new byte[MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue()];
+		mediusPayload = new byte[MediusConstants.MEDIUS_MESSAGE_MAXLEN.value];
 		payload.readBytes(mediusPayload, 0, payload.readableBytes());
 	}
 	

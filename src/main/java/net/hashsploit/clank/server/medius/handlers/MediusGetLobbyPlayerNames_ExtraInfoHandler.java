@@ -47,11 +47,11 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 			logger.info("Player in the world: " + player.toString());
 			byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 			byte[] accountID = Utils.intToBytesLittle(player.getAccountId());
-			byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+			byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.value);
 			byte[] playerStatus = Utils.intToBytesLittle(player.getStatus().getValue());
 			byte[] gameWorldID = Utils.intToBytesLittle(player.getGameWorldId());
-			byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getLobbyWorldId())).getName(), MediusConstants.WORLDNAME_MAXLEN.getValue());
-			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.getValue());
+			byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getLobbyWorldId())).getName(), MediusConstants.WORLDNAME_MAXLEN.value);
+			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.value);
 			
 			byte[] endOfList;
 			if (i == playersInWorld.size()-1) {
@@ -79,11 +79,11 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 			logger.info("MediusGetLobbyPlayerNames_ExtraInfoHandler: NO players found!");
 			byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.NO_RESULT.getValue());
 			byte[] accountID = Utils.intToBytesLittle(0);
-			byte[] accountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+			byte[] accountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.value);
 			byte[] playerStatus = Utils.intToBytesLittle(0);
 			byte[] gameWorldID = Utils.intToBytesLittle(0);
-			byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getLobbyWorldId())).getName(), MediusConstants.WORLDNAME_MAXLEN.getValue());
-			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.getValue());
+			byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getLobbyWorldId())).getName(), MediusConstants.WORLDNAME_MAXLEN.value);
+			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.value);
 			byte[] endOfList = Utils.hexStringToByteArray("01000000");
 			GetLobbyPlayerNames_ExtraInfoResponse getLobbyPlayersResponse = new GetLobbyPlayerNames_ExtraInfoResponse(
 					reqPacket.getMessageID(), 

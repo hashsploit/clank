@@ -22,8 +22,8 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 
 	private static final Logger logger = Logger.getLogger(MediusPolicyHandler.class.getName());
 
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 
 	public MediusPolicyHandler() {
 		super(MediusMessageType.Policy, MediusMessageType.PolicyResponse);
@@ -45,8 +45,8 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 		
 		if (policyString != null && policyString.length() > 0) {
 			final int totalPolicyLength = policyString.length();
-			final int maxTotalPolicyLength = MediusConstants.FULLPOLICY_MAXLEN.getValue()-1; // leave one byte of room for the null terminator
-			final int maxSegmentedPolicyLength = MediusConstants.POLICY_MAXLEN.getValue()-1; // leave one byte of room for the null terminator
+			final int maxTotalPolicyLength = MediusConstants.FULLPOLICY_MAXLEN.value-1; // leave one byte of room for the null terminator
+			final int maxSegmentedPolicyLength = MediusConstants.POLICY_MAXLEN.value-1; // leave one byte of room for the null terminator
 			
 			if (totalPolicyLength > maxTotalPolicyLength) {
 				logger.warning(String.format("Policy in configuration file is %d (longer than the max %d characters)! Truncating ...", totalPolicyLength, maxTotalPolicyLength));
@@ -113,7 +113,7 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 			
 			final byte[] padding = new byte[3];
 			final MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
-			final byte[] policy = Utils.padByteArray(new byte[0], MediusConstants.POLICY_MAXLEN.getValue());
+			final byte[] policy = Utils.padByteArray(new byte[0], MediusConstants.POLICY_MAXLEN.value);
 			final boolean endOfList = true;
 			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();

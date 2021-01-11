@@ -9,9 +9,9 @@ import net.hashsploit.clank.utils.Utils;
 
 public class PlayerReportRequest extends MediusMessage {
 
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] mediusWorldID = new byte[4];
-	private byte[] stats = new byte[MediusConstants.ACCOUNTSTATS_MAXLEN.getValue()];
+	private byte[] stats = new byte[MediusConstants.ACCOUNTSTATS_MAXLEN.value];
 	
 
 	public PlayerReportRequest(byte[] data) {

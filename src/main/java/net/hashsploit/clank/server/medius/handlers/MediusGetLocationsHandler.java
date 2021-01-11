@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.config.objects.LocationConfig;
+import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
@@ -18,8 +19,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetLocationsHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 		
 	public MediusGetLocationsHandler() {
 		super(MediusMessageType.GetLocations,MediusMessageType.GetLocationsResponse);
@@ -43,7 +44,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 		final LocationConfig location = server.getLocation();
 		
 		byte[] locationId = Utils.intToBytesLittle(location.getId()); // random location
-		byte[] locationName = Utils.buildByteArrayFromString(location.getName(), MediusConstants.LOCATIONNAME_MAXLEN.getValue());
+		byte[] locationName = Utils.padByteArray(ChatColor.parse(location.getName()), MediusConstants.LOCATIONNAME_MAXLEN.value);
 		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 

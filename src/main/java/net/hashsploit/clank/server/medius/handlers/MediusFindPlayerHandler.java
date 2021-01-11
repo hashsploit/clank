@@ -33,11 +33,11 @@ public class MediusFindPlayerHandler extends MediusPacketHandler {
 	public List<MediusMessage> write(MediusClient client) {
 		byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 		byte[] applicationId = Utils.hexStringToByteArray("00000000");
-		byte[] applicationName = Utils.buildByteArrayFromString("", MediusConstants.APPNAME_MAXLEN.getValue());
-		byte[] applicationType = Utils.intToBytesLittle(MediusApplicationType.MEDIUS_APP_TYPE_GAME.getValue());
+		byte[] applicationName = Utils.buildByteArrayFromString("", MediusConstants.APPNAME_MAXLEN.value);
+		byte[] applicationType = Utils.intToBytesLittle(MediusApplicationType.MEDIUS_APP_TYPE_GAME.value);
 		byte[] worldId = Utils.intToBytesLittle(0);
 		byte[] accountID = reqPacket.getAccountId();
-		byte[] accountName = Utils.buildByteArrayFromString("Test name", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+		byte[] accountName = Utils.buildByteArrayFromString("Test name", MediusConstants.ACCOUNTNAME_MAXLEN.value);
 		byte[] endOfList = Utils.intToBytesLittle(1);
 
 		respPacket = new FindPlayerResponse(reqPacket.getMessageID(), callbackStatus, applicationId, applicationName, applicationType, worldId, accountID,

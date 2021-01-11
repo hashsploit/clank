@@ -9,19 +9,19 @@ package net.hashsploit.clank;
 public enum EmulationMode {
 	
 	/**
+	 * Handles universe information synchronization component.
+	 */
+	MEDIUS_UNIVERSE_INFORMATION_SERVER(1),
+	
+	/**
 	 * Handles player login and token authentication.
 	 */
-	MEDIUS_AUTHENTICATION_SERVER(1),
+	MEDIUS_AUTHENTICATION_SERVER(2),
 	
 	/**
 	 * Handles out-of-game lobby, chat, clan and player management.
 	 */
-	MEDIUS_LOBBY_SERVER(2),
-	
-	/**
-	 * Handles universe information synchronization component.
-	 */
-	MEDIUS_UNIVERSE_INFORMATION_SERVER(4),
+	MEDIUS_LOBBY_SERVER(4),
 	
 	/**
 	 * NAT server component.
@@ -33,18 +33,10 @@ public enum EmulationMode {
 	 */
 	DME_SERVER(16);
 	
-	private final int modeId;
+	public final int value;
 	
-	private EmulationMode(int modeId) {
-		this.modeId = modeId;
-	}
-	
-	/**
-	 * Get the integer of this bitmask.
-	 * @return
-	 */
-	public final int getValue() {
-		return modeId;
+	private EmulationMode(int value) {
+		this.value = value;
 	}
 	
 }

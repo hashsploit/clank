@@ -37,7 +37,7 @@ public class ChannelListResponse extends MediusMessage {
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(mediusWorldId));
-			outputStream.write(Utils.buildByteArrayFromString(lobbyName, MediusConstants.LOBBYNAME_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(lobbyName, MediusConstants.LOBBYNAME_MAXLEN.value));
 			outputStream.write(Utils.intToBytesLittle(playerCount));
 			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00")); // EndOfList (char) 00 or 01
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding

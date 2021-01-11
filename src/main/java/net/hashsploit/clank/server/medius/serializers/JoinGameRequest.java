@@ -9,11 +9,11 @@ import net.hashsploit.clank.utils.Utils;
 
 public class JoinGameRequest extends MediusMessage {
 
-	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	byte[] worldIdToJoin = new byte[4];
 	byte[] joinType = new byte[4];
-	byte[] gamePassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.getValue()];
+	byte[] gamePassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
 	byte[] gameHostType = new byte[4];
 	byte[] RSApubKey = new byte[10];
 	

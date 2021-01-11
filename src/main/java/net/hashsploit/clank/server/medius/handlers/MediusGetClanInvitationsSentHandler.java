@@ -16,8 +16,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetClanInvitationsSentHandler extends MediusPacketHandler {
 	
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] start = new byte[4];
 	private byte[] pageSize = new byte[4];
 	
@@ -42,7 +42,7 @@ public class MediusGetClanInvitationsSentHandler extends MediusPacketHandler {
     @Override
     public List<MediusMessage> write(MediusClient client) { 
 
-    	byte[] accountName = Utils.buildByteArrayFromString("Account Name", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
+    	byte[] accountName = Utils.buildByteArrayFromString("Account Name", MediusConstants.ACCOUNTNAME_MAXLEN.value);
        	byte[] applicationID = Utils.intToBytes(1);
        	byte[] playerStatus = Utils.intToBytes(0);
        	byte[] connectionClass = Utils.intToBytes(1);
@@ -53,8 +53,8 @@ public class MediusGetClanInvitationsSentHandler extends MediusPacketHandler {
 			outputStream.write(Utils.hexStringToByteArray("000000"));
 			outputStream.write(Utils.intToBytes(MediusCallbackStatus.NO_RESULT.getValue()));	 // give no result for now		
 			outputStream.write(Utils.intToBytesLittle(0)); // ignoreAccountID
-			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue())); // IgnoreAccountName
-			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.CLANMSG_MAXLEN.getValue())); // IgnoreAccountName
+			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.value)); // IgnoreAccountName
+			outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.CLANMSG_MAXLEN.value)); // IgnoreAccountName
 			outputStream.write(Utils.intToBytesLittle(0)); // clanInvitationsResponseStatus
 			outputStream.write(Utils.hexStringToByteArray("01000000")); // end of list
 		} catch (IOException e) {

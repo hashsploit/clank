@@ -16,8 +16,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetMyClansHandler extends MediusPacketHandler {
 
-	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	
 	public MediusGetMyClansHandler() {
 		super(MediusMessageType.GetMyClans, MediusMessageType.GetMyClansResponse);
@@ -40,10 +40,10 @@ public class MediusGetMyClansHandler extends MediusPacketHandler {
 		byte[] statusCode = Utils.intToBytesLittle(MediusCallbackStatus.NO_RESULT.getValue());
 		byte[] clanID = Utils.intToBytesLittle(0);
 		byte[] applicationID = Utils.intToBytesLittle(0);
-		byte[] clanName = Utils.buildByteArrayFromString("", MediusConstants.CLANNAME_MAXLEN.getValue()); // 32
+		byte[] clanName = Utils.buildByteArrayFromString("", MediusConstants.CLANNAME_MAXLEN.value); // 32
 		byte[] leaderAccountID = Utils.intToBytesLittle(0);
-		byte[] leaderAccountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.CLANSTATS_MAXLEN.getValue());
+		byte[] leaderAccountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.value);
+		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.CLANSTATS_MAXLEN.value);
 		byte[] clanStatus = Utils.intToBytesLittle(0);
 		// byte[] endOfList = Utils.hexStringToByteArray("01000000");
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");

@@ -48,7 +48,7 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 		byte[] genericField3 = Utils.intToBytesLittle(0);
 		byte[] genericField4 = Utils.intToBytesLittle(0);
 		byte[] genericFieldFilter = Utils.intToBytesLittle(32);
-		byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(cityWorldId).getName(), MediusConstants.LOBBYNAME_MAXLEN.getValue());
+		byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(cityWorldId).getName(), MediusConstants.LOBBYNAME_MAXLEN.value);
 		byte[] endOfList = Utils.hexStringToByteArray("01000000");
 
 		respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageID(), callbackStatus, mediusWorldID, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);

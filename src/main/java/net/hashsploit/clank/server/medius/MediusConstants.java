@@ -488,13 +488,10 @@ public enum MediusConstants {
 	 */
 	MEDIUS_WORLD_STATUS(4);
 	
-	private final int value;
+	public final int value;
 
 	private MediusConstants(int value) {
 		this.value = value;
 	}
 
-	public final int getValue() {
-		return value;
-	}
 }

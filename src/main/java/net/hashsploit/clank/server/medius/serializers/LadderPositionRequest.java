@@ -12,8 +12,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class LadderPositionRequest extends MediusMessage {
 
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 
 	public LadderPositionRequest(byte[] data) {
 		super(MediusMessageType.LadderPosition);

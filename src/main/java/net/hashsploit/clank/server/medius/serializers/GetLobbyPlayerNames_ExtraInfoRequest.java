@@ -9,7 +9,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class GetLobbyPlayerNames_ExtraInfoRequest extends MediusMessage {
 
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];;
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] lobbyWorldId = new byte[4];
 	
 	public GetLobbyPlayerNames_ExtraInfoRequest(byte[] data) {

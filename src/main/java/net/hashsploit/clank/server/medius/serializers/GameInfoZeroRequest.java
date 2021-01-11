@@ -9,8 +9,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class GameInfoZeroRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] worldID = new byte[4];
 	
 	public GameInfoZeroRequest(byte[] data) {

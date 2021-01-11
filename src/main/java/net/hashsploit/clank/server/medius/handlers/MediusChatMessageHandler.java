@@ -46,8 +46,8 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 		
 		ChatFwdMessageResponse msg = new ChatFwdMessageResponse(
 				reqPacket.getMessageId(), 
-				Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.getValue()),
-				Utils.buildByteArrayFromString(chatMsg, MediusConstants.CHATMESSAGE_MAXLEN.getValue()));
+				Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.value),
+				Utils.buildByteArrayFromString(chatMsg, MediusConstants.CHATMESSAGE_MAXLEN.value));
 				
 		/*
 		 * Example:

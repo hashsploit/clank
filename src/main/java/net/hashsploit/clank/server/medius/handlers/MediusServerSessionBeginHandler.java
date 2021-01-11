@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
@@ -53,13 +55,17 @@ public class MediusServerSessionBeginHandler extends MediusPacketHandler {
 			mlsAddress = Utils.getPublicIpAddress();
 		}
 		
-		// FIXME: fucking bad
-		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		int worldId = server.getChannel().getId();
+		int worldId = 0;
+		
+		if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
+			worldId = ((MediusAuthenticationServer) client.getServer()).getChannel().getId();
+		} else if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {
+			worldId = ((MediusLobbyServer) client.getServer()).getChannel().getId();
+		}
 
 		byte[] serverKey = new byte[64];
-		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
-		byte[] accessKey = new byte[MediusConstants.ACCESSKEY_MAXLEN.getValue()];
+		byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.value);
+		byte[] accessKey = new byte[MediusConstants.ACCESSKEY_MAXLEN.value];
 
 		// FIXME: hardcoded values
 		byte[] connectInfo = new NetConnectionInfo(

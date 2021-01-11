@@ -28,9 +28,9 @@ public class CLIBroadcastCommand implements ICLICommand {
 				throw new IllegalArgumentException();
 			}
 			
-			final int mask = (EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue());
+			final int mask = (EmulationMode.MEDIUS_AUTHENTICATION_SERVER.value | EmulationMode.MEDIUS_LOBBY_SERVER.value);
 			
-			if (Utils.isInBitmask(Clank.getInstance().getConfig().getEmulationMode().getValue(), mask)) {
+			if (Utils.isInBitmask(Clank.getInstance().getConfig().getEmulationMode().value, mask)) {
 				((MediusServer) Clank.getInstance().getServer()).sendSystemBroadcastMessage(severity, message);
 			}
 			

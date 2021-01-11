@@ -17,11 +17,11 @@ public class MediusPlayerOnlineState {
 		this.lobbyName = lobbyName;
 		this.gameName = gameName;
 		
-		if (lobbyName.length() > MediusConstants.WORLDNAME_MAXLEN.getValue()) {
+		if (lobbyName.length() > MediusConstants.WORLDNAME_MAXLEN.value) {
 			throw new IllegalStateException("Lobby Name > WORLDNAME_MAXLEN");
 		}
 		
-		if (gameName.length() > MediusConstants.GAMENAME_MAXLEN.getValue()) {
+		if (gameName.length() > MediusConstants.GAMENAME_MAXLEN.value) {
 			throw new IllegalStateException("Game Name > GAMENAME_MAXLEN");
 		}
 		

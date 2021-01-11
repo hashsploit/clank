@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.hashsploit</groupId>
 	<artifactId>clank</artifactId>
-	<version>0.1.6</version>
+	<version>0.1.7</version>
 	<name>Clank</name>
-	<description>Ratchet &amp; Clank 3: Up Your Arsenal server emulator</description>
+	<description>A high-performance SCE-RT Medius server stack implementation.</description>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

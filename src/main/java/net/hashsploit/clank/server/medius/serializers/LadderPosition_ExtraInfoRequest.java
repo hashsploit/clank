@@ -9,7 +9,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class LadderPosition_ExtraInfoRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] accountId = new byte[4];
 	private byte[] ladderStatIndex = new byte[4];
     private byte[] sortOrder = new byte[4];

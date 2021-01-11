@@ -16,7 +16,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusSetLobbyWorldFilterHandler extends MediusPacketHandler {
 
-	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	byte[] filter1 = new byte[4];
 	byte[] filter2 = new byte[4];
 	byte[] filter3 = new byte[4];

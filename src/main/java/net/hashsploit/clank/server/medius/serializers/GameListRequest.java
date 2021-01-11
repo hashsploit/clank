@@ -8,8 +8,8 @@ import net.hashsploit.clank.server.medius.objects.MediusMessage;
 
 public class GameListRequest extends MediusMessage {
 
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private int applicationId;
 	private short pageId;
 	private short pageSize;

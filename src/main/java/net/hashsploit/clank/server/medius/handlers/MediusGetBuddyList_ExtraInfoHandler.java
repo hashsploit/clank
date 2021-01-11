@@ -15,7 +15,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetBuddyList_ExtraInfoHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 
 	public MediusGetBuddyList_ExtraInfoHandler() {
 		super(MediusMessageType.GetBuddyList_ExtraInfo, MediusMessageType.GetBuddyList_ExtraInfoResponse);

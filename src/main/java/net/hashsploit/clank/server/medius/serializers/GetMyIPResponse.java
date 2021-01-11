@@ -28,7 +28,7 @@ public class GetMyIPResponse extends MediusMessage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageID);
-			outputStream.write(Utils.buildByteArrayFromString(ipAddress, MediusConstants.IP_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(ipAddress, MediusConstants.IP_MAXLEN.value));
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 		} catch (IOException e) {

@@ -36,7 +36,7 @@ public class MediusLobbyWorldPlayerListHandler extends MediusPacketHandler {
 		MediusPlayerStatus playerStatus = MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD;
 		int accountId = 21;
 		String accountName = "Aeq";
-		byte[] stats = new byte[MediusConstants.ACCOUNTSTATS_MAXLEN.getValue()];
+		byte[] stats = new byte[MediusConstants.ACCOUNTSTATS_MAXLEN.value];
 		MediusConnectionType connectionType = MediusConnectionType.ETHERNET;
 		boolean endOfList = true;
 		

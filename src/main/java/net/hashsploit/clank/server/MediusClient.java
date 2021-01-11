@@ -1,7 +1,6 @@
 package net.hashsploit.clank.server;
 
 import java.nio.ByteOrder;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -23,9 +22,8 @@ import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameEncoderHandler;
-import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
+import net.hashsploit.clank.server.pipeline.TestHandlerMUIS;
 import net.hashsploit.clank.utils.Utils;
-import net.hashsploit.medius.crypto.CipherContext;
 import net.hashsploit.medius.crypto.rc.PS2_RC4;
 import net.hashsploit.medius.crypto.rsa.PS2_RSA;
 
@@ -62,7 +60,7 @@ public class MediusClient implements IClient {
 
 		// 1
 		// Decode the packet into frames (1)
-		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue(), 1, 2, 0, 0, false));
+		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.value, 1, 2, 0, 0, false));
 
 		// 2
 		// Decrypt the packet (2)
@@ -73,6 +71,9 @@ public class MediusClient implements IClient {
 		// 3
 		// Initialize the correct pipeline handler for this server (3)
 		switch (server.getEmulationMode()) {
+			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
+				channel.pipeline().addLast("MediusTestHandlerMUIS", new TestHandlerMUIS(this));
+				break;
 			case MEDIUS_AUTHENTICATION_SERVER:
 				channel.pipeline().addLast(new MasHandler(this));
 				break;
@@ -187,7 +188,7 @@ public class MediusClient implements IClient {
 	protected void setPlayer(final Player player) {
 		this.player = player;
 	}
-
+	
 	/**
 	 * Returns the UNIX timestamp of when the connection started.
 	 * 

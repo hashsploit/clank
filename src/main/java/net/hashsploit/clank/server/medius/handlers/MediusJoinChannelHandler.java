@@ -21,11 +21,11 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusJoinChannelHandler extends MediusPacketHandler {
 
-	byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	byte[] buffer = new byte[2];
 	byte[] worldId = new byte[4];
-	byte[] lobbyChannelPassword = new byte[MediusConstants.LOBBYPASSWORD_MAXLEN.getValue()];
+	byte[] lobbyChannelPassword = new byte[MediusConstants.LOBBYPASSWORD_MAXLEN.value];
 
 	public MediusJoinChannelHandler() {
 		super(MediusMessageType.JoinChannel, MediusMessageType.JoinChannelResponse);

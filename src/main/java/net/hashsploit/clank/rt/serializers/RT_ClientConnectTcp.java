@@ -2,7 +2,6 @@ package net.hashsploit.clank.rt.serializers;
 
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.utils.Utils;
 
@@ -23,8 +22,8 @@ public class RT_ClientConnectTcp extends RTMessage {
 		payload.readBytes(key);
 		
 		if (payload.readerIndex() < payload.readableBytes()) {
-			sessionKey = payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.getValue()).array();
-			accessToken = payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.getValue()).array();
+			sessionKey = payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.value).array();
+			accessToken = payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.value).array();
 		}
 	}
 

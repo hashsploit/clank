@@ -45,8 +45,8 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 			
 	    	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 	    	byte[] accountID = Utils.intToBytesLittle(player.getAccountId());
-	    	byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-	    	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());
+	    	byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.value);
+	    	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.value);
 	    	byte[] connectionClass = Utils.intToBytesLittle(1);
 			
 			byte[] endOfList;
@@ -63,8 +63,8 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 		if (messagesToWrite.size() == 0) {
 			byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.NO_RESULT.getValue());
 	    	byte[] accountID = Utils.intToBytesLittle(0);
-	    	byte[] accountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.getValue());
-	    	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());
+	    	byte[] accountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.value);
+	    	byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTSTATS_MAXLEN.value);
 	    	byte[] connectionClass = Utils.intToBytesLittle(0);
 			byte[] endOfList = Utils.hexStringToByteArray("01000000");
 			GameWorldPlayerListResponse response = new GameWorldPlayerListResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountName, stats, connectionClass, endOfList);

@@ -60,8 +60,8 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 			byte[] worldStatus = Utils.intToBytesLittle(MediusWorldStatus.WORLD_STAGING.getValue());
 			byte[] gameHostType = Utils.intToBytesLittle(GameHostType.HOST_CLIENT_SERVER_AUX_UDP.getValue());
 			//byte[] gameName = Utils.hexStringToByteArray("31763120662e6f20646f782020202020202030303030303032383030303000000000000000000000000000000000000000000000000000000000000000000000");
-			byte[] gameName = Utils.buildByteArrayFromString("1v1 f.o dox       000000280000",MediusConstants.GAMENAME_MAXLEN.getValue());
-			byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.getValue());
+			byte[] gameName = Utils.buildByteArrayFromString("1v1 f.o dox       000000280000",MediusConstants.GAMENAME_MAXLEN.value);
+			byte[] gameStats = Utils.buildByteArrayFromString("", MediusConstants.GAMESTATS_MAXLEN.value);
 			respPacket = new GameList_ExtraInfoZeroResponse(reqPacket.getMessageID(), Utils.intToBytes(0), callbackStatus, playerCount, 
 					minPlayers, maxPlayers,
 					gameLevel, playerSkillLevel, rulesSet, genericField1, genericField2, genericField3, worldStatus, Utils.intToBytes(0),
@@ -91,7 +91,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 	
 				respPacket = new GameList_ExtraInfoZeroResponse(reqPacket.getMessageID(), game.getWorldId(), callbackStatus, Utils.shortToBytesLittle(playerCount), 
 						Utils.shortToBytesLittle(minPlayers), Utils.shortToBytesLittle(maxPlayers),
-						req.getGameLevel(), req.getPlayerSkillLevel(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(), worldSecurityLevelType, game.getWorldStatusBytes(),
+						req.getGameLevel(), req.getPlayerSkillLevel(), req.getRulesSet(), game.getGenericField1(), game.getGenericField2(), game.getGenericField3(), worldSecurityLevelType, game.getWorldStatusBytes(),
 						req.getGameHostType(), req.getGameName(), game.getStats(), endOfList);
 				response.add(respPacket);
 			}

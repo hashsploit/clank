@@ -9,15 +9,15 @@ import net.hashsploit.clank.utils.Utils;
 
 public class CreateGameOneRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] appID = new byte[4];
 	private byte[] minPlayers = new byte[4];
 	private byte[] maxPlayers = new byte[4];
 	private byte[] gameLevel = new byte[4];
-	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.getValue()];
-	private byte[] gamePassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.getValue()];
-	private byte[] spectatorPassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.getValue()];
+	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.value];
+	private byte[] gamePassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
+	private byte[] spectatorPassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
 	private byte[] playerSkillLevel = new byte[4];
 	private byte[] rulesSet = new byte[4];
 	private byte[] genField1 = new byte[4];
@@ -97,129 +97,64 @@ public class CreateGameOneRequest extends MediusMessage {
 		return messageID;
 	}
 
-	public synchronized void setMessageID(byte[] messageID) {
-		this.messageID = messageID;
-	}
-
 	public synchronized byte[] getSessionKey() {
 		return sessionKey;
-	}
-
-	public synchronized void setSessionKey(byte[] sessionKey) {
-		this.sessionKey = sessionKey;
 	}
 
 	public synchronized byte[] getAppID() {
 		return appID;
 	}
 
-	public synchronized void setAppID(byte[] appID) {
-		this.appID = appID;
-	}
-
 	public synchronized byte[] getMinPlayers() {
 		return minPlayers;
-	}
-
-	public synchronized void setMinPlayers(byte[] minPlayers) {
-		this.minPlayers = minPlayers;
 	}
 
 	public synchronized byte[] getMaxPlayers() {
 		return maxPlayers;
 	}
 
-	public synchronized void setMaxPlayers(byte[] maxPlayers) {
-		this.maxPlayers = maxPlayers;
-	}
-
 	public synchronized byte[] getGameLevel() {
 		return gameLevel;
-	}
-
-	public synchronized void setGameLevel(byte[] gameLevel) {
-		this.gameLevel = gameLevel;
 	}
 
 	public synchronized byte[] getGameName() {
 		return gameName;
 	}
 
-	public synchronized void setGameName(byte[] gameName) {
-		this.gameName = gameName;
-	}
-
 	public synchronized byte[] getGamePassword() {
 		return gamePassword;
-	}
-
-	public synchronized void setGamePassword(byte[] gamePassword) {
-		this.gamePassword = gamePassword;
 	}
 
 	public synchronized byte[] getSpectatorPassword() {
 		return spectatorPassword;
 	}
 
-	public synchronized void setSpectatorPassword(byte[] spectatorPassword) {
-		this.spectatorPassword = spectatorPassword;
-	}
-
 	public synchronized byte[] getPlayerSkillLevel() {
 		return playerSkillLevel;
-	}
-
-	public synchronized void setPlayerSkillLevel(byte[] playerSkillLevel) {
-		this.playerSkillLevel = playerSkillLevel;
 	}
 
 	public synchronized byte[] getRulesSet() {
 		return rulesSet;
 	}
 
-	public synchronized void setRulesSet(byte[] rulesSet) {
-		this.rulesSet = rulesSet;
-	}
-
 	public synchronized byte[] getGenField1() {
 		return genField1;
-	}
-
-	public synchronized void setGenField1(byte[] genField1) {
-		this.genField1 = genField1;
 	}
 
 	public synchronized byte[] getGenField2() {
 		return genField2;
 	}
 
-	public synchronized void setGenField2(byte[] genField2) {
-		this.genField2 = genField2;
-	}
-
 	public synchronized byte[] getGenField3() {
 		return genField3;
-	}
-
-	public synchronized void setGenField3(byte[] genField3) {
-		this.genField3 = genField3;
 	}
 
 	public synchronized byte[] getGameHostType() {
 		return gameHostType;
 	}
 
-	public synchronized void setGameHostType(byte[] gameHostType) {
-		this.gameHostType = gameHostType;
-	}
-
 	public synchronized byte[] getAttributes() {
 		return attributes;
 	}
-
-	public synchronized void setAttributes(byte[] attributes) {
-		this.attributes = attributes;
-	}
-
 	
 }

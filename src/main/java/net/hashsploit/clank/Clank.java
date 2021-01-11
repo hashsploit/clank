@@ -28,12 +28,13 @@ import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
+import net.hashsploit.clank.server.muis.MediusUniverseInformationServer;
 import net.hashsploit.clank.server.nat.NatServer;
 
 public class Clank {
 
 	public static final String NAME = "Clank";
-	public static final String VERSION = "0.1.6";
+	public static final String VERSION = "0.1.7";
 	public static Clank instance;
 	private static final Logger logger = Logger.getLogger(Clank.class.getName());
 
@@ -103,13 +104,13 @@ public class Clank {
 		}
 
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
-
-		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
-
+		
+		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.value | EmulationMode.MEDIUS_LOBBY_SERVER.value | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.value;
+		
 		// This is a *Medius server, set up the generic Medius components
 		MediusConfig mediusConfig = null;
-		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
-
+		if ((config.getEmulationMode().value & mediusBitmask) != 0) {
+			
 			// Register generic *Medius CLI commands
 			terminal.registerCommand(new CLIPlayersCommand());
 
@@ -121,18 +122,34 @@ public class Clank {
 
 		// Configure the server specifics
 		switch (config.getEmulationMode()) {
+			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
+				terminalPrompt = "MUIS>";
+				server = new MediusUniverseInformationServer(
+					mediusConfig.getAddress(),
+					mediusConfig.getPort(),
+					mediusConfig.getParentThreads(),
+					mediusConfig.getChildThreads()
+				);
+				break;
 			case MEDIUS_AUTHENTICATION_SERVER:
 				terminalPrompt = "MAS>";
-				server = new MediusAuthenticationServer(mediusConfig.getEmulationMode(), mediusConfig.getAddress(), mediusConfig.getPort(), mediusConfig.getParentThreads(), mediusConfig.getChildThreads());
+				server = new MediusAuthenticationServer(
+					mediusConfig.getAddress(),
+					mediusConfig.getPort(),
+					mediusConfig.getParentThreads(),
+					mediusConfig.getChildThreads()
+				);
 				break;
 			case MEDIUS_LOBBY_SERVER:
 				terminalPrompt = "MLS>";
 				terminal.registerCommand(new CLIBroadcastCommand());
-				server = new MediusLobbyServer(mediusConfig.getEmulationMode(), mediusConfig.getAddress(), mediusConfig.getPort(), mediusConfig.getParentThreads(), mediusConfig.getChildThreads());
+				server = new MediusLobbyServer(
+					mediusConfig.getAddress(),
+					mediusConfig.getPort(),
+					mediusConfig.getParentThreads(),
+					mediusConfig.getChildThreads()
+				);
 				db = new DbManager(this, new SimDb());
-				break;
-			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-				terminalPrompt = "MUIS>";
 				break;
 			case NAT_SERVER:
 				terminalPrompt = "NAT>";

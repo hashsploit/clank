@@ -9,11 +9,11 @@ import net.hashsploit.clank.utils.Utils;
 
 public class WorldReportZeroRequest extends MediusMessage {
 
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.getValue()];
+	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 	private byte[] worldID = new byte[4];
 	private byte[] playerCount = new byte[4];
-	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.getValue()];
-	private byte[] gameStats = new byte[MediusConstants.GAMESTATS_MAXLEN.getValue()];
+	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.value];
+	private byte[] gameStats = new byte[MediusConstants.GAMESTATS_MAXLEN.value];
 	private byte[] minPlayers = new byte[4];
 	private byte[] maxPlayers = new byte[4];
 	private byte[] gameLevel = new byte[4];
@@ -64,116 +64,60 @@ public class WorldReportZeroRequest extends MediusMessage {
 	}
 	
 
-	public synchronized byte[] getSessionKey() {
+	public byte[] getSessionKey() {
 		return sessionKey;
 	}
 
-	public synchronized void setSessionKey(byte[] sessionKey) {
-		this.sessionKey = sessionKey;
-	}
-
-	public synchronized byte[] getWorldID() {
+	public byte[] getWorldID() {
 		return worldID;
 	}
 
-	public synchronized void setWorldID(byte[] worldID) {
-		this.worldID = worldID;
-	}
-
-	public synchronized byte[] getPlayerCount() {
+	public byte[] getPlayerCount() {
 		return playerCount;
 	}
 
-	public synchronized void setPlayerCount(byte[] playerCount) {
-		this.playerCount = playerCount;
-	}
-
-	public synchronized byte[] getGameName() {
+	public byte[] getGameName() {
 		return gameName;
 	}
 
-	public synchronized void setGameName(byte[] gameName) {
-		this.gameName = gameName;
-	}
-
-	public synchronized byte[] getGameStats() {
+	public byte[] getGameStats() {
 		return gameStats;
 	}
 
-	public synchronized void setGameStats(byte[] gameStats) {
-		this.gameStats = gameStats;
-	}
-
-	public synchronized byte[] getMinPlayers() {
+	public byte[] getMinPlayers() {
 		return minPlayers;
 	}
 
-	public synchronized void setMinPlayers(byte[] minPlayers) {
-		this.minPlayers = minPlayers;
-	}
-
-	public synchronized byte[] getMaxPlayers() {
+	public byte[] getMaxPlayers() {
 		return maxPlayers;
 	}
 
-	public synchronized void setMaxPlayers(byte[] maxPlayers) {
-		this.maxPlayers = maxPlayers;
-	}
-
-	public synchronized byte[] getGameLevel() {
+	public byte[] getGameLevel() {
 		return gameLevel;
 	}
 
-	public synchronized void setGameLevel(byte[] gameLevel) {
-		this.gameLevel = gameLevel;
-	}
-
-	public synchronized byte[] getPlayerSkillLevel() {
+	public byte[] getPlayerSkillLevel() {
 		return playerSkillLevel;
 	}
 
-	public synchronized void setPlayerSkillLevel(byte[] playerSkillLevel) {
-		this.playerSkillLevel = playerSkillLevel;
-	}
-
-	public synchronized byte[] getRulesSet() {
+	public byte[] getRulesSet() {
 		return rulesSet;
 	}
 
-	public synchronized void setRulesSet(byte[] rulesSet) {
-		this.rulesSet = rulesSet;
-	}
-
-	public synchronized byte[] getGenField1() {
+	public byte[] getGenField1() {
 		return genField1;
 	}
 
-	public synchronized void setGenField1(byte[] genField1) {
-		this.genField1 = genField1;
-	}
-
-	public synchronized byte[] getGenField2() {
+	public byte[] getGenField2() {
 		return genField2;
 	}
 
-	public synchronized void setGenField2(byte[] genField2) {
-		this.genField2 = genField2;
-	}
-
-	public synchronized byte[] getGenField3() {
+	public byte[] getGenField3() {
 		return genField3;
 	}
 
-	public synchronized void setGenField3(byte[] genField3) {
-		this.genField3 = genField3;
-	}
-
-	public synchronized byte[] getWorldStatus() {
+	public byte[] getWorldStatus() {
 		return worldStatus;
-	}
-
-	public synchronized void setWorldStatus(byte[] worldStatus) {
-		this.worldStatus = worldStatus;
 	}
 
 }

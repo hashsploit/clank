@@ -31,6 +31,8 @@ public class SimDb implements IDatabase {
 		users.add(new Triplet(54, "trop", "55555555555555555555555555555555"));
 		users.add(new Triplet(55, "Badger41", "66666666666666666666666666666666"));
 		users.add(new Triplet(56, "Dnawrkshp", "77777777777777777777777777777777"));
+		users.add(new Triplet(57, "Caligirl08", "88888888888888888888888888888888"));
+		users.add(new Triplet(58, "Mercy", "99999999999999999999999999999999"));
 		
 		logger.info("Simulated DB initialized ...");
 	}
