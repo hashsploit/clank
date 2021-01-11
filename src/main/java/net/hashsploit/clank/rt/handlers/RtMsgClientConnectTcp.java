@@ -19,9 +19,10 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
-import net.hashsploit.medius.crypto.Utils;
 import net.hashsploit.medius.crypto.rc.PS2_RC4;
 
 public class RtMsgClientConnectTcp extends RtMessageHandler {
@@ -50,10 +51,13 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 			
 			
 			client.setPlayer(new Player(client, MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD));
-			client.getPlayer().setChatWorld(0);
+			client.getPlayer().setChatWorld(reqPacket.getTargetWorldId());
 			int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(accessTokenStr);
 			client.getPlayer().setAccountId(accountId);
 			client.getPlayer().setUsername(Clank.getInstance().getDatabase().getUsername(accountId));
+			
+			MediusLobbyServer mlsServer = (MediusLobbyServer) client.getServer();
+			mlsServer.updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
 		}
 
 		
