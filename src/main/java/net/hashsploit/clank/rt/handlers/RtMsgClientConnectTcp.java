@@ -3,6 +3,8 @@ package net.hashsploit.clank.rt.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bouncycastle.util.Arrays;
+
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
@@ -14,8 +16,10 @@ import net.hashsploit.clank.rt.serializers.RT_ServerConnectAcceptTcp;
 import net.hashsploit.clank.rt.serializers.RT_ServerConnectComplete;
 import net.hashsploit.clank.rt.serializers.RT_ServerCryptKeyGame;
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.medius.crypto.CipherContext;
 import net.hashsploit.medius.crypto.Utils;
 import net.hashsploit.medius.crypto.rc.PS2_RC4;
@@ -35,6 +39,23 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 	
 	@Override
 	public List<RTMessage> write(MediusClient client) {
+		
+		// if there is an access token, set that player to be initialized from simdb
+		// TODO: fix later with session key taken from playerupdatestatus
+		if (reqPacket.getAccessToken() != null) {
+			logger.severe("CONNECT TCP ACCESS TOKEN: " + Utils.bytesToHex(reqPacket.getAccessToken()));
+			byte[] accessTokenTemp = reqPacket.getAccessToken();
+			byte[] accessToken = Arrays.copyOf(accessTokenTemp, 16); // BUG, fix this later should be 17, but hard coded in simdb
+			String accessTokenStr = Utils.bytesToHex(accessToken);
+			
+			
+			client.setPlayer(new Player(client, MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD));
+			client.getPlayer().setChatWorld(0);
+			int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(accessTokenStr);
+			client.getPlayer().setAccountId(accountId);
+			client.getPlayer().setUsername(Clank.getInstance().getDatabase().getUsername(accountId));
+		}
+
 		
 		List<RTMessage> responses = new ArrayList<RTMessage>();
 		

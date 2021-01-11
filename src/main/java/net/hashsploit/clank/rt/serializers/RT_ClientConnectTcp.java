@@ -18,13 +18,14 @@ public class RT_ClientConnectTcp extends RTMessage {
 		super(payload);
 			
 		targetWorldId = payload.readIntLE();
+		payload.readByte(); // extra byte
 		appId = payload.readIntLE();
 		key = new byte[64]; // TODO: Make this a constant
 		payload.readBytes(key);
-		
-		if (payload.readerIndex() < payload.readableBytes()) {
-			sessionKey = payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.getValue()).array();
-			accessToken = payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.getValue()).array();
+		logger.severe("ClientConnectTcp serializer: " + payload.readerIndex() + " | " + payload.readableBytes());
+		if (payload.readerIndex() < this.getLength()) {
+			sessionKey = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.getValue()));
+			accessToken = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.getValue()));
 		}
 	}
 

@@ -179,7 +179,7 @@ public class MediusClient implements IClient {
 	 * 
 	 * @param player
 	 */
-	protected void setPlayer(final Player player) {
+	public void setPlayer(final Player player) {
 		this.player = player;
 	}
 
