@@ -120,7 +120,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		
 		List<ByteBuf> results = new ArrayList<ByteBuf>();
 		
-		while (input.readableBytes() > 3) {
+		while (input.readableBytes() >= 3) {
 			byte id = input.readByte();
 
 			// Check if encrypted or decrypted
@@ -130,6 +130,17 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			logger.severe("signed: " + signed);
 			
 			short length = input.readShortLE();
+			if (length == 0) {
+				ByteBuf buffer;
+				buffer = Unpooled.buffer(length + 2 + 1);
+				buffer.writeByte(id);
+				buffer.writeShortLE(length);
+
+				buffer.resetReaderIndex();
+				results.add(buffer);
+				continue;
+			}
+			
 			byte[] hash = new byte[4];
 			if (signed) {
 				input.readBytes(hash);
@@ -154,6 +165,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			buffer.resetReaderIndex();
 			results.add(buffer);
 		}
+		
 		return results;
 	}
 

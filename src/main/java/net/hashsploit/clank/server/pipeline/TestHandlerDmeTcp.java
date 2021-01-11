@@ -10,6 +10,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.handler.codec.MessageToMessageDecoder;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.rt.serializers.RT_ClientConnectTcpAuxUdp;
@@ -23,7 +24,7 @@ import net.hashsploit.clank.utils.Utils;
 /**
  * Handles a server-side channel.
  */
-public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
+public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 
 	private static final Logger logger = Logger.getLogger(TestHandlerDmeTcp.class.getName());
 	private final DmeTcpClient client;
@@ -47,30 +48,20 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 		logger.fine("[TCP]" + ctx.channel().remoteAddress() + ": channel inactive");
 	}
 
-	
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
-        
+
+	@Override
+	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
     	logger.fine("======================================================");
     	logger.fine("======================================================");
     	logger.fine("======================================================");
-    
-    	final ByteBuffer buffer = toNioBuffer((ByteBuf) msg);
-
-		final byte[] data = new byte[buffer.remaining()];
-		buffer.get(data);
-
-		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
-
-		// Get the packets
-//		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
-//
-//		for (RTMessage packet : packets) {
-//			processSinglePacket(ctx, packet);
-//			checkBroadcast(packet);
-//		}
 		
-    }
+		RTMessage packet = new RTMessage(msg);
+
+		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage())));
+
+		processSinglePacket(ctx, packet);
+		checkBroadcast(packet);
+	}
     
     
     
@@ -147,12 +138,13 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
     	if (packet.getId() == RtMessageId.CLIENT_CONNECT_TCP_AUX_UDP) {
     		RT_ClientConnectTcpAuxUdp connectPacket = new RT_ClientConnectTcpAuxUdp(packet.getFullMessage());
     		
-    		short dmeWorldId = connectPacket.getDmeWorldId();
+    		short dmeWorldId = (short) connectPacket.getTargetWorldId();
     		logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
 
     		// ---------- Add the player to the world
     		// Set accountId for this player -> client
-    		String mlsToken = Utils.bytesToHex(connectPacket.getMlsToken());    		
+    		String mlsToken = Utils.bytesToHex(connectPacket.getAccessToken());   
+    		mlsToken = mlsToken.substring(0, mlsToken.length()-2);
     		client.getPlayer().setMlsToken(mlsToken);
     		
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
@@ -242,7 +234,7 @@ public class TestHandlerDmeTcp extends ChannelInboundHandlerAdapter { // (1)
 	private void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
 			 if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 				// Combine RT id and len
-				 RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
+				RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, 1, packet.getPayload());
 				byte[] payload = packetResponse.getFullMessage().array();
 				logger.fine("Final payload: " + Utils.bytesToHex(payload));
 				ByteBuf msg = Unpooled.copiedBuffer(payload);

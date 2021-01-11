@@ -1,5 +1,6 @@
 package net.hashsploit.clank.server.dme;
 
+import java.nio.ByteOrder;
 import java.util.logging.Logger;
 
 import io.netty.channel.ChannelFuture;
@@ -10,6 +11,8 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.IServer;
+import net.hashsploit.clank.server.medius.MediusConstants;
+import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
 import net.hashsploit.clank.server.pipeline.TestHandlerDmeTcp;
 import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
@@ -27,7 +30,7 @@ public class DmeTcpClient implements IClient {
 		this.player = new DmePlayer(this);
 		
 		logger.info("Client connected: " + getIPAddress());
-
+		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue(), 1, 2, 0, 0, false));
 		channel.pipeline().addLast("MediusTestHandlerDME", new TestHandlerDmeTcp(this));
 		
 		ChannelFuture closeFuture = channel.closeFuture();
