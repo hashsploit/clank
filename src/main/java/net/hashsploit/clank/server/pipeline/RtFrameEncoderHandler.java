@@ -6,10 +6,16 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
+import net.hashsploit.clank.server.MediusClient;
 
 public class RtFrameEncoderHandler extends MessageToByteEncoder<List<ByteBuf>> {
 
 	private static final Logger logger = Logger.getLogger(RtFrameEncoderHandler.class.getName());
+	private final MediusClient client;
+	
+	public RtFrameEncoderHandler(MediusClient client) {
+		this.client = client;
+	}
 	
 	@Override
 	protected void encode(ChannelHandlerContext ctx, List<ByteBuf> msgs, ByteBuf out) throws Exception {

@@ -60,15 +60,18 @@ public class MediusClient implements IClient {
 
 		logger.fine(String.format("Client connected: %s:%d", getIPAddress(), getPort()));
 
-		// Decode the packet into frames
+		// 1
+		// Decode the packet into frames (1)
 		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue(), 1, 2, 0, 0, false));
 
-		// Decrypt the packet
+		// 2
+		// Decrypt the packet (2)
 		if (((MediusConfig) Clank.getInstance().getConfig()).isEncrypted()) {
 			channel.pipeline().addLast(new RtDecryptionHandler(this));
 		}
 
-		// Initialize the correct pipeline handler for this server.
+		// 3
+		// Initialize the correct pipeline handler for this server (3)
 		switch (server.getEmulationMode()) {
 			case MEDIUS_AUTHENTICATION_SERVER:
 				channel.pipeline().addLast(new MasHandler(this));
@@ -80,13 +83,15 @@ public class MediusClient implements IClient {
 				break;
 		}
 
-		// Re-encrypt the packet
+		// 5
+		// Re-frame the packets (5)
+		channel.pipeline().addLast(new RtFrameEncoderHandler(this));
+		
+		// 4
+		// Re-encrypt the packet (4)
 		if (((MediusConfig) Clank.getInstance().getConfig()).isEncrypted()) {
 			channel.pipeline().addLast(new RtEncryptionHandler(this));
 		}
-
-		// Re-frame the packets
-		channel.pipeline().addLast(new RtFrameEncoderHandler());
 
 		
 		ChannelFuture closeFuture = channel.closeFuture();
