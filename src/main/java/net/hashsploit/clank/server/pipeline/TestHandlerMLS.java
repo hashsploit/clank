@@ -143,7 +143,6 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			
 			logger.fine(Utils.bytesToHex(data));
 			byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
-			logger.severe(client.getIPAddress());
 			byte[] ipAddr = client.getIPAddress().getBytes();
 			int numZeros = 16 - client.getIPAddress().getBytes().length;
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");

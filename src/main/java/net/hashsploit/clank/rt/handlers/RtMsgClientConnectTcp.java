@@ -44,7 +44,7 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 		// if there is an access token, set that player to be initialized from simdb
 		// TODO: fix later with session key taken from playerupdatestatus
 		if (reqPacket.getAccessToken() != null) {
-			logger.severe("CONNECT TCP ACCESS TOKEN: " + Utils.bytesToHex(reqPacket.getAccessToken()));
+			logger.finest("CONNECT TCP ACCESS TOKEN: " + Utils.bytesToHex(reqPacket.getAccessToken()));
 			byte[] accessTokenTemp = reqPacket.getAccessToken();
 			byte[] accessToken = Arrays.copyOf(accessTokenTemp, 16); // BUG, fix this later should be 17, but hard coded in simdb
 			String accessTokenStr = Utils.bytesToHex(accessToken);

@@ -69,9 +69,9 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 
 		private PlayerUpdateResponse updatePlayer(PlayerUpdateRequest request) {
 			PlayerUpdateResponse response = PlayerUpdateResponse.newBuilder().setSuccess(true).build();
-			logger.severe("Data received: " + request.getMlsToken());
-			logger.severe("Data received: " + Integer.toString(request.getWorldId()));
-			logger.severe("Data received: " + request.getPlayerStatus().toString());
+			logger.finest("RPC Data received: " + request.getMlsToken());
+			logger.finest("RPC Data received: " + Integer.toString(request.getWorldId()));
+			logger.finest("RPC Data received: " + request.getPlayerStatus().toString());
 			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
 						
 			MediusPlayerStatus status;
@@ -98,8 +98,8 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 
 		private WorldUpdateResponse updateWorld(WorldUpdateRequest request) {
 			WorldUpdateResponse response = WorldUpdateResponse.newBuilder().setSuccess(true).build();
-			logger.severe("gRPC: World ID!: " + Integer.toString(request.getWorldId()));
-			logger.severe("gRPC: World UPDATE!: " + request.getWorldStatus().toString());
+			logger.finest("RPC: World ID: " + Integer.toString(request.getWorldId()));
+			logger.finest("RPC: World UPDATE: " + request.getWorldStatus().toString());
 			
 			MediusWorldStatus status;
 			switch (request.getWorldStatus()) {
