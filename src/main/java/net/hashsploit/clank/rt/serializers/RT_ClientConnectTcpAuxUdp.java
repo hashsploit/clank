@@ -25,8 +25,8 @@ public class RT_ClientConnectTcpAuxUdp extends RTMessage {
 		key = new byte[64]; // TODO: Make this a constant
 		payload.readBytes(key);
 		if (payload.readerIndex() < this.getLength()) {
-			sessionKey = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.getValue()));
-			accessToken = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.getValue()));
+			sessionKey = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.value));
+			accessToken = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.value));
 		}
 	}
 

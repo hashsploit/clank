@@ -9,13 +9,8 @@ import net.hashsploit.clank.utils.Utils;
 
 public class ChannelList_ExtraInfoOneRequest extends MediusMessage {
 
-<<<<<<< HEAD:src/main/java/net/hashsploit/clank/server/medius/serializers/ChannelList_ExtraInfoOneRequest.java
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
-	private byte[] pageID = new byte[2];
-=======
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.getValue()];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] pageId = new byte[2];
->>>>>>> d6454359959fa8c3a5b8310f8d01ffbcf1d9a367:src/main/java/net/hashsploit/clank/server/common/packets/serializers/ChannelList_ExtraInfoOneRequest.java
 	private byte[] pageSize = new byte[2];
 	
 	public ChannelList_ExtraInfoOneRequest(byte[] data) {

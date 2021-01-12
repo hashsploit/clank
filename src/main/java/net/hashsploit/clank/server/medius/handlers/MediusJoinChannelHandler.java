@@ -52,7 +52,6 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 		server.updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
 		
 		logger.finest("Join channel world id to join: " + Utils.bytesToHex(worldId));
-		logger.finest(server.playersToString());
 
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
