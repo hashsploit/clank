@@ -7,8 +7,9 @@ import net.hashsploit.clank.utils.Utils;
 
 public class RT_ClientConnectTcp extends RTMessage {
 	
-	private int targetWorldId;
+	private byte[] unknown; // 0108 for UYA
 	private int appId;
+	private int targetWorldId;
 	private byte[] key;
 	private byte[] sessionKey;
 	private byte[] accessToken;
@@ -16,14 +17,16 @@ public class RT_ClientConnectTcp extends RTMessage {
 	public RT_ClientConnectTcp(ByteBuf payload) {
 		super(payload);
 			
-		targetWorldId = payload.readIntLE();
+		payload.readShort(); // the unknown short (0108 for UYA)
+		payload.readByte(); // extra byte
+		targetWorldId = (int) payload.readShortLE();
 		appId = payload.readIntLE();
 		key = new byte[64]; // TODO: Make this a constant
 		payload.readBytes(key);
-		
-		if (payload.readerIndex() < payload.readableBytes()) {
-			sessionKey = payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.value).array();
-			accessToken = payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.value).array();
+
+		if (payload.readerIndex() < this.getLength()) {
+			sessionKey = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.value));
+			accessToken = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.value));
 		}
 	}
 

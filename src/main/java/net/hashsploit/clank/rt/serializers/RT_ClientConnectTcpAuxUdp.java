@@ -3,30 +3,57 @@ package net.hashsploit.clank.rt.serializers;
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.MediusConstants;
+import net.hashsploit.clank.utils.Utils;
 
 public class RT_ClientConnectTcpAuxUdp extends RTMessage {
 
-	private final short dmeWorldId;
-	private final byte[] mlsToken;
+	private byte[] unknown; // 0108 for UYA
+	private int appId;
+	private int targetWorldId;
+	private byte[] key;
+	private byte[] sessionKey;
+	private byte[] accessToken;
 
 	public RT_ClientConnectTcpAuxUdp(ByteBuf payload) {
-		super(RtMessageId.CLIENT_CONNECT_TCP_AUX_UDP, payload);
+		super(payload);
 		
-		payload.skipBytes(5);
-		
-		dmeWorldId = payload.readShortLE();
-		mlsToken = new byte[0];
-		
-		//dmeWorldId = Utils.bytesToShortLittle(bytes[6], bytes[7]);
-		//mlsToken = Arrays.copyOfRange(bytes, bytes.length - 17, bytes.length - 1);
+		payload.readShort(); // the unknown short (0108 for UYA)
+		payload.readByte(); // extra byte
+		targetWorldId = (int) payload.readShortLE();
+		appId = payload.readIntLE();
+		key = new byte[64]; // TODO: Make this a constant
+		payload.readBytes(key);
+		if (payload.readerIndex() < this.getLength()) {
+			sessionKey = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.SESSIONKEY_MAXLEN.getValue()));
+			accessToken = Utils.nettyByteBufToByteArray(payload.readBytes(MediusConstants.ACCESSKEY_MAXLEN.getValue()));
+		}
 	}
 
-	public short getDmeWorldId() {
-		return dmeWorldId;
+	public byte[] getUnknown() {
+		return unknown;
 	}
 
-	public byte[] getMlsToken() {
-		return mlsToken;
+	public int getAppId() {
+		return appId;
 	}
+
+	public int getTargetWorldId() {
+		return targetWorldId;
+	}
+
+	public byte[] getKey() {
+		return key;
+	}
+
+	public byte[] getSessionKey() {
+		return sessionKey;
+	}
+
+	public byte[] getAccessToken() {
+		return accessToken;
+	}
+
+
 
 }

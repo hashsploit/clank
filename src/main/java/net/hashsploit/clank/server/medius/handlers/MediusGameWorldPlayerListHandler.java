@@ -46,7 +46,6 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 		
 		for (int i = 0; i < playersInWorld.size(); i++) {
 			Player player = iterator.next();
-			
 	    	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 	    	byte[] accountID = Utils.intToBytesLittle(player.getAccountId());
 	    	byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.value);
@@ -72,7 +71,6 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 	    	byte[] connectionClass = Utils.intToBytesLittle(0);
 			byte[] endOfList = Utils.hexStringToByteArray("01000000");
 			GameWorldPlayerListResponse response = new GameWorldPlayerListResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountName, stats, connectionClass, endOfList);
-			client.sendMediusMessage(response);
 			messagesToWrite.add(response);
 		}
 		
@@ -82,7 +80,6 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
 			response.add(m);
 		}
 		
-		response.add(respPacket);
 		return response;
     }
 

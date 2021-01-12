@@ -1,6 +1,8 @@
 package net.hashsploit.clank.server.pipeline;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -16,6 +18,7 @@ import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.server.dme.DmeUdpServer;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.utils.Utils;
+import net.hashsploit.medius.crypto.RTMessageId;
 
 /**
  * Handles a server-side channel.
@@ -54,7 +57,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 		logger.finest("TOTAL RAW UDP INCOMING DATA: " + Utils.bytesToHex(buff));
 		
-		List<RTMessage> packets = null; //Utils.decodeRTMessageFrames(buff);
+		List<RTMessage> packets = decodeRTMessageFrames(buff);
 
 		for (RTMessage rtmsg: packets) {
 			logger.finest("RAW UDP Single packet: " + Utils.bytesToHex(rtmsg.getFullMessage().array()));
@@ -106,7 +109,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	}
 
 	private void checkBroadcast(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data) {
-		List<RTMessage> packets = null; //Utils.decodeRTMessageFrames(data);
+		List<RTMessage> packets = decodeRTMessageFrames(data);
 		for (RTMessage m: packets) {
 			logger.fine("UDP Packet ID: " + m.getId().toString());
 			logger.fine("UDP Packet ID: " + m.getId().getValue());
@@ -138,6 +141,56 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			ctx.write(msg);
 			ctx.flush();
 		}
+	}
+	
+	// TODO: ADD TO PIPELINE
+	public static List<RTMessage> decodeRTMessageFrames(byte[] data) {
+		final List<RTMessage> packets = new ArrayList<RTMessage>();
+
+		int index = 0;
+
+		try {
+			while (index < data.length) {
+				final byte id = data[index + 0];
+
+				ByteBuffer bb = ByteBuffer.allocate(2);
+				bb.order(ByteOrder.LITTLE_ENDIAN);
+				bb.put(data[index + 1]);
+				bb.put(data[index + 2]);
+				short length = bb.getShort(0);
+
+				// logger.fine("Length: " + Integer.toString(length));
+				byte[] finalData = new byte[length];
+				int offset = 0;
+
+				if (length > 0) {
+					// ID(1) + Length(2)
+					offset += 1 + 2;
+				}
+
+				// logger.warning("PLAIN DATA PACKET");
+				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
+
+				RtMessageId rtid = null;
+
+				for (RtMessageId p : RtMessageId.values()) {
+					if (p.getValue() == id) {
+						rtid = p;
+						break;
+					}
+				}
+
+				ByteBuf finalDataBuf = Unpooled.wrappedBuffer(finalData);
+				packets.add(new RTMessage(rtid, finalData.length, finalDataBuf));
+
+				index += length + 3;
+			}
+		} catch (Throwable t) {
+			t.printStackTrace();
+			return null;
+		}
+
+		return packets;
 	}
 
 }
