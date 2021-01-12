@@ -22,8 +22,8 @@ public class ClankMasRpcClient {
 
 	}
 
-	public PlayerLoginResponse loginPlayer(String username, String password) {
-		PlayerLoginRequest request = PlayerLoginRequest.newBuilder().setUsername(username).setPassword(password).build();
+	public PlayerLoginResponse loginPlayer(String username, String password, String sessionKey) {
+		PlayerLoginRequest request = PlayerLoginRequest.newBuilder().setUsername(username).setPassword(password).setSessionKey(sessionKey).build();
 		PlayerLoginResponse response;
 		try {
 			response = asyncStub.playerLogin(request);
@@ -33,6 +33,19 @@ public class ClankMasRpcClient {
 			return null;
 		}
 		return response;
+	}
+
+	public String generateSessionKey() {
+		SessionKeyRequest request = SessionKeyRequest.newBuilder().build();
+		SessionKeyResponse response;
+		try {
+			response = asyncStub.generateSessionKey(request);
+		} catch (StatusRuntimeException e) {
+			e.printStackTrace();
+			logger.warning("RPC failed: " + e.getStatus());
+			return null;
+		}
+		return response.getSessionKey();
 	}
 
 }

@@ -10,6 +10,8 @@ public class Player {
 	private String username;
 	private int accountId;
 	
+	private String sessionKey;
+	
 	private int gameWorldId;
 	
 	private int chatWorldId;
@@ -36,7 +38,6 @@ public class Player {
 
 	public void setUsername(String username) {
 		this.username = username;
-		this.accountId = Clank.getInstance().getDatabase().getAccountId(username);
 	}
 
 	public MediusClient getClient() {
@@ -78,5 +79,14 @@ public class Player {
 	public void setGameWorldId(int gameWorldId) {
 		this.gameWorldId = gameWorldId;
 	}
+
+	public String getSessionKey() {
+		return sessionKey;
+	}
+	
+	public void setSessionKey(String sessionKey) {
+		this.sessionKey = sessionKey;
+	}
+	
 		
 }

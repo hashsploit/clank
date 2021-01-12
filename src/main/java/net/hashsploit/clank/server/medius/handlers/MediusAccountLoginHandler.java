@@ -10,6 +10,7 @@ import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
+import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
@@ -45,30 +46,33 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		// TODO: Clean the username!!! add a utility to check if the username is valid, length, and characters in it.
 		final String username = Utils.parseMediusString(reqPacket.getUsernameBytes());
 		final String password = Utils.parseMediusString(reqPacket.getPasswordBytes());
-
-		PlayerLoginResponse rpcResponse = ((MediusAuthenticationServer) client.getServer()).playerLogin(username, password);
+		final String sessionKey = Utils.bytesToStringClean(reqPacket.getSessionKey()).toLowerCase() + '\0';
+		
+		if (! sessionKey.equals(client.getPlayer().getSessionKey().toLowerCase())) {
+			throw new IllegalStateException("Requested login session key does not match the Clients current session key. Login: '" + sessionKey + "' Client: '" + client.getPlayer().getSessionKey().toLowerCase() + "'");
+		}
+		
+		PlayerLoginResponse rpcResponse = ((MediusAuthenticationServer) client.getServer()).playerLogin(username, password, sessionKey);
 		int playerAccountId = rpcResponse.getAccountId();
 		boolean rpcSuccess = rpcResponse.getSuccess();
 		String mlsTokenString = rpcResponse.getMlsToken();
 		
-		logger.info("PlayerLoginRPC AccountId: " + Integer.toString(playerAccountId));
-		logger.info("PlayerLoginRPC success: " + rpcSuccess);
-		logger.info("PlayerLoginRPC mlsTokenString: " + mlsTokenString);
+		logger.finest("PlayerLoginRPC AccountId: " + Integer.toString(playerAccountId));
+		logger.finest("PlayerLoginRPC success: " + rpcSuccess);
+		logger.finest("PlayerLoginRPC mlsTokenString: " + mlsTokenString);
 		
+		logger.info("Player logged in: '" + username + "', Session key: " + sessionKey);	
 		// TODO: Generate random auth token each connection, save in db for MLS to use.
 		// db should have a expiration UNIX time-stamp as well that needs to be updated
 		// by MLS.
 		//new Random().nextBytes(mlsToken);
 		
 		// MLS Token is all 0s when failure happens
+		// Last 2 bytes are padding
+		mlsToken = mlsTokenString.getBytes();
+		// Uncomment this if you want to test hacking the MLS Token
+		//mlsToken = Utils.hexStringToByteArray("6438646366346262313731613531346300");
 		
-		// Last 3 bytes are padding
-		mlsToken = Utils.hexStringToByteArray(mlsTokenString + "000000");
-		
-		mlsToken[mlsToken.length - 1] = (byte) 0x00;
-		mlsToken[mlsToken.length - 2] = (byte) 0x00;
-		mlsToken[mlsToken.length - 3] = (byte) 0x00;
-	
 		// If player login is successful, check if the username/pass is in whitelist also
 		boolean whitelistSuccess = false;
 		
@@ -90,6 +94,7 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		}
 		
 		logger.info("Whitelist success: " + whitelistSuccess);
+		
 		// gRPC Login success
 		if (rpcSuccess && whitelistSuccess) {
 			callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));

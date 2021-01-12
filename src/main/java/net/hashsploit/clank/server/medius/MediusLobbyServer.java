@@ -31,9 +31,6 @@ public class MediusLobbyServer extends MediusServer {
 
 	public MediusLobbyServer(EmulationMode emulationMode, String address, int port, int parentThreads, int childThreads) {
 		super(emulationMode, address, port, parentThreads, childThreads);
-
-		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
-		this.rtMessageMap = RtPacketMap.buildRtPacketMap(); // TODO: Change this to ne different per medius server
 		
 		this.gameList = new GameList();
 		this.playerList = new PlayerList();
@@ -154,12 +151,8 @@ public class MediusLobbyServer extends MediusServer {
 		 * UNRECOGNIZED(-1),
 		 */
 		// Update the gameWorld. Update the playerList
-		logger.info("Updating player from DME mlsToken: " + mlsToken);
-		logger.info("Updating player from DME world: " + Integer.toString(worldId));
-		logger.info("Updating player from DME Status: " + status.toString());
-		int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(mlsToken);
+		int accountId = Clank.getInstance().getDatabase().getAccountIdFromSessionKey(mlsToken);
 		playerList.updatePlayerStatus(accountId, status);
-
 	}
 
 	/**

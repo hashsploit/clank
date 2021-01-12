@@ -39,8 +39,6 @@ public class MediusServer extends TcpServer {
 	private final EmulationMode emulationMode;
 	
 	protected AbstractRpcServer rpcServer;
-	protected HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
-	protected HashMap<RtMessageId, RtMessageHandler> rtMessageMap;
 
 	public MediusServer(final EmulationMode emulationMode, final String address, final int port, final int parentThreads, final int childThreads) {
 		super(address, port, parentThreads, childThreads);
@@ -109,9 +107,6 @@ public class MediusServer extends TcpServer {
 		}
 	}
 
-	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
-		return mediusMessageMap;
-	}
 
 	/**
 	 * Get the RPC Server relating to this server.
@@ -122,10 +117,6 @@ public class MediusServer extends TcpServer {
 		return rpcServer;
 	}
 
-	public RtMessageHandler getRtHandler(byte byteIn) {
-		RtMessageId rtId = RtMessageId.getIdByByte(byteIn);
-		return rtMessageMap.get(rtId);
-	}
 
 
 }

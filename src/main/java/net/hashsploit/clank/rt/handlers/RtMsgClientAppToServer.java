@@ -41,7 +41,7 @@ public class RtMsgClientAppToServer extends RtMessageHandler {
 		List<RTMessage> responses = new ArrayList<RTMessage>();
 		
 		// Detect which medius packet is being parsed
-		MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(reqPacket.getMediusMessageType());		
+		MediusPacketHandler mediusPacket = client.getMediusMessageMap().get(reqPacket.getMediusMessageType());		
 		
 		// Process this medius packet
 		mediusPacket.read(client, new MediusMessage(reqPacket.getMediusMessageType(), reqPacket.getMediusPayload()));

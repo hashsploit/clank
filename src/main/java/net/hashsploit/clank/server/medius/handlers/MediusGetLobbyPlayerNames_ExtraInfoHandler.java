@@ -35,7 +35,6 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		
 		int worldId = Utils.bytesToIntLittle(reqPacket.getLobbyWorldId());
-		logger.info("Searching for players in worldid: " + Integer.toString(worldId));
 		
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		logger.info(server.playersToString());
@@ -43,8 +42,6 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 		List<Player> playersInWorld = server.getLobbyWorldPlayers(worldId);
 		for (int i = 0; i < playersInWorld.size(); i++) {
 			Player player = playersInWorld.get(i);
-			
-			logger.info("Player in the world: " + player.toString());
 			byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
 			byte[] accountID = Utils.intToBytesLittle(player.getAccountId());
 			byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.getValue());

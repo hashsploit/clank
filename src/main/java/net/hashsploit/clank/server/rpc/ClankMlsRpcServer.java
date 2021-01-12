@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import io.grpc.stub.StreamObserver;
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
@@ -62,16 +63,29 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			responseObserver.onCompleted();
 		}
 		
+		@Override
+		public void generateSessionKey(SessionKeyRequest request, StreamObserver<SessionKeyResponse> responseObserver) {
+			responseObserver.onNext(processGenerateSessionKey(request));
+			responseObserver.onCompleted();
+		}
+		
 		
 		
 		
 		// Methods
 
+		private SessionKeyResponse processGenerateSessionKey(SessionKeyRequest request) {
+			String key = Clank.getInstance().getDatabase().generateSessionKey();
+			SessionKeyResponse response = SessionKeyResponse.newBuilder().setSessionKey(key).build();
+			return response;
+		}
+		
+		
 		private PlayerUpdateResponse updatePlayer(PlayerUpdateRequest request) {
 			PlayerUpdateResponse response = PlayerUpdateResponse.newBuilder().setSuccess(true).build();
-			logger.severe("Data received: " + request.getMlsToken());
-			logger.severe("Data received: " + Integer.toString(request.getWorldId()));
-			logger.severe("Data received: " + request.getPlayerStatus().toString());
+			logger.info("DME Player update session key: " + request.getMlsToken());
+			logger.info("DME Player dme world id: " + Integer.toString(request.getWorldId()));
+			logger.info("DME Player player status: " + request.getPlayerStatus().toString());
 			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
 						
 			MediusPlayerStatus status;
@@ -125,7 +139,10 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 		}
 		
 		private PlayerLoginResponse processPlayerLogin(PlayerLoginRequest request) {
-			int accountId = Clank.getInstance().getDatabase().getAccountId(request.getUsername());
+			
+			DbManager db = Clank.getInstance().getDatabase();
+			
+			int accountId = db.validateAccount(request.getSessionKey(), request.getUsername(), request.getPassword());
 			PlayerLoginResponse response;
 			String mlsToken = "00000000000000000000000000000000";
 
@@ -133,7 +150,7 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 				response = PlayerLoginResponse.newBuilder().setSuccess(false).setAccountId(accountId).setMlsToken(mlsToken).build();
 			}
 			else {
-				mlsToken = Clank.getInstance().getDatabase().getMlsToken(accountId);
+				mlsToken = db.generateMlsToken(accountId);
 				response = PlayerLoginResponse.newBuilder().setSuccess(true).setAccountId(accountId).setMlsToken(mlsToken).build();
 			}
 			

@@ -116,7 +116,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	private List<ByteBuf> basicDeframe(ByteBuf input) {
 		// TODO: ADD ERROR CHECKING
 		
-		logger.severe("Deframe input: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(input)));
+		logger.finest("Deframe input: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(input)));
 		
 		List<ByteBuf> results = new ArrayList<ByteBuf>();
 		
@@ -126,8 +126,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			// Check if encrypted or decrypted
 			int idCheckInt = id & 0xFF;
 			boolean signed = idCheckInt >= 128;
-			logger.severe("idCheckInt: " + idCheckInt);
-			logger.severe("signed: " + signed);
+			logger.finest("idCheckInt: " + idCheckInt);
+			logger.finest("signed: " + signed);
 			
 			short length = input.readShortLE();
 			if (length == 0) {
@@ -174,7 +174,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		
 		List<ByteBuf> results = basicDeframe(input);
 		for (ByteBuf result: results) {
-			logger.severe("Packet deframed: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(result)));
+			logger.finest("Packet deframed: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(result)));
 		}
 		
 		return results;

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
@@ -40,8 +41,12 @@ public class MediusSessionBeginHandler extends MediusPacketHandler {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
-    	byte[] sessionKey = Utils.buildByteArrayFromString("123456789", MediusConstants.SESSIONKEY_MAXLEN.getValue());
     	
+		String generatedSessionKey = ((MediusAuthenticationServer) client.getServer()).generateSessionKey();
+		logger.info("Generated session key for new player: " + generatedSessionKey);
+		client.getPlayer().setSessionKey(generatedSessionKey);
+		
+		byte[] sessionKey = generatedSessionKey.getBytes();
 				
 		try {
 			outputStream.write(messageID);

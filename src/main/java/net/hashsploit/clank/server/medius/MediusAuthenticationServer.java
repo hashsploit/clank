@@ -21,9 +21,7 @@ public class MediusAuthenticationServer extends MediusServer{
 			int childThreads) {
 		super(emulationMode, address, port, parentThreads, childThreads);
 		
-		this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();
-		this.rtMessageMap = RtPacketMap.buildRtPacketMap();
-		
+
 		
 		// Start RPC client
 		final RpcConfig config = ((MediusConfig) Clank.getInstance().getConfig()).getRpcConfig();
@@ -42,11 +40,17 @@ public class MediusAuthenticationServer extends MediusServer{
 				logger.info("Whitelist username/pass: " + key + " / " + masConfig.getWhitelist().get(key));
 			}
 		}
+	
 	}
 	
 	
-	public PlayerLoginResponse playerLogin(String username, String password) {
-		return rpcClient.loginPlayer(username, password);
+	public PlayerLoginResponse playerLogin(String username, String password, String sessionKey) {
+		return rpcClient.loginPlayer(username, password, sessionKey);
+	}
+
+
+	public String generateSessionKey() {
+		return rpcClient.generateSessionKey();
 	}
 
 	

@@ -101,10 +101,10 @@ public class RtEncryptionHandler extends MessageToMessageEncoder<List<ByteBuf>> 
 
 		byte[] encryptedData = scertData.getData();
 
-		logger.info("ID: " + Utils.byteToHex(id));
-		logger.info("length: " + Utils.bytesToHex(length));
-		logger.info("hash: " + Utils.bytesToHex(hash));
-		logger.info("encryptedData: " + Utils.bytesToHex(encryptedData));
+		logger.finest("ID: " + Utils.byteToHex(id));
+		logger.finest("length: " + Utils.bytesToHex(length));
+		logger.finest("hash: " + Utils.bytesToHex(hash));
+		logger.finest("encryptedData: " + Utils.bytesToHex(encryptedData));
 
 		// Creates an output stream
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -144,10 +144,10 @@ public class RtEncryptionHandler extends MessageToMessageEncoder<List<ByteBuf>> 
 			logger.severe("Encryption not successful!");
 		}
 
-		logger.info("ID: " + Utils.byteToHex(id));
-		logger.info("length: " + Utils.bytesToHex(length));
-		logger.info("hash: " + Utils.bytesToHex(hash));
-		logger.info("encryptedData: " + Utils.bytesToHex(encryptedData));
+		logger.finest("ID: " + Utils.byteToHex(id));
+		logger.finest("length: " + Utils.bytesToHex(length));
+		logger.finest("hash: " + Utils.bytesToHex(hash));
+		logger.finest("encryptedData: " + Utils.bytesToHex(encryptedData));
 
 		// Creates an output stream
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
