@@ -18,7 +18,7 @@ public class PlayerList {
 	public String toString() {
 		String result = "PlayerList ----- \n";
 		for (Player player: players.values()) {
-			result += player.toString();
+			result += player.toString() + "\n";
 		}
 		return result;
 	}

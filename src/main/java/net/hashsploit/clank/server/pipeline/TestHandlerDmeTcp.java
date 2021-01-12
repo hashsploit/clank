@@ -140,11 +140,11 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		
     		short dmeWorldId = (short) connectPacket.getTargetWorldId();
     		logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
+    		logger.info("Detected TCP AUX UDP CONNECT. mlsToken: " + Utils.bytesToHex(connectPacket.getAccessToken()));
 
     		// ---------- Add the player to the world
     		// Set accountId for this player -> client
-    		String mlsToken = Utils.bytesToHex(connectPacket.getAccessToken());   
-    		mlsToken = mlsToken.substring(0, mlsToken.length()-2);
+    		String mlsToken = Utils.bytesToStringClean(connectPacket.getAccessToken()) + "\0";
     		client.getPlayer().setMlsToken(mlsToken);
     		
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();

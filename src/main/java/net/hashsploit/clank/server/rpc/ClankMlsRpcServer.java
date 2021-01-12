@@ -105,8 +105,11 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			default:
 				status = null;
 			}
-			
+			logger.info("DME Player player post: " + status.toString());
+
 			mlsServer.updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
+			logger.info("Updated!: " + status.toString());
+
 			return response;
 		}
 
