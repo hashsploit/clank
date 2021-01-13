@@ -9,6 +9,7 @@ import net.hashsploit.clank.rt.serializers.RT_ClientAppToServer;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
@@ -45,6 +46,11 @@ public class RtMsgClientAppToServer extends RtMessageHandler {
 		
 		if (mediusPacket == null) {
 			logger.severe("Unknown medius packet handler found!: [MediusId: " + reqPacket.toString() + "\nRaw bytes: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(reqPacket.getFullMessage())) + "]");
+		}
+		
+		// Testing new packet
+		if (mediusPacket.getType() == MediusMessageType.LadderList_ExtraInfo) {
+			logger.info("LadderList_ExtraInfo called!");
 		}
 		
 		// Process this medius packet

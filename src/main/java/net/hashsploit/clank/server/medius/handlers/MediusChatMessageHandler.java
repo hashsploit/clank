@@ -25,8 +25,7 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 
 	@Override
 	public void read(MediusClient client, MediusMessage mm) {
-		reqPacket = new ChatMessageRequest(mm.getPayload());
-
+		reqPacket = new ChatMessageRequest(mm.getPayload());		
 		logger.finest(reqPacket.getDebugString());
 
 	}
