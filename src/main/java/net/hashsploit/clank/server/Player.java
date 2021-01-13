@@ -1,10 +1,14 @@
 package net.hashsploit.clank.server;
 
+import java.util.logging.Logger;
+
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.rpc.ClankMlsRpcServer;
 
 public class Player {
-	
+	private static final Logger logger = Logger.getLogger(Player.class.getName());
+
 	private final MediusClient client;
 	private MediusPlayerStatus playerStatus;
 	private String username;
@@ -54,6 +58,7 @@ public class Player {
 	}
 
 	public void updateStatus(MediusPlayerStatus status) {
+		logger.info("PlayerUpdateStatus: [Username: '" + username + "', SessionKey: " + sessionKey + ", new Status: " + status.toString() + ", accountId: " + accountId + "]");
 		if (status != MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD) {
 			this.gameWorldId = 0;
 		}

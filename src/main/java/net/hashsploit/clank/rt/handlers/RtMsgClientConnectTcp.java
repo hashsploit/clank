@@ -53,7 +53,7 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 				return new ArrayList<RTMessage>();
 			}
 			
-			logger.info("Client MLS access token validated. Client connected.");
+			logger.info("Client MLS access token validated. IP: " + client.getIPAddress() + " client connected.");
 //			byte[] accessTokenTemp = reqPacket.getAccessToken();
 //			byte[] accessToken = Arrays.copyOf(accessTokenTemp, 16); // BUG, fix this later should be 17, but hard coded in simdb
 //			String accessTokenStr = Utils.bytesToHex(accessToken);

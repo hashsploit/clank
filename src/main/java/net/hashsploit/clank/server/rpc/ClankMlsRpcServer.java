@@ -83,9 +83,7 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 		
 		private PlayerUpdateResponse updatePlayer(PlayerUpdateRequest request) {
 			PlayerUpdateResponse response = PlayerUpdateResponse.newBuilder().setSuccess(true).build();
-			logger.info("DME Player update session key: " + request.getMlsToken());
-			logger.info("DME Player dme world id: " + Integer.toString(request.getWorldId()));
-			logger.info("DME Player player status: " + request.getPlayerStatus().toString());
+			logger.info("### gRPC Player Update: [SessionKey: " + request.getMlsToken() + ", DmeWorldId: " + Integer.toString(request.getWorldId()) + ", Player status: " + request.getPlayerStatus().toString() + "]");
 			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
 						
 			MediusPlayerStatus status;
@@ -105,23 +103,19 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			default:
 				status = null;
 			}
-			logger.info("DME Player player post: " + status.toString());
 
 			mlsServer.updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
-			logger.info("Updated!: " + status.toString());
-
 			return response;
 		}
 
 		private WorldUpdateResponse updateWorld(WorldUpdateRequest request) {
 			WorldUpdateResponse response = WorldUpdateResponse.newBuilder().setSuccess(true).build();
-			logger.severe("gRPC: World ID!: " + Integer.toString(request.getWorldId()));
-			logger.severe("gRPC: World UPDATE!: " + request.getWorldStatus().toString());
-			
+			logger.info("### gRPC DmeWorld Update: [dmeWorldId: " + Integer.toString(request.getWorldId()) + ", status: " + request.getWorldStatus().toString() + "]");
+
 			MediusWorldStatus status;
 			switch (request.getWorldStatus()) {
 			case CREATED:
-				status = MediusWorldStatus.WORLD_STAGING;
+				status = MediusWorldStatus.WORLD_PENDING_CREATION;
 				break;
 			case STAGING:
 				status = MediusWorldStatus.WORLD_STAGING;

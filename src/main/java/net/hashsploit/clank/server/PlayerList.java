@@ -3,11 +3,13 @@ package net.hashsploit.clank.server;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Logger;
 
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 
 public class PlayerList {
-	
+	private static final Logger logger = Logger.getLogger(PlayerList.class.getName());
+
 	// AccountId -> Player
 	HashMap<Integer, Player> players;
 	
@@ -23,9 +25,10 @@ public class PlayerList {
 		return result;
 	}
 
-	public void updatePlayerStatus(Player player, MediusPlayerStatus status) {
+	public synchronized void updatePlayerStatus(Player player, MediusPlayerStatus status) {
 		// 1. Check if player is disconnecting, remove player from list
 		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+			player.updateStatus(status);
 			players.remove(player.getAccountId());
 			return;
 		}

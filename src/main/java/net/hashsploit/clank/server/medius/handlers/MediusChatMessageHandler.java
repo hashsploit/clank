@@ -38,12 +38,9 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 		 * 
 		 *  Send this chat message to each client in the same world
 		*/
-		logger.info("CHAT MESSAGE HANDLER");
 		String username = client.getPlayer().getUsername();
 		String chatMsg = Utils.bytesToStringClean(reqPacket.getText());
-		logger.info(username);
-		logger.info(chatMsg);
-		
+		logger.info("[CHAT]: " + username + ": " + chatMsg);
 		ChatFwdMessageResponse msg = new ChatFwdMessageResponse(
 				reqPacket.getMessageId(), 
 				Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.getValue()),

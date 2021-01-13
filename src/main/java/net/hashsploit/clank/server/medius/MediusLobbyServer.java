@@ -132,8 +132,6 @@ public class MediusLobbyServer extends MediusServer {
 	 * @param worldStatus
 	 */
 	public synchronized void updateDmeWorldStatus(int worldId, MediusWorldStatus worldStatus) {
-		logger.info("Updating world from DME worldId: " + Integer.toString(worldId));
-		logger.info("Updating world from DME World Status: " + worldStatus.toString());
 		gameList.updateGameWorldStatus(worldId, worldStatus);
 	}
 

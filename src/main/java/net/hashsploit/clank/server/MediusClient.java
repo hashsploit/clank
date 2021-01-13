@@ -283,7 +283,7 @@ public class MediusClient implements IClient {
 			((MediusLobbyServer) server).updatePlayerStatus(player, MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED);
 		}
 
-		logger.fine(String.format("Client disconnected: %s:%d", getIPAddress(), getPort()));
+		logger.info(String.format("Client disconnected: %s:%d", getIPAddress(), getPort()));
 		server.removeClient(this);
 	}
 	

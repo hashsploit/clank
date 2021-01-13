@@ -199,10 +199,13 @@ public class DmeWorld {
 	/*
 	 *  UDP Methods =================================================================
 	 */
-	public void setPlayerUdpConnection(DmePlayer player, InetSocketAddress playerUdpAddr) {
+	public synchronized void setPlayerUdpConnection(DmePlayer player, InetSocketAddress playerUdpAddr) {
 		if (playerUdpLookup.containsKey(playerUdpAddr)) {
-			throw new IllegalStateException("setPlayerUdpConnection: New connection player " + Integer.toString(player.getPlayerId()) + " has the same Udp channel as " + 
+			//throw new IllegalStateException("setPlayerUdpConnection: New connection player " + Integer.toString(player.getPlayerId()) + " has the same Udp channel as " + 
+			//		Integer.toString(playerUdpLookup.get(playerUdpAddr).getPlayerId()) + " !");
+			logger.severe("setPlayerUdpConnection: New connection player " + Integer.toString(player.getPlayerId()) + " has the same Udp channel as " + 
 					Integer.toString(playerUdpLookup.get(playerUdpAddr).getPlayerId()) + " !");
+			return;
 		}
 		playerUdpLookup.put(playerUdpAddr, player);
 	}

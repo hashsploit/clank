@@ -28,8 +28,9 @@ public class DmePlayer {
 
 	public String toString() {
 		return "DmePlayer: \n" + 
-				"MlsToken: " + mlsToken + "\n" +
-				"PlayerId: " + Integer.toString(playerId) + "\n" +
+				"SessionKey: " + mlsToken + "\n" +
+				"UdpAddr: " + udpAddress + "\n" +
+				"DmePlayerId: " + Integer.toString(playerId) + "\n" +
 				"Status: " + status.toString() + "\n" ;
 	}
 	

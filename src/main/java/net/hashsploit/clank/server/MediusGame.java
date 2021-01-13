@@ -1,14 +1,15 @@
 package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
-import net.hashsploit.clank.server.medius.serializers.GameInfoZeroResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGame {
-	
+	private static final Logger logger = Logger.getLogger(MediusGame.class.getName());
+
 	private int worldId;
 	private CreateGameOneRequest req;
 	private int playerCount = 1; // TODO: Update this when DME sends a "PlayerConnected" gRPC
@@ -54,6 +55,7 @@ public class MediusGame {
 	}
 
 	public void updateStatus(MediusWorldStatus worldStatus) {
+		logger.info("Updating world status: [dmeWorldId: " + worldId + ", newWorldStatus: " + worldStatus.toString() + ", playercount: " + players.size() + "]");
 		this.worldStatus = worldStatus;
 	}
 	

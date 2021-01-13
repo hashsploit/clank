@@ -37,7 +37,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 		int worldId = Utils.bytesToIntLittle(reqPacket.getLobbyWorldId());
 		
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		logger.info(server.playersToString());
+		//logger.info(server.playersToString());
 		
 		List<Player> playersInWorld = server.getLobbyWorldPlayers(worldId);
 		for (int i = 0; i < playersInWorld.size(); i++) {

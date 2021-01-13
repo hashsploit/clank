@@ -98,12 +98,12 @@ public class DmeTcpClient implements IClient {
 		logger.info(mgr.toString());
 	}
 	
-	public void updateDmeWorld(int worldId, WorldStatus status) {
+	public synchronized void updateDmeWorld(int worldId, WorldStatus status) {
 		DmeServer dmeServer = (DmeServer) server;
 		dmeServer.getRpcClient().updateWorld(worldId, status);	
 	}
 
-	public void updateDmePlayer(String mlsToken, int worldId, PlayerStatus status) {
+	public synchronized void updateDmePlayer(String mlsToken, int worldId, PlayerStatus status) {
 		DmeServer dmeServer = (DmeServer) server;
 		dmeServer.getRpcClient().updatePlayer(mlsToken, worldId, status);		
 	}
