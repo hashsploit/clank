@@ -38,10 +38,6 @@ public class SimDb implements IDatabase {
 			return username;
 		}
 
-		public String getPassword() {
-			return password;
-		}
-
 		public void setAccountId(int accountId) {
 			this.accountId = accountId;
 		}

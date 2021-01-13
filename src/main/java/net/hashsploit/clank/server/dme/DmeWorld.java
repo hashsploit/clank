@@ -11,6 +11,8 @@ import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
+import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.objects.DmePlayerStatus;
 import net.hashsploit.clank.server.pipeline.TestHandlerDmeUdp;
@@ -153,7 +155,7 @@ public class DmeWorld {
 		int playerId = player.getPlayerId();
 		
 		// build server notify packet
-		String ipAddress = null;//((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
+		String ipAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
 		
 		if (ipAddress == null /*|| ipAddress.isEmpty()*/) {
 			ipAddress = Utils.getPublicIpAddress();

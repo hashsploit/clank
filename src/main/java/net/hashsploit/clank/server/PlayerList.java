@@ -29,7 +29,9 @@ public class PlayerList {
 		// 1. Check if player is disconnecting, remove player from list
 		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
 			player.updateStatus(status);
+			logger.info("PLAYERLIST BEFORE DC: " + this.toString());
 			players.remove(player.getAccountId());
+			logger.info("PLAYERLIST AFTER DC: " + this.toString());
 			return;
 		}
 		
@@ -51,7 +53,7 @@ public class PlayerList {
 		}
 	}
 	
-	public void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
+	public synchronized void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
 		Player p = players.get(accountId);
 		updatePlayerStatus(p, status);
 	}

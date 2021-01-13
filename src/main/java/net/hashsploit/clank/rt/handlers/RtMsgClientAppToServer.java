@@ -43,6 +43,10 @@ public class RtMsgClientAppToServer extends RtMessageHandler {
 		// Detect which medius packet is being parsed
 		MediusPacketHandler mediusPacket = client.getMediusMessageMap().get(reqPacket.getMediusMessageType());		
 		
+		if (mediusPacket == null) {
+			logger.severe("Unknown medius packet handler found!: [MediusId: " + reqPacket.toString() + "\nRaw bytes: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(reqPacket.getFullMessage())) + "]");
+		}
+		
 		// Process this medius packet
 		mediusPacket.read(client, new MediusMessage(reqPacket.getMediusMessageType(), reqPacket.getMediusPayload()));
 		List<MediusMessage> mediusMessages = mediusPacket.write(client);

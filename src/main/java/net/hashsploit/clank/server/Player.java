@@ -28,12 +28,13 @@ public class Player {
 	}
 	
 	public String toString() {
-		return "Player: \n" + 
-				"Username: " + username + "\n" + 
-				"State: " + playerStatus.name() + "\n" + 
-				"AccountID: " + Integer.toString(accountId) + "\n" + 
-				"ChatWorld: " + Integer.toString(chatWorldId) + "\n" + 
-				"GameWorld: " + Integer.toString(gameWorldId);
+		String s = "Player[Username: '" + username + "', SessionKey: " + sessionKey + ", Status: " + playerStatus.toString() + 
+				", accountId: " + accountId +
+				", ChatWorld: " + chatWorldId +
+				", GameWorld: " + gameWorldId +
+				"]";
+		return s;
+		
 	}
 
 	public String getUsername() {
@@ -58,11 +59,11 @@ public class Player {
 	}
 
 	public void updateStatus(MediusPlayerStatus status) {
-		logger.info("PlayerUpdateStatus: [Username: '" + username + "', SessionKey: " + sessionKey + ", new Status: " + status.toString() + ", accountId: " + accountId + "]");
 		if (status != MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD) {
 			this.gameWorldId = 0;
 		}
 		this.playerStatus = status;
+		logger.info("PlayerStatus updated: " + this.toString());
 	}
 
 	public Integer getAccountId() {

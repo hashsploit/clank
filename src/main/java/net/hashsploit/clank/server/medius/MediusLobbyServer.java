@@ -59,7 +59,7 @@ public class MediusLobbyServer extends MediusServer {
 	 *
 	 */
 
-	public String playersToString() {
+	public synchronized String playersToString() {
 		return playerList.toString();
 	}
 
