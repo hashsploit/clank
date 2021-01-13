@@ -6,6 +6,7 @@ import java.util.List;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
+import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
@@ -35,16 +36,38 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 		
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		List<MediusMessage> response = new ArrayList<MediusMessage>();
 
 		MediusGame game = server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldID()));
-		CreateGameOneRequest req = game.getReqPacket();
+		if (game == null) {
+			byte[] appID = Utils.hexStringToByteArray("00000000");
+			byte[] minPlayers = Utils.hexStringToByteArray("00000000");
+			byte[] maxPlayers = Utils.hexStringToByteArray("00000000");
+			byte[] gameLevel = Utils.hexStringToByteArray("00000000");
+			byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.getValue()];
+			byte[] playerCount = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.getValue()];
+			byte[] playerSkillLevel =Utils.hexStringToByteArray("00000000");
+			byte[] rulesSet = Utils.hexStringToByteArray("00000000");
+			byte[] genField1 = Utils.hexStringToByteArray("00000000");
+			byte[] genField2 = Utils.hexStringToByteArray("00000000");
+			byte[] genField3 = Utils.hexStringToByteArray("00000000");
+			byte[] stats = Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+			byte[] worldStatus = Utils.hexStringToByteArray("00000000");
+			byte[] gameHostType = Utils.hexStringToByteArray("00000000");
+			respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), Utils.intToBytesLittle((MediusCallbackStatus.NO_RESULT.getValue())), appID, minPlayers, maxPlayers, gameLevel, 
+					playerSkillLevel, playerCount, stats, gameName, rulesSet, genField1, genField2, genField3,
+					worldStatus, gameHostType);
+			response.add(respPacket);
+		}
+		else { // Game exists
+			CreateGameOneRequest req = game.getReqPacket();
+			
+			respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, req.getAppID(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), 
+					req.getPlayerSkillLevel(), game.getPlayerCount(), game.getStats(), req.getGameName(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(),
+					game.getWorldStatusBytes(), req.getGameHostType());
+			response.add(respPacket);
+		}
 		
-		respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, req.getAppID(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), 
-				req.getPlayerSkillLevel(), game.getPlayerCount(), game.getStats(), req.getGameName(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(),
-				game.getWorldStatusBytes(), req.getGameHostType());
-		
-		List<MediusMessage> response = new ArrayList<MediusMessage>();
-		response.add(respPacket);
 		return response;
 	}
 
