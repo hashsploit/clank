@@ -13,13 +13,15 @@ public class GetMyIPResponse extends MediusMessage {
 
 	private byte[] messageID;
 	private String ipAddress;
+	private int port;
 	private MediusCallbackStatus callbackStatus;
 
-	public GetMyIPResponse(byte[] messageID, String ipAddress, MediusCallbackStatus callbackStatus) {
+	public GetMyIPResponse(byte[] messageID, String ipAddress, int port, MediusCallbackStatus callbackStatus) {
 		super(MediusMessageType.GetMyIPResponse);
 
 		this.messageID = messageID;
 		this.ipAddress = ipAddress;
+		this.port = port;
 		this.callbackStatus = callbackStatus;
 	}
 
@@ -28,7 +30,9 @@ public class GetMyIPResponse extends MediusMessage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageID);
-			outputStream.write(Utils.buildByteArrayFromString(ipAddress, MediusConstants.IP_MAXLEN.getValue()));
+			outputStream.write(Utils.buildByteArrayFromString(ipAddress, 16)); // MediusConstants.IP_MAXLEN.getValue() - 4
+			outputStream.write(Utils.hexStringToByteArray("0000")); // padding
+			outputStream.write(Utils.shortToBytesLittle((short) port));
 			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 		} catch (IOException e) {

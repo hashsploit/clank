@@ -30,9 +30,10 @@ public class MediusGetMyIPHandler extends MediusPacketHandler {
 	public List<MediusMessage> write(MediusClient client) {
 		
 		String ipAddress = client.getIPAddress();
+		int port = client.getPort();
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 		
-		respPacket = new GetMyIPResponse(reqPacket.getMessageId(), ipAddress, callbackStatus);
+		respPacket = new GetMyIPResponse(reqPacket.getMessageId(), ipAddress, port, callbackStatus);
 		
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		response.add(respPacket);
