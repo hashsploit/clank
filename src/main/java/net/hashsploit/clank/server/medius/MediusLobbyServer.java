@@ -9,6 +9,7 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
+import net.hashsploit.clank.rt.RtPacketMap;
 import net.hashsploit.clank.server.GameList;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
@@ -35,7 +36,8 @@ public class MediusLobbyServer extends MediusServer {
 
 	public MediusLobbyServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_LOBBY_SERVER, address, port, parentThreads, childThreads);
-
+		
+		this.rtMessageMap = RtPacketMap.buildRtPacketMap(); // TODO: Change this to ne different per medius server
 		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
 
 		MlsConfig config = ((MlsConfig) Clank.getInstance().getConfig());
@@ -285,7 +287,7 @@ public class MediusLobbyServer extends MediusServer {
 				return player.getStatus();
 			}
 		}
-		return null;
+		return MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED;
 	}
 
 }
