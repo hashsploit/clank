@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.EmulationMode;
+import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
@@ -20,7 +21,7 @@ import net.hashsploit.clank.utils.Utils;
 
 public class MediusGetLocationsHandler extends MediusPacketHandler {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
 
 	public MediusGetLocationsHandler() {
@@ -33,7 +34,7 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 		logger.fine("Get locations: " + Utils.bytesToHex(mm.getPayload()));
 
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
-		buf.get(messageID);
+		buf.get(messageId);
 		buf.get(sessionKey);
 	}
 
@@ -61,10 +62,10 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				try {
-					outputStream.write(messageID);
+					outputStream.write(messageId);
 					outputStream.write(Utils.hexStringToByteArray("000000"));
 					outputStream.write(Utils.intToBytesLittle(location.getId()));
-					outputStream.write(Utils.buildByteArrayFromString(location.getName(), MediusConstants.LOCATIONNAME_MAXLEN.value));
+					outputStream.write(Utils.padByteArray(ChatColor.parse(location.getName()), MediusConstants.LOCATIONNAME_MAXLEN.value));
 					outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 					outputStream.write(Utils.intToBytesLittle(endOfList ? 1 : 0));
 				} catch (IOException e) {
@@ -78,10 +79,10 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {
-				outputStream.write(messageID);
+				outputStream.write(messageId);
 				outputStream.write(Utils.hexStringToByteArray("000000"));
 				outputStream.write(Utils.intToBytesLittle(0));
-				outputStream.write(Utils.buildByteArrayFromString("", MediusConstants.LOCATIONNAME_MAXLEN.value));
+				outputStream.write(new byte[MediusConstants.LOCATIONNAME_MAXLEN.value]);
 				outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 				outputStream.write(Utils.intToBytesLittle(1));
 			} catch (IOException e) {
