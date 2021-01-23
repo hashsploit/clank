@@ -69,11 +69,22 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			responseObserver.onCompleted();
 		}
 		
-		
+		@Override
+		public void accountIdFromSessionKey(AccountIdFromSessionKeyRequest request, StreamObserver<AccountIdFromSessionKeyResponse> responseObserver) {
+			responseObserver.onNext(processGetAccountIdFromSessionKey(request));
+			responseObserver.onCompleted();
+		}
 		
 		
 		// Methods
-
+		private AccountIdFromSessionKeyResponse processGetAccountIdFromSessionKey(AccountIdFromSessionKeyRequest request) {
+			int accountId = Clank.getInstance().getDatabase().getAccountIdFromSessionKey(request.getSessionKey());
+			AccountIdFromSessionKeyResponse response = AccountIdFromSessionKeyResponse.newBuilder().setAccountId(accountId).build();
+			return response;
+		}
+		
+		
+		
 		private SessionKeyResponse processGenerateSessionKey(SessionKeyRequest request) {
 			String key = Clank.getInstance().getDatabase().generateSessionKey();
 			SessionKeyResponse response = SessionKeyResponse.newBuilder().setSessionKey(key).build();

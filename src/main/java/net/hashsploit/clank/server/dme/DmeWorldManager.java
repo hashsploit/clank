@@ -37,13 +37,17 @@ public class DmeWorldManager {
 		int dmeWorldId = (int) dmeWorldIdShort;
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
 		
+
+		// Get the players Id from session key/mlstoken
+		ClankDmeRpcClient rpcClient = ((DmeServer) player.getClient().getServer()).getRpcClient();
+		player.setAccountId(rpcClient.getAccountIdFromSessionKey(player.getMlsToken()));
+		
 		if (dmeWorld == null) {
 			// Initialize the world
 			dmeWorld = new DmeWorld(dmeWorldId);
 			dmeWorlds.put(dmeWorldId, dmeWorld);
 			
 			// Send world creation
-			ClankDmeRpcClient rpcClient = ((DmeServer) player.getClient().getServer()).getRpcClient();
 			rpcClient.updateWorld(dmeWorldId, WorldStatus.CREATED);
 		}
 		

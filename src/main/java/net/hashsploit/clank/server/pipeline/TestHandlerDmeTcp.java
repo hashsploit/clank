@@ -103,10 +103,10 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		dmeWorldManager.playerFullyConnected(client.getPlayer());
     		logger.info(dmeWorldManager.toString());
     		
-    		int playerId = client.getPlayer().getPlayerId();
+    		int playerId = client.getPlayer().getAccountId();
 		
-    		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
-    		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
+    		//byte [] t1 = Utils.shortToBytesLittle(((short) (playerId)));
+    		byte [] t1 = Utils.shortToBytesLittle(((short) dmeWorldManager.getPlayerCount(client.getPlayer())));
     		RTMessage c1 = new RTMessage(RtMessageId.SERVER_CONNECT_COMPLETE, t1);
     		logger.finest("Final Payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(c1.getFullMessage())));
     		ByteBuf msg1 = c1.getFullMessage();
@@ -154,8 +154,12 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		dmeWorldManager.addPlayer(dmeWorldId, client.getPlayer());
     		logger.info(dmeWorldManager.toString());
     		
-    		int dmePlayerId = client.getPlayer().getPlayerId();
+    		int dmePlayerId = client.getPlayer().getAccountId();
     		int playerCount = dmeWorldManager.getPlayerCount(client.getPlayer());
+    		
+    		if (dmePlayerId == 0 || dmePlayerId == -1) {
+    			logger.severe("Unknon accountId found for: " + "[SessionKey: " + Utils.bytesToStringClean(connectPacket.getAccessToken()) + ", dmeWorldId: " + Integer.toString((int) dmeWorldId) + "]");
+    		}
     		
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
