@@ -16,6 +16,7 @@ public class SimDb implements IDatabase {
 	
 	private HashSet<String> mlsAccessTokens;
 	
+	private HashSet<String> pendingSessionKeys;
 	
 	private class SimDbPlayer {
 		private String sessionKey;
@@ -49,6 +50,10 @@ public class SimDb implements IDatabase {
 		public void setPassword(String password) {
 			this.password = password;
 		}
+
+		public void setSessionKey(String sessionKey) {
+			this.sessionKey = sessionKey;
+		}
 		
 	}
 	
@@ -56,6 +61,7 @@ public class SimDb implements IDatabase {
 	public SimDb() {
 		players = new ArrayList<SimDbPlayer>();
 		mlsAccessTokens = new HashSet<String>();
+		pendingSessionKeys = new HashSet<String>();
 		logger.info("Simulated DB initialized ...");
 	}
 	
@@ -63,7 +69,7 @@ public class SimDb implements IDatabase {
 	public String generateSessionKey() {
 		String uuid = UUID.randomUUID().toString().substring(0, MediusConstants.SESSIONKEY_MAXLEN.getValue()-1) + '\0';
 		uuid = uuid.replace('-', '1');
-		players.add(new SimDbPlayer(uuid));
+		pendingSessionKeys.add(uuid);
 	    return uuid;	
 	}
 	
@@ -101,7 +107,7 @@ public class SimDb implements IDatabase {
 	public int getAccountIdFromSessionKey(String sessionKey) {
 		SimDbPlayer player = getSimDbPlayerBySessionKey(sessionKey);
 		if (player == null) {
-			return 0;
+			return -1;
 		}
 		return player.getAccountId();
 	}
@@ -121,14 +127,29 @@ public class SimDb implements IDatabase {
 			return 0;
 		}
 		
-		SimDbPlayer player = this.getSimDbPlayerBySessionKey(sessionKey);
-		if (player == null) {
+		// sessionKey not valid
+		if (!pendingSessionKeys.contains(sessionKey)) {
 			throw new IllegalStateException("UNKNOWN SESSION KEY DETECTED WHEN TRYING TO LOGIN USER: '" + username + "' Session key: " + sessionKey);
 		}
-		player.setAccountId(this.getNewAccountId());
-		player.setUsername(username);
-		player.setPassword(password);
+		pendingSessionKeys.remove(sessionKey);
 		
+		// if the player already exists in the db
+		SimDbPlayer player = null;
+		if (getSimDbPlayerByUsername(username) == null) {
+			logger.info(username + " is a new player!");
+			player = new SimDbPlayer(sessionKey);
+			players.add(player);
+			player.setAccountId(this.getNewAccountId());
+			player.setUsername(username);
+			player.setPassword(password);
+		}
+		else {
+			logger.info(username + " is an existing player!");
+			player = getSimDbPlayerByUsername(username);
+			player.setSessionKey(sessionKey);
+		}
+		
+		logger.info(player.getAccountId() + " account id for the new player!");
 		return player.getAccountId();
 	}
 
@@ -144,6 +165,16 @@ public class SimDb implements IDatabase {
 		SimDbPlayer player = null;
 		for (SimDbPlayer playerToCheck: players) {
 			if (playerToCheck.getSessionKey().toLowerCase().equals(sessionKey.toLowerCase())) {
+				player = playerToCheck;
+			}
+		}
+		return player;
+	}
+	
+	private SimDbPlayer getSimDbPlayerByUsername(String username) {
+		SimDbPlayer player = null;
+		for (SimDbPlayer playerToCheck: players) {
+			if (playerToCheck.getUsername().toLowerCase().equals(username.toLowerCase())) {
 				player = playerToCheck;
 			}
 		}
