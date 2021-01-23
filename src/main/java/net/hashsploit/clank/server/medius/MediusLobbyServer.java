@@ -9,8 +9,6 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MediusConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
-import net.hashsploit.clank.rt.RtPacketMap;
-import net.hashsploit.clank.server.GameList;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.medius.objects.Channel;
@@ -21,10 +19,7 @@ import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.server.rpc.ClankMlsRpcServer;
 import net.hashsploit.clank.server.rpc.RpcServerConfig;
-import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 import net.hashsploit.clank.utils.Utils;
-
-
 
 public class MediusLobbyServer extends MediusServer {
 
@@ -32,21 +27,20 @@ public class MediusLobbyServer extends MediusServer {
 	private final HashSet<Clan> clans;
 	private final List<Location> locations;
 	private final List<Channel> channels;
-	private final GameList gameList;
+	private final List<MediusGame> games;
+	//private GameList gameList;
+	//private PlayerList playerList;
 
 	public MediusLobbyServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_LOBBY_SERVER, address, port, parentThreads, childThreads);
 		
-		this.rtMessageMap = RtPacketMap.buildRtPacketMap(); // TODO: Change this to ne different per medius server
-		this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
-
-		MlsConfig config = ((MlsConfig) Clank.getInstance().getConfig());
+		final MlsConfig config = (MlsConfig) Clank.getInstance().getConfig();
 		
 		this.players = new HashSet<Player>();
 		this.clans = new HashSet<Clan>();
 		this.locations = new ArrayList<Location>(config.getLocations());
 		this.channels = new ArrayList<Channel>(config.getChannels());
-		this.gameList = new GameList();
+		this.games = new ArrayList<MediusGame>();
 
 		final RpcServerConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcServerConfig();
 		String rpcAddress = rpcConfig.getAddress();
@@ -102,8 +96,8 @@ public class MediusLobbyServer extends MediusServer {
 	 * Returns a list of games.
 	 * @return
 	 */
-	public ArrayList<MediusGame> getGames() {
-		return gameList.getGames();
+	public List<MediusGame> getGames() {
+		return games;
 	}
 
 	/**
@@ -112,7 +106,12 @@ public class MediusLobbyServer extends MediusServer {
 	 * @return
 	 */
 	public MediusGame getGame(int worldId) {
-		return gameList.getGame(worldId);
+		for (final MediusGame game : games) {
+			if (game.getWorldId() == worldId) {
+				return game;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -217,8 +216,11 @@ public class MediusLobbyServer extends MediusServer {
 	 * @param worldStatus
 	 */
 	public synchronized void updateDmeWorldStatus(int worldId, MediusWorldStatus worldStatus) {
+<<<<<<< HEAD
 		logger.finest("Updating world from DME worldId: " + Integer.toString(worldId));
 		logger.finest("Updating world from DME World Status: " + worldStatus.toString());
+=======
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 		gameList.updateGameWorldStatus(worldId, worldStatus);
 	}
 
@@ -232,6 +234,7 @@ public class MediusLobbyServer extends MediusServer {
 	public synchronized void updatePlayerStatusFromDme(String mlsToken, int worldId, MediusPlayerStatus status) {
 		// PlayerStatus is from gRPC
 		// This method is called from gRPC DME -> MLS
+<<<<<<< HEAD
 		// PlayerStatus: DISCONNECTED(0), CONNECTED(1), STAGING(2), ACTIVE(3), UNRECOGNIZED(-1)
 
 		logger.finest("Updating player from DME mlsToken: " + mlsToken);
@@ -240,6 +243,15 @@ public class MediusLobbyServer extends MediusServer {
 		int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(mlsToken);
 
 		this.updatePlayerStatus(accountId, status);
+=======
+		/*
+		 * PlayerStatus: DISCONNECTED(0), CONNECTED(1), STAGING(2), ACTIVE(3),
+		 * UNRECOGNIZED(-1),
+		 */
+		// Update the gameWorld. Update the playerList
+		int accountId = Clank.getInstance().getDatabase().getAccountIdFromSessionKey(mlsToken);
+		playerList.updatePlayerStatus(accountId, status);
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 	}
 
 	/**
@@ -288,6 +300,11 @@ public class MediusLobbyServer extends MediusServer {
 			}
 		}
 		return MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED;
+	}
+
+	public int createGame() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 
 }

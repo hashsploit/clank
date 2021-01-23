@@ -34,7 +34,7 @@ public class MlsHandler extends MessageToMessageDecoder<ByteBuf> {
 	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
 		logger.finest("MLS HANDLER IN: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(msg)));
 		
-		RtMessageHandler handler = client.getServer().getRtHandler(msg.getByte(0));
+		RtMessageHandler handler = client.getRtHandler(msg.getByte(0));
 		
 		if (handler == null) {
 			logger.severe("Missing RT Handler: 0x" + Utils.byteToHex(msg.getByte(0)));

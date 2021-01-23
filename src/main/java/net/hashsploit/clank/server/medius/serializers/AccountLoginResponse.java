@@ -66,6 +66,7 @@ public class AccountLoginResponse extends MediusMessage {
 			outputStream.write(Utils.hexStringToByteArray("3133")); // ???
 			outputStream.write(Utils.hexStringToByteArray("000000000000000000000000000000")); // Padding 
 			outputStream.write(mlsToken); // MLS Acess Token
+			outputStream.write(Utils.hexStringToByteArray("0000"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

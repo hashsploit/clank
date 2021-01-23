@@ -2,11 +2,17 @@ package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+<<<<<<< HEAD
+=======
+import java.util.HashSet;
+import java.util.logging.Logger;
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 
 public class PlayerList {
-	
+	private static final Logger logger = Logger.getLogger(PlayerList.class.getName());
+
 	// AccountId -> Player
 	HashMap<Integer, Player> players;
 	
@@ -17,15 +23,18 @@ public class PlayerList {
 	public String toString() {
 		String result = "PlayerList ----- \n";
 		for (Player player: players.values()) {
-			result += player.toString();
+			result += player.toString() + "\n";
 		}
 		return result;
 	}
 
-	public void updatePlayerStatus(Player player, MediusPlayerStatus status) {
+	public synchronized void updatePlayerStatus(Player player, MediusPlayerStatus status) {
 		// 1. Check if player is disconnecting, remove player from list
 		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+			player.updateStatus(status);
+			logger.info("PLAYERLIST BEFORE DC: " + this.toString());
 			players.remove(player.getAccountId());
+			logger.info("PLAYERLIST AFTER DC: " + this.toString());
 			return;
 		}
 		
@@ -47,7 +56,7 @@ public class PlayerList {
 		}
 	}
 	
-	public void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
+	public synchronized void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
 		Player p = players.get(accountId);
 		updatePlayerStatus(p, status);
 	}

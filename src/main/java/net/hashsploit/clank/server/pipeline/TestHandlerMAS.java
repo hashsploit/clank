@@ -92,7 +92,7 @@ public class TestHandlerMAS extends ChannelInboundHandlerAdapter { // (1)
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
 
 			// Detect which medius packet is being parsed
-			MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
+			MediusPacketHandler mediusPacket = client.getMediusMessageMap().get(incomingMessage.getMediusPacketType());
 
 			// Process this medius packet
 			mediusPacket.read(client, incomingMessage);

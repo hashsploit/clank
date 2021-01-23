@@ -20,9 +20,19 @@ service ClankMlsService {
 
 	// MAS: Check player login
 	rpc PlayerLogin(PlayerLoginRequest) returns (PlayerLoginResponse) {}
+	
+	// MAS Generate sessionkey from MLS
+	rpc GenerateSessionKey(SessionKeyRequest) returns (SessionKeyResponse) {}
 
 	// Generic: Get player info from MLS
 	//rpc PlayerInfo(PlayerInfoRequest) returns (PlayerInfoResponse) {}
+}
+
+message SessionKeyRequest {
+}
+
+message SessionKeyResponse {
+	string session_key = 1;
 }
 
 message PlayersOnlineRequest {
@@ -72,8 +82,9 @@ message WorldUpdateResponse {
 }
 
 message PlayerLoginRequest {
-	string username = 1; 
-	string password = 2;
+	string session_key = 1;
+	string username = 2; 
+	string password = 3;
 }
 
 message PlayerLoginResponse {

@@ -2,11 +2,22 @@ package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+<<<<<<< HEAD
 
+=======
+import java.util.Iterator;
+import java.util.Map;
+import java.util.logging.Logger;
+
+import net.hashsploit.clank.server.dme.DmeTcpClient;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 
 public class GameList {
+
+	private static final Logger logger = Logger.getLogger(GameList.class.getName());
 
 	private int gameIdCounter;
 	// DME World ID -> MediusGame
@@ -27,7 +38,17 @@ public class GameList {
 	}
 
 	public void updateGameWorldStatus(int worldId, MediusWorldStatus worldStatus) {
-		gameSet.get(worldId).updateStatus(worldStatus);
+		MediusGame game = gameSet.get(worldId);
+		
+		if (game == null) {		
+			if (worldStatus == MediusWorldStatus.WORLD_CLOSED) {
+				logger.info("DmeWorldId: " + worldId + " has already been destroyed!");
+			}
+			else {
+				throw new IllegalStateException("No world with id " + worldId + " exists! Cannot update status to: " + worldStatus.toString());
+			}
+		}
+		game.updateStatus(worldStatus);
 
 		if (worldStatus == MediusWorldStatus.WORLD_CLOSED) {
 			gameSet.remove(worldId);

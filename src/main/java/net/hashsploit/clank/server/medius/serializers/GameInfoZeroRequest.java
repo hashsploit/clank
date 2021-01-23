@@ -46,7 +46,7 @@ public class GameInfoZeroRequest extends MediusMessage {
 		this.sessionKey = sessionKey;
 	}
 
-	public synchronized byte[] getWorldID() {
+	public synchronized byte[] getWorldId() {
 		return worldID;
 	}
 	

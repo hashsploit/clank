@@ -14,32 +14,36 @@ import net.hashsploit.clank.server.medius.serializers.CreateGameResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusCreateGameOneHandler extends MediusPacketHandler {
-	
+
 	private CreateGameOneRequest reqPacket;
 	private CreateGameResponse respPacket;
-	
-    public MediusCreateGameOneHandler() {
-        super(MediusMessageType.CreateGame1,MediusMessageType.CreateGameResponse);
-    }
-    
-    @Override
-    public void read(MediusClient client, MediusMessage mm) {
+
+	public MediusCreateGameOneHandler() {
+		super(MediusMessageType.CreateGame1, MediusMessageType.CreateGameResponse);
+	}
+
+	@Override
+	public void read(MediusClient client, MediusMessage mm) {
 		reqPacket = new CreateGameOneRequest(mm.getPayload());
 		logger.finest(reqPacket.toString());
-    }
-    
-    @Override
-    public List<MediusMessage> write(MediusClient client) {
+	}
+
+	@Override
+	public List<MediusMessage> write(MediusClient client) {
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		
+		final int newWorldId = server.createGame();
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.FAILURE;
+		
+		if (newWorldId > 0) {
+			callbackStatus = MediusCallbackStatus.SUCCESS;
+		}
+		
+		respPacket = new CreateGameResponse(reqPacket.getMessageId(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(newWorldId));
 
-    	byte[] callbackStatus = Utils.intToBytesLittle(MediusCallbackStatus.SUCCESS.getValue());
-    	byte[] newWorldID = Utils.intToBytesLittle(server.getNewGameId(reqPacket));
-
-    	respPacket = new CreateGameResponse(reqPacket.getMessageId(), callbackStatus, newWorldID);
-    	
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		response.add(respPacket);
 		return response;
-    }
+	}
 
 }

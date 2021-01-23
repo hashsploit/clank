@@ -5,6 +5,7 @@ import java.util.logging.Logger;
 
 import io.grpc.stub.StreamObserver;
 import net.hashsploit.clank.Clank;
+import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
@@ -62,16 +63,33 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			responseObserver.onCompleted();
 		}
 		
+		@Override
+		public void generateSessionKey(SessionKeyRequest request, StreamObserver<SessionKeyResponse> responseObserver) {
+			responseObserver.onNext(processGenerateSessionKey(request));
+			responseObserver.onCompleted();
+		}
+		
 		
 		
 		
 		// Methods
 
+		private SessionKeyResponse processGenerateSessionKey(SessionKeyRequest request) {
+			String key = Clank.getInstance().getDatabase().generateSessionKey();
+			SessionKeyResponse response = SessionKeyResponse.newBuilder().setSessionKey(key).build();
+			return response;
+		}
+		
+		
 		private PlayerUpdateResponse updatePlayer(PlayerUpdateRequest request) {
 			PlayerUpdateResponse response = PlayerUpdateResponse.newBuilder().setSuccess(true).build();
+<<<<<<< HEAD
 			logger.finest("RPC Data received: " + request.getMlsToken());
 			logger.finest("RPC Data received: " + Integer.toString(request.getWorldId()));
 			logger.finest("RPC Data received: " + request.getPlayerStatus().toString());
+=======
+			logger.info("### gRPC Player Update: [SessionKey: " + request.getMlsToken() + ", DmeWorldId: " + Integer.toString(request.getWorldId()) + ", Player status: " + request.getPlayerStatus().toString() + "]");
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
 						
 			MediusPlayerStatus status;
@@ -91,20 +109,25 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			default:
 				status = null;
 			}
-			
+
 			mlsServer.updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
 			return response;
 		}
 
 		private WorldUpdateResponse updateWorld(WorldUpdateRequest request) {
 			WorldUpdateResponse response = WorldUpdateResponse.newBuilder().setSuccess(true).build();
+<<<<<<< HEAD
 			logger.finest("RPC: World ID: " + Integer.toString(request.getWorldId()));
 			logger.finest("RPC: World UPDATE: " + request.getWorldStatus().toString());
 			
+=======
+			logger.info("### gRPC DmeWorld Update: [dmeWorldId: " + Integer.toString(request.getWorldId()) + ", status: " + request.getWorldStatus().toString() + "]");
+
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 			MediusWorldStatus status;
 			switch (request.getWorldStatus()) {
 			case CREATED:
-				status = MediusWorldStatus.WORLD_STAGING;
+				status = MediusWorldStatus.WORLD_PENDING_CREATION;
 				break;
 			case STAGING:
 				status = MediusWorldStatus.WORLD_STAGING;
@@ -125,7 +148,10 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 		}
 		
 		private PlayerLoginResponse processPlayerLogin(PlayerLoginRequest request) {
-			int accountId = Clank.getInstance().getDatabase().getAccountId(request.getUsername());
+			
+			DbManager db = Clank.getInstance().getDatabase();
+			
+			int accountId = db.validateAccount(request.getSessionKey(), request.getUsername(), request.getPassword());
 			PlayerLoginResponse response;
 			String mlsToken = "00000000000000000000000000000000";
 
@@ -133,7 +159,7 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 				response = PlayerLoginResponse.newBuilder().setSuccess(false).setAccountId(accountId).setMlsToken(mlsToken).build();
 			}
 			else {
-				mlsToken = Clank.getInstance().getDatabase().getMlsToken(accountId);
+				mlsToken = db.generateMlsToken(accountId);
 				response = PlayerLoginResponse.newBuilder().setSuccess(true).setAccountId(accountId).setMlsToken(mlsToken).build();
 			}
 			

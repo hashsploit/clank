@@ -69,15 +69,15 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
 
 		if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
-			dmeWorldManager.broadcast(client.getPlayer(), m.getFullMessage().array());
+			dmeWorldManager.broadcast(client.getPlayer(), Utils.nettyByteBufToByteArray(m.getFullMessage()));
 		}
 		else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
-			dmeWorldManager.clientAppSingle(client.getPlayer(), m.getFullMessage().array());
+			dmeWorldManager.clientAppSingle(client.getPlayer(), Utils.nettyByteBufToByteArray(m.getFullMessage()));
 		}
 	}
     
     private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
-		logger.finest("RAW Single packet: " + Utils.bytesToHex(packet.getFullMessage().array()));
+		logger.finest("RAW Single packet: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage())));
 		
 	    logger.fine("Packet ID: " + packet.getId().toString());
 	    logger.fine("Packet ID: " + packet.getId().getValue());
@@ -85,7 +85,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 	    
 	    checkForTcpAuxUdpConnect(ctx, packet);
 	    	    
-		checkClientReady(ctx, packet.getFullMessage().array());
+		checkClientReady(ctx, Utils.nettyByteBufToByteArray(packet.getFullMessage()));
 		
 		checkEcho(ctx, packet);
     }
@@ -97,18 +97,19 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		//int playerId = client.getServer().getDmeWorldManager().add(client);
     		// ---------- The player is now fully connected
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
-    		dmeWorldManager.playerFullyConnected(client.getPlayer());
-    		int playerId = client.getPlayer().getPlayerId();
-
-    		logger.info("Player fully connected! Player: " + client.getPlayer().toString());
-    		logger.info("World Manager:");
+    		
     		logger.info(dmeWorldManager.toString());
+    		logger.info("### SERVER_CONNECT_COMPLETE (fully connected): " + client.getPlayer().toString());
+    		dmeWorldManager.playerFullyConnected(client.getPlayer());
+    		logger.info(dmeWorldManager.toString());
+    		
+    		int playerId = client.getPlayer().getPlayerId();
 		
     		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
     		RTMessage c1 = new RTMessage(RtMessageId.SERVER_CONNECT_COMPLETE, t1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c1.getFullMessage().array()));
-    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.getFullMessage().array());
+    		logger.finest("Final Payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(c1.getFullMessage())));
+    		ByteBuf msg1 = c1.getFullMessage();
     		ctx.write(msg1); // (1)
     		ctx.flush(); // 
     		
@@ -125,7 +126,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		}
     		
     		RTMessage c2 = new RTMessage(RtMessageId.SERVER_APP, baos.toByteArray());
-    		logger.finest("Final Payload: " + Utils.bytesToHex(c2.getFullMessage().array()));
+    		logger.finest("Final Payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(c2.getFullMessage())));
     		ByteBuf msg2 = Unpooled.copiedBuffer(c2.getFullMessage().array());
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
@@ -139,35 +140,35 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		RT_ClientConnectTcpAuxUdp connectPacket = new RT_ClientConnectTcpAuxUdp(packet.getFullMessage());
     		
     		short dmeWorldId = (short) connectPacket.getTargetWorldId();
-    		logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
+    		//logger.info("Detected TCP AUX UDP CONNECT. Requested world ID: " + Integer.toString((int) dmeWorldId));
+    		//logger.info("Detected TCP AUX UDP CONNECT. mlsToken: " + Utils.bytesToHex(connectPacket.getAccessToken()));
 
     		// ---------- Add the player to the world
     		// Set accountId for this player -> client
-    		String mlsToken = Utils.bytesToHex(connectPacket.getAccessToken());   
-    		mlsToken = mlsToken.substring(0, mlsToken.length()-2);
+    		String mlsToken = Utils.bytesToStringClean(connectPacket.getAccessToken()) + "\0";
     		client.getPlayer().setMlsToken(mlsToken);
     		
     		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+    		logger.info(dmeWorldManager.toString());
+    		logger.info("### CLIENT_CONNECT_TCP_AUX_UDP: [SessionKey: " + Utils.bytesToStringClean(connectPacket.getAccessToken()) + ", dmeWorldId: " + Integer.toString((int) dmeWorldId) + "]");
     		dmeWorldManager.addPlayer(dmeWorldId, client.getPlayer());
+    		logger.info(dmeWorldManager.toString());
+    		
     		int dmePlayerId = client.getPlayer().getPlayerId();
     		int playerCount = dmeWorldManager.getPlayerCount(client.getPlayer());
-    		
-			logger.info("Player ID Generated: " + Utils.bytesToHex(Utils.intToBytesLittle(dmePlayerId)));
-    		logger.info(dmeWorldManager.toString());
-    	
     		
     		// First crypto leave empty
     		byte [] emptyCrypto1 = Utils.buildByteArrayFromString("", 64);
     		RTMessage c1 = new RTMessage(RtMessageId.SERVER_CRYPTKEY_GAME, emptyCrypto1);
     		logger.finest("Final Payload: " + Utils.bytesToHex(c1.getFullMessage().array()));
-    		ByteBuf msg1 = Unpooled.copiedBuffer(c1.getFullMessage().array());
+    		ByteBuf msg1 = c1.getFullMessage();
     		ctx.write(msg1); // (1)
     		ctx.flush(); // 
     		
     		// Second crypto leave empty
     		RTMessage c2 = new RTMessage(RtMessageId.SERVER_CRYPTKEY_PEER, emptyCrypto1);
     		logger.finest("Final Payload: " + Utils.bytesToHex(c2.getFullMessage().array()));
-    		ByteBuf msg3 = Unpooled.copiedBuffer(c2.getFullMessage().array());
+    		ByteBuf msg3 = c2.getFullMessage();
     		ctx.write(msg3); // (1)
     		ctx.flush(); // 
 
@@ -183,7 +184,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		buffer.put(ipAddr);
     		RTMessage d = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
     		logger.finest("Final Payload: " + Utils.bytesToHex(d.getFullMessage().array()));
-    		ByteBuf msg = Unpooled.copiedBuffer(d.getFullMessage().array());
+    		ByteBuf msg = d.getFullMessage();
     		ctx.write(msg); // (1)
     		ctx.flush(); // 
     		
@@ -205,7 +206,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 
     		RTMessage da = new RTMessage(RtMessageId.SERVER_INFO_AUX_UDP, buf.array());
     		logger.finest("Final Payload: " + Utils.bytesToHex(da.getFullMessage().array()));
-    		ByteBuf msg2 = Unpooled.copiedBuffer(da.getFullMessage().array());
+    		ByteBuf msg2 = da.getFullMessage();
     		ctx.write(msg2); // (1)
     		ctx.flush(); // 
     		

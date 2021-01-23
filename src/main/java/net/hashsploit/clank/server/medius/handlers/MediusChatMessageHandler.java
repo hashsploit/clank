@@ -32,32 +32,30 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
-
 		String username = client.getPlayer().getUsername();
 		String chatMsg = Utils.bytesToStringClean(requestPacket.getText());
-		
+
 		// FIXME: sanitize input, check for color parsing, check for muted, etc.
-		
-		logger.finest(username + ": " + chatMsg);
-		
+
+		logger.finest("[CHAT] " + username + ": " + chatMsg);
+
 		// This should be ChatColor.strip() unless the player is an operator.
 		byte[] byteMsg = Utils.padByteArray(ChatColor.parse(chatMsg), MediusConstants.CHATMESSAGE_MAXLEN.value);
 
 		ChatFwdMessageResponse responsePacket = new ChatFwdMessageResponse(requestPacket.getMessageId(), Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.value), byteMsg);
-
 		int playerWorldId = client.getPlayer().getChatWorldId();
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		HashSet<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
 
 		for (Player player : playersInWorld) {
 			// Send the message to everyone but yourself.
-			
+
 			// FIXME: encrypt messages in pipeline
 			if (player != client.getPlayer()) {
 				player.getClient().sendMediusMessage(responsePacket);
 			}
 		}
-		
+
 		return null;
 	}
 

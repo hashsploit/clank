@@ -69,7 +69,8 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 		String zeroString = new String(new char[numZeros]).replace("\0", "00");
 		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
-		String mlsToken = Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId());
+		String mlsToken = Clank.getInstance().getDatabase().generateMlsToken(client.getPlayer().getAccountId());
+		
 
 		try {
 			outputStream.write(messageId);
@@ -98,8 +99,8 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 
 			// outputStream.write(Utils.hexStringToByteArray("782B6F2F532F71443453633243364B4E"));
 			// aAccessKey
-			outputStream.write(Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getMlsToken(client.getPlayer().getAccountId()))); // aAccessKey
-			outputStream.write(Utils.hexStringToByteArray("000000"));
+			outputStream.write(mlsToken.getBytes()); // aAccessKey
+			outputStream.write(Utils.hexStringToByteArray("0000"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

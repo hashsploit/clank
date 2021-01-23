@@ -37,7 +37,6 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		
 		int worldId = Utils.bytesToIntLittle(reqPacket.getLobbyWorldId());
-		logger.info("Searching for players in worldid: " + Integer.toString(worldId));
 		
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		
@@ -84,7 +83,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 			byte[] accountID = Utils.intToBytesLittle(0);
 			byte[] accountName = Utils.buildByteArrayFromString("", MediusConstants.ACCOUNTNAME_MAXLEN.value);
 			byte[] playerStatus = Utils.intToBytesLittle(0);
-			byte[] gameWorldID = Utils.intToBytesLittle(0);
+			byte[] gameWorldId = Utils.intToBytesLittle(0);
 			byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getLobbyWorldId())).getName(), MediusConstants.WORLDNAME_MAXLEN.value);
 			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.value);
 			byte[] endOfList = Utils.hexStringToByteArray("01000000");
@@ -95,7 +94,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 					accountName,
 					playerStatus,
 					reqPacket.getLobbyWorldId(),
-					gameWorldID,
+					gameWorldId,
 					lobbyName,
 					gameName,
 					endOfList

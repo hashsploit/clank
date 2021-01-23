@@ -1,93 +1,150 @@
 package net.hashsploit.clank.database;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.UUID;
 import java.util.logging.Logger;
 
-public class SimDb implements IDatabase {
-	
-	public static final Logger logger = Logger.getLogger(SimDb.class.getName());
-	
-	private static final ArrayList<Triplet<Integer, String, String>> users = new ArrayList<Triplet<Integer, String, String>>();
+import net.hashsploit.clank.server.medius.MediusConstants;
 
-	public class Triplet<T, U, V> {
-	    private final T first;
-	    private final U second;
-	    private final V third;
-	    public Triplet(T first, U second, V third) {
-	        this.first = first;
-	        this.second = second;
-	        this.third = third;
-	    }
-	    public T getFirst() { return first; }
-	    public U getSecond() { return second; }
-	    public V getThird() { return third; }
+public class SimDb implements IDatabase {
+
+	public static final Logger logger = Logger.getLogger(SimDb.class.getName());
+
+	private List<SimDbPlayer> players;
+
+	private HashSet<String> mlsAccessTokens;
+
+	private class SimDbPlayer {
+		private String sessionKey;
+		private int accountId;
+		private String username;
+		private String password;
+
+		public SimDbPlayer(String sessionKey) {
+			this.sessionKey = sessionKey;
+		}
+
+		public String getSessionKey() {
+			return sessionKey;
+		}
+
+		public int getAccountId() {
+			return accountId;
+		}
+
+		public String getUsername() {
+			return username;
+		}
+
+		public void setAccountId(int accountId) {
+			this.accountId = accountId;
+		}
+
+		public void setUsername(String username) {
+			this.username = username;
+		}
+
+		public void setPassword(String password) {
+			this.password = password;
+		}
+
 	}
 
 	public SimDb() {
-		users.add(new Triplet(50, "Smily", "11111111111111111111111111111111"));
-		users.add(new Triplet(51, "hashsploit", "22222222222222222222222222222222"));
-		users.add(new Triplet(52, "FourBolt", "33333333333333333333333333333333"));
-		users.add(new Triplet(53, "aequs", "44444444444444444444444444444444"));
-		users.add(new Triplet(54, "trop", "55555555555555555555555555555555"));
-		users.add(new Triplet(55, "Badger41", "66666666666666666666666666666666"));
-		users.add(new Triplet(56, "Dnawrkshp", "77777777777777777777777777777777"));
-		users.add(new Triplet(57, "Caligirl08", "88888888888888888888888888888888"));
-		users.add(new Triplet(58, "Mercy", "99999999999999999999999999999999"));
-		
+		players = new ArrayList<SimDbPlayer>();
+		mlsAccessTokens = new HashSet<String>();
 		logger.info("Simulated DB initialized ...");
 	}
 
-	@Override
-	public boolean accountExists(String username) {
-		logger.info(String.format("Checking if account with the username '%s' exists ...", username));
-		return true;
+	public String generateSessionKey() {
+		String uuid = UUID.randomUUID().toString().substring(0, MediusConstants.SESSIONKEY_MAXLEN.value - 1) + '\0';
+		uuid = uuid.replace('-', '1');
+		players.add(new SimDbPlayer(uuid));
+		return uuid;
 	}
 
 	@Override
-	public boolean validateAccount(String username, String password) {
-		logger.info(String.format("Validating account '%s' ...", username));
-		return true;
+	public String generateMlsToken(int accountId) {
+		String uuid = UUID.randomUUID().toString().substring(0, MediusConstants.ACCESSKEY_MAXLEN.value - 1) + '\0';
+		uuid = uuid.replace('-', '1');
+		SimDbPlayer player = this.getSimDbPlayerByAccountId(accountId);
+		if (player == null) {
+			throw new IllegalStateException("No player with account id: '" + accountId + "'");
+		}
+		mlsAccessTokens.add(uuid);
+		return uuid;
 	}
-	
+
 	@Override
-	public int getAccountId(String username) {
-		for (Triplet user: users) {
-			if (username.toLowerCase().equals(((String) user.getSecond()).toLowerCase())) {
-				return (int) user.getFirst();
+	public boolean validateMlsAccessToken(String mlsToken) {
+		if (mlsAccessTokens.contains(mlsToken)) {
+			mlsAccessTokens.remove(mlsToken);
+			return true;
+		}
+		return false;
+	}
+
+	private SimDbPlayer getSimDbPlayerByAccountId(int accountId) {
+		SimDbPlayer player = null;
+		for (SimDbPlayer playerToCheck : players) {
+			if (playerToCheck.getAccountId() == accountId) {
+				player = playerToCheck;
 			}
 		}
-		return 0;
+		return player;
 	}
-	
+
 	@Override
-	public String getMlsToken(Integer accountId) {
-		for (Triplet user: users) {
-			if (accountId == (int) user.getFirst()) {
-				return (String) user.getThird();
-			}
+	public int getAccountIdFromSessionKey(String sessionKey) {
+		SimDbPlayer player = getSimDbPlayerBySessionKey(sessionKey);
+		if (player == null) {
+			return 0;
 		}
-		return null;
-	}
-	
-	@Override
-	public int getAccountIdFromMlsToken(String mlsToken) {
-		for (Triplet user: users) {
-			if (mlsToken.equals((String) user.getThird())) {
-				return (int) user.getFirst();
-			}
-		}
-		return -1;
+		return player.getAccountId();
 	}
 
 	@Override
 	public String getUsername(int accountId) {
-		for (Triplet user: users) {
-			if (accountId == (int) user.getFirst()) {
-				return (String) user.getSecond();
-			}
+		SimDbPlayer player = getSimDbPlayerByAccountId(accountId);
+		if (player == null) {
+			return null;
 		}
-		return null;
+		return player.getUsername();
 	}
 
-	
+	@Override
+	public int validateAccount(String sessionKey, String username, String password) {
+
+		SimDbPlayer player = this.getSimDbPlayerBySessionKey(sessionKey);
+		
+		if (player == null) {
+			throw new IllegalStateException("UNKNOWN SESSION KEY DETECTED WHEN TRYING TO LOGIN USER: '" + username + "' Session key: " + sessionKey);
+		}
+		
+		player.setAccountId(this.getNewAccountId());
+		player.setUsername(username);
+		player.setPassword(password);
+
+		return player.getAccountId();
+	}
+
+	private int getNewAccountId() {
+		int accountId = 1;
+		for (SimDbPlayer playerToCheck : players) {
+			accountId = Integer.max(accountId, playerToCheck.getAccountId() + 1);
+		}
+		return accountId;
+	}
+
+	private SimDbPlayer getSimDbPlayerBySessionKey(String sessionKey) {
+		SimDbPlayer player = null;
+		for (SimDbPlayer playerToCheck : players) {
+			if (playerToCheck.getSessionKey().toLowerCase().equals(sessionKey.toLowerCase())) {
+				player = playerToCheck;
+			}
+		}
+		return player;
+	}
 }

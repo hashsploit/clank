@@ -44,20 +44,31 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 		// if there is an access token, set that player to be initialized from simdb
 		// TODO: fix later with session key taken from playerupdatestatus
 		if (reqPacket.getAccessToken() != null) {
-			logger.finest("CONNECT TCP ACCESS TOKEN: " + Utils.bytesToHex(reqPacket.getAccessToken()));
-			byte[] accessTokenTemp = reqPacket.getAccessToken();
-			byte[] accessToken = Arrays.copyOf(accessTokenTemp, 16); // BUG, fix this later should be 17, but hard coded in simdb
-			String accessTokenStr = Utils.bytesToHex(accessToken);
+			String mlsAccessToken = Utils.bytesToStringClean(reqPacket.getAccessToken()).toLowerCase() + "\0";
+			boolean mlsTokenValidated = Clank.getInstance().getDatabase().validateMlsAccessToken(mlsAccessToken);
+			
+			if (!mlsTokenValidated) {
+				logger.severe("Attempted connection from " + client.getIPAddress() + " with invalid MLS access token: " + mlsAccessToken);
+				client.disconnect();
+				return new ArrayList<RTMessage>();
+			}
+			
+			logger.info("Client MLS access token validated. " + client.getIPAddress() + " client connected.");
+//			byte[] accessTokenTemp = reqPacket.getAccessToken();
+//			byte[] accessToken = Arrays.copyOf(accessTokenTemp, 16); // BUG, fix this later should be 17, but hard coded in simdb
+//			String accessTokenStr = Utils.bytesToHex(accessToken);
+			
+			
 			
 			
 			client.setPlayer(new Player(client, MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD));
 			client.getPlayer().setChatWorld(reqPacket.getTargetWorldId());
-			int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(accessTokenStr);
-			client.getPlayer().setAccountId(accountId);
-			client.getPlayer().setUsername(Clank.getInstance().getDatabase().getUsername(accountId));
-			
-			MediusLobbyServer mlsServer = (MediusLobbyServer) client.getServer();
-			mlsServer.updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
+//			int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(accessTokenStr);
+//			client.getPlayer().setAccountId(accountId);
+//			client.getPlayer().setUsername(Clank.getInstance().getDatabase().getUsername(accountId));
+//			
+//			MediusLobbyServer mlsServer = (MediusLobbyServer) client.getServer();
+//			mlsServer.updatePlayerStatus(client.getPlayer(), MediusPlayerStatus.MEDIUS_PLAYER_IN_CHAT_WORLD);
 		}
 
 		
@@ -91,15 +102,7 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 		} else if (client.getServer().getEmulationMode() == EmulationMode.DME_SERVER) {
 			DmeConfig cfg = (DmeConfig) Clank.getInstance().getConfig();
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
+
 		return responses;
 	}
 	

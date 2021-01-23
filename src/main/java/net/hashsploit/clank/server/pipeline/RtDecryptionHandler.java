@@ -3,6 +3,7 @@ package net.hashsploit.clank.server.pipeline;
 import java.util.List;
 import java.util.logging.Logger;
 
+import io.grpc.netty.shaded.io.netty.buffer.Unpooled;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.CorruptedFrameException;
@@ -37,6 +38,10 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	private Object decode(ChannelHandlerContext ctx, ByteBuf input) {
 
+		if (input.readableBytes() == 3) {
+			return Unpooled.wrappedBuffer(Utils.nettyByteBufToByteArray(input));
+		}
+				
 		// Convert the current id (-0x80 if it's encrypted)
 		byte id = (byte) (input.getByte(input.readerIndex()) & (byte) 0x7F);
 		byte[] hash = null;
@@ -93,10 +98,14 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	private ByteBuf process(RtMessageId id, byte[] hash, byte[] message) {
 
+		if (hash == null || message == null) {
+			return null;
+		}
+		
 		logger.finest("DECRYPT HANDLER DATA IN: " + Utils.bytesToHex(message));
 		logger.finest("DECRYPT HANDLER hash IN: " + Utils.bytesToHex((hash == null ? new byte[0] : hash)));
 		
-		if (hash != null) {
+		if (hash != null && message != null) {
 			CipherContext context = null;
 
 			int hashCtx = hash[3] & 0xFF;

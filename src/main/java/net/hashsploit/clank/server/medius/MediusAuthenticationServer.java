@@ -7,13 +7,11 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
-import net.hashsploit.clank.rt.RtPacketMap;
 import net.hashsploit.clank.server.medius.objects.Channel;
 import net.hashsploit.clank.server.medius.objects.Location;
 import net.hashsploit.clank.server.rpc.ClankMasRpcClient;
 import net.hashsploit.clank.server.rpc.PlayerLoginResponse;
 import net.hashsploit.clank.server.rpc.RpcConfig;
-import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusAuthenticationServer extends MediusServer {
@@ -22,9 +20,6 @@ public class MediusAuthenticationServer extends MediusServer {
 
 	public MediusAuthenticationServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_AUTHENTICATION_SERVER, address, port, parentThreads, childThreads);
-
-		this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();
-		this.rtMessageMap = RtPacketMap.buildRtPacketMap();
 		
 		// Start RPC client
 		final RpcConfig config = ((MediusConfig) Clank.getInstance().getConfig()).getRpcConfig();
@@ -43,11 +38,17 @@ public class MediusAuthenticationServer extends MediusServer {
 				logger.info(String.format("Whitelisted users: %s", Arrays.toString(masConfig.getWhitelist().keySet().toArray())));
 			}
 		}
-		
+	
+	}
+	
+	
+	public PlayerLoginResponse playerLogin(String username, String password, String sessionKey) {
+		return rpcClient.loginPlayer(username, password, sessionKey);
 	}
 
-	public PlayerLoginResponse playerLogin(String username, String password) {
-		return rpcClient.loginPlayer(username, password);
+
+	public String generateSessionKey() {
+		return rpcClient.generateSessionKey();
 	}
 
 	public List<Channel> getChannels() {

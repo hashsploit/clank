@@ -1,11 +1,21 @@
 package net.hashsploit.clank.server;
 
+<<<<<<< HEAD
 import net.hashsploit.clank.server.medius.MediusConstants;
+=======
+import java.util.ArrayList;
+import java.util.logging.Logger;
+
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGame {
+<<<<<<< HEAD
+=======
+	private static final Logger logger = Logger.getLogger(MediusGame.class.getName());
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 
 	private int worldId;
 	private CreateGameOneRequest req;
@@ -131,7 +141,12 @@ public class MediusGame {
 		return worldId;
 	}
 
+<<<<<<< HEAD
 	public synchronized void updateStatus(MediusWorldStatus worldStatus) {
+=======
+	public void updateStatus(MediusWorldStatus worldStatus) {
+		logger.info("Updating world status: [dmeWorldId: " + worldId + ", newWorldStatus: " + worldStatus.toString() + ", playercount: " + players.size() + "]");
+>>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 		this.worldStatus = worldStatus;
 	}
 

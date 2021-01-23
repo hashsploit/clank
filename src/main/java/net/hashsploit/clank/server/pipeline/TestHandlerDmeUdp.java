@@ -84,10 +84,9 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			int dmeWorldId = (int) Utils.bytesToShortLittle(data[6], data[7]);
     		int playerId = (int) Utils.bytesToShortLittle(data[30], data[31]);
     		
-			logger.info("UDP CONNECT REQ DETECTED! Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)) + " PlayerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
-
+			logger.info(dmeWorldManager.toString());
+			logger.info("### UDP_CONNECT_REQ: Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)) + " PlayerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
     		dmeWorldManager.playerUdpConnected(dmeWorldId, playerId, (DatagramChannel) ctx.channel(), requestDatagram.sender());
-    		
     		logger.info(dmeWorldManager.toString());
 
 			short playerCount = (short) dmeWorldManager.getPlayerCount(dmeWorldId);

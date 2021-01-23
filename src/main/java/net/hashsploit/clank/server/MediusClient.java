@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server;
 
 import java.nio.ByteOrder;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -11,8 +12,12 @@ import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.rt.RtMessageHandler;
+import net.hashsploit.clank.rt.RtPacketMap;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
+import net.hashsploit.clank.server.medius.MediusMessageType;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
@@ -23,6 +28,7 @@ import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameEncoderHandler;
 import net.hashsploit.clank.server.pipeline.TestHandlerMUIS;
+import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.rc.PS2_RC4;
 import net.hashsploit.medius.crypto.rsa.PS2_RSA;
@@ -45,6 +51,9 @@ public class MediusClient implements IClient {
 	private PS2_RC4 rc4ServerSessionKey;
 	
 	private Player player;
+	
+	protected HashMap<MediusMessageType, MediusPacketHandler> mediusMessageMap;
+	protected HashMap<RtMessageId, RtMessageHandler> rtMessageMap;
 
 	public MediusClient(MediusServer server, SocketChannel channel) {
 		this.server = server;
@@ -54,8 +63,16 @@ public class MediusClient implements IClient {
 		this.unixConnectTime = System.currentTimeMillis();
 		this.txPacketCount = 0L;
 		this.rxPacketCount = 0L;
-		this.player = null;
+		this.player = new Player(this, MediusPlayerStatus.MEDIUS_PLAYER_IN_AUTH_WORLD);
 
+		if (server.getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
+			this.mediusMessageMap = MediusMessageMapInitializer.getMasMap();
+		}
+		else if (server.getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {
+			this.mediusMessageMap = MediusMessageMapInitializer.getMlsMap();
+		}
+		this.rtMessageMap = RtPacketMap.buildRtPacketMap();
+		
 		logger.fine(String.format("Client connected: %s:%d", getIPAddress(), getPort()));
 
 		// 1
@@ -267,7 +284,7 @@ public class MediusClient implements IClient {
 			((MediusLobbyServer) server).updatePlayerStatus(player, MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED);
 		}
 
-		logger.fine(String.format("Client disconnected: %s:%d", getIPAddress(), getPort()));
+		logger.info(String.format("Client disconnected: %s:%d", getIPAddress(), getPort()));
 		server.removeClient(this);
 	}
 	
@@ -339,5 +356,13 @@ public class MediusClient implements IClient {
 		this.rc4ServerSessionKey = rc4Key;
 	}
 	
+	public RtMessageHandler getRtHandler(byte byteIn) {
+		RtMessageId rtId = RtMessageId.getIdByByte(byteIn);
+		return rtMessageMap.get(rtId);
+	}
+
+	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
+		return mediusMessageMap;
+	}
 
 }
