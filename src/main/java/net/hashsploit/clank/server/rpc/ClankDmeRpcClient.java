@@ -22,7 +22,7 @@ public class ClankDmeRpcClient {
 
 	}
 
-	public void updatePlayer(String mlsToken, int worldId, PlayerStatus playerStatus) {
+	public synchronized void updatePlayer(String mlsToken, int worldId, PlayerStatus playerStatus) {
 		logger.info("### gRPC Updating Player: [SessionKey: " + mlsToken + ", dmeWorldId: " + worldId + ", PlayerStatus: " + playerStatus.toString() + "]");
 		PlayerUpdateRequest request = PlayerUpdateRequest.newBuilder().setMlsToken(mlsToken).setWorldId(worldId).setPlayerStatus(playerStatus).build();
 		PlayerUpdateResponse response;
@@ -31,10 +31,11 @@ public class ClankDmeRpcClient {
 		} catch (StatusRuntimeException e) {
 			e.printStackTrace();
 			logger.warning("RPC failed: " + e.getStatus());
+			return;
 		}
 	}
 
-	public void updateWorld(int worldId, WorldStatus worldStatus) {
+	public synchronized void updateWorld(int worldId, WorldStatus worldStatus) {
 		logger.info("### gRPC Updating world: [dmeWorldId: " + worldId + ", WorldStatus: " + worldStatus.toString() + "]");
 		WorldUpdateRequest request = WorldUpdateRequest.newBuilder().setWorldId(worldId).setWorldStatus(worldStatus).build();
 		WorldUpdateResponse response;
@@ -45,20 +46,6 @@ public class ClankDmeRpcClient {
 			logger.warning("RPC failed: " + e.getStatus());
 			return;
 		}
-	}
-
-	public int getAccountIdFromSessionKey(String sessionKey) {
-		logger.info("### gRPC Getting account Id for: [sessionKey: " + sessionKey + "]");
-		AccountIdFromSessionKeyRequest request = AccountIdFromSessionKeyRequest.newBuilder().setSessionKey(sessionKey).build();
-		AccountIdFromSessionKeyResponse response;
-		try {
-			response = asyncStub.accountIdFromSessionKey(request);
-		} catch (StatusRuntimeException e) {
-			e.printStackTrace();
-			logger.warning("RPC failed: " + e.getStatus());
-			return -1;
-		}	
-		return response.getAccountId();
 	}
 
 }

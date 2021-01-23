@@ -48,10 +48,18 @@ public class DmeWorld {
 		/*
 		 * Initial connect. Player has not finished connecting yet
 		 */
-		int accountId = player.getAccountId();
-			
+		int newPlayerId = this.getNewId();
+		
+		// Game is full
+		if (newPlayerId == -1) {
+			return;
+		}
+		
+		// Set the players ID
+		player.setPlayerId(newPlayerId);
+				
 		// Add this player ID + player to this world
-		players.put(accountId, player);
+		players.put(newPlayerId, player);
 	}
 	
 	public void playerFullyConnected(DmePlayer player) {
@@ -64,8 +72,32 @@ public class DmeWorld {
 		sendServerNotify(player, true);
 	}
 	
+	private int getNewId() {
+		/*
+		 * Get a new Id for the game world.
+		 */
+		int result = -1;
+		
+		HashSet<Integer> ids = new HashSet<Integer>();		
+				
+		for (DmePlayer player: players.values()) {
+			ids.add(player.getPlayerId());
+		}
+				
+		if (ids.size() == 0) {
+			return 0;
+		}
+		
+		for (int i = 0; i < 8; i++) {
+			if (!ids.contains(i)) {
+				return i;
+			}
+		}
+		return result;
+	}
+	
 	public void clientAppSingle(DmePlayer sourcePlayer, byte[] payload) {
-		int sourceId = sourcePlayer.getAccountId();
+		int sourceId = sourcePlayer.getPlayerId();
 		int playerTargetId = (int) payload[3];
 		payload[3] = (byte) sourceId;
 		
@@ -80,14 +112,14 @@ public class DmeWorld {
 	}
 	
 	public void broadcast(DmePlayer sourcePlayer, byte[] payload) {
-		int sourceId = sourcePlayer.getAccountId();
+		int sourceId = sourcePlayer.getPlayerId();
 		
 		// Insert the source id
 		payload = insertId(payload, (byte) sourceId);
 		
 		// Send to every player that is not the source id player
 		for (DmePlayer player: players.values()) {
-			if (player.getAccountId() != sourceId) {
+			if (player.getPlayerId() != sourceId) {
 				player.sendData(payload);
 			}
 		}
@@ -120,7 +152,7 @@ public class DmeWorld {
 	}
 		
 	private void sendServerNotify(DmePlayer player, boolean connecting) {
-		int playerId = player.getAccountId();
+		int playerId = player.getPlayerId();
 		
 		// build server notify packet
 		String ipAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
@@ -171,8 +203,10 @@ public class DmeWorld {
 	 */
 	public synchronized void setPlayerUdpConnection(DmePlayer player, InetSocketAddress playerUdpAddr) {
 		if (playerUdpLookup.containsKey(playerUdpAddr)) {
-			logger.severe("setPlayerUdpConnection: New connection player " + Integer.toString(player.getAccountId()) + " has the same Udp channel as " + 
-					Integer.toString(playerUdpLookup.get(playerUdpAddr).getAccountId()) + " !");
+			//throw new IllegalStateException("setPlayerUdpConnection: New connection player " + Integer.toString(player.getPlayerId()) + " has the same Udp channel as " + 
+			//		Integer.toString(playerUdpLookup.get(playerUdpAddr).getPlayerId()) + " !");
+			logger.severe("setPlayerUdpConnection: New connection player " + Integer.toString(player.getPlayerId()) + " has the same Udp channel as " + 
+					Integer.toString(playerUdpLookup.get(playerUdpAddr).getPlayerId()) + " !");
 			return;
 		}
 		playerUdpLookup.put(playerUdpAddr, player);
@@ -180,14 +214,14 @@ public class DmeWorld {
 
 	public void broadcastUdp(InetSocketAddress senderUdpAddr, byte[] payload) {
 		DmePlayer sourcePlayer = playerUdpLookup.get(senderUdpAddr);
-		int sourceId = sourcePlayer.getAccountId();
+		int sourceId = sourcePlayer.getPlayerId();
 		
 		// Insert the source id
 		payload = insertId(payload, (byte) sourceId);
 		
 		// Send to every player that is not the source id player
 		for (DmePlayer player: players.values()) {
-			if (player.getAccountId() != sourceId) {
+			if (player.getPlayerId() != sourceId) {
 				player.sendUdpData(payload);
 			}
 		}		
@@ -195,7 +229,7 @@ public class DmeWorld {
 
 	public void clientAppSingleUdp(InetSocketAddress senderUdpAddr, byte[] payload) {
 		DmePlayer sourcePlayer = playerUdpLookup.get(senderUdpAddr);
-		int sourceId = sourcePlayer.getAccountId();
+		int sourceId = sourcePlayer.getPlayerId();
 		int playerTargetId = (int) payload[3];
 		payload[3] = (byte) sourceId;
 		
@@ -223,7 +257,7 @@ public class DmeWorld {
 	}
 
 	public void playerDisconnected(DmePlayer player) {
-		players.remove(player.getAccountId());
+		players.remove(player.getPlayerId());
 		playerUdpLookup.remove(player.getUdpAddr());
 		sendServerNotify(player, false);
 	}

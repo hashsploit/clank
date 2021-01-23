@@ -26,19 +26,6 @@ service ClankMlsService {
 
 	// Generic: Get player info from MLS
 	//rpc PlayerInfo(PlayerInfoRequest) returns (PlayerInfoResponse) {}
-	
-	
-	// DME: Get the account id from session key
-	rpc AccountIdFromSessionKey(AccountIdFromSessionKeyRequest) returns (AccountIdFromSessionKeyResponse) {}
-	
-}
-
-message AccountIdFromSessionKeyRequest {
-	string session_key = 1;
-}
-
-message AccountIdFromSessionKeyResponse {
-	int32 account_id = 1;
 }
 
 message SessionKeyRequest {

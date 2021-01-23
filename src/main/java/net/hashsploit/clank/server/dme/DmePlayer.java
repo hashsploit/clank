@@ -16,7 +16,7 @@ public class DmePlayer {
 	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());
 
 	private String mlsToken;
-	private int accountId;
+	private int playerId;
 	
 	private DmeTcpClient client;
 	private DatagramChannel udpChannel;
@@ -30,7 +30,7 @@ public class DmePlayer {
 		return "DmePlayer: \n" + 
 				"SessionKey: " + mlsToken + "\n" +
 				"UdpAddr: " + udpAddress + "\n" +
-				"accountId: " + Integer.toString(accountId) + "\n" +
+				"DmePlayerId: " + Integer.toString(playerId) + "\n" +
 				"Status: " + status.toString() + "\n" ;
 	}
 	
@@ -39,15 +39,14 @@ public class DmePlayer {
 		packetQueue = new ConcurrentLinkedQueue<byte[]>();
 		status = DmePlayerStatus.CONNECTING;
 		this.client = client;
-		this.accountId = 0;
 	}
 	
-	public void setAccountId(int accountId) {
-		this.accountId = accountId;
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
 	}
 
-	public int getAccountId() {
-		return accountId;
+	public int getPlayerId() {
+		return playerId;
 	}
 
 	public void fullyConnected() {
@@ -94,7 +93,7 @@ public class DmePlayer {
 			e.printStackTrace();
 		}
 		
-		logger.fine("PUSHING UDP DATA ON CLIENT: " + Integer.toString(accountId));
+		logger.fine("PUSHING UDP DATA ON CLIENT: " + Integer.toString(playerId));
 		udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(out.toByteArray()), udpAddress));
 	}
 
@@ -115,6 +114,5 @@ public class DmePlayer {
 	public String getMlsToken() {
 		return mlsToken;
 	}
-
 
 }
