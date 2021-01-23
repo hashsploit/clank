@@ -23,7 +23,8 @@ public class DmePlayer {
 	private InetSocketAddress udpAddress;
 	private int aggTime = 30; // in ms
 	private float lastSendTime;
-	private ConcurrentLinkedQueue<byte[]> packetQueue;
+	private ConcurrentLinkedQueue<byte[]> udpPacketQueue;
+	private ConcurrentLinkedQueue<byte[]> tcpPacketQueue;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
 	public String toString() {
@@ -36,7 +37,8 @@ public class DmePlayer {
 	
 	
 	public DmePlayer(DmeTcpClient client) {
-		packetQueue = new ConcurrentLinkedQueue<byte[]>();
+		udpPacketQueue = new ConcurrentLinkedQueue<byte[]>();
+		tcpPacketQueue = new ConcurrentLinkedQueue<byte[]>();
 		status = DmePlayerStatus.CONNECTING;
 		this.client = client;
 	}
@@ -53,13 +55,35 @@ public class DmePlayer {
 		status = DmePlayerStatus.STAGING;
 	}
 
-
 	public void sendData(byte[] arr) {
-		this.client.getSocket().writeAndFlush(Unpooled.copiedBuffer(arr));
+		tcpPacketQueue.add(arr);
 	}
 
 	public DmePlayerStatus getStatus() {
 		return status;
+	}
+	
+	public void flushTcpData() {
+		ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+		int qSize = tcpPacketQueue.size();
+		if (qSize == 0) {
+			return;
+		}
+
+		// Gets an instance of the queue size, removes that # of packets (so even if
+		// more are added,
+		// they won't be pop'd until next call)
+		try {
+			for (int i = 0; i < qSize; i++) {
+				out.write(tcpPacketQueue.poll());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		logger.fine("PUSHING TCP DATA TO CLIENT: " + Integer.toString(playerId));
+		this.client.getSocket().writeAndFlush(Unpooled.copiedBuffer(out.toByteArray()));
 	}
 
 	public void setUdpConnection(DatagramChannel udpChannel, InetSocketAddress playerUdpAddr) {
@@ -70,13 +94,13 @@ public class DmePlayer {
 	public void sendUdpData(byte[] payload) {
 		// Uncommenting this WORKS
 		//udpChannel.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(payload), udpAddress));
-		packetQueue.add(payload);
+		udpPacketQueue.add(payload);
 	}
 
 	public void flushUdpData() {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-		int qSize = packetQueue.size();
+		int qSize = udpPacketQueue.size();
 		
 		if (qSize == 0) {
 			return;
@@ -87,7 +111,7 @@ public class DmePlayer {
 		// they won't be pop'd until next call)
 		try {
 			for (int i = 0; i < qSize; i++) {
-				out.write(packetQueue.poll());
+				out.write(udpPacketQueue.poll());
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
