@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 
 public class PlayerList {
@@ -17,6 +18,7 @@ public class PlayerList {
 		this.players = new HashMap<Integer, Player>();
 	}
 	
+	@Override
 	public String toString() {
 		String result = "PlayerList ----- \n";
 		for (Player player: players.values()) {
@@ -33,16 +35,15 @@ public class PlayerList {
 		
 		// 1. Check if player is disconnecting, remove player from list
 		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+			logger.finest(PlayerList.class.getName() + ".updatePlayerStatus(player, status): [MEDIUS_PLAYER_DISCONNECTED!!!] removing account Id: " + player.getAccountId());
 			player.updateStatus(status);
-			logger.info("PLAYERLIST BEFORE DC: " + this.toString());
 			players.remove(player.getAccountId());
-			logger.info("PLAYERLIST AFTER DC: " + this.toString());
 			return;
 		}
 		
 		// 2. Make sure player has logged in
 		if (player.getAccountId() == null) {
-			throw new IllegalStateException("Player did not login yet!");
+			throw new IllegalStateException("Account Id " + player.getAccountId() + " did not login yet!");
 		}
 		
 		// 3. Update player status
@@ -60,6 +61,7 @@ public class PlayerList {
 	
 	public synchronized void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
 		Player p = players.get(accountId);
+		logger.finest(PlayerList.class.getName() + ".updatePlayerStatus(accountId, status): Account Id: " + accountId + "\nStatus: " + status.name());
 		updatePlayerStatus(p, status);
 	}
 

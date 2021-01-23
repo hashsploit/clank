@@ -115,7 +115,10 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 				status = null;
 			}
 
+			
+			logger.finest("RPC: updatePlayerStatusFromDme(): MlsToken: " + request.getMlsToken() + "\nWorld Id: " + request.getWorldId() + "\nPlayer Status: " + status.name());
 			mlsServer.updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
+			
 			return response;
 		}
 
@@ -142,6 +145,8 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			}
 			
 			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
+			
+			logger.finest("RPC: updateWorld(): World Id: " + request.getWorldId() + "\nStatus: " + status.name());
 			mlsServer.updateDmeWorldStatus(request.getWorldId(), status);
 			return response;
 		}
