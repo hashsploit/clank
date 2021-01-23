@@ -26,6 +26,11 @@ public class PlayerList {
 	}
 
 	public synchronized void updatePlayerStatus(Player player, MediusPlayerStatus status) {
+		
+		if (player == null) {
+			return;
+		}
+		
 		// 1. Check if player is disconnecting, remove player from list
 		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
 			player.updateStatus(status);
