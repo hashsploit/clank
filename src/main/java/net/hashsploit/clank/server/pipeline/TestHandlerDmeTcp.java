@@ -105,13 +105,13 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		
     		int playerId = client.getPlayer().getPlayerId();
 		
-    		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
-    		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
-    		RTMessage c1 = new RTMessage(RtMessageId.SERVER_CONNECT_COMPLETE, t1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(c1.getFullMessage())));
-    		ByteBuf msg1 = c1.getFullMessage();
-    		ctx.write(msg1); // (1)
-    		ctx.flush(); // 
+    		//byte [] t1 = Utils.shortToBytesLittle(((short) dmeWorldManager.getPlayerCount(client.getPlayer())));
+    		byte [] t1 = Utils.shortToBytesLittle(((short) dmeWorldManager.getPlayerCount(client.getPlayer())));
+            RTMessage c1 = new RTMessage(RtMessageId.SERVER_CONNECT_COMPLETE, t1);
+            logger.finest("Final Payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(c1.getFullMessage())));
+            ByteBuf msg1 = c1.getFullMessage();
+            ctx.write(msg1); // (1)
+            ctx.flush(); //  
     		
     		// DME Version (RT 00)
     		//byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");

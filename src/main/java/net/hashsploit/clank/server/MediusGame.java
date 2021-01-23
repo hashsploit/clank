@@ -8,6 +8,7 @@ import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusGame {
+
 	private static final Logger logger = Logger.getLogger(MediusGame.class.getName());
 
 	private int worldId;
