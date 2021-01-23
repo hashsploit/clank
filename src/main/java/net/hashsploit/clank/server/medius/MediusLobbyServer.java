@@ -150,7 +150,7 @@ public class MediusLobbyServer extends MediusServer {
 		 */
 		// Update the gameWorld. Update the playerList
 		int accountId = Clank.getInstance().getDatabase().getAccountIdFromSessionKey(mlsToken);
-		logger.finest(MediusLobbyServer.class.getName() + ".updatePlayerStatusFromDme(): MlsToken: " + mlsToken + "\nWorld Id: " + worldId + "\nPlayer Status: " + status.name());
+		logger.finest(MediusLobbyServer.class.getName() + ".updatePlayerStatusFromDme(mlsToken, worldId, status): MlsToken: " + mlsToken + "\nWorld Id: " + worldId + "\nPlayer Status: " + status.name());
 		playerList.updatePlayerStatus(accountId, status);
 	}
 
@@ -177,7 +177,7 @@ public class MediusLobbyServer extends MediusServer {
 
 
 	public MediusPlayerStatus getPlayerStatus(int accountId) {
-		logger.finest(MediusLobbyServer.class.getName() + ".getPlayerStatus(): Account Id: " + accountId + "\nStatus: " + playerList.getPlayerStatus(accountId).name());
+		logger.finest(MediusLobbyServer.class.getName() + ".getPlayerStatus(accountId): Account Id: " + accountId + "\nStatus: " + playerList.getPlayerStatus(accountId).name());
 		return playerList.getPlayerStatus(accountId);
 	}
 
