@@ -143,7 +143,7 @@ public class Clank {
 				terminalPrompt = AnsiColor.GREEN + "DME>";
 				terminal.registerCommand(new CLIBroadcastCommand());
 				DmeConfig dmeConfig = (DmeConfig) config;
-				server = new DmeServer(dmeConfig.getTcpAddress(), dmeConfig.getTcpPort(), dmeConfig.getParentThreads(), dmeConfig.getChildThreads(), dmeConfig.getUdpAddress(), dmeConfig.getUdpStartingPort(), dmeConfig.getUdpThreads());
+				server = new DmeServer(dmeConfig.getTcpAddress(), dmeConfig.getTcpPort(), dmeConfig.getParentThreads(), dmeConfig.getChildThreads(), dmeConfig.getUdpAddress(), dmeConfig.getUdpStartingPort(), dmeConfig.getUdpThreads(), dmeConfig.getTimeout());
 				break;
 			default:
 				logger.severe("No valid server component provided.");

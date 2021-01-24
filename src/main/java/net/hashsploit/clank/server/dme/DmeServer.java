@@ -26,8 +26,8 @@ public class DmeServer extends TcpServer {
 	
 	private final ClankDmeRpcClient rpcClient;
 
-	public DmeServer(final String tcpAddress, final int tcpPort, final int tcpParentThreads, final int tcpChildThreads, final String udpAddress, final int udpStartingPort, final int udpThreads) {
-		super(tcpAddress, tcpPort, tcpParentThreads, tcpChildThreads);
+	public DmeServer(final String tcpAddress, final int tcpPort, final int tcpParentThreads, final int tcpChildThreads, final String udpAddress, final int udpStartingPort, final int udpThreads, final int timeout) {
+		super(tcpAddress, tcpPort, tcpParentThreads, tcpChildThreads, timeout);
 
 		this.udpAddress = udpAddress;
 		this.udpStartingPort = udpStartingPort;

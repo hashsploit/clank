@@ -74,6 +74,21 @@ public class DmeConfig extends AbstractConfig {
 	}
 	
 	/**
+	 * Get the TCP port the server should be bound to.
+	 * 
+	 * @return
+	 */
+	public int getTimeout() {
+		final String key = ConfigNames.TIMEOUT.toString();
+
+		if (getJson().isNull(key)) {
+			return 0;
+		}
+
+		return getJson().getInt(key);
+	}
+	
+	/**
 	 * Get the UDP thread count that this server should use.
 	 * 
 	 * @return
