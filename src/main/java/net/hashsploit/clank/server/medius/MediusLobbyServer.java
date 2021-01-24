@@ -117,6 +117,14 @@ public class MediusLobbyServer extends MediusServer {
 
 	public synchronized void updatePlayerStatus(Player player, MediusPlayerStatus status) {
 		playerList.updatePlayerStatus(player, status);
+		
+		// If player is last one in the game, close the world
+		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED && player.getGameWorldId() != 0) {
+			List<Player> playersInGame = getGameWorldPlayers(player.getGameWorldId());
+			if (playersInGame.size() == 0) {
+				gameList.updateGameWorldStatus(player.getGameWorldId(), MediusWorldStatus.WORLD_CLOSED);
+			}
+		}
 	}
 
 	/*
