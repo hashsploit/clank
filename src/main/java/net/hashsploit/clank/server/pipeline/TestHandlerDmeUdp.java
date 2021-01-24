@@ -46,24 +46,24 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 	@Override
 	public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
-		logger.fine("======================================================");
-		logger.fine("======================================================");
-		logger.fine("======================================================");
-
 		final DatagramPacket datagram = (DatagramPacket) msg;
 		
 		byte[] buff = new byte[datagram.content().readableBytes()];
 		datagram.content().readBytes(buff);
-
-		logger.finest("TOTAL RAW UDP INCOMING DATA: " + Utils.bytesToHex(buff));
 		
 		List<RTMessage> packets = decodeRTMessageFrames(buff);
 
 		for (RTMessage rtmsg: packets) {
-			logger.finest("RAW UDP Single packet: " + Utils.bytesToHex(rtmsg.getFullMessage().array()));
-			
-		    logger.fine("Packet ID: " + rtmsg.getId().toString());
-		    logger.fine("Packet ID: " + rtmsg.getId().getValue());
+			if (rtmsg.getId() != RtMessageId.CLIENT_ECHO && 
+				rtmsg.getId() != RtMessageId.CLIENT_APP_BROADCAST &&
+				rtmsg.getId() != RtMessageId.CLIENT_CONNECT_AUX_UDP &&
+				rtmsg.getId() != RtMessageId.CLIENT_FLUSH_SINGLE &&
+				rtmsg.getId() != RtMessageId.CLIENT_FLUSH_ALL &&
+				rtmsg.getId() != RtMessageId.CLIENT_DISCONNECT &&
+				rtmsg.getId() != RtMessageId.CLIENT_APP_SINGLE
+				) {
+				logger.severe("UNKNOWN DME UDP PACKET: " + Utils.bytesToHex(rtmsg.getFullMessage().array()));
+			}
 			
 			checkFirstPacket(ctx, datagram, rtmsg.getFullMessage().array(), datagram.sender().getPort(), datagram.sender().getAddress().toString());
 			
@@ -83,6 +83,9 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
     		DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
 			int dmeWorldId = (int) Utils.bytesToShortLittle(data[6], data[7]);
     		int playerId = (int) Utils.bytesToShortLittle(data[30], data[31]);
+    		
+    		client.setDmeWorldId(dmeWorldId);
+    		client.setPlayerId(playerId);
     		
 			logger.info(dmeWorldManager.toString());
 			logger.info("### UDP_CONNECT_REQ: Dme World Id: " + Utils.bytesToHex(Utils.intToBytesLittle(dmeWorldId)) + " PlayerId: " + Utils.bytesToHex(Utils.intToBytesLittle(playerId)));
@@ -110,13 +113,13 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	private void checkBroadcast(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data) {
 		List<RTMessage> packets = decodeRTMessageFrames(data);
 		for (RTMessage m: packets) {
-			logger.fine("UDP Packet ID: " + m.getId().toString());
-			logger.fine("UDP Packet ID: " + m.getId().getValue());
 			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
+				logger.finest("UDP BROADCAST From Addr: " + requestDatagram.sender() + " DmeWorldId: " + client.getDmeWorldId() + " PlayerIndex: " + client.getPlayerId() + " | " + Utils.bytesToHex(data));
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
 				dmeWorldManager.broadcastUdp(requestDatagram.sender(), m.getFullMessage().array());	
 			}
 			else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+				logger.finest("UDP CLIENT APP SINGLE From Addr: " + requestDatagram.sender() + " DmeWorldId: " + client.getDmeWorldId() + " PlayerIndex: " + client.getPlayerId() + " | " + Utils.bytesToHex(data));
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
 				dmeWorldManager.clientAppSingleUdp(requestDatagram.sender(), m.getFullMessage().array());
 			}
@@ -130,12 +133,13 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		ctx.close();
 	}
 
-	public void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
+	public void checkEcho(ChannelHandlerContext ctx,  DatagramPacket requestDatagram, RTMessage packet) {
 		if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 			// Combine RT id and len
+			logger.finest("UDP ECHO From Addr: " + requestDatagram.sender() + " DmeWorldId: " + client.getDmeWorldId() + " PlayerIndex: " + client.getPlayerId() + " | " + Utils.bytesToHex(packet.getFullMessage().array()));
 			RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
 			byte[] payload = packetResponse.getFullMessage().array();
-			logger.fine("Final payload: " + Utils.bytesToHex(payload));
+			logger.finest("Return echo " + Utils.bytesToHex(payload));
 			ByteBuf msg = Unpooled.copiedBuffer(payload);
 			ctx.write(msg);
 			ctx.flush();

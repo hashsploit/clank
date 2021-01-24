@@ -16,6 +16,9 @@ public class DmeUdpClient implements IClient {
 
 	private final IServer server;
 	private final DatagramChannel channel;
+	
+	private int dmeWorldId;
+	private int playerId;
 
 	public DmeUdpClient(IServer server, DatagramChannel ch) {
 		this.server = server;
@@ -58,4 +61,24 @@ public class DmeUdpClient implements IClient {
 		// TODO Auto-generated method stub
 		return server;
 	}
+
+
+	public void setDmeWorldId(int dmeWorldId) {
+		this.dmeWorldId = dmeWorldId;
+	}
+	
+	public int getDmeWorldId() {
+		return this.dmeWorldId;
+	}
+
+
+	public void setPlayerId(int playerId) {
+		this.playerId = playerId;
+	}
+	
+	public int getPlayerId() {
+		return this.playerId;
+	}
+
+
 }

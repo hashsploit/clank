@@ -51,14 +51,18 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-    	logger.fine("======================================================");
-    	logger.fine("======================================================");
-    	logger.fine("======================================================");
-		
 		RTMessage packet = new RTMessage(msg);
-
-		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage())));
-
+		if (packet.getId() != RtMessageId.CLIENT_CONNECT_TCP_AUX_UDP && 
+				packet.getId() != RtMessageId.CLIENT_ECHO &&
+				packet.getId() != RtMessageId.CLIENT_CONNECT_READY_AUX_UDP &&
+				packet.getId() != RtMessageId.CLIENT_APP_BROADCAST &&
+				packet.getId() != RtMessageId.CLIENT_SET_RECV_FLAG &&
+				packet.getId() != RtMessageId.CLIENT_SET_AGG_TIME &&
+				packet.getId() != RtMessageId.CLIENT_DISCONNECT &&
+				packet.getId() != RtMessageId.CLIENT_APP_SINGLE
+				) {
+				logger.severe("UNKNOWN DME TCP PACKET: " + Utils.bytesToHex(packet.getFullMessage().array()));
+		}
 		processSinglePacket(ctx, packet);
 		checkBroadcast(packet);
 	}
@@ -67,22 +71,20 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     
 	private void checkBroadcast(RTMessage m) {
 		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+		
+		int dmeWorldId = dmeWorldManager.getWorldId(client.getPlayer().getMlsToken());
 
 		if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
+			logger.finest("TCP BROADCAST From SessionKey: " + client.getPlayer().getMlsToken() + " DmeWorldId: " + dmeWorldId + " PlayerIndex: " + client.getPlayer().getPlayerId() + " | " + Utils.bytesToHex(m.getFullMessage().array()));
 			dmeWorldManager.broadcast(client.getPlayer(), Utils.nettyByteBufToByteArray(m.getFullMessage()));
 		}
 		else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+			logger.finest("TCP CLIENT APP SINGLE From SessionKey: " + client.getPlayer().getMlsToken() + " DmeWorldId: " + dmeWorldId + " PlayerIndex: " + client.getPlayer().getPlayerId()+ " | " + Utils.bytesToHex(m.getFullMessage().array()));
 			dmeWorldManager.clientAppSingle(client.getPlayer(), Utils.nettyByteBufToByteArray(m.getFullMessage()));
 		}
 	}
     
-    private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
-		logger.finest("RAW Single packet: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage())));
-		
-	    logger.fine("Packet ID: " + packet.getId().toString());
-	    logger.fine("Packet ID: " + packet.getId().getValue());
-	    
-	    
+    private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {	    
 	    checkForTcpAuxUdpConnect(ctx, packet);
 	    	    
 		checkClientReady(ctx, Utils.nettyByteBufToByteArray(packet.getFullMessage()));
@@ -234,7 +236,12 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 	
 	private void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
 			 if (packet.getId() == RtMessageId.CLIENT_ECHO) {
+				DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+				
+				int dmeWorldId = dmeWorldManager.getWorldId(client.getPlayer().getMlsToken());
+					
 				// Combine RT id and len
+				logger.finest("DME TCP ECHO From SessionKey: " + client.getPlayer().getMlsToken() + " DmeWorldId: " + dmeWorldId + " PlayerIndex: " + client.getPlayer().getPlayerId() + " | " + Utils.bytesToHex(packet.getFullMessage().array()));
 				RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, 1, packet.getPayload());
 				byte[] payload = packetResponse.getFullMessage().array();
 				logger.fine("Final payload: " + Utils.bytesToHex(payload));

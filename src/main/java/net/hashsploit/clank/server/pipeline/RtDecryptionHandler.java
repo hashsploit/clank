@@ -102,8 +102,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 			return null;
 		}
 		
-		logger.finest("DECRYPT HANDLER DATA IN: " + Utils.bytesToHex(message));
-		logger.finest("DECRYPT HANDLER hash IN: " + Utils.bytesToHex((hash == null ? new byte[0] : hash)));
+		logger.finest("Decyption pipeline in: " + Utils.bytesToHex((hash == null ? new byte[0] : hash)) + " Message: " +  Utils.bytesToHex(message));
 		
 		if (hash != null && message != null) {
 			CipherContext context = null;
@@ -127,8 +126,8 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						rsa.setContext(context);
 						decryptedData = rsa.decrypt(message, hash);
 						
-						logger.finest("RSA Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
-						logger.finest("RSA Post decryption status: " + decryptedData.isSuccessful());
+						//logger.finest("RSA Post decryption: " + Utils.bytesToHex(decryptedData.getData()));
+						//logger.finest("RSA Post decryption status: " + decryptedData.isSuccessful());
 						
 						if (!decryptedData.isSuccessful()) {
 							throw new IllegalStateException("Decryption failure!");
@@ -146,7 +145,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						
 						
 						ByteBuf data = new RTMessage(id, decryptedData.getData()).getFullMessage();
-						logger.finest("DECRYPT HANDLER OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(data)));
+						//logger.finest("DECRYPT HANDLER OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(data)));
 						return data;
 					}
 				case RC_CLIENT_SESSION:
@@ -182,7 +181,7 @@ public class RtDecryptionHandler extends MessageToMessageDecoder<ByteBuf> {
 						}
 						
 						ByteBuf data2 = new RTMessage(id, scertData.getData()).getFullMessage();
-						logger.finest("DECRYPT HANDLER OUT: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(data2)));
+						logger.finest("Decyption pipeline out: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(data2)));
 						return data2;
 					}
 				case RC_SERVER_SESSION:
