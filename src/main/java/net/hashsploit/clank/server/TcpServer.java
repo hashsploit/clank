@@ -22,11 +22,11 @@ public class TcpServer extends AbstractServer {
 	
 	private static final Logger logger = Logger.getLogger(TcpServer.class.getName());
 	private static final int BACKLOG = 100;
-	private static final int SOCKET_TIMEOUT = 100;
 	
 	private final Class<? extends ServerChannel> socketChannelClass;
 	private final int parentThreads;
 	private final int childThreads;
+	private final int timeout;
 	
 	private final EventLoopGroup parentEventLoopGroup;
 	private final EventLoopGroup childEventLoopGroup;
@@ -35,10 +35,15 @@ public class TcpServer extends AbstractServer {
 	private ChannelFuture channelFuture;
 	
 	public TcpServer(final String address, final int port, final int parentThreads, final int childThreads) {
+		this(address, port, parentThreads, childThreads, 30000);
+	}
+	
+	public TcpServer(final String address, final int port, final int parentThreads, final int childThreads, final int timeout) {
 		super(address, port);
 		
 		this.parentThreads = parentThreads;
 		this.childThreads = childThreads;
+		this.timeout = timeout;
 
 		// Use Linux epoll if available.
 		if (Epoll.isAvailable()) {
@@ -72,7 +77,8 @@ public class TcpServer extends AbstractServer {
 				.option(ChannelOption.SO_BACKLOG, BACKLOG)
 				.childHandler(channelInitializer)
 				.childOption(ChannelOption.AUTO_CLOSE, true)
-				.childOption(ChannelOption.SO_KEEPALIVE, false);
+				.childOption(ChannelOption.SO_KEEPALIVE, false)
+				.childOption(ChannelOption.SO_TIMEOUT, timeout);
 			
 			channelFuture = bootstrap.bind(this.getAddress(), this.getPort()).sync();
 			
@@ -90,8 +96,8 @@ public class TcpServer extends AbstractServer {
 
 	@Override
 	public void stop() {
-		parentEventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
-		childEventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
+		parentEventLoopGroup.shutdownGracefully().awaitUninterruptibly(100);
+		childEventLoopGroup.shutdownGracefully().awaitUninterruptibly(100);
 		if (channelFuture != null) {
 			channelFuture.channel().close();
 		}
