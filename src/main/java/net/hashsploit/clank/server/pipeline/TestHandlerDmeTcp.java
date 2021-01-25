@@ -60,6 +60,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 				packet.getId() != RtMessageId.CLIENT_APP_BROADCAST &&
 				packet.getId() != RtMessageId.CLIENT_SET_RECV_FLAG &&
 				packet.getId() != RtMessageId.CLIENT_SET_AGG_TIME &&
+				packet.getId() != RtMessageId.CLIENT_FLUSH_ALL &&
 				packet.getId() != RtMessageId.CLIENT_DISCONNECT &&
 				packet.getId() != RtMessageId.CLIENT_APP_SINGLE
 				) {
