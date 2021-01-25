@@ -61,5 +61,13 @@ public class GameList {
 		
 		return result;
 	}
+
+	public MediusWorldStatus getGameStatus(int worldId) {
+		MediusGame game = gameSet.get(worldId);
+		if (game == null) {
+			return MediusWorldStatus.WORLD_CLOSED;
+		}
+		return game.getWorldStatus();
+	}
 	
 }

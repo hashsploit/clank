@@ -82,7 +82,8 @@ public class PlayerList {
 				result.add(player);
 			}
 		}
-		return result;	}
+		return result;	
+	}
 
 	public MediusPlayerStatus getPlayerStatus(int accountId) {
 		Player p = players.get(accountId);

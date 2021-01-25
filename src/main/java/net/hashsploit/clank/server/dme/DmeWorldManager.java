@@ -50,6 +50,8 @@ public class DmeWorldManager {
 		// Add the player
 		dmeWorld.addPlayer(player);
 		
+		player.setWorldId(dmeWorldId);
+		
 		// Add the reverse lookup
 		dmeWorldLookup.put(player, dmeWorld);
 	}

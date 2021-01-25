@@ -17,6 +17,7 @@ public class DmePlayer {
 
 	private String mlsToken;
 	private int playerId;
+	private int worldId;
 	
 	private DmeTcpClient client;
 	private DatagramChannel udpChannel;
@@ -137,6 +138,16 @@ public class DmePlayer {
 
 	public String getMlsToken() {
 		return mlsToken;
+	}
+
+
+	public int getWorldId() {
+		return worldId;
+	}
+
+
+	public void setWorldId(int worldId) {
+		this.worldId = worldId;
 	}
 
 }

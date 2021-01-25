@@ -3,6 +3,7 @@ package net.hashsploit.clank.server.pipeline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -19,6 +20,7 @@ import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -65,8 +67,21 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 		}
 		processSinglePacket(ctx, packet);
 		checkBroadcast(packet);
+		checkGameStarted(packet);
 	}
     
+	private void checkGameStarted(RTMessage m) {
+		byte[] message = m.getFullMessage().array();
+		if (message.length == 445) {
+			if (message[1] == (byte) 0xba) {
+				if (Utils.bytesToHex(Arrays.copyOfRange(message, 25, 40)).equals("744e575f47616d6553657474696e67")) {
+					// update world active
+					int worldId = client.getPlayer().getWorldId();
+					((DmeServer) client.getServer()).getRpcClient().updateWorld(worldId, WorldStatus.ACTIVE);
+				}
+			}
+		}
+	}
     
     
 	private void checkBroadcast(RTMessage m) {
