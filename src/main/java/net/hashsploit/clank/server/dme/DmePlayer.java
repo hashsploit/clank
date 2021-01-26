@@ -11,6 +11,7 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.medius.objects.DmePlayerStatus;
+import net.hashsploit.medius.crypto.Utils;
 
 public class DmePlayer {
 	private static final Logger logger = Logger.getLogger(DmeWorldManager.class.getName());
@@ -58,6 +59,11 @@ public class DmePlayer {
 
 	public void sendData(byte[] arr) {
 		tcpPacketQueue.add(arr);
+	}
+	
+	public void sendDataNow(byte[] arr) {
+		logger.fine("PUSHING TCP DATA TO CLIENT NOW: " + Integer.toString(playerId) + " | " + Utils.bytesToHex(arr));
+		this.client.getSocket().writeAndFlush(Unpooled.copiedBuffer(arr));
 	}
 
 	public DmePlayerStatus getStatus() {

@@ -188,7 +188,7 @@ public class DmeWorld {
 		
 		for (DmePlayer playerToReceiveData: players.values()) {
 			if (player != playerToReceiveData && (player.getStatus() == DmePlayerStatus.STAGING || player.getStatus() == DmePlayerStatus.ACTIVE)) {
-				playerToReceiveData.sendData(baos.toByteArray());
+				playerToReceiveData.sendDataNow(baos.toByteArray());
 			}
 		}
 	}
