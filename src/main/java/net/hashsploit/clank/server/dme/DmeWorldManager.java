@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
 import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
