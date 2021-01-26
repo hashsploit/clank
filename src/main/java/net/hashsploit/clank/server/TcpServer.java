@@ -7,6 +7,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -75,7 +76,11 @@ public class TcpServer extends AbstractServer {
 			bootstrap.group(parentEventLoopGroup, childEventLoopGroup)
 				.channel(socketChannelClass)
 				.option(ChannelOption.SO_BACKLOG, BACKLOG)
+				.option(ChannelOption.SO_RCVBUF, 2048)
+				.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(2048))
 				.childHandler(channelInitializer)
+				.childOption(ChannelOption.SO_RCVBUF, 2048)
+				.childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(2048))
 				.childOption(ChannelOption.AUTO_CLOSE, true)
 				.childOption(ChannelOption.SO_KEEPALIVE, false);
 			

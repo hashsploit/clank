@@ -3,13 +3,12 @@ package net.hashsploit.clank.server.dme;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.InetSocketAddress;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Logger;
 
 import io.netty.buffer.Unpooled;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.DatagramPacket;
-import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.medius.objects.DmePlayerStatus;
 import net.hashsploit.medius.crypto.Utils;
 
@@ -25,8 +24,8 @@ public class DmePlayer {
 	private InetSocketAddress udpAddress;
 	private int aggTime = 30; // in ms
 	private float lastSendTime;
-	private ConcurrentLinkedQueue<byte[]> udpPacketQueue;
-	private ConcurrentLinkedQueue<byte[]> tcpPacketQueue;
+	private LinkedBlockingQueue<byte[]> udpPacketQueue;
+	private LinkedBlockingQueue<byte[]> tcpPacketQueue;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
 	public String toString() {
@@ -39,8 +38,8 @@ public class DmePlayer {
 	
 	
 	public DmePlayer(DmeTcpClient client) {
-		udpPacketQueue = new ConcurrentLinkedQueue<byte[]>();
-		tcpPacketQueue = new ConcurrentLinkedQueue<byte[]>();
+		udpPacketQueue = new LinkedBlockingQueue<byte[]>();
+		tcpPacketQueue = new LinkedBlockingQueue<byte[]>();
 		status = DmePlayerStatus.CONNECTING;
 		this.client = client;
 	}
