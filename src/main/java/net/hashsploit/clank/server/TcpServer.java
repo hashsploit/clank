@@ -15,7 +15,6 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.utils.Utils;
 
 public class TcpServer extends AbstractServer {
@@ -56,6 +55,7 @@ public class TcpServer extends AbstractServer {
 			parentEventLoopGroup = new NioEventLoopGroup(parentThreads);
 			childEventLoopGroup = new NioEventLoopGroup(childThreads);
 		}
+		
 	}
 
 	@Override
@@ -77,8 +77,7 @@ public class TcpServer extends AbstractServer {
 				.option(ChannelOption.SO_BACKLOG, BACKLOG)
 				.childHandler(channelInitializer)
 				.childOption(ChannelOption.AUTO_CLOSE, true)
-				.childOption(ChannelOption.SO_KEEPALIVE, false)
-				.childOption(ChannelOption.SO_TIMEOUT, timeout);
+				.childOption(ChannelOption.SO_KEEPALIVE, false);
 			
 			channelFuture = bootstrap.bind(this.getAddress(), this.getPort()).sync();
 			

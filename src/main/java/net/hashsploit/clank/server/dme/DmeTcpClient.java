@@ -34,7 +34,6 @@ public class DmeTcpClient implements IClient {
 		channel.pipeline().addLast("MediusTestHandlerDME", new TestHandlerDmeTcp(this));
 		
 		ChannelFuture closeFuture = channel.closeFuture();
-
 		closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
 			@Override
 			public void operationComplete(Future<? super Void> future) throws Exception {

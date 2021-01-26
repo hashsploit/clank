@@ -37,7 +37,7 @@ public class DmeServer extends TcpServer {
 		int udpServerPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
 
 		EventLoopGroup udpEventLoopGroup = new EpollEventLoopGroup(4);
-		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super tempoarary
+		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super temporary
 			this.udpDmeServer = new DmeUdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup, dmeWorldManager);
 			udpDmeServer.setChannelInitializer(new DmeUdpClientInitializer(udpDmeServer));
 			udpDmeServer.start();
