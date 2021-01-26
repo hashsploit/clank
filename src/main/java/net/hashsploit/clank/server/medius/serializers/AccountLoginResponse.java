@@ -58,7 +58,7 @@ public class AccountLoginResponse extends MediusMessage {
 			
 			outputStream.write(natAddress); // NAT server Addr
 			outputStream.write(natZeroTrail); // Padding for address
-			outputStream.write(Utils.hexStringToByteArray("56270000")); // NAT Port + padding
+			outputStream.write(Utils.hexStringToByteArray("6A270000")); // NAT Port + padding
 			outputStream.write(Utils.hexStringToByteArray("00000000")); // World ID to join. Default is zero when you login
 			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
 			
