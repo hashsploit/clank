@@ -147,6 +147,9 @@ public class DmeWorldManager {
 
 	public boolean worldIsEmpty(int worldId) {
 		DmeWorld world = dmeWorlds.get(worldId);
+		if (world == null) {
+			return true;
+		}
 		return world.isEmpty();
 	}
 
