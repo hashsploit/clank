@@ -19,14 +19,9 @@ public class DmeWorld {
 	
 	private static final Logger logger = Logger.getLogger(DmeWorld.class.getName());
 	private int worldId;
-	private String ipAddress;
 	
 	public DmeWorld() {
-		ipAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
-		
-		if (ipAddress == null) {
-			ipAddress = Utils.getPublicIpAddress();
-		}
+
 	}
 
 	// Lookup Player from Dme Id
@@ -159,6 +154,7 @@ public class DmeWorld {
 		int playerId = player.getPlayerId();
 
 		// build server notify packet
+		String ipAddress = Utils.getPublicIpAddress();
 
 		byte[] ipAddr = ipAddress.getBytes();
 		int numZeros = 16 - ipAddress.length();
@@ -255,6 +251,7 @@ public class DmeWorld {
 	}
 
 	public void playerDisconnected(DmePlayer player) {
+		logger.info("DmeWorld -- sending server notify for: PlayerDisconnected: " + player.toString());
 		players.remove(player.getPlayerId());
 		playerUdpLookup.remove(player.getUdpAddr());
 		sendServerNotify(player, false);

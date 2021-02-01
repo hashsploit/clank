@@ -76,6 +76,8 @@ public class DmeTcpClient implements IClient {
 	}
 	
 	public void onDisconnect() {
+		logger.info("Player disconnected: " + this.toString());
+
 		DmeServer dmeServer = (DmeServer) server;
 		
 		DmeWorldManager mgr = dmeServer.getDmeWorldManager();

@@ -25,7 +25,7 @@ public class DmePlayer {
 	private InetSocketAddress udpAddress;
 	private int aggTime = 30; // in ms
 	private float lastSendTime;
-	private ConcurrentLinkedQueue<byte[]> udpPacketQueue;
+	private ConcurrentLinkedQueue<byte[]> udpPacketQueue; 
 	private ConcurrentLinkedQueue<byte[]> tcpPacketQueue;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
