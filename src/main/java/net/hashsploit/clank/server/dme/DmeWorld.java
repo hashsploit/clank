@@ -151,6 +151,11 @@ public class DmeWorld {
 	}
 
 	private void sendServerNotify(DmePlayer player, boolean connecting) {
+		
+		if (!connecting) {
+			return;
+		}
+		
 		int playerId = player.getPlayerId();
 
 		// build server notify packet

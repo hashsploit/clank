@@ -82,8 +82,15 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		
 		client.getPlayer().setGameWorldId(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin()));
 		
+		
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
-		response.add(respPacket);
+		if (callbackStatus == MediusCallbackStatus.REQUEST_DENIED) {
+			byte[] b = Utils.hexStringToByteArray("012431000000000000000000000000000000000000000000000027fcffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+			response.add(new MediusMessage(b));
+		}
+		else {
+			response.add(respPacket);
+		}
 		return response;
 	}
 
