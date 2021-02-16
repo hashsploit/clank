@@ -2,7 +2,6 @@ package net.hashsploit.clank.server;
 
 import java.nio.ByteOrder;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
@@ -28,10 +27,9 @@ import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtEncryptionHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
 import net.hashsploit.clank.server.pipeline.RtFrameEncoderHandler;
-import net.hashsploit.clank.server.pipeline.TestHandlerMLS;
+import net.hashsploit.clank.server.pipeline.TimeoutHandler;
 import net.hashsploit.clank.utils.MediusMessageMapInitializer;
 import net.hashsploit.clank.utils.Utils;
-import net.hashsploit.medius.crypto.CipherContext;
 import net.hashsploit.medius.crypto.rc.PS2_RC4;
 import net.hashsploit.medius.crypto.rsa.PS2_RSA;
 
@@ -77,6 +75,9 @@ public class MediusClient implements IClient {
 		
 		logger.fine(String.format("Client connected: %s:%d", getIPAddress(), getPort()));
 
+		// 0
+		channel.pipeline().addLast(new TimeoutHandler(this, 30));
+		
 		// 1
 		// Decode the packet into frames (1)
 		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue(), 1, 2, 0, 0, false));
@@ -276,7 +277,8 @@ public class MediusClient implements IClient {
 	/**
 	 * This method is called when the client socket closes.
 	 */
-	private void onDisconnect() {
+	@Override
+	public void onDisconnect() {
 
 		// Tell medius logic handler that this player disconnected
 		if (server.getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER) {

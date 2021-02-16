@@ -62,7 +62,6 @@ public class DmeUdpClient implements IClient {
 		return server;
 	}
 
-
 	public void setDmeWorldId(int dmeWorldId) {
 		this.dmeWorldId = dmeWorldId;
 	}
@@ -71,13 +70,17 @@ public class DmeUdpClient implements IClient {
 		return this.dmeWorldId;
 	}
 
-
 	public void setPlayerId(int playerId) {
 		this.playerId = playerId;
 	}
 	
 	public int getPlayerId() {
 		return this.playerId;
+	}
+
+	@Override
+	public void onDisconnect() {
+		
 	}
 
 

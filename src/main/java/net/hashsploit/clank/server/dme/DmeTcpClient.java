@@ -14,12 +14,13 @@ import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.pipeline.RtFrameDecoderHandler;
 import net.hashsploit.clank.server.pipeline.TestHandlerDmeTcp;
+import net.hashsploit.clank.server.pipeline.TimeoutHandler;
 import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class DmeTcpClient implements IClient {
+	
 	private static final Logger logger = Logger.getLogger(DmeTcpClient.class.getName());
-
 	private final IServer server;
 	private final SocketChannel channel;
 	private final DmePlayer player;
@@ -30,6 +31,8 @@ public class DmeTcpClient implements IClient {
 		this.player = new DmePlayer(this);
 		
 		logger.info("Client connected: " + getIPAddress());
+		
+		channel.pipeline().addLast(new TimeoutHandler(this, 10));
 		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.getValue(), 1, 2, 0, 0, false));
 		channel.pipeline().addLast("MediusTestHandlerDME", new TestHandlerDmeTcp(this));
 		
@@ -75,6 +78,7 @@ public class DmeTcpClient implements IClient {
 		return server;
 	}
 	
+	@Override
 	public void onDisconnect() {
 		DmeServer dmeServer = (DmeServer) server;
 		
@@ -82,6 +86,7 @@ public class DmeTcpClient implements IClient {
 		
 		// Delete player from world
 		int worldId = mgr.playerDisconnected(player);
+		
 		// Relay delete player to MLS
 		dmeServer.getRpcClient().updatePlayer(player.getMlsToken(), worldId, PlayerStatus.DISCONNECTED); // 0 = disconnect
 
