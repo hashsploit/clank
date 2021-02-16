@@ -198,6 +198,7 @@ public class Clank {
 		DmeWorldManager dmeWorldManager = ((DmeServer) server).getDmeWorldManager();
 		for (DmeWorld dmeWorld : dmeWorldManager.getWorlds()) {
 			for (DmePlayer dmePlayer : dmeWorld.getPlayers()) {
+				logger.finest("CLANK FLUSH, PLAYER: " + dmePlayer.getPlayerId());
 				dmePlayer.flushTcpData();
 				dmePlayer.flushUdpData();
 			}

@@ -151,6 +151,11 @@ public class DmeWorld {
 	}
 
 	private void sendServerNotify(DmePlayer player, boolean connecting) {
+		
+		if (!connecting) {
+			return;
+		}
+		
 		int playerId = player.getPlayerId();
 
 		// build server notify packet
@@ -159,7 +164,7 @@ public class DmeWorld {
 		if (ipAddress == null) {
 			ipAddress = Utils.getPublicIpAddress();
 		}
-		
+
 		byte[] ipAddr = ipAddress.getBytes();
 		int numZeros = 16 - ipAddress.length();
 		String zeroString = new String(new char[numZeros]).replace("\0", "00");
@@ -255,6 +260,7 @@ public class DmeWorld {
 	}
 
 	public void playerDisconnected(DmePlayer player) {
+		logger.info("DmeWorld -- sending server notify for: PlayerDisconnected: " + player.toString());
 		players.remove(player.getPlayerId());
 		playerUdpLookup.remove(player.getUdpAddr());
 		sendServerNotify(player, false);

@@ -22,8 +22,6 @@ public class DmePlayer {
 	private DmeTcpClient client;
 	private DatagramChannel udpChannel;
 	private InetSocketAddress udpAddress;
-	private int aggTime = 30; // in ms
-	private float lastSendTime;
 	private LinkedBlockingQueue<byte[]> udpPacketQueue;
 	private LinkedBlockingQueue<byte[]> tcpPacketQueue;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
@@ -73,6 +71,9 @@ public class DmePlayer {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		int qSize = tcpPacketQueue.size();
+		
+		logger.finest("Flushing TCP data size: " + qSize + " player: " + playerId);
+		
 		if (qSize == 0) {
 			return;
 		}
@@ -107,7 +108,8 @@ public class DmePlayer {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		int qSize = udpPacketQueue.size();
-		
+		logger.finest("Flushing UDP data size: " + qSize + " player: " + playerId);
+
 		if (qSize == 0) {
 			return;
 		}
