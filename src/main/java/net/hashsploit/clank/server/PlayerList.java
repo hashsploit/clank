@@ -2,11 +2,7 @@ package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-<<<<<<< HEAD
-=======
-import java.util.HashSet;
 import java.util.logging.Logger;
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 
@@ -20,6 +16,7 @@ public class PlayerList {
 		this.players = new HashMap<Integer, Player>();
 	}
 	
+	@Override
 	public String toString() {
 		String result = "PlayerList ----- \n";
 		for (Player player: players.values()) {
@@ -29,18 +26,22 @@ public class PlayerList {
 	}
 
 	public synchronized void updatePlayerStatus(Player player, MediusPlayerStatus status) {
+		
+		if (player == null) {
+			return;
+		}
+		
 		// 1. Check if player is disconnecting, remove player from list
 		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+			logger.finest(PlayerList.class.getName() + ".updatePlayerStatus(player, status): [MEDIUS_PLAYER_DISCONNECTED!!!] removing account Id: " + player.getAccountId());
 			player.updateStatus(status);
-			logger.info("PLAYERLIST BEFORE DC: " + this.toString());
 			players.remove(player.getAccountId());
-			logger.info("PLAYERLIST AFTER DC: " + this.toString());
 			return;
 		}
 		
 		// 2. Make sure player has logged in
 		if (player.getAccountId() == null) {
-			throw new IllegalStateException("Player did not login yet!");
+			throw new IllegalStateException("Account Id " + player.getAccountId() + " did not login yet!");
 		}
 		
 		// 3. Update player status
@@ -58,6 +59,7 @@ public class PlayerList {
 	
 	public synchronized void updatePlayerStatus(int accountId, MediusPlayerStatus status) {
 		Player p = players.get(accountId);
+		logger.finest(PlayerList.class.getName() + ".updatePlayerStatus(accountId, status): Account Id: " + accountId + "\nStatus: " + status.name());
 		updatePlayerStatus(p, status);
 	}
 
@@ -78,7 +80,8 @@ public class PlayerList {
 				result.add(player);
 			}
 		}
-		return result;	}
+		return result;	
+	}
 
 	public MediusPlayerStatus getPlayerStatus(int accountId) {
 		Player p = players.get(accountId);

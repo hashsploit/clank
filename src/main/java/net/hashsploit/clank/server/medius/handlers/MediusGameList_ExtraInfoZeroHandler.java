@@ -38,7 +38,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 	public List<MediusMessage> write(MediusClient client) {
 
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		ArrayList<MediusGame> games = server.getGames();
+		List<MediusGame> games = server.getGames();
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 
 		final byte[] messageId = reqPacket.getMessageId();
@@ -70,7 +70,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 				
 				mediusWorldId = game.getWorldId();
 				callbackStatus = MediusCallbackStatus.SUCCESS;
-				playerCount = game.getPlayerCount();
+				playerCount = (short) game.getPlayerCount();
 				minPlayers = Utils.bytesToShortLittle(gameRequested.getMinPlayers());
 				maxPlayers = Utils.bytesToShortLittle(gameRequested.getMaxPlayers());
 				gameLevel = Utils.bytesToShortLittle(gameRequested.getGameLevel());

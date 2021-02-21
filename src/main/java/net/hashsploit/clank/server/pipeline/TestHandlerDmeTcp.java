@@ -3,13 +3,13 @@ package net.hashsploit.clank.server.pipeline;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
@@ -19,6 +19,7 @@ import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.dme.DmeTcpClient;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -51,38 +52,54 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-    	logger.fine("======================================================");
-    	logger.fine("======================================================");
-    	logger.fine("======================================================");
-		
 		RTMessage packet = new RTMessage(msg);
-
-		logger.finest("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage())));
-
+		if (packet.getId() != RtMessageId.CLIENT_CONNECT_TCP_AUX_UDP && 
+				packet.getId() != RtMessageId.CLIENT_ECHO &&
+				packet.getId() != RtMessageId.CLIENT_CONNECT_READY_AUX_UDP &&
+				packet.getId() != RtMessageId.CLIENT_APP_BROADCAST &&
+				packet.getId() != RtMessageId.CLIENT_SET_RECV_FLAG &&
+				packet.getId() != RtMessageId.CLIENT_SET_AGG_TIME &&
+				packet.getId() != RtMessageId.CLIENT_FLUSH_ALL &&
+				packet.getId() != RtMessageId.CLIENT_DISCONNECT &&
+				packet.getId() != RtMessageId.CLIENT_APP_SINGLE
+				) {
+				logger.severe("UNKNOWN DME TCP PACKET: " + Utils.bytesToHex(packet.getFullMessage().array()));
+		}
 		processSinglePacket(ctx, packet);
 		checkBroadcast(packet);
+		checkGameStarted(packet);
 	}
     
+	private void checkGameStarted(RTMessage m) {
+		byte[] message = m.getFullMessage().array();
+		if (message.length == 445) {
+			if (message[1] == (byte) 0xba) {
+				if (Utils.bytesToHex(Arrays.copyOfRange(message, 25, 40)).equals("744e575f47616d6553657474696e67")) {
+					// update world active
+					int worldId = client.getPlayer().getWorldId();
+					((DmeServer) client.getServer()).getRpcClient().updateWorld(worldId, WorldStatus.ACTIVE);
+				}
+			}
+		}
+	}
     
     
 	private void checkBroadcast(RTMessage m) {
 		DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+		
+		int dmeWorldId = dmeWorldManager.getWorldId(client.getPlayer().getMlsToken());
 
 		if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
+			logger.finest("TCP BROADCAST From SessionKey: " + client.getPlayer().getMlsToken() + " DmeWorldId: " + dmeWorldId + " PlayerIndex: " + client.getPlayer().getPlayerId() + " | " + Utils.bytesToHex(m.getFullMessage().array()));
 			dmeWorldManager.broadcast(client.getPlayer(), Utils.nettyByteBufToByteArray(m.getFullMessage()));
 		}
 		else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
+			logger.finest("TCP CLIENT APP SINGLE From SessionKey: " + client.getPlayer().getMlsToken() + " DmeWorldId: " + dmeWorldId + " PlayerIndex: " + client.getPlayer().getPlayerId()+ " | " + Utils.bytesToHex(m.getFullMessage().array()));
 			dmeWorldManager.clientAppSingle(client.getPlayer(), Utils.nettyByteBufToByteArray(m.getFullMessage()));
 		}
 	}
     
-    private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
-		logger.finest("RAW Single packet: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage())));
-		
-	    logger.fine("Packet ID: " + packet.getId().toString());
-	    logger.fine("Packet ID: " + packet.getId().getValue());
-	    
-	    
+    private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {	    
 	    checkForTcpAuxUdpConnect(ctx, packet);
 	    	    
 		checkClientReady(ctx, Utils.nettyByteBufToByteArray(packet.getFullMessage()));
@@ -105,13 +122,13 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		
     		int playerId = client.getPlayer().getPlayerId();
 		
-    		//byte [] t1 = Utils.hexStringToByteArray("0100"); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
-    		byte [] t1 = Utils.shortToBytesLittle(((short) (playerId+1))); // THIS IS THE PLAYER ID IN THE DME WORLD (first player connected = 0x0100
-    		RTMessage c1 = new RTMessage(RtMessageId.SERVER_CONNECT_COMPLETE, t1);
-    		logger.finest("Final Payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(c1.getFullMessage())));
-    		ByteBuf msg1 = c1.getFullMessage();
-    		ctx.write(msg1); // (1)
-    		ctx.flush(); // 
+    		//byte [] t1 = Utils.shortToBytesLittle(((short) dmeWorldManager.getPlayerCount(client.getPlayer())));
+    		byte [] t1 = Utils.shortToBytesLittle(((short) dmeWorldManager.getPlayerCount(client.getPlayer())));
+            RTMessage c1 = new RTMessage(RtMessageId.SERVER_CONNECT_COMPLETE, t1);
+            logger.finest("Final Payload: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(c1.getFullMessage())));
+            ByteBuf msg1 = c1.getFullMessage();
+            ctx.write(msg1); // (1)
+            ctx.flush(); //  
     		
     		// DME Version (RT 00)
     		//byte[] t2 = Utils.hexStringToByteArray("0000312E32322E3031343100000000000000");
@@ -234,7 +251,12 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 	
 	private void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
 			 if (packet.getId() == RtMessageId.CLIENT_ECHO) {
+				DmeWorldManager dmeWorldManager = ((DmeServer) client.getServer()).getDmeWorldManager();
+				
+				int dmeWorldId = dmeWorldManager.getWorldId(client.getPlayer().getMlsToken());
+					
 				// Combine RT id and len
+				logger.finest("DME TCP ECHO From SessionKey: " + client.getPlayer().getMlsToken() + " DmeWorldId: " + dmeWorldId + " PlayerIndex: " + client.getPlayer().getPlayerId() + " | " + Utils.bytesToHex(packet.getFullMessage().array()));
 				RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, 1, packet.getPayload());
 				byte[] payload = packetResponse.getFullMessage().array();
 				logger.fine("Final payload: " + Utils.bytesToHex(payload));

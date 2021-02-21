@@ -32,7 +32,7 @@ public class MediusCreateGameOneHandler extends MediusPacketHandler {
 	public List<MediusMessage> write(MediusClient client) {
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		
-		final int newWorldId = server.createGame();
+		final int newWorldId = server.createGame(reqPacket);
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.FAILURE;
 		
 		if (newWorldId > 0) {

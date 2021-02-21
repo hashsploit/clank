@@ -83,13 +83,7 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 		
 		private PlayerUpdateResponse updatePlayer(PlayerUpdateRequest request) {
 			PlayerUpdateResponse response = PlayerUpdateResponse.newBuilder().setSuccess(true).build();
-<<<<<<< HEAD
-			logger.finest("RPC Data received: " + request.getMlsToken());
-			logger.finest("RPC Data received: " + Integer.toString(request.getWorldId()));
-			logger.finest("RPC Data received: " + request.getPlayerStatus().toString());
-=======
 			logger.info("### gRPC Player Update: [SessionKey: " + request.getMlsToken() + ", DmeWorldId: " + Integer.toString(request.getWorldId()) + ", Player status: " + request.getPlayerStatus().toString() + "]");
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
 						
 			MediusPlayerStatus status;
@@ -110,20 +104,16 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 				status = null;
 			}
 
+			
+			logger.finest("RPC: updatePlayerStatusFromDme(): MlsToken: " + request.getMlsToken() + "\nWorld Id: " + request.getWorldId() + "\nPlayer Status: " + status.name());
 			mlsServer.updatePlayerStatusFromDme(request.getMlsToken(), request.getWorldId(), status);
+			
 			return response;
 		}
 
 		private WorldUpdateResponse updateWorld(WorldUpdateRequest request) {
 			WorldUpdateResponse response = WorldUpdateResponse.newBuilder().setSuccess(true).build();
-<<<<<<< HEAD
-			logger.finest("RPC: World ID: " + Integer.toString(request.getWorldId()));
-			logger.finest("RPC: World UPDATE: " + request.getWorldStatus().toString());
-			
-=======
 			logger.info("### gRPC DmeWorld Update: [dmeWorldId: " + Integer.toString(request.getWorldId()) + ", status: " + request.getWorldStatus().toString() + "]");
-
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 			MediusWorldStatus status;
 			switch (request.getWorldStatus()) {
 			case CREATED:
@@ -143,6 +133,8 @@ public class ClankMlsRpcServer extends AbstractRpcServer {
 			}
 			
 			MediusLobbyServer mlsServer = (MediusLobbyServer) (Clank.getInstance().getServer());
+			
+			logger.finest("RPC: updateWorld(): World Id: " + request.getWorldId() + "\nStatus: " + status.name());
 			mlsServer.updateDmeWorldStatus(request.getWorldId(), status);
 			return response;
 		}

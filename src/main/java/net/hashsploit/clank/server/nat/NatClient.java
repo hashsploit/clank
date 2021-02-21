@@ -36,4 +36,9 @@ public class NatClient implements IClient {
 	public ClientState getClientState() {
 		return null;
 	}
+
+	@Override
+	public void onDisconnect() {
+		
+	}
 }

@@ -28,8 +28,7 @@ public class MediusLobbyServer extends MediusServer {
 	private final List<Location> locations;
 	private final List<Channel> channels;
 	private final List<MediusGame> games;
-	//private GameList gameList;
-	//private PlayerList playerList;
+	private int gameIdCounter;
 
 	public MediusLobbyServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_LOBBY_SERVER, address, port, parentThreads, childThreads);
@@ -57,7 +56,8 @@ public class MediusLobbyServer extends MediusServer {
 			logger.severe(String.format("Failed to create RPC service: %s", e.getMessage()));
 			Clank.getInstance().shutdown();
 		}
-
+		
+		this.gameIdCounter = 1;
 	}
 
 	/**
@@ -112,15 +112,6 @@ public class MediusLobbyServer extends MediusServer {
 			}
 		}
 		return null;
-	}
-
-	/**
-	 * Get a new game id from a CreateGameOne request.
-	 * @param req
-	 * @return
-	 */
-	public int getNewGameId(CreateGameOneRequest req) {
-		return gameList.getNewGameId(req);
 	}
 
 	/**
@@ -216,12 +207,12 @@ public class MediusLobbyServer extends MediusServer {
 	 * @param worldStatus
 	 */
 	public synchronized void updateDmeWorldStatus(int worldId, MediusWorldStatus worldStatus) {
-<<<<<<< HEAD
-		logger.finest("Updating world from DME worldId: " + Integer.toString(worldId));
-		logger.finest("Updating world from DME World Status: " + worldStatus.toString());
-=======
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
-		gameList.updateGameWorldStatus(worldId, worldStatus);
+		for (MediusGame game : games) {
+			if (game.getWorldId() == worldId) {
+				game.updateStatus(worldStatus);
+				return;
+			}
+		}
 	}
 
 	/**
@@ -234,24 +225,35 @@ public class MediusLobbyServer extends MediusServer {
 	public synchronized void updatePlayerStatusFromDme(String mlsToken, int worldId, MediusPlayerStatus status) {
 		// PlayerStatus is from gRPC
 		// This method is called from gRPC DME -> MLS
-<<<<<<< HEAD
-		// PlayerStatus: DISCONNECTED(0), CONNECTED(1), STAGING(2), ACTIVE(3), UNRECOGNIZED(-1)
-
-		logger.finest("Updating player from DME mlsToken: " + mlsToken);
-		logger.finest("Updating player from DME world: " + Integer.toString(worldId));
-		logger.finest("Updating player from DME Status: " + status.toString());
-		int accountId = Clank.getInstance().getDatabase().getAccountIdFromMlsToken(mlsToken);
-
-		this.updatePlayerStatus(accountId, status);
-=======
 		/*
 		 * PlayerStatus: DISCONNECTED(0), CONNECTED(1), STAGING(2), ACTIVE(3),
 		 * UNRECOGNIZED(-1),
 		 */
 		// Update the gameWorld. Update the playerList
 		int accountId = Clank.getInstance().getDatabase().getAccountIdFromSessionKey(mlsToken);
-		playerList.updatePlayerStatus(accountId, status);
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
+		Player player = null;
+		
+		for (final Player p : players) {
+			if (p.getAccountId() == accountId) {
+				player = p;
+				break;
+			}
+		}
+		
+		logger.finest(MediusLobbyServer.class.getName() + ".updatePlayerStatusFromDme(mlsToken, worldId, status): MlsToken: " + mlsToken + "\nWorld Id: " + worldId + "\nPlayer Status: " + status.name());
+		//playerList.updatePlayerStatus(accountId, status);
+		
+		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+			for (MediusGame game : games) {
+				if (game.getWorldId() == worldId) {
+					game.removePlayer(player);
+					break;
+				}
+			}
+		}
+		
+		
+		
 	}
 
 	/**
@@ -302,9 +304,17 @@ public class MediusLobbyServer extends MediusServer {
 		return MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED;
 	}
 
-	public int createGame() {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * Create a new game Id with the game request.
+	 * @param req
+	 * @return
+	 */
+	public synchronized int createGame(CreateGameOneRequest req) {
+		int newGameId = gameIdCounter++;
+		
+		games.add(new MediusGame(newGameId, req));
+		
+		return newGameId;
 	}
 
 }

@@ -7,6 +7,7 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.ServerChannel;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -15,18 +16,17 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.dme.DmeWorld;
 import net.hashsploit.clank.utils.Utils;
 
 public class TcpServer extends AbstractServer {
 	
 	private static final Logger logger = Logger.getLogger(TcpServer.class.getName());
 	private static final int BACKLOG = 100;
-	private static final int SOCKET_TIMEOUT = 100;
 	
 	private final Class<? extends ServerChannel> socketChannelClass;
 	private final int parentThreads;
 	private final int childThreads;
+	private final int timeout;
 	
 	private final EventLoopGroup parentEventLoopGroup;
 	private final EventLoopGroup childEventLoopGroup;
@@ -35,10 +35,15 @@ public class TcpServer extends AbstractServer {
 	private ChannelFuture channelFuture;
 	
 	public TcpServer(final String address, final int port, final int parentThreads, final int childThreads) {
+		this(address, port, parentThreads, childThreads, 30000);
+	}
+	
+	public TcpServer(final String address, final int port, final int parentThreads, final int childThreads, final int timeout) {
 		super(address, port);
 		
 		this.parentThreads = parentThreads;
 		this.childThreads = childThreads;
+		this.timeout = timeout;
 
 		// Use Linux epoll if available.
 		if (Epoll.isAvailable()) {
@@ -51,6 +56,7 @@ public class TcpServer extends AbstractServer {
 			parentEventLoopGroup = new NioEventLoopGroup(parentThreads);
 			childEventLoopGroup = new NioEventLoopGroup(childThreads);
 		}
+		
 	}
 
 	@Override
@@ -70,7 +76,11 @@ public class TcpServer extends AbstractServer {
 			bootstrap.group(parentEventLoopGroup, childEventLoopGroup)
 				.channel(socketChannelClass)
 				.option(ChannelOption.SO_BACKLOG, BACKLOG)
+				.option(ChannelOption.SO_RCVBUF, 2048)
+				.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(2048))
 				.childHandler(channelInitializer)
+				.childOption(ChannelOption.SO_RCVBUF, 2048)
+				.childOption(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(2048))
 				.childOption(ChannelOption.AUTO_CLOSE, true)
 				.childOption(ChannelOption.SO_KEEPALIVE, false);
 			
@@ -90,8 +100,8 @@ public class TcpServer extends AbstractServer {
 
 	@Override
 	public void stop() {
-		parentEventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
-		childEventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);
+		parentEventLoopGroup.shutdownGracefully().awaitUninterruptibly(100);
+		childEventLoopGroup.shutdownGracefully().awaitUninterruptibly(100);
 		if (channelFuture != null) {
 			channelFuture.channel().close();
 		}

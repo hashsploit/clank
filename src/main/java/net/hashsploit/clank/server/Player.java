@@ -4,7 +4,6 @@ import java.util.logging.Logger;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
-import net.hashsploit.clank.server.rpc.ClankMlsRpcServer;
 
 public class Player {
 	private static final Logger logger = Logger.getLogger(Player.class.getName());
@@ -13,31 +12,22 @@ public class Player {
 	private MediusPlayerStatus playerStatus;
 	private String username;
 	private int accountId;
-<<<<<<< HEAD
-=======
-	
 	private String sessionKey;
-	
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 	private int gameWorldId;
 	private int chatWorldId;
 	private int clanId;
-	
+
 	public Player(MediusClient client, MediusPlayerStatus status) {
 		this.client = client;
 		this.playerStatus = status;
 		this.gameWorldId = 0;
 		this.chatWorldId = 0;
 	}
-	
+
 	public String toString() {
-		String s = "Player[Username: '" + username + "', SessionKey: " + sessionKey + ", Status: " + playerStatus.toString() + 
-				", accountId: " + accountId +
-				", ChatWorld: " + chatWorldId +
-				", GameWorld: " + gameWorldId +
-				"]";
+		String s = "Player[Username: '" + username + "', SessionKey: " + sessionKey + ", Status: " + playerStatus.toString() + ", accountId: " + accountId + ", ChatWorld: " + chatWorldId + ", GameWorld: " + gameWorldId + "]";
 		return s;
-		
+
 	}
 
 	public String getUsername() {
@@ -56,7 +46,7 @@ public class Player {
 		this.accountId = playerAccountId;
 		this.username = Clank.getInstance().getDatabase().getUsername(accountId);
 	}
-	
+
 	public void setChatWorld(int chatWorldId) {
 		this.chatWorldId = chatWorldId;
 	}
@@ -84,22 +74,17 @@ public class Player {
 	public int getGameWorldId() {
 		return gameWorldId;
 	}
-	
+
 	public void setGameWorldId(int gameWorldId) {
 		this.gameWorldId = gameWorldId;
 	}
-<<<<<<< HEAD
-	
-=======
 
 	public String getSessionKey() {
 		return sessionKey;
 	}
-	
+
 	public void setSessionKey(String sessionKey) {
 		this.sessionKey = sessionKey;
 	}
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
-	
-		
+
 }

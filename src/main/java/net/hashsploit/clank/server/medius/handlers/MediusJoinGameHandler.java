@@ -7,10 +7,12 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.objects.NetAddress;
 import net.hashsploit.clank.server.medius.objects.NetAddressList;
 import net.hashsploit.clank.server.medius.objects.NetAddressType;
@@ -38,8 +40,17 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
 		// RESPONSE
-
-		final MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
+		
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		MediusWorldStatus gameStatus = server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin())).getWorldStatus();
+		
+		MediusCallbackStatus callbackStatus;
+		if (gameStatus == MediusWorldStatus.WORLD_CLOSED || gameStatus == MediusWorldStatus.WORLD_INACTIVE || gameStatus == MediusWorldStatus.WORLD_ACTIVE) {
+			callbackStatus = MediusCallbackStatus.REQUEST_DENIED;
+		} 
+		else {
+			callbackStatus = MediusCallbackStatus.SUCCESS;
+		}
 
 		final MediusGameHostType gameHostType = MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP;
 		
@@ -66,13 +77,25 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 				accessKey
 			);
 		
-		respPacket = new JoinGameResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(gameHostType.getValue()),
-				netConnectionInfo);
+		respPacket = new JoinGameResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(gameHostType.getValue()), netConnectionInfo);
 		
-		client.getPlayer().setGameWorldId(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin()));
+		//client.getPlayer().setGameWorldId(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin()));
+		
+		// Check if the game exists and if the game world allows a new player to be added
+		
+		server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin())).addPlayer(client.getPlayer());
+		
+		
+		
 		
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
-		response.add(respPacket);
+		if (callbackStatus == MediusCallbackStatus.REQUEST_DENIED) {
+			byte[] b = Utils.hexStringToByteArray("012431000000000000000000000000000000000000000000000027fcffff00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
+			response.add(new MediusMessage(b));
+		}
+		else {
+			response.add(respPacket);
+		}
 		return response;
 	}
 

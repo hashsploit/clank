@@ -121,12 +121,8 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.GetClanMemberList_ExtraInfo, new MediusGetClanMemberList_ExtraInfoHandler());
 		mp.put(MediusMessageType.FindPlayer, new MediusFindPlayerHandler());
 		mp.put(MediusMessageType.LadderPosition_ExtraInfo, new MediusLadderPosition_ExtraInfoHandler());
-<<<<<<< HEAD
-
-=======
 		mp.put(MediusMessageType.LadderList_ExtraInfo, new MediusLadderList_ExtraInfoHandler());
 		
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 		// added for Amplitude
 		mp.put(MediusMessageType.AccountRegistration, new MediusAccountRegistrationHandler());
 		mp.put(MediusMessageType.LadderPosition, new MediusLadderPositionHandler());

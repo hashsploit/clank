@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
 import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
@@ -49,6 +48,8 @@ public class DmeWorldManager {
 		
 		// Add the player
 		dmeWorld.addPlayer(player);
+		
+		player.setWorldId(dmeWorldId);
 		
 		// Add the reverse lookup
 		dmeWorldLookup.put(player, dmeWorld);
@@ -146,6 +147,9 @@ public class DmeWorldManager {
 
 	public boolean worldIsEmpty(int worldId) {
 		DmeWorld world = dmeWorlds.get(worldId);
+		if (world == null) {
+			return true;
+		}
 		return world.isEmpty();
 	}
 

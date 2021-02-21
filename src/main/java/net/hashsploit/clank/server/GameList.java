@@ -2,16 +2,8 @@ package net.hashsploit.clank.server;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-<<<<<<< HEAD
-
-=======
-import java.util.Iterator;
-import java.util.Map;
 import java.util.logging.Logger;
 
-import net.hashsploit.clank.server.dme.DmeTcpClient;
-import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
->>>>>>> d8d9b511f87f3f3afa999c30d78fabb346d0687b
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 
@@ -67,4 +59,12 @@ public class GameList {
 		return result;
 	}
 
+	public MediusWorldStatus getGameStatus(int worldId) {
+		MediusGame game = gameSet.get(worldId);
+		if (game == null) {
+			return MediusWorldStatus.WORLD_CLOSED;
+		}
+		return game.getWorldStatus();
+	}
+	
 }

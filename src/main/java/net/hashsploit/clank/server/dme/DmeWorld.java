@@ -18,8 +18,11 @@ import net.hashsploit.clank.utils.Utils;
 public class DmeWorld {
 
 	private static final Logger logger = Logger.getLogger(DmeWorld.class.getName());
-
 	private int worldId;
+
+	public DmeWorld() {
+
+	}
 
 	// Lookup Player from Dme Id
 	HashMap<Integer, DmePlayer> players = new HashMap<Integer, DmePlayer>();
@@ -33,10 +36,12 @@ public class DmeWorld {
 
 	@Override
 	public String toString() {
-		String result = "DmeWorld:  worldId: " + Integer.toString(worldId) + ", numPlayers: " + Integer.toString(players.size());
+		String result = " ====== DmeWorld: \n" + "--- worldId: " + Integer.toString(worldId) + "\n" + "--- numPlayers: " + Integer.toString(players.size()) + "\n";
+
 		for (DmePlayer player : players.values()) {
 			result += player.toString();
 		}
+
 		return result;
 	}
 
@@ -148,6 +153,11 @@ public class DmeWorld {
 	}
 
 	private void sendServerNotify(DmePlayer player, boolean connecting) {
+
+		if (!connecting) {
+			return;
+		}
+
 		int playerId = player.getPlayerId();
 
 		// build server notify packet
@@ -159,7 +169,8 @@ public class DmeWorld {
 
 		byte[] ipAddr = ipAddress.getBytes();
 		int numZeros = 16 - ipAddress.length();
-		byte[] zeroTrail = Utils.padByteArray(ipAddr, numZeros);
+		String zeroString = new String(new char[numZeros]).replace("\0", "00");
+		byte[] zeroTrail = Utils.hexStringToByteArray(zeroString);
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
@@ -182,7 +193,7 @@ public class DmeWorld {
 
 		for (DmePlayer playerToReceiveData : players.values()) {
 			if (player != playerToReceiveData && (player.getStatus() == DmePlayerStatus.STAGING || player.getStatus() == DmePlayerStatus.ACTIVE)) {
-				playerToReceiveData.sendData(baos.toByteArray());
+				playerToReceiveData.sendDataNow(baos.toByteArray());
 			}
 		}
 	}
@@ -191,6 +202,9 @@ public class DmeWorld {
 		return players.size();
 	}
 
+	/*
+	 * UDP Methods =================================================================
+	 */
 	public synchronized void setPlayerUdpConnection(DmePlayer player, InetSocketAddress playerUdpAddr) {
 		if (playerUdpLookup.containsKey(playerUdpAddr)) {
 			// throw new IllegalStateException("setPlayerUdpConnection: New connection
@@ -248,6 +262,7 @@ public class DmeWorld {
 	}
 
 	public void playerDisconnected(DmePlayer player) {
+		logger.info("DmeWorld -- sending server notify for: PlayerDisconnected: " + player.toString());
 		players.remove(player.getPlayerId());
 		playerUdpLookup.remove(player.getUdpAddr());
 		sendServerNotify(player, false);
