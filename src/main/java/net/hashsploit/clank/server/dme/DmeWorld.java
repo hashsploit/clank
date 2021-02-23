@@ -19,16 +19,16 @@ public class DmeWorld {
 
 	private static final Logger logger = Logger.getLogger(DmeWorld.class.getName());
 	private int worldId;
-
-	public DmeWorld() {
-
-	}
-
+	
 	// Lookup Player from Dme Id
 	HashMap<Integer, DmePlayer> players = new HashMap<Integer, DmePlayer>();
 
 	// Lookup Player from Udp Packet
 	HashMap<InetSocketAddress, DmePlayer> playerUdpLookup = new HashMap<InetSocketAddress, DmePlayer>();
+
+	public DmeWorld() {
+		
+	}
 
 	public DmeWorld(int dmeWorldId) {
 		worldId = dmeWorldId;
@@ -153,10 +153,6 @@ public class DmeWorld {
 	}
 
 	private void sendServerNotify(DmePlayer player, boolean connecting) {
-
-		if (!connecting) {
-			return;
-		}
 
 		int playerId = player.getPlayerId();
 

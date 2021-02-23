@@ -23,7 +23,7 @@ import net.hashsploit.clank.server.medius.objects.MediusWorldSecurityLevelType;
 import net.hashsploit.clank.server.medius.serializers.ChannelInfoRequest;
 import net.hashsploit.clank.server.medius.serializers.ChannelInfoResponse;
 import net.hashsploit.clank.server.medius.serializers.GameInfoZeroRequest;
-import net.hashsploit.clank.server.medius.serializers.GameInfoZeroResponse;
+import net.hashsploit.clank.server.medius.serializers.GameInfoResponseZero;
 import net.hashsploit.clank.server.medius.serializers.GetWorldSecurityLevelRequest;
 import net.hashsploit.clank.server.medius.serializers.GetWorldSecurityLevelResponse;
 import net.hashsploit.clank.utils.Utils;
@@ -48,7 +48,7 @@ public class MediusGetWorldSecurityLevelHandler extends MediusPacketHandler {
 		
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 		byte[] appType = Utils.intToBytesLittle(MediusApplicationType.MEDIUS_APP_TYPE_GAME.value);
-		byte[] worldSecurityLevelType = Utils.intToBytesLittle(MediusWorldSecurityLevelType.WORLD_SECURITY_NONE.getValue()); // TODO: Get this from the actual world
+		byte[] worldSecurityLevelType = Utils.intToBytesLittle(MediusWorldSecurityLevelType.WORLD_SECURITY_NONE.value); // TODO: Get this from the actual world
 		
 		respPacket = new GetWorldSecurityLevelResponse(reqPacket.getMessageID(), callbackStatus, reqPacket.getWorldId(), appType, worldSecurityLevelType);
 		List<MediusMessage> response = new ArrayList<MediusMessage>();

@@ -73,17 +73,17 @@ public class GameList_ExtraInfoZeroResponse extends MediusMessage {
 			outputStream.write(Utils.shortToBytesLittle(maxPlayers)); // Max players
 			outputStream.write(new byte[2]); // Padding
 
-			outputStream.write(gameLevel); // Game level
-			outputStream.write(playerSkillLevel); // Player skill level (first 3 bytes are disabled weapons, last byte = bolt
+			outputStream.write(Utils.intToBytesLittle(gameLevel)); // Game level
+			outputStream.write(Utils.intToBytesLittle(playerSkillLevel)); // Player skill level (first 3 bytes are disabled weapons, last byte = bolt
 													// skill)
-
-			outputStream.write(rulesSet); // Rules set (might be used as team colors or skins)
-			outputStream.write(genericField1); // Generic field 1 (Location Id (city id; aquatos))
-			outputStream.write(genericField2); // Generic field 2
-			outputStream.write(genericField3); // Generic field 3 (map type, game settings)
-			outputStream.write(Utils.intToBytesLittle(worldSecurityLevelType.getValue())); // Security level
-			outputStream.write(Utils.intToBytesLittle(worldStatus.getValue())); // World status
-			outputStream.write(Utils.intToBytesLittle(gameHostType.getValue())); // Game Host Type
+			
+			outputStream.write(Utils.intToBytesLittle(rulesSet)); // Rules set (might be used as team colors or skins)
+			outputStream.write(Utils.intToBytesLittle(genericField1)); // Generic field 1 (Location Id (city id; aquatos))
+			outputStream.write(Utils.intToBytesLittle(genericField2)); // Generic field 2
+			outputStream.write(Utils.intToBytesLittle(genericField3)); // Generic field 3 (map type, game settings)
+			outputStream.write(Utils.intToBytesLittle(worldSecurityLevelType.value)); // Security level
+			outputStream.write(Utils.intToBytesLittle(worldStatus.value)); // World status
+			outputStream.write(Utils.intToBytesLittle(gameHostType.value)); // Game Host Type
 
 			// GameName (contains some ID in it, remainder of the name string buffer is 0x20
 			// [space character])

@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server.medius.serializers;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
@@ -9,50 +10,38 @@ import net.hashsploit.clank.utils.Utils;
 
 public class GameInfoZeroRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
-	private byte[] worldID = new byte[4];
+	private int worldId;
 	
 	public GameInfoZeroRequest(byte[] data) {
 		super(MediusMessageType.GameInfo0, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
-		buf.get(messageID);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+		
+		buf.get(messageId);
 		buf.get(sessionKey);
 		buf.getShort(); // buffer
-		buf.get(worldID);
+		worldId = buf.getInt();
 	}
 	
 	public String toString() {
 		return "GameInfoZeroRequest: \n" + 
-				"messageID: " + Utils.bytesToHex(messageID) + '\n' + 
+				"messageID: " + Utils.bytesToHex(messageId) + '\n' + 
 				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
-				"worldID: " + Utils.bytesToHex(worldID);		
+				"worldID: " + worldId;		
 	}
 	
-	public synchronized byte[] getMessageID() {
-		return messageID;
+	public byte[] getMessageID() {
+		return messageId;
 	}
-	
-	public synchronized void setMessageID(byte[] messageID) {
-		this.messageID = messageID;
-	}
-	
-	public synchronized byte[] getSessionKey() {
+	public byte[] getSessionKey() {
 		return sessionKey;
 	}
 	
-	public synchronized void setSessionKey(byte[] sessionKey) {
-		this.sessionKey = sessionKey;
+	public int getWorldId() {
+		return worldId;
 	}
-
-	public synchronized byte[] getWorldId() {
-		return worldID;
-	}
-	
-	public synchronized void setWorldID(byte[] worldID) {
-		this.worldID = worldID;
-	}
-
 	
 }

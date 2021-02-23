@@ -77,7 +77,7 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 				accessKey
 			);
 		
-		respPacket = new JoinGameResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(gameHostType.getValue()), netConnectionInfo);
+		respPacket = new JoinGameResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(gameHostType.value), netConnectionInfo);
 		
 		//client.getPlayer().setGameWorldId(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin()));
 		

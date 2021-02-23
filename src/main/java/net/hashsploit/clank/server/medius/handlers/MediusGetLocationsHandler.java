@@ -30,9 +30,6 @@ public class MediusGetLocationsHandler extends MediusPacketHandler {
 
 	@Override
 	public void read(MediusClient client, MediusMessage mm) {
-		// Process the packet
-		logger.fine("Get locations: " + Utils.bytesToHex(mm.getPayload()));
-
 		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
 		buf.get(messageId);
 		buf.get(sessionKey);

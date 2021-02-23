@@ -10,6 +10,7 @@ import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.Channel;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusWorldSecurityLevelType;
 import net.hashsploit.clank.server.medius.serializers.ChannelList_ExtraInfoOneRequest;
 import net.hashsploit.clank.server.medius.serializers.ChannelList_ExtraInfoOneResponse;
 import net.hashsploit.clank.utils.Utils;
@@ -59,7 +60,7 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 				maxPlayers = channel.getCapacity();
 				
 				// FIXME: hardcoded
-				worldSecurityLevelType = 0;
+				worldSecurityLevelType = MediusWorldSecurityLevelType.WORLD_SECURITY_NONE.value;
 				genericField1 = Utils.intToBytesLittle(1);
 				genericField2 = Utils.intToBytesLittle(1);
 				genericField3 = Utils.intToBytesLittle(0);
@@ -69,11 +70,11 @@ public class MediusChannelList_ExtraInfoOneHandler extends MediusPacketHandler {
 				lobbyName = channel.getName();
 				endOfList = i == channels.size() - 1;
 				
-				respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
+				respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, (short) playerCount, (short) maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
 				responses.add(respPacket);
 			}
 		} else {
-			respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, playerCount, maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
+			respPacket = new ChannelList_ExtraInfoOneResponse(reqPacket.getMessageId(), callbackStatus, mediusWorldId, (short) playerCount, (short) maxPlayers, worldSecurityLevelType, genericField1, genericField2, genericField3, genericField4, genericFieldFilter, lobbyName, endOfList);
 			responses.add(respPacket);
 		}
 		

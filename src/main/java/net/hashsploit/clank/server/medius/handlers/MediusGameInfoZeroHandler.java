@@ -11,14 +11,13 @@ import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
+import net.hashsploit.clank.server.medius.serializers.GameInfoResponseZero;
 import net.hashsploit.clank.server.medius.serializers.GameInfoZeroRequest;
-import net.hashsploit.clank.server.medius.serializers.GameInfoZeroResponse;
-import net.hashsploit.clank.utils.Utils;
 
 public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 
 	private GameInfoZeroRequest reqPacket;
-	private GameInfoZeroResponse respPacket;
+	private GameInfoResponseZero respPacket;
 
 	public MediusGameInfoZeroHandler() {
 		super(MediusMessageType.GameInfo0, MediusMessageType.GameInfoResponse0);
@@ -32,17 +31,17 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
-		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
+		MediusCallbackStatus callbackStatus = MediusCallbackStatus.SUCCESS;
 
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 
-		MediusGame game = server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldId()));
+		MediusGame game = server.getGame(reqPacket.getWorldId());
 		CreateGameOneRequest req = game.getReqPacket();
 
-		respPacket = new GameInfoZeroResponse(reqPacket.getMessageID(), callbackStatus, req.getAppId(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), req.getPlayerSkillLevel(), Utils.shortToBytesLittle((short) game.getPlayerCount()), game.getStats(), req.getGameName(), req.getRulesSet(),
-				req.getGenField1(), req.getGenField2(), req.getGenField3(), game.getWorldStatusBytes(), req.getGameHostType());
-
+		respPacket = new GameInfoResponseZero(reqPacket.getMessageID(), callbackStatus, req.getAppId(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), req.getPlayerSkillLevel(), game.getPlayerCount(), game.getStats(),
+				req.getGameName(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(), game.getWorldStatus(), req.getGameHostType());
+		
 		response.add(respPacket);
 		
 		return response;

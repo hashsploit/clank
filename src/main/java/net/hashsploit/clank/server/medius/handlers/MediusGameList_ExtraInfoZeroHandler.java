@@ -17,7 +17,6 @@ import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
 import net.hashsploit.clank.server.medius.serializers.GameList_ExtraInfoZeroRequest;
 import net.hashsploit.clank.server.medius.serializers.GameList_ExtraInfoZeroResponse;
-import net.hashsploit.clank.utils.Utils;
 
 public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 
@@ -71,9 +70,9 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 				mediusWorldId = game.getWorldId();
 				callbackStatus = MediusCallbackStatus.SUCCESS;
 				playerCount = (short) game.getPlayerCount();
-				minPlayers = Utils.bytesToShortLittle(gameRequested.getMinPlayers());
-				maxPlayers = Utils.bytesToShortLittle(gameRequested.getMaxPlayers());
-				gameLevel = Utils.bytesToShortLittle(gameRequested.getGameLevel());
+				minPlayers = (short) gameRequested.getMinPlayers();
+				maxPlayers = (short) gameRequested.getMaxPlayers();
+				gameLevel = (short) gameRequested.getGameLevel();
 				
 				endOfList = i == games.size() - 1;
 				

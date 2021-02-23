@@ -22,14 +22,10 @@ public enum MediusWorldSecurityLevelType {
 	 */
 	WORLD_SECURITY_SPECTATOR_PASSWORD(4);
 
-	private final int value;
+	public final int value;
 
 	private MediusWorldSecurityLevelType(int value) {
 		this.value = value;
-	}
-
-	public final int getValue() {
-		return value;
 	}
 
 }

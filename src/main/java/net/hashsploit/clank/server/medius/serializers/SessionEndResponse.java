@@ -25,7 +25,7 @@ public class SessionEndResponse extends MediusMessage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageId);
-			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
+			outputStream.write(new byte[3]); // padding
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 		} catch (IOException e) {
 			e.printStackTrace();

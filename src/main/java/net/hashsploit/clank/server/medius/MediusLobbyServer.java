@@ -37,10 +37,10 @@ public class MediusLobbyServer extends MediusServer {
 		
 		this.players = new HashSet<Player>();
 		this.clans = new HashSet<Clan>();
-		this.locations = new ArrayList<Location>(config.getLocations());
-		this.channels = new ArrayList<Channel>(config.getChannels());
+		this.locations = config.getLocations();
+		this.channels = config.getChannels();
 		this.games = new ArrayList<MediusGame>();
-
+		
 		final RpcServerConfig rpcConfig = ((MediusConfig) Clank.getInstance().getConfig()).getRpcServerConfig();
 		String rpcAddress = rpcConfig.getAddress();
 		final int rpcPort = rpcConfig.getPort();

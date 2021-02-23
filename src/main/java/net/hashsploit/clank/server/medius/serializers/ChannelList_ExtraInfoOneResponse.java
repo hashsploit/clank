@@ -15,8 +15,8 @@ public class ChannelList_ExtraInfoOneResponse extends MediusMessage {
 	private byte[] messageId;
 	private MediusCallbackStatus callbackStatus;
 	private int mediusWorldId;
-	private int playerCount;
-	private int maxPlayers;
+	private short playerCount;
+	private short maxPlayers;
 	private int worldSecurityLevelType;
 	private byte[] genericField1;
 	private byte[] genericField2;
@@ -27,7 +27,7 @@ public class ChannelList_ExtraInfoOneResponse extends MediusMessage {
 	private boolean endOfList;
 
 	
-	public ChannelList_ExtraInfoOneResponse(byte[] messageId, MediusCallbackStatus callbackStatus, int mediusWorldId, int playerCount, int maxPlayers, 
+	public ChannelList_ExtraInfoOneResponse(byte[] messageId, MediusCallbackStatus callbackStatus, int mediusWorldId, short playerCount, short maxPlayers, 
 				int worldSecurityLevelType, byte[] genericField1, byte[] genericField2, byte[] genericField3, byte[] genericField4, 
 				byte[] genericFieldFilter, String lobbyName, boolean endOfList) {
 		super(MediusMessageType.ChannelList_ExtraInfoResponse);
@@ -54,8 +54,8 @@ public class ChannelList_ExtraInfoOneResponse extends MediusMessage {
 			outputStream.write(new byte[3]);
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(mediusWorldId));
-			outputStream.write(Utils.intToBytesLittle(playerCount));
-			outputStream.write(Utils.intToBytesLittle(maxPlayers));
+			outputStream.write(Utils.shortToBytesLittle(playerCount));
+			outputStream.write(Utils.shortToBytesLittle(maxPlayers));
 			outputStream.write(Utils.intToBytesLittle(worldSecurityLevelType));
 			outputStream.write(genericField1);
 			outputStream.write(genericField2);

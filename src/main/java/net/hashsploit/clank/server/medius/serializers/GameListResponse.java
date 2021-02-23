@@ -44,11 +44,11 @@ public class GameListResponse extends MediusMessage {
 			outputStream.write(Utils.intToBytesLittle(callbackStatus.getValue()));
 			outputStream.write(Utils.intToBytesLittle(mediusWorldId));
 			outputStream.write(Utils.buildByteArrayFromString(gameName, MediusConstants.GAMENAME_MAXLEN.value));
-			outputStream.write(Utils.intToBytesLittle(worldStatus.getValue()));
-			outputStream.write(Utils.intToBytesLittle(gameHostType.getValue()));
+			outputStream.write(Utils.intToBytesLittle(worldStatus.value));
+			outputStream.write(Utils.intToBytesLittle(gameHostType.value));
 			outputStream.write(Utils.intToBytesLittle(playerCount));
-			outputStream.write(Utils.hexStringToByteArray(endOfList ? "01" : "00")); // EndOfList (char) 00 or 01
-			outputStream.write(Utils.hexStringToByteArray("000000")); // padding
+			
+			outputStream.write(Utils.intToBytesLittle(endOfList ? 1 : 0));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

@@ -25,8 +25,7 @@ public class MediusAccountLogoutHandler extends MediusPacketHandler {
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
 		
-		client.sendMessage(new RTMessage(RtMessageId.CLIENT_DISCONNECT, new byte[] {0x00}));
-		client.disconnect();
+		//client.sendMessage(new RTMessage(RtMessageId.CLIENT_DISCONNECT, new byte[] {0x00}));
 		
 		return null;
 	}

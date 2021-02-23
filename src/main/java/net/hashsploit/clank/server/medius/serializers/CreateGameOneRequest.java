@@ -1,9 +1,11 @@
 package net.hashsploit.clank.server.medius.serializers;
 
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
+import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
@@ -11,88 +13,71 @@ public class CreateGameOneRequest extends MediusMessage {
 
 	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
-	private byte[] appID = new byte[4];
-	private byte[] minPlayers = new byte[4];
-	private byte[] maxPlayers = new byte[4];
-	private byte[] gameLevel = new byte[4];
-	private byte[] gameName = new byte[MediusConstants.GAMENAME_MAXLEN.value];
-	private byte[] gamePassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
-	private byte[] spectatorPassword = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
-	private byte[] playerSkillLevel = new byte[4];
-	private byte[] rulesSet = new byte[4];
-	private byte[] genField1 = new byte[4];
-	private byte[] genField2 = new byte[4];
-	private byte[] genField3 = new byte[4];
-	private byte[] gameHostType = new byte[4];
-	private byte[] attributes = new byte[4];
-	private boolean noAttributes = false;
-	
+	private int appId; // int23
+	private int minPlayers; // int32
+	private int maxPlayers; // int32
+	private int gameLevel; // int32
+	private String gameName;
+	private String gamePassword;
+	private String spectatorPassword;
+	private int playerSkillLevel; // int32
+	private int rulesSet; // int32
+	private int genField1; // int32
+	private int genField2; // int32
+	private int genField3; // int32
+	private MediusGameHostType gameHostType; // int32
+	private int attributes; // int32
+	private boolean hasAttributes;
+
 	public CreateGameOneRequest(byte[] data) {
 		super(MediusMessageType.CreateGame1, data);
-    	ByteBuffer buf = ByteBuffer.wrap(data);
-    	
-    	// Support multi-version responses.
-    	if (data.length == 212) {
-    		buf.get(messageId);
-        	buf.get(sessionKey);
-        	buf.getShort(); //buffer
-        	buf.get(appID);
-        	buf.get(minPlayers);
-        	buf.get(maxPlayers);
-        	buf.get(gameLevel);//aquatos channel id?
-        	buf.get(gameName);
-        	buf.get(gamePassword);
-        	buf.get(spectatorPassword);
-        	buf.get(playerSkillLevel);
-        	buf.get(rulesSet);
-        	buf.get(genField1);
-        	buf.get(genField2);
-        	buf.get(genField3);
-        	buf.get(gameHostType);
-        	buf.get(attributes);
-    	} else {
-    		buf.get(messageId);
-        	buf.get(sessionKey);
-        	buf.getShort(); //buffer
-        	buf.get(appID);
-        	buf.get(minPlayers);
-        	buf.get(maxPlayers);
-        	buf.get(gameLevel);//aquatos channel id?
-        	buf.get(gameName);
-        	buf.get(gamePassword);
-        	buf.get(spectatorPassword);
-        	buf.get(playerSkillLevel);
-        	buf.get(rulesSet);
-        	buf.get(genField1);
-        	buf.get(genField2);
-        	buf.get(genField3);
-        	buf.get(gameHostType);
-        	noAttributes = true;
-    	}
-    	
-    	
+		
+		ByteBuffer buf = ByteBuffer.wrap(data);
+		buf.order(ByteOrder.LITTLE_ENDIAN);
+
+		buf.get(messageId);
+		buf.get(sessionKey);
+		
+		buf.getShort(); // buffer
+		
+		appId = buf.getInt();
+		minPlayers = buf.getInt();
+		maxPlayers = buf.getInt();
+		gameLevel = buf.getInt(); // aquatos channel id?
+
+		byte[] gameNameBytes = new byte[MediusConstants.GAMENAME_MAXLEN.value];
+		buf.get(gameNameBytes);
+		gameName = Utils.parseMediusString(gameNameBytes);
+
+		byte[] gamePasswordBytes = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
+		buf.get(gamePasswordBytes);
+		gamePassword = Utils.parseMediusString(gamePasswordBytes);
+
+		byte[] spectatorPasswordBytes = new byte[MediusConstants.GAMEPASSWORD_MAXLEN.value];
+		buf.get(spectatorPasswordBytes);
+		spectatorPassword = Utils.parseMediusString(spectatorPasswordBytes);
+
+		playerSkillLevel = buf.getInt();
+		rulesSet = buf.getInt();
+		genField1 = buf.getInt();
+		genField2 = buf.getInt();
+		genField3 = buf.getInt();
+		gameHostType = MediusGameHostType.getTypeFromValue(buf.getInt());
+		
+		// Support multi-version responses.
+		if (data.length == 212) {
+			attributes = buf.getInt();
+			hasAttributes = true;
+		}
+
 	}
-	
+
+	@Override
 	public String toString() {
-		return "CreateGame1Request: \n" + 
-				"messageID: " + Utils.bytesToHex(messageId) + '\n' + 
-				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
-				"appID: " + Utils.bytesToHex(appID) + '\n' + 
-				"minPlayers: " + Utils.bytesToHex(minPlayers) + '\n' + 
-				"maxPlayers: " + Utils.bytesToHex(maxPlayers) + '\n' + 
-				"gameLevel: " + Utils.bytesToHex(gameLevel) + '\n' + 
-				"gameName: " + Utils.bytesToHex(gameName) + '\n' + 
-				"gamePassword: " + Utils.bytesToHex(gamePassword) + '\n' + 
-				"spectatorPassword: " + Utils.bytesToHex(spectatorPassword) + '\n' + 
-				"playerSkillLevel: " + Utils.bytesToHex(playerSkillLevel) + '\n' + 
-				"rulesSet: " + Utils.bytesToHex(rulesSet) + '\n' + 
-				"genField1: " + Utils.bytesToHex(genField1) + '\n' + 
-				"genField2: " + Utils.bytesToHex(genField2) + '\n' + 
-				"genField3: " + Utils.bytesToHex(genField3) + '\n' + 
-				"gameHostType: " + Utils.bytesToHex(gameHostType) + '\n' + 
-				"attributes: " + Utils.bytesToHex(attributes);		
+		return "CreateGame1Request: \n" + "messageId: " + Utils.bytesToHex(messageId) + '\n' + "sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + "appId: " + appId + '\n' + "minPlayers: " + minPlayers + '\n' + "maxPlayers: " + maxPlayers + '\n' + "gameLevel: " + gameLevel + '\n' + "gameName: "
+				+ gameName + '\n' + "gamePassword: " + gamePassword + '\n' + "spectatorPassword: " + spectatorPassword + '\n' + "playerSkillLevel: " + playerSkillLevel + '\n' + "rulesSet: " + rulesSet + '\n' + "genField1: " + genField1 + '\n' + "genField2: " + genField2 + '\n' + "genField3: "
+				+ genField3 + '\n' + "gameHostType: " + gameHostType + '\n' + "attributes: " + attributes;
 	}
-	
 
 	public byte[] getMessageId() {
 		return messageId;
@@ -102,60 +87,64 @@ public class CreateGameOneRequest extends MediusMessage {
 		return sessionKey;
 	}
 
-	public byte[] getAppId() {
-		return appID;
+	public int getAppId() {
+		return appId;
 	}
 
-	public byte[] getMinPlayers() {
+	public int getMinPlayers() {
 		return minPlayers;
 	}
 
-	public byte[] getMaxPlayers() {
+	public int getMaxPlayers() {
 		return maxPlayers;
 	}
 
-	public byte[] getGameLevel() {
+	public int getGameLevel() {
 		return gameLevel;
 	}
 
-	public byte[] getGameName() {
+	public String getGameName() {
 		return gameName;
 	}
 
-	public byte[] getGamePassword() {
+	public String getGamePassword() {
 		return gamePassword;
 	}
 
-	public byte[] getSpectatorPassword() {
+	public String getSpectatorPassword() {
 		return spectatorPassword;
 	}
 
-	public byte[] getPlayerSkillLevel() {
+	public int getPlayerSkillLevel() {
 		return playerSkillLevel;
 	}
 
-	public byte[] getRulesSet() {
+	public int getRulesSet() {
 		return rulesSet;
 	}
 
-	public byte[] getGenField1() {
+	public int getGenField1() {
 		return genField1;
 	}
 
-	public byte[] getGenField2() {
+	public int getGenField2() {
 		return genField2;
 	}
 
-	public byte[] getGenField3() {
+	public int getGenField3() {
 		return genField3;
 	}
 
-	public byte[] getGameHostType() {
+	public MediusGameHostType getGameHostType() {
 		return gameHostType;
 	}
 
-	public synchronized byte[] getAttributes() {
+	public int getAttributes() {
 		return attributes;
 	}
-	
+
+	public boolean hasAttributes() {
+		return hasAttributes;
+	}
+
 }

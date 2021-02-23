@@ -18,7 +18,7 @@ import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.serializers.ChatToggleRequest;
 import net.hashsploit.clank.server.medius.serializers.ChatToggleResponse;
 import net.hashsploit.clank.server.medius.serializers.GameInfoZeroRequest;
-import net.hashsploit.clank.server.medius.serializers.GameInfoZeroResponse;
+import net.hashsploit.clank.server.medius.serializers.GameInfoResponseZero;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusChatToggleHandler extends MediusPacketHandler {

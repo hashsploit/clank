@@ -6,7 +6,6 @@ import java.util.logging.Logger;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.server.medius.serializers.CreateGameOneRequest;
-import net.hashsploit.clank.utils.Utils;
 
 public class MediusGame {
 
@@ -37,10 +36,6 @@ public class MediusGame {
 	
 	public synchronized void updateStats(byte[] stats) {
 		this.stats = stats;
-	}
-
-	public byte[] getWorldStatusBytes() {
-		return Utils.intToBytesLittle(worldStatus.getValue());
 	}
 
 	public MediusWorldStatus getWorldStatus() {
