@@ -52,12 +52,12 @@ The focus of the table below is based on a title's ability to get from login to 
 | Jak X: Combat Racing PAL (2005)                             | INCOMPLETE | Missing native MUIS component.                 |
 | Killzone NTSC-U (2004)                                      | SUCCESS    | Missing native MUIS component.                 |
 | Ratchet & Clank: Up Your Arsenal NTSC-U USA (2004)          | SUCCESS    |                                                |
-| Ratchet & Clank: Up Your Arsenal PAL (2004)                 | UNKNOWN    | [medius-crypto](https://github.com/hashsploit/medius-crypto) not implemented yet.|
+| Ratchet & Clank: Up Your Arsenal PAL (2004)                 | SUCCESS    |                                                |
 | Ratchet & Clank: Up Your Arsenal NTSC-K Korean (2004)       | SUCCESS    |                                                |
 | Ratchet & Clank: Up Your Arsenal NTSC-U Public Beta (2004)  | PARTIAL    | Malformed payload for `CreateGame1`.           |
 | Ratchet & Clank: Up Your Arsenal NTSC-U Prototype (2004)    | PARTIAL    | Malformed payload for `JoinGame`.              |
 | Ratchet: Deadlocked NTSC-U (2005)                           | INCOMPLETE | Missing native MUIS component.                 |
-| Ratchet: Deadlocked PAL (2005)                              | UNKNOWN    | [medius-crypto](https://github.com/hashsploit/medius-crypto) not implemented yet.|
+| Ratchet: Deadlocked PAL (2005)                              | UNKNOWN    | Missing native MUIS component.                 |
 | Syphon Filter: The Omega Strain NTSC-U (2004)               | PARTIAL    | Lobby mostly works, MAS is missing P2P.        |
 
 

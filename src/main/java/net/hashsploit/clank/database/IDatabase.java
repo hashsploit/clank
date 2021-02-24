@@ -1,29 +1,17 @@
 package net.hashsploit.clank.database;
 
 public interface IDatabase {
+
+	String generateSessionKey();
+
+	int validateAccount(String sessionKey, String username, String password);
+
+	String generateMlsToken(int accountId);
 	
-	/**
-	 * Check if the username for an account exists, this can be used to validate if the player account must be created first.
-	 * @param username
-	 * @param password
-	 * @return
-	 */
-	public boolean accountExists(String username);
-	
-	/**
-	 * Check if the account credentials passed in are correct.
-	 * @param username
-	 * @param password
-	 * @return
-	 */
-	public boolean validateAccount(String username, String password);
+	boolean validateMlsAccessToken(String mlsToken);
 
-	public int getAccountId(String username);
+	int getAccountIdFromSessionKey(String sessionKey);
 
-	public String getMlsToken(Integer accountId);
+	String getUsername(int accountId);
 
-	public int getAccountIdFromMlsToken(String mlsToken);
-
-	public String getUsername(int accountId);
-	
 }

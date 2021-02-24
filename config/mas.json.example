@@ -10,6 +10,8 @@
 	"parent_threads": 1,
 	"child_threads": 4,
 	"max_login_attempts": 20,
+	"max_accounts_per_ip": 6,
+	"username_blacklist": null,
 	"application_id": 10684,
 	"mls": {
 		"address": "172.16.221.250",
@@ -27,6 +29,28 @@
 			"fourbolt": "fourpass"
 		}
 	},
+	"channels": [
+		{
+			"id": 1,
+			"name": "Channel 1",
+			"capacity": 256
+		},
+		{
+			"id": 2,
+			"name": "Channel 2",
+			"capacity": 256
+		},
+		{
+			"id": 3,
+			"name": "Channel 3",
+			"capacity": 256
+		},
+		{
+			"id": 4,
+			"name": "Channel 4",
+			"capacity": 256
+		}
+	],
 	"locations": [
 		{
 			"id": 1,

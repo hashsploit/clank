@@ -4,9 +4,9 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.hashsploit</groupId>
 	<artifactId>clank</artifactId>
-	<version>0.1.6</version>
+	<version>0.1.7</version>
 	<name>Clank</name>
-	<description>Ratchet &amp; Clank 3: Up Your Arsenal server emulator</description>
+	<description>A high-performance SCE-RT Medius server stack implementation.</description>
 	<packaging>jar</packaging>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -117,12 +117,6 @@
 			<artifactId>luaj-jse</artifactId>
 			<version>3.0.1</version>
 		</dependency>
-		<!-- https://github.com/MinnDevelopment/discord-webhooks/ -->
-		<dependency>
-			<groupId>club.minnced</groupId>
-			<artifactId>discord-webhooks</artifactId>
-			<version>0.3.2</version>
-		</dependency>
 		<!-- https://mvnrepository.com/artifact/redis.clients/jedis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -170,6 +164,12 @@
 			<groupId>io.perfmark</groupId>
 			<artifactId>perfmark-impl</artifactId>
 			<version>0.23.0</version>
+		</dependency>
+		<!-- Medius Crypto -->
+		<dependency>
+			<groupId>net.hashsploit</groupId>
+			<artifactId>medius-crypto</artifactId>
+			<version>0.1.1</version>
 		</dependency>
 	</dependencies>
 </project>

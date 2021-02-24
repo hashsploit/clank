@@ -35,24 +35,55 @@ public class TestHandlerNATUdp extends ChannelInboundHandlerAdapter {
 
 		final DatagramPacket datagram = (DatagramPacket) msg;
 
+		// Don't waste resources on bogus requests
+		if (datagram.content().readableBytes() > 4) {
+			return;
+		}
+		
 		byte[] buff = new byte[datagram.content().readableBytes()];
 		datagram.content().readBytes(buff);
 		
-		logger.finest(Utils.generateDebugPacketString("NAT UDP Payload",
-			new String[] {
-			"Payload"
-			},
-			new String[] {
-				Utils.bytesToHex(buff)
-			}
-		));
-		
-		if (datagram.content().readableBytes() == 4 && datagram.content().getByte(datagram.content().readerIndex() + 3) != 0xD4) {
+		// Send ip and port back if the last byte isn't 0xD4
+		if (buff.length == 4 && buff[3] != 0xD4) {
+			logger.info(String.format("NAT peer request from %s:%d", datagram.sender().getAddress().getHostAddress(), datagram.sender().getPort()));
+			
 			ByteBuf buffer = ctx.alloc().buffer(6);
-			buffer.writeBytes(datagram.sender().getAddress().getHostAddress().getBytes());
+			byte[] ipAddrBytes = new byte[4];
+			
+			String[] parts = datagram.sender().getAddress().getHostAddress().toString().split("\\.");
+
+			for (int i = 0; i < 4; i++) {
+			    ipAddrBytes[i] = (byte) (Byte.parseByte(parts[i]) & 0xFF);
+			}
+			
+			buffer.writeBytes(ipAddrBytes);
 			buffer.writeShort(datagram.sender().getPort());
+			
+			byte[] responseArray = new byte[buffer.readableBytes()];
+			
+			if (buffer.hasArray()) {
+			    responseArray = buffer.array();
+			} else {
+			    buffer.getBytes(buffer.readerIndex(), responseArray);
+			}
+			
 			ctx.writeAndFlush(new DatagramPacket(buffer, datagram.sender()));
+			
+			logger.finest(Utils.generateDebugPacketString("NAT UDP Peer Request",
+				new String[] {
+					"Request Payload",
+					"Response Payload"
+				},
+				new String[] {
+					Utils.bytesToHex(buff),
+					Utils.bytesToHex(responseArray)
+				}
+			));
+		} else {
+			logger.finest(String.format("Generic ping from %s:%d", datagram.sender().getAddress().getHostAddress(), datagram.sender().getPort()));
 		}
+		
+		
 
 	}
 

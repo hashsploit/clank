@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.rpc.ClankDmeRpcClient;
 import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
@@ -33,7 +32,7 @@ public class DmeWorldManager {
 		return result;
 	}
 	
-	public void addPlayer(short dmeWorldIdShort, DmePlayer player) {
+	public synchronized void addPlayer(short dmeWorldIdShort, DmePlayer player) {
 		int dmeWorldId = (int) dmeWorldIdShort;
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
 		
@@ -44,11 +43,13 @@ public class DmeWorldManager {
 			
 			// Send world creation
 			ClankDmeRpcClient rpcClient = ((DmeServer) player.getClient().getServer()).getRpcClient();
-			rpcClient.updateWorld(dmeWorldId, WorldStatus.STAGING);
+			rpcClient.updateWorld(dmeWorldId, WorldStatus.CREATED);
 		}
 		
 		// Add the player
 		dmeWorld.addPlayer(player);
+		
+		player.setWorldId(dmeWorldId);
 		
 		// Add the reverse lookup
 		dmeWorldLookup.put(player, dmeWorld);
@@ -63,6 +64,11 @@ public class DmeWorldManager {
 		
 		// Update MLS that player is fully connected
 		dmePlayer.getClient().updateDmePlayer(dmePlayer.getMlsToken(), this.getWorldId(dmePlayer.getMlsToken()), PlayerStatus.STAGING);
+		
+		if (dmeWorld.getPlayerCount() == 1) {
+			ClankDmeRpcClient rpcClient = ((DmeServer) dmePlayer.getClient().getServer()).getRpcClient();
+			rpcClient.updateWorld(dmeWorld.getWorldId(), WorldStatus.STAGING);
+		}
 	}
 
 	public int getPlayerCount(DmePlayer player) {
@@ -99,7 +105,7 @@ public class DmeWorldManager {
 		worldToSend.clientAppSingleUdp(senderUdpAddr, bytes);		
 	}
 
-	public void playerUdpConnected(int dmeWorldId, int playerId, DatagramChannel playerUdpChannel, InetSocketAddress playerUdpAddr) {
+	public synchronized void playerUdpConnected(int dmeWorldId, int playerId, DatagramChannel playerUdpChannel, InetSocketAddress playerUdpAddr) {
 		// Get the DmeWorld
 		DmeWorld dmeWorld = dmeWorlds.get(dmeWorldId);
 		
@@ -141,6 +147,9 @@ public class DmeWorldManager {
 
 	public boolean worldIsEmpty(int worldId) {
 		DmeWorld world = dmeWorlds.get(worldId);
+		if (world == null) {
+			return true;
+		}
 		return world.isEmpty();
 	}
 

@@ -6,7 +6,9 @@ import java.util.logging.Logger;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
+import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollDatagramChannel;
 import io.netty.channel.epoll.EpollEventLoopGroup;
@@ -79,6 +81,8 @@ public class UdpServer extends AbstractServer {
 			final Bootstrap bootstrap = new Bootstrap();
 			bootstrap.group(eventLoopGroup)
 				.channel(datagramChannelClass)
+				.option(ChannelOption.SO_RCVBUF, 2048)
+				.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(2048))
 				.handler(channelInitializer);
 			
 			channelFuture = bootstrap.bind(this.getAddress(), this.getPort()).sync();

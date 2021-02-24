@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
@@ -14,11 +15,11 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessageId;
-import net.hashsploit.clank.server.common.MediusLobbyServer;
-import net.hashsploit.clank.server.common.MediusPacketHandler;
-import net.hashsploit.clank.server.common.objects.MediusMessage;
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -59,7 +60,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		logger.fine("TOTAL RAW INCOMING DATA: " + Utils.bytesToHex(data));
 
 		// Get the packets
-		List<RTMessage> packets = Utils.decodeRTMessageFrames(data);
+		List<RTMessage> packets = null; //Utils.decodeRTMessageFrames(data);
 
 		for (RTMessage packet : packets) {
 			processSinglePacket(ctx, packet);
@@ -69,7 +70,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 
 	private void processSinglePacket(ChannelHandlerContext ctx, RTMessage packet) {
 		// Get the raw data
-		logger.fine("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
+		//logger.fine("RAW Single packet: " + Utils.bytesToHex(packet.toBytes()));
 
 		logger.fine("Packet ID: " + packet.getId().toString());
 		logger.fine("Packet ID: " + packet.getId().getValue());
@@ -91,22 +92,22 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 		// ALL OTHER PACKETS THAT ARE MEDIUS PACKETS
 		if (packet.getId().toString().contains("APP")) {
 
-			MediusMessage incomingMessage = new MediusMessage(packet.getPayload());
+			MediusMessage incomingMessage = null; //new MediusMessage(packet.getPayload());
 
 			logger.fine("Found Medius Packet ID: " + Utils.bytesToHex(incomingMessage.getMediusPacketType().getShortByte()));
 			logger.fine("Found Medius Packet ID: " + incomingMessage.getMediusPacketType().toString());
 
 			// Detect which medius packet is being parsed
-			MediusPacketHandler mediusPacket = client.getServer().getMediusMessageMap().get(incomingMessage.getMediusPacketType());
+			MediusPacketHandler mediusPacket = client.getMediusMessageMap().get(incomingMessage.getMediusPacketType());
 
 			// Process this medius packet
-			mediusPacket.read(incomingMessage);
+			mediusPacket.read(client, incomingMessage);
 			mediusPacket.write(client);
 		}
 	}
 
 	public void checkInitialConnect(ChannelHandlerContext ctx, RTMessage packet) {
-		byte[] data = packet.toBytes();
+		byte[] data = packet.getFullMessage().array();
 
 		// RT ID 00, Length 6b00
 		// if
@@ -123,7 +124,7 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 			MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 			
 			logger.finest("Players before:");
-			logger.finest(server.playersToString());
+			logger.finest(Arrays.toString(server.getPlayers().stream().map(p -> p.getUsername()).collect(Collectors.toList()).toArray()));
 
 			// Update the player with the MLS playerlist
 			logger.info("MLS TOKEN: " + mlsToken);
@@ -138,11 +139,10 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 
 			
 			logger.finest("Players after:");
-			logger.finest(server.playersToString());
+			logger.finest(Arrays.toString(server.getPlayers().stream().map(p -> p.getUsername()).collect(Collectors.toList()).toArray()));
 			
 			logger.fine(Utils.bytesToHex(data));
 			byte[] firstPart = Utils.hexStringToByteArray("07170001081000000100");
-			logger.severe(client.getIPAddress());
 			byte[] ipAddr = client.getIPAddress().getBytes();
 			int numZeros = 16 - client.getIPAddress().getBytes().length;
 			String zeroString = new String(new char[numZeros]).replace("\0", "00");
@@ -185,10 +185,10 @@ public class TestHandlerMLS extends ChannelInboundHandlerAdapter { // (1)
 	}
 
 	public void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {
-		if (packet.getId() == RTMessageId.CLIENT_ECHO) {
+		if (packet.getId() == RtMessageId.CLIENT_ECHO) {
 			// Combine RT id and len
-			RTMessage packetResponse = new RTMessage(RTMessageId.CLIENT_ECHO, packet.getPayload());
-			byte[] payload = packetResponse.toBytes();
+			RTMessage packetResponse = new RTMessage(RtMessageId.CLIENT_ECHO, packet.getPayload());
+			byte[] payload = packetResponse.getFullMessage().array();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ByteBuf msg = Unpooled.copiedBuffer(payload);
 			ctx.write(msg);

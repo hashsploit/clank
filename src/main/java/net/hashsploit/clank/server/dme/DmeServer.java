@@ -26,8 +26,8 @@ public class DmeServer extends TcpServer {
 	
 	private final ClankDmeRpcClient rpcClient;
 
-	public DmeServer(final String tcpAddress, final int tcpPort, final int tcpParentThreads, final int tcpChildThreads, final String udpAddress, final int udpStartingPort, final int udpThreads) {
-		super(tcpAddress, tcpPort, tcpParentThreads, tcpChildThreads);
+	public DmeServer(final String tcpAddress, final int tcpPort, final int tcpParentThreads, final int tcpChildThreads, final String udpAddress, final int udpStartingPort, final int udpThreads, final int timeout) {
+		super(tcpAddress, tcpPort, tcpParentThreads, tcpChildThreads, timeout);
 
 		this.udpAddress = udpAddress;
 		this.udpStartingPort = udpStartingPort;
@@ -36,8 +36,8 @@ public class DmeServer extends TcpServer {
 		String udpServerAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
 		int udpServerPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
 
-		EventLoopGroup udpEventLoopGroup = new EpollEventLoopGroup(2);
-		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super tempoarary
+		EventLoopGroup udpEventLoopGroup = new EpollEventLoopGroup(4);
+		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super temporary
 			this.udpDmeServer = new DmeUdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup, dmeWorldManager);
 			udpDmeServer.setChannelInitializer(new DmeUdpClientInitializer(udpDmeServer));
 			udpDmeServer.start();

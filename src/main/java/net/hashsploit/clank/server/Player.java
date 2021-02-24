@@ -1,33 +1,33 @@
 package net.hashsploit.clank.server;
 
+import java.util.logging.Logger;
+
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.common.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 
 public class Player {
-	
+	private static final Logger logger = Logger.getLogger(Player.class.getName());
+
 	private final MediusClient client;
 	private MediusPlayerStatus playerStatus;
 	private String username;
 	private int accountId;
-	
+	private String sessionKey;
 	private int gameWorldId;
-	
 	private int chatWorldId;
-	
+	private int clanId;
+
 	public Player(MediusClient client, MediusPlayerStatus status) {
 		this.client = client;
 		this.playerStatus = status;
 		this.gameWorldId = 0;
 		this.chatWorldId = 0;
 	}
-	
+
 	public String toString() {
-		return "Player: \n" + 
-				"Username: " + username + "\n" + 
-				"State: " + playerStatus.name() + "\n" + 
-				"AccountID: " + Integer.toString(accountId) + "\n" + 
-				"ChatWorld: " + Integer.toString(chatWorldId) + "\n" + 
-				"GameWorld: " + Integer.toString(gameWorldId);
+		String s = "Player[Username: '" + username + "', SessionKey: " + sessionKey + ", Status: " + playerStatus.toString() + ", accountId: " + accountId + ", ChatWorld: " + chatWorldId + ", GameWorld: " + gameWorldId + "]";
+		return s;
+
 	}
 
 	public String getUsername() {
@@ -36,7 +36,6 @@ public class Player {
 
 	public void setUsername(String username) {
 		this.username = username;
-		this.accountId = Clank.getInstance().getDatabase().getAccountId(username);
 	}
 
 	public MediusClient getClient() {
@@ -47,7 +46,7 @@ public class Player {
 		this.accountId = playerAccountId;
 		this.username = Clank.getInstance().getDatabase().getUsername(accountId);
 	}
-	
+
 	public void setChatWorld(int chatWorldId) {
 		this.chatWorldId = chatWorldId;
 	}
@@ -57,6 +56,7 @@ public class Player {
 			this.gameWorldId = 0;
 		}
 		this.playerStatus = status;
+		logger.info("PlayerStatus updated: " + this.toString());
 	}
 
 	public Integer getAccountId() {
@@ -67,16 +67,24 @@ public class Player {
 		return playerStatus;
 	}
 
-	public int getGameWorldId() {
-		return gameWorldId;
-	}
-
 	public int getChatWorldId() {
 		return chatWorldId;
+	}
+
+	public int getGameWorldId() {
+		return gameWorldId;
 	}
 
 	public void setGameWorldId(int gameWorldId) {
 		this.gameWorldId = gameWorldId;
 	}
-		
+
+	public String getSessionKey() {
+		return sessionKey;
+	}
+
+	public void setSessionKey(String sessionKey) {
+		this.sessionKey = sessionKey;
+	}
+
 }

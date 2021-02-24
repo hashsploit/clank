@@ -1,12 +1,14 @@
 package net.hashsploit.clank.server;
 
+import io.netty.buffer.ByteBuf;
+
 public interface IRTMessage {
 	
 	/**
 	 * Get the SCE-RT/RTIME packet ID.
 	 * @return
 	 */
-	public RTMessageId getId();
+	public RtMessageId getId();
 	
 	/**
 	 * Get the data length.
@@ -18,6 +20,6 @@ public interface IRTMessage {
 	 * Get the raw data.
 	 * @return
 	 */
-	public byte[] getPayload();
+	public ByteBuf getPayload();
 	
 }

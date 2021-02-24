@@ -1,0 +1,8 @@
+{
+	"mode": "NAT_SERVER",
+	"log_level": "INFO",
+	"file_log_level": null,
+	"address": null,
+	"port": 10070,
+	"udp_threads": 4
+}

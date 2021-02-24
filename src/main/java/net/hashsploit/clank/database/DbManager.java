@@ -1,7 +1,6 @@
 package net.hashsploit.clank.database;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MasConfig;
 
 public class DbManager {
 
@@ -13,26 +12,45 @@ public class DbManager {
 		this.db = databaseType;
 	}
 
-	public boolean validateAccount(String username, String password) {
-		return db.validateAccount(username, password);
+	public int validateAccount(String sessionKey, String username, String password) {
+		return db.validateAccount(sessionKey, username, password);
 	}
 
-	public int getAccountId(String username) {
-		return db.getAccountId(username);
+	public String generateSessionKey() {
+		return db.generateSessionKey();
 	}
 
-	public String getMlsToken(Integer accountId) {
-		return db.getMlsToken(accountId);
+	public String generateMlsToken(int accountId) {
+		return db.generateMlsToken(accountId);
 	}
-	
-	public int getAccountIdFromMlsToken(String mlsToken) {
-		return db.getAccountIdFromMlsToken(mlsToken);
+
+	public boolean validateMlsAccessToken(String mlsAccessToken) {
+		return db.validateMlsAccessToken(mlsAccessToken);
+	}
+
+	public int getAccountIdFromSessionKey(String sessionKey) {
+		return db.getAccountIdFromSessionKey(sessionKey);
 	}
 
 	public String getUsername(int accountId) {
 		return db.getUsername(accountId);
 	}
-	
-	
-	
+
+	// ------------------------------- DELETE THESE
+	public int getAccountId(String a) {
+		return 0;
+	}
+
+	public int getAccountIdFromMlsToken(String a) {
+		return 0;
+	}
+
+	public String getMlsToken(int a) {
+		return null;
+	}
+
+	public Clank getClank() {
+		return clank;
+	}
+
 }
