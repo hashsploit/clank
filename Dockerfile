@@ -32,6 +32,7 @@ RUN echo "Downloading GraalVM from ${GRAALVM_SOURCE} ..." \
 RUN echo "Installing GraalVM ..." \
 	&& cd /tmp \
 	&& tar -xzf graal.tar.gz \
+	&& rm graal.tar.gz \
 	&& mkdir -p /usr/lib/jvm \
 	&& mv graalvm*/ /usr/lib/jvm/ \
 	&& cd /usr/lib/jvm \
@@ -61,6 +62,7 @@ RUN echo "Downloading Maven from ${MAVEN_SOURCE} ..." \
 RUN echo "Installing maven ..." \
 	&& cd /tmp \
 	&& tar -xzf maven.tar.gz \
+	&& rm maven.tar.gz \
 	&& mv apache-maven-* /opt/maven/ \
 	&& chmod +x /opt/maven/bin/*
 
@@ -70,30 +72,43 @@ ENV PATH="/opt/maven/bin:$PATH"
 # Set up the non-root user
 RUN adduser --shell /bin/bash --gecos "" --disabled-password --quiet ratchet
 
-# Copy everything into the container for virtualization
+# Copy everything into the container for virtualization and set permissions
 ADD ./ /home/ratchet
+RUN echo "Setting permissions ..." \
+	&& chown ratchet:ratchet -R /home/ratchet
+
+# Switch user
+USER ratchet
+WORKDIR /home/ratchet
+
+# Download the latest medius-crypto library
+ARG MEDIUS_CRYPTO_SOURCE
+RUN echo "Downloading medius-crypto from ${MEDIUS_CRYPTO_SOURCE} ..." \
+	&& curl -sLo /tmp/medius-crypto.tar.gz ${MEDIUS_CRYPTO_SOURCE}
+
+# Unzip and build the dependency
+RUN echo "Building medius-crypto ..." \
+	&& cd /tmp \
+	&& tar -xzf medius-crypto.tar.gz \
+	&& cd medius-crypto-*/ \
+	&& mvn clean install
 
 # Build project and clean up
 RUN echo "Building Clank ..." \
 	&& cd /home/ratchet/ \
+	&& mv docker/docker-run.sh . \
 	&& chmod +x build.sh docker-run.sh \
 	&& ./build.sh \
-	&& rm -rf bin/ target/ src/ .settings/ /tmp/* .git/ \
+	&& rm -rf bin/ target/ src/ .settings/ .git/ docker/ \
 	&& rm -f *.bat \
 	&& rm -f *.md \
 	&& rm -f Dockerfile \
-	&& rm -f docker-build.sh \
-	&& rm -f docker-example-*.sh \
-	&& rm -f docker-settings.sh \
 	&& rm -f launch.sh \
 	&& rm -f build.sh \
 	&& rm -f compile-protobufs.sh \
 	&& rm -f pom.xml \
 	&& rm -f .classpath \
-	&& rm -f .project \
-	&& chown ratchet:ratchet -R /home/ratchet
+	&& rm -f .project
 
-USER ratchet
-WORKDIR /home/ratchet
 ENTRYPOINT ["/bin/bash", "./docker-run.sh"]
 

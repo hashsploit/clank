@@ -26,6 +26,7 @@ docker build \
 	--force-rm \
 	--build-arg GRAALVM_SOURCE="${GRAALVM_SOURCE}" \
 	--build-arg MAVEN_SOURCE="${MAVEN_SOURCE}" \
+	--build-arg MEDIUS_CRYPTO_SOURCE="${MEDIUS_CRYPTO_SOURCE}" \
 	--tag ${DOCKER_IMAGE} \
-	${ADDITIONAL_BUILD_PARAMS} .
+	${ADDITIONAL_BUILD_PARAMS} ..
 
