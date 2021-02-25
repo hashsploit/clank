@@ -15,35 +15,16 @@ import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.nio.NioDatagramChannel;
-import net.hashsploit.clank.server.dme.DmeWorld;
 
 public class UdpServer extends AbstractServer {
 	
 	private static final Logger logger = Logger.getLogger(UdpServer.class.getName());
-	private static final int SOCKET_TIMEOUT = 300;
 	
 	private final Class<? extends DatagramChannel> datagramChannelClass;
 	private final int threads;
 	private EventLoopGroup eventLoopGroup;
 	private ChannelFuture channelFuture;
 	private ChannelInitializer<DatagramChannel> channelInitializer;
-	
-	
-	public UdpServer(final String address, final int port, final EventLoopGroup eventLoopGroup) {
-		super(address, port);
-		
-		this.threads = -1;
-		this.eventLoopGroup = eventLoopGroup;
-		
-		// Use Linux epoll if available.
-		if (Epoll.isAvailable()) {
-			logger.fine("Linux epoll is available. Using epoll for datagram channels.");
-			datagramChannelClass = EpollDatagramChannel.class;
-		} else {
-			datagramChannelClass = NioDatagramChannel.class;
-		}
-		
-	}
 	
 	public UdpServer(final String address, final int port, final int threads) {
 		super(address, port);
@@ -102,7 +83,7 @@ public class UdpServer extends AbstractServer {
 
 	@Override
 	public void stop() {
-		eventLoopGroup.shutdownGracefully().awaitUninterruptibly(SOCKET_TIMEOUT);		
+		eventLoopGroup.shutdownGracefully().awaitUninterruptibly(100);
 		if (channelFuture != null) {
 			channelFuture.channel().close();
 		}

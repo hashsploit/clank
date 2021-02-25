@@ -29,7 +29,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 
 	private static final Logger logger = Logger.getLogger(TestHandlerDmeTcp.class.getName());
 	private final DmeTcpClient client;
-	private int curUdpPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
+	private int curUdpPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpPort();
 
 	public TestHandlerDmeTcp(final DmeTcpClient client) {
 		super();

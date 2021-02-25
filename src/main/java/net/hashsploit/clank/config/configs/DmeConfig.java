@@ -134,11 +134,11 @@ public class DmeConfig extends AbstractConfig {
 	}
 
 	/**
-	 * Get the TCP port the server should be bound to.
+	 * Get the UDP port the server should be bound to.
 	 * 
 	 * @return
 	 */
-	public int getUdpStartingPort() {
+	public int getUdpPort() {
 		final String key = ConfigNames.UDP_PORT.toString();
 
 		if (getJson().isNull(key)) {

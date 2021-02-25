@@ -21,12 +21,10 @@ import net.hashsploit.clank.utils.Utils;
 public class TcpServer extends AbstractServer {
 	
 	private static final Logger logger = Logger.getLogger(TcpServer.class.getName());
-	private static final int BACKLOG = 100;
 	
 	private final Class<? extends ServerChannel> socketChannelClass;
 	private final int parentThreads;
 	private final int childThreads;
-	private final int timeout;
 	
 	private final EventLoopGroup parentEventLoopGroup;
 	private final EventLoopGroup childEventLoopGroup;
@@ -35,15 +33,10 @@ public class TcpServer extends AbstractServer {
 	private ChannelFuture channelFuture;
 	
 	public TcpServer(final String address, final int port, final int parentThreads, final int childThreads) {
-		this(address, port, parentThreads, childThreads, 30000);
-	}
-	
-	public TcpServer(final String address, final int port, final int parentThreads, final int childThreads, final int timeout) {
 		super(address, port);
 		
 		this.parentThreads = parentThreads;
 		this.childThreads = childThreads;
-		this.timeout = timeout;
 
 		// Use Linux epoll if available.
 		if (Epoll.isAvailable()) {
@@ -75,7 +68,6 @@ public class TcpServer extends AbstractServer {
 			final ServerBootstrap bootstrap = new ServerBootstrap();
 			bootstrap.group(parentEventLoopGroup, childEventLoopGroup)
 				.channel(socketChannelClass)
-				.option(ChannelOption.SO_BACKLOG, BACKLOG)
 				.option(ChannelOption.SO_RCVBUF, 2048)
 				.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(2048))
 				.childHandler(channelInitializer)

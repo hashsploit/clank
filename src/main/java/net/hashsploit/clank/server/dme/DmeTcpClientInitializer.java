@@ -1,42 +1,25 @@
 package net.hashsploit.clank.server.dme;
 
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.FixedRecvByteBufAllocator;
-import io.netty.channel.WriteBufferWaterMark;
 import io.netty.channel.socket.SocketChannel;
-import io.netty.handler.timeout.ReadTimeoutException;
-import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.server.IServer;
 
 public class DmeTcpClientInitializer extends ChannelInitializer<SocketChannel> {
+
+	private final DmeServer dmeServer;
 	
-	private final IServer server;
-	
-	public DmeTcpClientInitializer(IServer server) {
-		super();
-		this.server = server;
+	public DmeTcpClientInitializer(DmeServer dmeServer) {
+		this.dmeServer = dmeServer;
 	}
-	
+
 	@Override
-	protected void initChannel(SocketChannel ch) {
+	protected void initChannel(SocketChannel ch) throws Exception {
 		
-		// TODO: Pull bytebuffer allocator from config
-		ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(2048));
-		ch.config().setWriteBufferWaterMark(new WriteBufferWaterMark(2048, 4096));
+		// Set channel buffer size
+		ch.config().setRecvByteBufAllocator(new FixedRecvByteBufAllocator(4096));
 		
-		final DmeTcpClient client = new DmeTcpClient(server, ch);
-		server.addClient(client);
+		final DmeTcpClient client = new DmeTcpClient(dmeServer, ch);
+		dmeServer.addClient(client);
 	}
-	
-	@Override
-	public void exceptionCaught(ChannelHandlerContext ctx, Throwable e) {
-		
-		if (!(e.getCause() instanceof ReadTimeoutException)) {
-			Clank.getInstance().getTerminal().handleException(e);
-	    }
-		
-		ctx.channel().close().awaitUninterruptibly();
-	}
-	
+
 }

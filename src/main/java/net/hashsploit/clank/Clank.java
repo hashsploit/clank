@@ -22,10 +22,7 @@ import net.hashsploit.clank.config.configs.NatConfig;
 import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
-import net.hashsploit.clank.server.dme.DmePlayer;
 import net.hashsploit.clank.server.dme.DmeServer;
-import net.hashsploit.clank.server.dme.DmeWorld;
-import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.muis.MediusUniverseInformationServer;
@@ -154,13 +151,26 @@ public class Clank {
 			case NAT_SERVER:
 				terminalPrompt = "NAT>";
 				NatConfig natConfig = (NatConfig) config;
-				server = new NatServer(natConfig.getAddress(), natConfig.getPort(), natConfig.getUdpThreads());
+				server = new NatServer(
+					natConfig.getAddress(),
+					natConfig.getPort(),
+					natConfig.getUdpThreads()
+				);
 				break;
 			case DME_SERVER:
 				terminalPrompt = AnsiColor.GREEN + "DME>";
 				terminal.registerCommand(new CLIBroadcastCommand());
 				DmeConfig dmeConfig = (DmeConfig) config;
-				server = new DmeServer(dmeConfig.getTcpAddress(), dmeConfig.getTcpPort(), dmeConfig.getParentThreads(), dmeConfig.getChildThreads(), dmeConfig.getUdpAddress(), dmeConfig.getUdpStartingPort(), dmeConfig.getUdpThreads(), dmeConfig.getTimeout());
+				server = new DmeServer(
+					dmeConfig.getTcpAddress(),
+					dmeConfig.getTcpPort(),
+					dmeConfig.getParentThreads(),
+					dmeConfig.getChildThreads(),
+					dmeConfig.getUdpAddress(),
+					dmeConfig.getUdpPort(),
+					dmeConfig.getUdpThreads(),
+					dmeConfig.getRpcConfig()
+				);
 				break;
 			default:
 				logger.severe("No valid server component provided.");
@@ -176,7 +186,7 @@ public class Clank {
 			while (running) {
 				update();
 				try {
-					Thread.sleep(30);
+					Thread.sleep(300);
 				} catch (InterruptedException e) {
 					// Discard
 				}
@@ -203,22 +213,9 @@ public class Clank {
 			case NAT_SERVER:
 				break;
 			case DME_SERVER:
-				dmeUpdate();
 				break;
 			default:
 				return;
-		}
-	}
-
-	// FIXME: move this out
-	public void dmeUpdate() {
-		DmeWorldManager dmeWorldManager = ((DmeServer) server).getDmeWorldManager();
-		for (DmeWorld dmeWorld : dmeWorldManager.getWorlds()) {
-			for (DmePlayer dmePlayer : dmeWorld.getPlayers()) {
-				logger.finest("CLANK FLUSH, PLAYER: " + dmePlayer.getPlayerId());
-				dmePlayer.flushTcpData();
-				dmePlayer.flushUdpData();
-			}
 		}
 	}
 
