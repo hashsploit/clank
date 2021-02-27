@@ -17,6 +17,8 @@ import net.hashsploit.clank.utils.Utils;
 public class MediusAuthenticationServer extends MediusServer {
 
 	private final ClankMasRpcClient rpcClient;
+	private int natPort;
+	private int mlsPort;
 
 	public MediusAuthenticationServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_AUTHENTICATION_SERVER, address, port, parentThreads, childThreads);
@@ -37,6 +39,8 @@ public class MediusAuthenticationServer extends MediusServer {
 			if (masConfig.isWhitelistEnabled()) {
 				logger.info(String.format("Whitelisted users: %s", Arrays.toString(masConfig.getWhitelist().keySet().toArray())));
 			}
+			natPort = masConfig.getNatPort();
+			mlsPort = masConfig.getMlsPort();
 		}
 	
 	}
@@ -57,6 +61,15 @@ public class MediusAuthenticationServer extends MediusServer {
 	
 	public List<Location> getLocations() {
 		return ((MasConfig) Clank.getInstance().getConfig()).getLocations();
+	}
+
+	public int getNatPort() {
+		return natPort;
+	}
+
+
+	public int getMlsPort() {
+		return mlsPort;
 	}
 
 }

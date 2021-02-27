@@ -261,8 +261,9 @@ public enum ChatColor {
 		
 		for (final char c : text.toCharArray()) {
 			for (final ChatColor chatColor : ChatColor.values()) {
-				if (c != chatColor.value && c >= 0x21 && c <= 0x7F) {
+				if (c != chatColor.value) {
 					sb.append(c);
+					break;
 				}
 			}
 		}
