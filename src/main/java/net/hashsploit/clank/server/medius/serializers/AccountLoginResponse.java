@@ -17,13 +17,15 @@ public class AccountLoginResponse extends MediusMessage {
 	private byte[] accountType;
 	private byte[] worldID;
 	private byte[] mlsAddress;
+	private byte[] mlsPort;
 	private byte[] mlsZeroTrail;
 	private byte[] natAddress;
+	private byte[] natPort;
 	private byte[] natZeroTrail;
 	private byte[] mlsToken;
 	
 	public AccountLoginResponse(byte[] messageID, byte[] callbackStatus, byte[] accountID, byte[] accountType,
-			byte[] worldID, byte[] mlsAddress, byte[] mlsZeroTrail, byte[]natAddress, byte[] natZeroTrail, byte[] mlsToken) {
+			byte[] worldID, byte[] mlsAddress, byte[] mlsPort, byte[] mlsZeroTrail, byte[]natAddress, byte[] natPort, byte[] natZeroTrail, byte[] mlsToken) {
 		super(MediusMessageType.AccountLoginResponse);
 		
 		this.messageID = messageID;
@@ -32,8 +34,10 @@ public class AccountLoginResponse extends MediusMessage {
 		this.accountType = accountType;
 		this.worldID = worldID;
 		this.mlsAddress = mlsAddress;
+		this.mlsPort = mlsPort;
 		this.mlsZeroTrail = mlsZeroTrail;
 		this.natAddress = natAddress;
+		this.natPort = natPort;
 		this.natZeroTrail = natZeroTrail;
 		this.mlsToken = mlsToken;
 	}
@@ -54,12 +58,13 @@ public class AccountLoginResponse extends MediusMessage {
 			
 			outputStream.write(mlsAddress); // MLS Server Addr TODO: replace with server IP
 			outputStream.write(mlsZeroTrail); // Zero padding based on server IP size 
-			outputStream.write(Utils.hexStringToByteArray("5e27000003000000")); // MLS Port + padding
+			outputStream.write(mlsPort); // MLS Port
+			outputStream.write(Utils.hexStringToByteArray("000003000000")); // padding
 			
 			outputStream.write(natAddress); // NAT server Addr
 			outputStream.write(natZeroTrail); // Padding for address
-			outputStream.write(Utils.hexStringToByteArray("56270000")); // NAT Port + padding
-			outputStream.write(Utils.hexStringToByteArray("00000000")); // World ID to join. Default is zero when you login
+			outputStream.write(natPort); // NAT Port + padding
+			outputStream.write(Utils.hexStringToByteArray("000000000000")); // World ID to join. Default is zero when you login
 			outputStream.write(Utils.hexStringToByteArray("00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000"));
 			
 			// TODO: These last two byte arrays might be part of the smae thing, a session key perhaps.
