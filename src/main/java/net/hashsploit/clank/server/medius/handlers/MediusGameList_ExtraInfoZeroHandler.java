@@ -77,7 +77,7 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 				endOfList = i == games.size() - 1;
 				
 				respPacket = new GameList_ExtraInfoZeroResponse(messageId, mediusWorldId, callbackStatus, playerCount, minPlayers, maxPlayers, gameLevel, playerSkillLevel, rulesSet, genericField1, genericField2, genericField3,
-						worldSecurityLevelType, worldStatus, gameHostType, gameName, gameStats, endOfList);
+						worldSecurityLevelType, worldStatus, gameHostType, gameRequested.getGameName(), gameStats, endOfList);
 				client.sendMediusMessage(respPacket);
 			}
 		} else {

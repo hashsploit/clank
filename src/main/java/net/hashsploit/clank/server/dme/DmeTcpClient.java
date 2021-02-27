@@ -32,7 +32,7 @@ public class DmeTcpClient implements IClient {
 		
 		logger.info("Client connected: " + getIPAddress());
 		
-		channel.pipeline().addLast(new TimeoutHandler(this, 15));
+		channel.pipeline().addLast(new TimeoutHandler(this, 48));
 		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.value, 1, 2, 0, 0, false));
 		channel.pipeline().addLast("MediusTestHandlerDME", new TestHandlerDmeTcp(this));
 		
