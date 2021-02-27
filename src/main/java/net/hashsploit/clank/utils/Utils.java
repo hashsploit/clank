@@ -25,7 +25,7 @@ import net.hashsploit.medius.crypto.rc.PS2_RC4;
 public class Utils {
 
 	private static final char[] HEX_ARRAY = "0123456789ABCDEF".toCharArray();
-	private static final int PUBLIC_IP_UPDATE_TRESHOLD = 60;
+	private static final int PUBLIC_IP_UPDATE_TRESHOLD = 86400;
 
 	private static String lastPublicIp = null;
 	private static long lastPublicIpUpdate = 0L;
@@ -331,29 +331,43 @@ public class Utils {
 	 * @return publicIpAddress
 	 */
 	public static String getPublicIpAddress() {
-
-		// Cache the IP for a little while.
+		
+		// If the IP Address is still cached, use it
 		if (lastPublicIpUpdate + (1000 * PUBLIC_IP_UPDATE_TRESHOLD) > new Date().getTime()) {
 			return lastPublicIp;
 		}
+		
+		String address = null;
+		
+		address = getPublicIpAddressFromService("https://ip.seeip.org/");
+		
+		if (address == null) {
+			address = getPublicIpAddressFromService("https://api.ipify.org/");
+		}
+		
+		if (address != null) {
+			// Cache the IP Address for a while
+			lastPublicIp = address;
+			lastPublicIpUpdate = new Date().getTime();
+		}
+		
+		return address;
+	}
+	
+	private static String getPublicIpAddressFromService(String url) {
 
 		try {
-			Clank.getInstance().getTerminal().print(Level.FINE, "Getting public IP Address from api.ipify.org ...");
-			URL url = new URL("https://api.ipify.org");
-			HttpsURLConnection connection = (HttpsURLConnection) url.openConnection();
+			Clank.getInstance().getTerminal().print(Level.FINE, String.format("Getting public IP Address from %s ...", url));
+			URL urlObj = new URL(url);
+			HttpsURLConnection connection = (HttpsURLConnection) urlObj.openConnection();
 
 			if (connection.getResponseCode() == 200 || connection.getResponseCode() == 304) {
 				final String ipAddr = new BufferedReader(new InputStreamReader(connection.getInputStream())).lines().collect(Collectors.joining()).trim();
 				Clank.getInstance().getTerminal().print(Level.FINEST, String.format("Public IP address: %s", ipAddr));
-
-				// Set cache.
-				lastPublicIp = ipAddr;
-				lastPublicIpUpdate = new Date().getTime();
-
 				return ipAddr;
 			}
 
-			Clank.getInstance().getTerminal().print(Level.SEVERE, "Got non-HTTP 200 status from ipify endpoint!");
+			Clank.getInstance().getTerminal().print(Level.SEVERE, String.format("Got non-HTTP 200 status from %s endpoint!", url));
 		} catch (IOException e) {
 			Clank.getInstance().getTerminal().print(Level.SEVERE, "Failed to get the public IP Address!");
 			e.printStackTrace();
