@@ -6,7 +6,7 @@ import io.netty.channel.socket.DatagramChannel;
 import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
-import net.hashsploit.clank.server.pipeline.TestHandlerNATUdp;
+import net.hashsploit.clank.server.pipeline.NatHandler;
 
 public class NatClient implements IClient {
 	
@@ -19,7 +19,7 @@ public class NatClient implements IClient {
 		this.server = server;
 		this.channel = ch;
 		
-		channel.pipeline().addLast("NatPipelineHandler", new TestHandlerNATUdp(this));
+		channel.pipeline().addLast("NatPipelineHandler", new NatHandler());
 	}
 
 	@Override
