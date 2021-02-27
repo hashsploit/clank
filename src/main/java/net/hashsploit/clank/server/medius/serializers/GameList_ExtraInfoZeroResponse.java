@@ -2,11 +2,13 @@ package net.hashsploit.clank.server.medius.serializers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.logging.Logger;
 
 import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusWorldSecurityLevelType;
@@ -14,6 +16,7 @@ import net.hashsploit.clank.server.medius.objects.MediusWorldStatus;
 import net.hashsploit.clank.utils.Utils;
 
 public class GameList_ExtraInfoZeroResponse extends MediusMessage {
+	protected static final Logger logger = Logger.getLogger(MediusPacketHandler.class.getName());
 
 	private byte[] messageId;
 	private int mediusWorldId;
@@ -87,8 +90,13 @@ public class GameList_ExtraInfoZeroResponse extends MediusMessage {
 
 			// GameName (contains some ID in it, remainder of the name string buffer is 0x20
 			// [space character])
-
+			logger.info(gameName);
+			String s = ChatColor.strip(gameName);
+			logger.info(s);
+			logger.info("" + s.length());
+			
 			outputStream.write(Utils.buildByteArrayFromString(ChatColor.strip(gameName), MediusConstants.GAMENAME_MAXLEN.value));
+			//outputStream.write(Utils.buildByteArrayFromString(ChatColor.strip(gameName), MediusConstants.GAMENAME_MAXLEN.value));
 
 			// GameStats
 			outputStream.write(gameStats);
