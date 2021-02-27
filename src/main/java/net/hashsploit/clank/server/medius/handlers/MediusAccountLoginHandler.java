@@ -125,13 +125,16 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		int mlsNumZeros = 16 - mlsIpAddress.length();
 		String mlsZeroString = new String(new char[mlsNumZeros]).replace("\0", "00");
 		byte[] mlsZeroTrail = Utils.hexStringToByteArray(mlsZeroString);
+		byte[] mlsPort = Utils.shortToBytesLittle((short) ((MediusAuthenticationServer) client.getServer()).getMlsPort());
+
 
 		byte[] natAddress = natIpAddress.getBytes();
 		int natNumZeros = 16 - natIpAddress.length();
 		String natZeroString = new String(new char[natNumZeros]).replace("\0", "00");
 		byte[] natZeroTrail = Utils.hexStringToByteArray(natZeroString);
+		byte[] natPort = Utils.shortToBytesLittle((short) ((MediusAuthenticationServer) client.getServer()).getNatPort());
 
-		respPacket = new AccountLoginResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountType, worldID, mlsAddress, mlsZeroTrail, natAddress, natZeroTrail, mlsToken);
+		respPacket = new AccountLoginResponse(reqPacket.getMessageID(), callbackStatus, accountID, accountType, worldID, mlsAddress, mlsPort, mlsZeroTrail, natAddress, natPort, natZeroTrail, mlsToken);
 		
 		
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
