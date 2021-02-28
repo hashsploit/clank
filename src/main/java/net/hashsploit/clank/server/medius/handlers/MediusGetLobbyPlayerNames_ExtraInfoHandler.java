@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
@@ -51,7 +52,15 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 			byte[] accountID = Utils.intToBytesLittle(player.getAccountId());
 			byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.value);
 			byte[] playerStatus = Utils.intToBytesLittle(player.getStatus().getValue());
-			byte[] gameWorldID = Utils.intToBytesLittle(0); // TODO : Set this as the game world id
+			
+			MediusGame game = server.getGameFromPlayer(player);
+			byte[] gameWorldID;
+			if (game == null) {
+				gameWorldID = Utils.intToBytesLittle(0); 
+			}
+			else {
+			    gameWorldID = Utils.intToBytesLittle(game.getWorldId());
+			}
 			byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getLobbyWorldId())).getName(), MediusConstants.WORLDNAME_MAXLEN.value);
 			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.value);
 			

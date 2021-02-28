@@ -301,4 +301,15 @@ public class MediusLobbyServer extends MediusServer {
 		return newGameId;
 	}
 
+	public MediusGame getGameFromPlayer(Player player) {
+		for (MediusGame game: games) {
+			for (Player p: game.getPlayers()) {
+				if (player == p) {
+					return game;
+				}
+			}
+		}
+		return null;
+	}
+
 }
