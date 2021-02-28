@@ -63,4 +63,8 @@ public class MediusGame {
 		this.worldStatus = worldStatus;
 	}
 
+	public HashSet<Player> getPlayers() {
+		return players;
+	}
+
 }

@@ -243,7 +243,7 @@ public class MediusLobbyServer extends MediusServer {
 		logger.finest(MediusLobbyServer.class.getName() + ".updatePlayerStatusFromDme(mlsToken, worldId, status): MlsToken: " + mlsToken + "\nWorld Id: " + worldId + "\nPlayer Status: " + status.name());
 		//playerList.updatePlayerStatus(accountId, status);
 		
-		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+		if (status != MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD) {
 			for (MediusGame game : games) {
 				if (game.getWorldId() == worldId) {
 					game.removePlayer(player);
@@ -255,23 +255,7 @@ public class MediusLobbyServer extends MediusServer {
 		
 		
 	}
-
-	/**
-	 * Get a list of players in staging or in-game.
-	 * 
-	 * @param worldId
-	 * @return
-	 */
-	public HashSet<Player> getGameWorldPlayers(int worldId) {
-		final HashSet<Player> result = new HashSet<Player>();
-		for (final Player player : players) {
-			if (player.getGameWorldId() == worldId) {
-				result.add(player);
-			}
-		}
-		return result;
-	}
-
+	
 	/**
 	 * Get a list of players in a lobby World Id.
 	 * 

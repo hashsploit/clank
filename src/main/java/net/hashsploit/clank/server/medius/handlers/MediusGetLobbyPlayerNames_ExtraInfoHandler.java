@@ -51,7 +51,7 @@ public class MediusGetLobbyPlayerNames_ExtraInfoHandler extends MediusPacketHand
 			byte[] accountID = Utils.intToBytesLittle(player.getAccountId());
 			byte[] accountName = Utils.buildByteArrayFromString(player.getUsername(), MediusConstants.ACCOUNTNAME_MAXLEN.value);
 			byte[] playerStatus = Utils.intToBytesLittle(player.getStatus().getValue());
-			byte[] gameWorldID = Utils.intToBytesLittle(player.getGameWorldId());
+			byte[] gameWorldID = Utils.intToBytesLittle(0); // TODO : Set this as the game world id
 			byte[] lobbyName = Utils.buildByteArrayFromString(server.getChannelById(Utils.bytesToIntLittle(reqPacket.getLobbyWorldId())).getName(), MediusConstants.WORLDNAME_MAXLEN.value);
 			byte[] gameName = Utils.buildByteArrayFromString("", MediusConstants.WORLDNAME_MAXLEN.value);
 			

@@ -13,19 +13,17 @@ public class Player {
 	private String username;
 	private int accountId;
 	private String sessionKey;
-	private int gameWorldId;
 	private int chatWorldId;
 	private int clanId;
 
 	public Player(MediusClient client, MediusPlayerStatus status) {
 		this.client = client;
 		this.playerStatus = status;
-		this.gameWorldId = 0;
 		this.chatWorldId = 0;
 	}
 
 	public String toString() {
-		String s = "Player[Username: '" + username + "', SessionKey: " + sessionKey + ", Status: " + playerStatus.toString() + ", accountId: " + accountId + ", ChatWorld: " + chatWorldId + ", GameWorld: " + gameWorldId + "]";
+		String s = "Player[Username: '" + username + "', SessionKey: " + sessionKey + ", Status: " + playerStatus.toString() + ", accountId: " + accountId + ", ChatWorld: " + chatWorldId + "]";
 		return s;
 
 	}
@@ -52,9 +50,6 @@ public class Player {
 	}
 
 	public void updateStatus(MediusPlayerStatus status) {
-		if (status != MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD) {
-			this.gameWorldId = 0;
-		}
 		this.playerStatus = status;
 		logger.info("PlayerStatus updated: " + this.toString());
 	}
@@ -69,14 +64,6 @@ public class Player {
 
 	public int getChatWorldId() {
 		return chatWorldId;
-	}
-
-	public int getGameWorldId() {
-		return gameWorldId;
-	}
-
-	public void setGameWorldId(int gameWorldId) {
-		this.gameWorldId = gameWorldId;
 	}
 
 	public String getSessionKey() {
