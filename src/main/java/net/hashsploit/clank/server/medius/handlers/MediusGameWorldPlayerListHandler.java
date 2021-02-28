@@ -42,11 +42,15 @@ public class MediusGameWorldPlayerListHandler extends MediusPacketHandler {
     	
     	List<MediusMessage> messagesToWrite = new ArrayList<MediusMessage>();
     	
+    	HashSet<Player> playersInWorld;
     	MediusGame game = server.getGame(worldIdRequested);
     	if (game == null) {
-    		throw new IllegalStateException("Unknown game requested: " + worldIdRequested);
+    		logger.severe("Unknown game requested: " + worldIdRequested);
+    		playersInWorld = new HashSet<Player>();
     	}
-		HashSet<Player> playersInWorld = game.getPlayers();
+    	else {
+    		playersInWorld = game.getPlayers();
+    	}
 		
 		if (playersInWorld != null) {
     		Iterator<Player> iterator = playersInWorld.iterator();
