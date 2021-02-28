@@ -207,12 +207,27 @@ public class MediusLobbyServer extends MediusServer {
 	 * @param worldStatus
 	 */
 	public synchronized void updateDmeWorldStatus(int worldId, MediusWorldStatus worldStatus) {
-		for (MediusGame game : games) {
-			if (game.getWorldId() == worldId) {
-				game.updateStatus(worldStatus);
-				return;
+		MediusGame game = this.getGame(worldId);
+		if (game == null) {
+			logger.severe("Dme world update for unknown game: [dmeWorldId: " + worldId + ", mediusWorldStatus: " + worldStatus.toString() + "]");
+			return;
+		}
+		
+		if (worldStatus == MediusWorldStatus.WORLD_CLOSED || worldStatus == MediusWorldStatus.WORLD_INACTIVE) {
+			deleteGame(game);
+		}
+		
+		game.updateStatus(worldStatus);
+	}
+
+	private synchronized void deleteGame(MediusGame game) {
+		int idxToRemove = 0;
+		for (int i = 0; i < games.size(); i++) {
+			if (game == games.get(i)) {
+				idxToRemove = i;
 			}
 		}
+		games.remove(idxToRemove);		
 	}
 
 	/**
@@ -247,8 +262,12 @@ public class MediusLobbyServer extends MediusServer {
 			for (MediusGame game : games) {
 				if (game.getWorldId() == worldId) {
 					game.removePlayer(player);
+					if (game.getPlayerCount() == 0) {
+						deleteGame(game);
+					}
 					break;
 				}
+
 			}
 		}
 		

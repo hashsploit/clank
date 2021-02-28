@@ -63,4 +63,8 @@ public class MediusGame {
 		this.worldStatus = worldStatus;
 	}
 
+	public static MediusGame buildEmptyGame(CreateGameOneRequest req) {
+		return new MediusGame(0, req);
+	}
+
 }

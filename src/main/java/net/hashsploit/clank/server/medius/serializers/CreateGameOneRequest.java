@@ -2,9 +2,11 @@ package net.hashsploit.clank.server.medius.serializers;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.logging.Logger;
 
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
+import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
@@ -31,7 +33,6 @@ public class CreateGameOneRequest extends MediusMessage {
 
 	public CreateGameOneRequest(byte[] data) {
 		super(MediusMessageType.CreateGame1, data);
-		
 		ByteBuffer buf = ByteBuffer.wrap(data);
 		buf.order(ByteOrder.LITTLE_ENDIAN);
 
@@ -145,6 +146,11 @@ public class CreateGameOneRequest extends MediusMessage {
 
 	public boolean hasAttributes() {
 		return hasAttributes;
+	}
+
+	public static CreateGameOneRequest buildEmptyPacket() {
+		// Empty packet for null games
+		return new CreateGameOneRequest(new byte[512]);
 	}
 
 }
