@@ -62,9 +62,13 @@ public class MediusGame {
 		logger.info("Updating world status: [dmeWorldId: " + worldId + ", newWorldStatus: " + worldStatus.toString() + ", playercount: " + getPlayerCount() + "]");
 		this.worldStatus = worldStatus;
 	}
-
+	
+	public HashSet<Player> getPlayers() {
+		return players;
+	}
+	
 	public static MediusGame buildEmptyGame(CreateGameOneRequest req) {
-		return new MediusGame(0, req);
+		return new MediusGame(0, req);	
 	}
 
 }
