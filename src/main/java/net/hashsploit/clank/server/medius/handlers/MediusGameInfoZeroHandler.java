@@ -37,7 +37,19 @@ public class MediusGameInfoZeroHandler extends MediusPacketHandler {
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 
 		MediusGame game = server.getGame(reqPacket.getWorldId());
-		CreateGameOneRequest req = game.getReqPacket();
+		CreateGameOneRequest req;
+		
+		// If a player inspects an already destroyed game, send not found
+		// This occurs when a player in cities has not yet sent a request packet
+		// for the game list, but the game has been destroyed (~10 sec window)
+		if (game == null) {
+			req = CreateGameOneRequest.buildEmptyPacket();
+			callbackStatus = MediusCallbackStatus.GAME_NOT_FOUND;
+			game = MediusGame.buildEmptyGame(req);
+		}
+		else {
+			req = game.getReqPacket();
+		}
 
 		respPacket = new GameInfoResponseZero(reqPacket.getMessageID(), callbackStatus, req.getAppId(), req.getMinPlayers(), req.getMaxPlayers(), req.getGameLevel(), req.getPlayerSkillLevel(), game.getPlayerCount(), game.getStats(),
 				req.getGameName(), req.getRulesSet(), req.getGenField1(), req.getGenField2(), req.getGenField3(), game.getWorldStatus(), req.getGameHostType());

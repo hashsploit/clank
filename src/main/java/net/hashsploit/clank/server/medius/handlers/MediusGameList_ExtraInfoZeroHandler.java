@@ -66,7 +66,6 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 			for (int i=0; i<games.size(); i++) {
 				final MediusGame game = games.get(i);
 				final CreateGameOneRequest gameRequested = game.getReqPacket();
-				
 				mediusWorldId = game.getWorldId();
 				callbackStatus = MediusCallbackStatus.SUCCESS;
 				playerCount = (short) game.getPlayerCount();
@@ -78,15 +77,14 @@ public class MediusGameList_ExtraInfoZeroHandler extends MediusPacketHandler {
 				
 				respPacket = new GameList_ExtraInfoZeroResponse(messageId, mediusWorldId, callbackStatus, playerCount, minPlayers, maxPlayers, gameLevel, playerSkillLevel, rulesSet, genericField1, genericField2, genericField3,
 						worldSecurityLevelType, worldStatus, gameHostType, gameRequested.getGameName(), gameStats, endOfList);
-				client.sendMediusMessage(respPacket);
+				response.add(respPacket);
 			}
 		} else {
 			respPacket = new GameList_ExtraInfoZeroResponse(messageId, mediusWorldId, callbackStatus, playerCount, minPlayers, maxPlayers, gameLevel, playerSkillLevel, rulesSet, genericField1, genericField2, genericField3, worldSecurityLevelType, worldStatus, gameHostType, gameName, gameStats, endOfList);
-			client.sendMediusMessage(respPacket);
+			response.add(respPacket);
 		}
 		
 
-		response.add(respPacket);
 		return response;
 
 	}

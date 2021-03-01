@@ -207,12 +207,28 @@ public class MediusLobbyServer extends MediusServer {
 	 * @param worldStatus
 	 */
 	public synchronized void updateDmeWorldStatus(int worldId, MediusWorldStatus worldStatus) {
-		for (MediusGame game : games) {
-			if (game.getWorldId() == worldId) {
-				game.updateStatus(worldStatus);
-				return;
+		MediusGame game = this.getGame(worldId);
+		if (game == null) {
+			logger.severe("Dme world update for unknown game: [dmeWorldId: " + worldId + ", mediusWorldStatus: " + worldStatus.toString() + "]");
+			return;
+		}
+		
+		if (worldStatus == MediusWorldStatus.WORLD_CLOSED || worldStatus == MediusWorldStatus.WORLD_INACTIVE) {
+			deleteGame(game);
+			return;
+		}
+		
+		game.updateStatus(worldStatus);
+	}
+
+	private synchronized void deleteGame(MediusGame game) {
+		int idxToRemove = 0;
+		for (int i = 0; i < games.size(); i++) {
+			if (game == games.get(i)) {
+				idxToRemove = i;
 			}
 		}
+		games.remove(idxToRemove);		
 	}
 
 	/**
@@ -243,35 +259,23 @@ public class MediusLobbyServer extends MediusServer {
 		logger.finest(MediusLobbyServer.class.getName() + ".updatePlayerStatusFromDme(mlsToken, worldId, status): MlsToken: " + mlsToken + "\nWorld Id: " + worldId + "\nPlayer Status: " + status.name());
 		//playerList.updatePlayerStatus(accountId, status);
 		
-		if (status == MediusPlayerStatus.MEDIUS_PLAYER_DISCONNECTED) {
+		if (status != MediusPlayerStatus.MEDIUS_PLAYER_IN_GAME_WORLD) {
 			for (MediusGame game : games) {
 				if (game.getWorldId() == worldId) {
 					game.removePlayer(player);
+					if (game.getPlayerCount() == 0) {
+						deleteGame(game);
+					}
 					break;
 				}
+
 			}
 		}
 		
 		
 		
 	}
-
-	/**
-	 * Get a list of players in staging or in-game.
-	 * 
-	 * @param worldId
-	 * @return
-	 */
-	public HashSet<Player> getGameWorldPlayers(int worldId) {
-		final HashSet<Player> result = new HashSet<Player>();
-		for (final Player player : players) {
-			if (player.getGameWorldId() == worldId) {
-				result.add(player);
-			}
-		}
-		return result;
-	}
-
+	
 	/**
 	 * Get a list of players in a lobby World Id.
 	 * 
@@ -315,6 +319,17 @@ public class MediusLobbyServer extends MediusServer {
 		games.add(new MediusGame(newGameId, req));
 		
 		return newGameId;
+	}
+
+	public MediusGame getGameFromPlayer(Player player) {
+		for (MediusGame game: games) {
+			for (Player p: game.getPlayers()) {
+				if (player == p) {
+					return game;
+				}
+			}
+		}
+		return null;
 	}
 
 }
