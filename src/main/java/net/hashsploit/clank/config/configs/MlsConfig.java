@@ -24,6 +24,10 @@ public class MlsConfig extends MediusConfig {
 	public String getDmeAddress() {
 		final String key = ConfigNames.DME.toString();
 		
+		if (getJson().getJSONObject(key).isNull(ConfigNames.DME_ADDRESS.toString())) {
+			return null;
+		}
+		
 		return getJson().getJSONObject(key).getString(ConfigNames.DME_ADDRESS.toString());
 	}
 	
