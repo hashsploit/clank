@@ -9,4 +9,9 @@ public class DmePlayer {
 	}
 	
 	
+	
+	public DmeClient getClient() {
+		return client;
+	}
+	
 }
