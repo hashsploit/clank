@@ -53,10 +53,21 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		}
 
 		final MediusGameHostType gameHostType = MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP;
+		final MlsConfig mlsConfig = (MlsConfig) Clank.getInstance().getConfig();
 		
-		final NetAddress firstNetAddress = new NetAddress(NetAddressType.NET_ADDRESS_TYPE_EXTERNAL, ((MlsConfig) Clank.getInstance().getConfig()).getDmeAddress(), ((MlsConfig) Clank.getInstance().getConfig()).getDmePort());
-		//final NetAddress secondNetAddress = new NetAddress(NetAddressType.NET_ADDRESS_NAT_SERVICE, Clank.getInstance().getConfig().getAddress(), 10080); // SET TO MLS.CONF/MLS.JSON NAT ADDR
-		final NetAddress secondNetAddress = new NetAddress(NetAddressType.NET_ADDRESS_NONE, ((MlsConfig) Clank.getInstance().getConfig()).getNatAddress(), ((MlsConfig) Clank.getInstance().getConfig()).getDmePort());
+		String dmeAddress = mlsConfig.getDmeAddress();
+		String natAddress = mlsConfig.getNatAddress();
+		
+		if (dmeAddress == null) {
+			dmeAddress = Utils.getPublicIpAddress();
+		}
+		
+		if (natAddress == null) {
+			natAddress = Utils.getPublicIpAddress();
+		}
+		
+		final NetAddress firstNetAddress = new NetAddress(NetAddressType.NET_ADDRESS_TYPE_EXTERNAL, dmeAddress, mlsConfig.getDmePort());
+		final NetAddress secondNetAddress = new NetAddress(NetAddressType.NET_ADDRESS_NONE, natAddress, mlsConfig.getNatPort());
 		
 		final NetAddressList netAddressList = new NetAddressList(firstNetAddress, secondNetAddress);
 		
