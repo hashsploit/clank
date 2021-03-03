@@ -17,5 +17,5 @@ if not exist %DIR%\%JAR% (
 )
 
 REM Execute server
-java -server -XX:+UseG1GC -Xms%INIT_MEM% -Xmx%MAX_MEM% -jar %DIR%\%JAR% $@
+java -server -XX:+UseG1GC -Xms%INIT_MEM% -Xmx%MAX_MEM% -jar %DIR%\%JAR% %*
 
