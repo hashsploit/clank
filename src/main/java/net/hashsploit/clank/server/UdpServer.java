@@ -62,7 +62,7 @@ public class UdpServer extends AbstractServer {
 			final Bootstrap bootstrap = new Bootstrap();
 			bootstrap.group(eventLoopGroup)
 				.channel(datagramChannelClass)
-				.option(ChannelOption.SO_RCVBUF, 2048)
+				.option(ChannelOption.SO_REUSEADDR, true)
 				.option(ChannelOption.RCVBUF_ALLOCATOR, new FixedRecvByteBufAllocator(2048))
 				.handler(channelInitializer);
 			
