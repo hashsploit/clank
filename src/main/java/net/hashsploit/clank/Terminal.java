@@ -189,7 +189,7 @@ public final class Terminal {
 	 */
 	public synchronized void shutdown() {
 		AnsiConsole.out.println();
-		AnsiConsole.systemUninstall();
+		//AnsiConsole.systemUninstall();
 		if (!running) {
 			return;
 		}
