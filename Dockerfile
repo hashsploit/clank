@@ -96,8 +96,8 @@ RUN echo "Building medius-crypto ..." \
 # Build project and clean up
 RUN echo "Building Clank ..." \
 	&& cd /home/ratchet/ \
-	&& mv docker/docker-run.sh . \
-	&& chmod +x build.sh docker-run.sh \
+	&& mv docker/internal.sh . \
+	&& chmod +x build.sh internal.sh \
 	&& ./build.sh \
 	&& rm -rf bin/ target/ src/ .settings/ .git/ docker/ \
 	&& rm -f *.bat \
@@ -110,5 +110,5 @@ RUN echo "Building Clank ..." \
 	&& rm -f .classpath \
 	&& rm -f .project
 
-ENTRYPOINT ["/bin/bash", "./docker-run.sh"]
+ENTRYPOINT ["/bin/bash", "./internal.sh"]
 
