@@ -71,8 +71,10 @@ public final class Terminal {
 		invalidCommandHandler = null;
 		executor = Executors.newSingleThreadExecutor();
 
-		// Install ANSI Console
-		AnsiConsole.systemInstall();
+		// Install ANSI Console if arch is not x86-64
+		if (!System.getProperty("os.arch").equals("aarch64")){
+			AnsiConsole.systemInstall();
+		}
 
 		// Remove all other handlers
 		for (Handler h : logger.getHandlers()) {
@@ -187,6 +189,7 @@ public final class Terminal {
 	 */
 	public synchronized void shutdown() {
 		AnsiConsole.out.println();
+		//AnsiConsole.systemUninstall();
 		if (!running) {
 			return;
 		}
