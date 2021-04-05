@@ -1,6 +1,7 @@
 package net.hashsploit.clank.server.pipeline;
 
 import java.util.logging.Logger;
+import java.util.regex.Pattern;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -36,10 +37,10 @@ public class NatHandler extends ChannelInboundHandlerAdapter {
 			ByteBuf buffer = ctx.alloc().buffer(6);
 			byte[] ipAddrBytes = new byte[4];
 
-			String[] parts = datagram.sender().getAddress().getHostAddress().toString().split("\\.");
+			String[] parts = datagram.sender().getAddress().getHostAddress().toString().split(Pattern.quote("."));
 
 			for (int i = 0; i < 4; i++) {
-				ipAddrBytes[i] = (byte) (Short.parseShort(parts[i]) & 0xFF);
+				ipAddrBytes[i] = (byte) Integer.parseInt(parts[i]);
 			}
 
 			buffer.writeBytes(ipAddrBytes);

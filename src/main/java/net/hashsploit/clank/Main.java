@@ -13,7 +13,6 @@ import net.hashsploit.clank.config.ConfigNames;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.config.configs.MlsConfig;
-import net.hashsploit.clank.config.configs.MpsConfig;
 import net.hashsploit.clank.config.configs.MuisConfig;
 import net.hashsploit.clank.config.configs.NatConfig;
 
