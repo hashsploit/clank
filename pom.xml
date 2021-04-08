@@ -79,6 +79,11 @@
 			<id>bintray-jcenter</id>
 			<url>https://jcenter.bintray.com</url>
 		</repository>
+		<repository>
+			<name>jitpack</name>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
 	</repositories>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
@@ -171,11 +176,11 @@
 			<artifactId>perfmark-impl</artifactId>
 			<version>0.23.0</version>
 		</dependency>
-		<!-- Medius Crypto -->
+		<!-- https://github.com/hashsploit/medius-crypto -->
 		<dependency>
-			<groupId>net.hashsploit</groupId>
+			<groupId>com.github.hashsploit</groupId>
 			<artifactId>medius-crypto</artifactId>
-			<version>0.1.1</version>
+			<version>master-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 </project>
