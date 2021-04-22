@@ -1,5 +1,6 @@
 package net.hashsploit.clank.database;
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,7 +18,7 @@ public class SimDb implements IDatabase {
 	private HashSet<String> mlsAccessTokens;
 
 	private HashSet<String> pendingSessionKeys;
-
+	
 	private class SimDbPlayer {
 		private String sessionKey;
 		private int accountId;
