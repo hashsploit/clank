@@ -152,12 +152,13 @@ public class MediusConfig extends AbstractConfig {
 	 */
 	public DatabaseInfo getDatabaseInfo() {
 		final String key = ConfigNames.DATABASE.toString();
+		final String mode = getJson().getJSONObject(key).getString(ConfigNames.DATABASE_MODE.toString());
 		final String host = getJson().getJSONObject(key).getString(ConfigNames.DATABASE_HOST.toString());
 		final String database = getJson().getJSONObject(key).getString(ConfigNames.DATABASE_DATABASE.toString());
 		final String username = getJson().getJSONObject(key).getString(ConfigNames.DATABASE_USERNAME.toString());
 		final String password = getJson().getJSONObject(key).getString(ConfigNames.DATABASE_PASSWORD.toString());
 		
-		return new DatabaseInfo(host, database, username, password);
+		return new DatabaseInfo(mode, host, database, username, password);
 	}
 	
 	/**

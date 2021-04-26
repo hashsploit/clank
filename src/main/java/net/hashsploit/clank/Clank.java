@@ -18,8 +18,11 @@ import net.hashsploit.clank.cli.commands.CLIVersionCommand;
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.config.configs.NatConfig;
+import net.hashsploit.clank.config.objects.DatabaseInfo;
 import net.hashsploit.clank.database.DbManager;
+import net.hashsploit.clank.database.MariaDb;
 import net.hashsploit.clank.database.SimDb;
 import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.dme.DmePlayer;
@@ -149,7 +152,15 @@ public class Clank {
 					mediusConfig.getParentThreads(),
 					mediusConfig.getChildThreads()
 				);
-				db = new DbManager(this, new SimDb());
+				MlsConfig mlsConfig = (MlsConfig) config;
+				//db = new DbManager(this, new SimDb());
+				DatabaseInfo dbInfo = mlsConfig.getDatabaseInfo();
+				if (dbInfo.getMode().equals("MariaDb")) {
+					db = new DbManager(this, new MariaDb(dbInfo));
+				}
+				else {
+					db = new DbManager(this, new SimDb());
+				}
 				break;
 			case NAT_SERVER:
 				terminalPrompt = "NAT>";
