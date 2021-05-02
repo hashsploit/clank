@@ -66,13 +66,13 @@ public class DmePlayer {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 
 		int qSize = tcpPacketQueue.size();
-		
-		logger.finest("Flushing TCP data size: " + qSize + " player: " + playerId);
-		
+				
 		if (qSize == 0) {
 			return;
 		}
 
+		logger.finest("Flushing TCP data size: " + qSize + " player: " + playerId);
+		
 		// Gets an instance of the queue size, removes that # of packets (so even if
 		// more are added,
 		// they won't be pop'd until next call)
@@ -102,11 +102,12 @@ public class DmePlayer {
 	public void flushUdpData() {
 		ByteArrayOutputStream out = new ByteArrayOutputStream();
 		int qSize = udpPacketQueue.size();
-		logger.finest("Flushing UDP data size: " + qSize + " player: " + playerId);
 
 		if (qSize == 0) {
 			return;
 		}
+
+		logger.finest("Flushing UDP data size: " + qSize + " player: " + playerId);
 
 		// Gets an instance of the queue size, removes that # of packets (so even if
 		// more are added,

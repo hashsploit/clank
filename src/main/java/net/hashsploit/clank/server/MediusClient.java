@@ -369,5 +369,9 @@ public class MediusClient implements IClient {
 	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
 		return mediusMessageMap;
 	}
+	
+	public String getIP() {
+		return getIPAddress();
+	}
 
 }
