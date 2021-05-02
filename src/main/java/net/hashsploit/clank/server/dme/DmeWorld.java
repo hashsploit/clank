@@ -40,6 +40,7 @@ public class DmeWorld {
 
 		for (DmePlayer player : players.values()) {
 			result += player.toString();
+			result += '\n';
 		}
 
 		return result;
