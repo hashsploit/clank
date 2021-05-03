@@ -81,6 +81,9 @@ public class DmeTcpClient implements IClient {
 	@Override
 	public void onDisconnect() {
 		logger.info("Player disconnected: " + this.toString());
+		
+		// Close the player threads
+		player.disconnect();
 
 		DmeServer dmeServer = (DmeServer) server;
 		

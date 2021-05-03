@@ -24,6 +24,7 @@ public class DmePlayer {
 	private InetSocketAddress udpAddress;
 	private LinkedBlockingQueue<byte[]> udpPacketQueue;
 	private LinkedBlockingQueue<byte[]> tcpPacketQueue;
+	private Thread flushThread;
 	private DmePlayerStatus status = DmePlayerStatus.DISCONNECTED;
 
 	public String toString() {
@@ -35,6 +36,27 @@ public class DmePlayer {
 		tcpPacketQueue = new LinkedBlockingQueue<byte[]>();
 		status = DmePlayerStatus.CONNECTING;
 		this.client = client;
+		
+		Runnable flushThreadRunner = new Runnable() {
+			public void run() {
+				try {
+					while(true) {
+						Thread.sleep(30);
+						flushTcpData();
+						flushUdpData();
+					}
+				}
+				catch (InterruptedException e) {
+					logger.info("Closing flush thread for client " + toString());
+					return;
+				}
+				
+			}
+		};
+		
+		flushThread = new Thread(flushThreadRunner);
+		flushThread.setDaemon(true);
+		flushThread.start();
 	}
 
 	public void setPlayerId(int playerId) {
@@ -148,6 +170,10 @@ public class DmePlayer {
 
 	public void setWorldId(int worldId) {
 		this.worldId = worldId;
+	}
+	
+	public void disconnect() {
+		flushThread.interrupt();
 	}
 
 }

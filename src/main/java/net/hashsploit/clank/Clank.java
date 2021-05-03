@@ -214,22 +214,9 @@ public class Clank {
 			case NAT_SERVER:
 				break;
 			case DME_SERVER:
-				dmeUpdate();
 				break;
 			default:
 				return;
-		}
-	}
-
-	// FIXME: move this out
-	public void dmeUpdate() {
-		DmeWorldManager dmeWorldManager = ((DmeServer) server).getDmeWorldManager();
-		for (DmeWorld dmeWorld : dmeWorldManager.getWorlds()) {
-			for (DmePlayer dmePlayer : dmeWorld.getPlayers()) {
-				//logger.finest("CLANK FLUSH, PLAYER: " + dmePlayer.getPlayerId());
-				dmePlayer.flushTcpData();
-				dmePlayer.flushUdpData();
-			}
 		}
 	}
 
