@@ -385,7 +385,7 @@ public enum MediusConstants {
 	 * populating the table is not allowed. If three entries are used, then these
 	 * must be the first three, and not 15, 46, and 79.
 	 */
-	LADDERSTATSWIDE_MAXLEN(100),
+	LADDERSTATSWIDE_MAXLEN(400),
 
 	/**
 	 * Maximum number of bytes used to describe when a user is banned until,
