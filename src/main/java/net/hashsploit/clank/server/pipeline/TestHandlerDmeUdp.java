@@ -18,7 +18,6 @@ import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.server.dme.DmeUdpServer;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
 import net.hashsploit.clank.utils.Utils;
-import net.hashsploit.medius.crypto.RTMessageId;
 
 /**
  * Handles a server-side channel.

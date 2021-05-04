@@ -3,7 +3,6 @@ package net.hashsploit.clank.server.nat;
 import java.util.logging.Logger;
 
 import io.netty.channel.socket.DatagramChannel;
-import io.netty.channel.socket.SocketChannel;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.pipeline.NatHandler;

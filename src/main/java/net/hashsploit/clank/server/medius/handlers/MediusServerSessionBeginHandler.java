@@ -4,12 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusConstants;
-import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;

@@ -2,7 +2,6 @@ package net.hashsploit.clank.rt.serializers;
 
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.utils.Utils;
 

@@ -3,8 +3,6 @@ package net.hashsploit.clank.server.medius.handlers;
 import java.util.List;
 
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;

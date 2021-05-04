@@ -2,11 +2,9 @@ package net.hashsploit.clank.server.medius;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Logger;
 
 import net.hashsploit.clank.EmulationMode;
-import net.hashsploit.clank.rt.RtMessageHandler;
 import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.MediusClient;

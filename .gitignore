@@ -11,8 +11,8 @@ config/*
 logs/
 
 # Custom plugins (closed-source)
-plugins/uya/*
-plugins/dl/*
+!plugins/README.md
+plugins/*
 
 # Bins
 target/

@@ -2,11 +2,9 @@ package net.hashsploit.clank.server.medius.serializers;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.logging.Logger;
 
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
-import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusGameHostType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;

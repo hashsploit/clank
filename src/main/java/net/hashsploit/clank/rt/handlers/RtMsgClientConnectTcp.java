@@ -3,8 +3,6 @@ package net.hashsploit.clank.rt.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.bouncycastle.util.Arrays;
-
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
@@ -19,7 +17,6 @@ import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
-import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
 import net.hashsploit.medius.crypto.CipherContext;
