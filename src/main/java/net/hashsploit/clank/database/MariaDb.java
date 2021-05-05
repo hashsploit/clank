@@ -260,4 +260,16 @@ public class MariaDb implements IDatabase {
 		return sha256hex;
 	}
 
+	@Override
+	public String getStats(int accountId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setStats(int accountId, String stats) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }

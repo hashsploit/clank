@@ -10,10 +10,12 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.MediusConstants;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
@@ -44,6 +46,9 @@ public class MediusAccountUpdateStatsHandler extends MediusPacketHandler {
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
 		respPacket = new AccountUpdateStatsResponse(reqPacket.getMessageID(), callbackStatus);
+				
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		Clank.getInstance().getDatabase().updatePlayerStats(client.getPlayer().getAccountId(), Utils.bytesToHex(reqPacket.getStats()));
 		
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		response.add(respPacket);

@@ -58,16 +58,12 @@ public class MediusPlayerInfoHandler extends MediusPacketHandler {
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 
 		MediusPlayerStatus playerStatus = server.getPlayerStatus(accountId);
-
+		byte[] stats = Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getPlayerStats(accountId));
+		
 		byte[] appID = Utils.hexStringToByteArray("bc290000");
 		byte[] playerStatusArr = Utils.intToBytesLittle(playerStatus.getValue());
 		byte[] connectionClass = Utils.intToBytesLittle(1);
-
-		// byte[] stats = Utils.buildByteArrayFromString("",
-		// MediusConstants.ACCOUNTSTATS_MAXLEN.getValue());
-		byte[] stats = Utils.hexStringToByteArray(
-				"00c0a84400c0a84400c0a84400c0a8440000af430000af430000af430000af4300000000ffffffffef42000037fa0000ef000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000");
-
+		
 		respPacket = new PlayerInfoResponse(reqPacket.getMessageID(), callbackStatus, appID, accountNameArr, playerStatusArr, connectionClass, stats);
 
 		// client.sendMessage(new RTMessage(RTMessageId.SERVER_APP,

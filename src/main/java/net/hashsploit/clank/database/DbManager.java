@@ -53,4 +53,12 @@ public class DbManager {
 		return clank;
 	}
 
+	public void updatePlayerStats(Integer accountId, String stats) {
+		db.setStats(accountId, stats);
+	}
+
+	public String getPlayerStats(int accountId) {
+		return db.getStats(accountId);
+	}
+
 }

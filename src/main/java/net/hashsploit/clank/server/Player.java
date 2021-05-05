@@ -14,7 +14,8 @@ public class Player {
 	private int accountId;
 	private String sessionKey;
 	private int chatWorldId;
-	private int clanId;
+	private int clanId;	
+	
 
 	public Player(MediusClient client, MediusPlayerStatus status) {
 		this.client = client;
@@ -73,5 +74,6 @@ public class Player {
 	public void setSessionKey(String sessionKey) {
 		this.sessionKey = sessionKey;
 	}
+
 
 }

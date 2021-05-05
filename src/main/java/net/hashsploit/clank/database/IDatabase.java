@@ -16,4 +16,8 @@ public interface IDatabase {
 
 	String getUsername(int accountId);
 	
+	String getStats(int accountId);
+	
+	void setStats(int accountId, String stats);
+	
 }
