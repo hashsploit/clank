@@ -21,12 +21,16 @@ public class ChatMessageRequest extends MediusMessage {
 
 		// Process the packet
 		ByteBuffer buf = ByteBuffer.wrap(data);
-
+		
 		buf.get(messageId);
 		buf.get(sessionKey);
 		buf.getShort(); // Padding buffer
-		mediusChatMessageType = MediusChatMessageType.getByValue(buf.getInt());
-		targetId = buf.getInt();
+		byte[] chatMsgType = new byte[4];
+		buf.get(chatMsgType);
+		mediusChatMessageType = MediusChatMessageType.getByValue(Utils.bytesToIntLittle(chatMsgType));
+		byte[] targetIdByte = new byte[4];
+		buf.get(targetIdByte);
+		targetId = Utils.bytesToIntLittle(targetIdByte);
 		buf.get(text);
 	}
 
