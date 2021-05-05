@@ -24,10 +24,20 @@ public class SimDb implements IDatabase {
 		private int accountId;
 		private String username;
 		private String password;
+		private String stats;
 
 		public SimDbPlayer(String sessionKey) {
 			this.sessionKey = sessionKey;
 		}
+		
+		public String getStats() {
+			return stats;
+		}
+		
+		public void setStats(String stats) {
+			this.stats = stats;
+		}
+	
 
 		public String getSessionKey() {
 			return sessionKey;
@@ -178,5 +188,23 @@ public class SimDb implements IDatabase {
 			}
 		}
 		return player;
+	}
+
+	@Override
+	public String getStats(int accountId) {
+		SimDbPlayer p = getSimDbPlayerByAccountId(accountId);
+		if (p == null) {
+			return "00c0a84400c0a84400c0a84400c0a8440000af430000af430000af430000af4300000000ffffffffef42000037fa0000ef000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000";
+		}
+		return p.getStats();
+	}
+
+	@Override
+	public void setStats(int accountId, String stats) {
+		SimDbPlayer p = getSimDbPlayerByAccountId(accountId);
+		if (p == null) {
+			return;
+		}
+		p.setStats(stats);
 	}
 }

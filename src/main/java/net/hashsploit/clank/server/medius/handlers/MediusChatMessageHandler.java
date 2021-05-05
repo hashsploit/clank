@@ -40,7 +40,7 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 		logger.finest("[CHAT] " + username + ": " + chatMsg);
 
 		// This should be ChatColor.strip() unless the player is an operator.
-		byte[] byteMsg = Utils.padByteArray(ChatColor.parse(chatMsg), MediusConstants.CHATMESSAGE_MAXLEN.value);
+		byte[] byteMsg = requestPacket.getText(); //Utils.padByteArray(ChatColor.parse(chatMsg), MediusConstants.CHATMESSAGE_MAXLEN.value);
 
 		ChatFwdMessageResponse responsePacket = new ChatFwdMessageResponse(requestPacket.getMessageId(), Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.value), byteMsg);
 		int playerWorldId = client.getPlayer().getChatWorldId();
