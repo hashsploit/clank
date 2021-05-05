@@ -28,7 +28,7 @@ Server features that are complete will be checked, features that are still in pr
 - [x] SCE-RT encryption/decryption. (Using [medius-crypto](https://github.com/hashsploit/medius-crypto)).
 - [ ] Lua sandbox.
 - [ ] Lua plugin API.
-- [ ] Database integration (MySQL/MariaDB).
+- [x] Database integration (MySQL/MariaDB).
 - [x] Simulated database mode.
 - [ ] Server operator chat commands.
 - [ ] Support for `MEDIUS_MEMORY_POKE` and `MEDIUS_MEMORY_PEEK`.
