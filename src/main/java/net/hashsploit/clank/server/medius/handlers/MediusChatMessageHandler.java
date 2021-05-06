@@ -10,6 +10,7 @@ import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
+import net.hashsploit.clank.server.medius.objects.MediusChatMessageType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.serializers.ChatFwdMessageResponse;
 import net.hashsploit.clank.server.medius.serializers.ChatMessageRequest;
@@ -42,18 +43,26 @@ public class MediusChatMessageHandler extends MediusPacketHandler {
 		// This should be ChatColor.strip() unless the player is an operator.
 		byte[] byteMsg = requestPacket.getText(); //Utils.padByteArray(ChatColor.parse(chatMsg), MediusConstants.CHATMESSAGE_MAXLEN.value);
 
-		ChatFwdMessageResponse responsePacket = new ChatFwdMessageResponse(requestPacket.getMessageId(), Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.value), byteMsg);
+		ChatFwdMessageResponse responsePacket = new ChatFwdMessageResponse(requestPacket.getMessageId(), client.getPlayer().getAccountId(), Utils.buildByteArrayFromString(username, MediusConstants.USERNAME_MAXLEN.value), byteMsg, requestPacket.getMessageType());
 		int playerWorldId = client.getPlayer().getChatWorldId();
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		HashSet<Player> playersInWorld = server.getLobbyWorldPlayers(playerWorldId);
-
-		for (Player player : playersInWorld) {
-			// Send the message to everyone but yourself.
-
-			// FIXME: encrypt messages in pipeline
-			if (player != client.getPlayer()) {
-				player.getClient().sendMediusMessage(responsePacket);
+		
+		if (requestPacket.getMessageType() == MediusChatMessageType.BROADCAST) {
+			for (Player player : playersInWorld) {
+				if (player != client.getPlayer()) {
+					player.getClient().sendMediusMessage(responsePacket);
+				}
 			}
+		}
+		else if (requestPacket.getMessageType() == MediusChatMessageType.WHISPER) {
+			Player p = server.getPlayer(requestPacket.getTargetId());
+			if (p != null) {
+				p.getClient().sendMediusMessage(responsePacket);
+			}
+		}
+		else {
+			logger.warning("Unimplemented MediusChatMessageType: " + requestPacket.getDebugString());
 		}
 
 		return null;
