@@ -1,6 +1,8 @@
 package net.hashsploit.clank.database;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -206,5 +208,15 @@ public class SimDb implements IDatabase {
 			return;
 		}
 		p.setStats(stats);
+	}
+	
+	@Override
+	public String getLadderStatsWide(int accountId) {
+		return null;
+	}
+	
+	@Override
+	public void setLadderStatsWide(Integer accountId, String stats) {
+		return;
 	}
 }

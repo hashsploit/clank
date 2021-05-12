@@ -19,5 +19,9 @@ public interface IDatabase {
 	String getStats(int accountId);
 	
 	void setStats(int accountId, String stats);
+
+	void setLadderStatsWide(Integer accountId, String stats);
+
+	String getLadderStatsWide(int accountId);
 	
 }
