@@ -10,6 +10,7 @@ import java.util.logging.Logger;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
@@ -42,9 +43,8 @@ public class MediusGetLadderStatsWideHandler extends MediusPacketHandler {
 	
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
-
-		byte[] stats = Utils.buildByteArrayFromString("", MediusConstants.LADDERSTATSWIDE_MAXLEN.value);
-
+		byte[] stats = Utils.hexStringToByteArray(Clank.getInstance().getDatabase().getPlayerLadderStatsWide(client.getPlayer().getAccountId()));
+		
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageId);

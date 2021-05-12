@@ -61,4 +61,12 @@ public class DbManager {
 		return db.getStats(accountId);
 	}
 
+	public void updatePlayerLadderStatsWide(Integer accountId, String stats) {
+		db.setLadderStatsWide(accountId, stats);
+	}
+
+	public String getPlayerLadderStatsWide(int accountId) {
+		return db.getLadderStatsWide(accountId);
+	}
+
 }
