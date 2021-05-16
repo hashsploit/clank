@@ -152,7 +152,7 @@ public class Clank {
 				MlsConfig mlsConfig = (MlsConfig) config;
 				//db = new DbManager(this, new SimDb());
 				DatabaseInfo dbInfo = mlsConfig.getDatabaseInfo();
-				if (dbInfo.getMode().equals("MariaDb")) {
+				if (dbInfo.getMode().equalsIgnoreCase("MariaDb")) {
 					db = new DbManager(this, new MariaDb(dbInfo));
 				}
 				else {
