@@ -5,15 +5,9 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Logger;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;

@@ -3,8 +3,8 @@ package net.hashsploit.clank.server.dme;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
-import io.grpc.netty.shaded.io.netty.channel.epoll.Epoll;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import net.hashsploit.clank.Clank;

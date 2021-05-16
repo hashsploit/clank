@@ -1,7 +1,6 @@
 package net.hashsploit.clank;
 
 import java.security.Security;
-import java.util.concurrent.Executors;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,6 +13,7 @@ import net.hashsploit.clank.cli.commands.CLIBroadcastCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
 import net.hashsploit.clank.cli.commands.CLIPlayersCommand;
+import net.hashsploit.clank.cli.commands.CLIPluginsCommand;
 import net.hashsploit.clank.cli.commands.CLIVersionCommand;
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.configs.DmeConfig;
@@ -24,6 +24,7 @@ import net.hashsploit.clank.config.objects.DatabaseInfo;
 import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.MariaDb;
 import net.hashsploit.clank.database.SimDb;
+import net.hashsploit.clank.plugin.PluginManager;
 import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.dme.DmeServer;
 import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
@@ -34,7 +35,7 @@ import net.hashsploit.clank.server.nat.NatServer;
 public class Clank {
 
 	public static final String NAME = "Clank";
-	public static final String VERSION = "0.1.7";
+	public static final String VERSION = "0.1.8";
 	public static Clank instance;
 	private static final Logger logger = Logger.getLogger(Clank.class.getName());
 
@@ -44,6 +45,7 @@ public class Clank {
 	private IServer server;
 	private DbManager db;
 	private EventBus eventBus;
+	private PluginManager pluginManager;
 
 	public Clank(AbstractConfig config) {
 
@@ -65,6 +67,7 @@ public class Clank {
 		terminal.registerCommand(new CLIExitCommand());
 		terminal.registerCommand(new CLIHelpCommand());
 		terminal.registerCommand(new CLIVersionCommand());
+		terminal.registerCommand(new CLIPluginsCommand());
 
 		terminal.registerEvent(new ICLIEvent() {
 
@@ -178,43 +181,19 @@ public class Clank {
 
 		// Set up the event bus
 		eventBus = new EventBus(this);
-
-		// Tick
-		Executors.newSingleThreadExecutor().submit(() -> {
-			while (running) {
-				update();
-				try {
-					Thread.sleep(30);
-				} catch (InterruptedException e) {
-					// Discard
-				}
-			}
-		});
-
+		
+		// Start Plugin Manager
+		logger.info("Loading plugin manager ...");
+		pluginManager = new PluginManager(this);
+		
+		// Loading available plugins
+		logger.info("Loading plugins ...");
+		pluginManager.loadAllAvailablePlugins();
+		
 		// Start server
+		logger.info("Starting server ...");
 		terminal.setPrompt(Terminal.colorize(terminalPrompt + AnsiColor.RESET) + " ");
 		server.start();
-	}
-
-	/**
-	 * Tick the server for internal event updates.
-	 */
-	public void update() {
-		// Configure the server specifics
-		switch (config.getEmulationMode()) {
-			case MEDIUS_AUTHENTICATION_SERVER:
-				break;
-			case MEDIUS_LOBBY_SERVER:
-				break;
-			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-				break;
-			case NAT_SERVER:
-				break;
-			case DME_SERVER:
-				break;
-			default:
-				return;
-		}
 	}
 
 	/**
@@ -264,6 +243,15 @@ public class Clank {
 	 */
 	public DbManager getDatabase() {
 		return db;
+	}
+	
+	/**
+	 * Get the plugin manager instance.
+	 * 
+	 * @return
+	 */
+	public PluginManager getPluginManager() {
+		return pluginManager;
 	}
 
 	/**

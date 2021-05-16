@@ -3,8 +3,6 @@ package net.hashsploit.clank.server.medius;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
-import net.hashsploit.clank.server.RtMessageId;
-
 /**
  * "Medius App" datagram on top of SCE-RT (RTIME) from the APP (0x02, 0x03, 0x04, 0x0a, 0x0b, 0x0c) messages.
  */

@@ -10,7 +10,6 @@ import net.hashsploit.clank.config.configs.MasConfig;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
-import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;

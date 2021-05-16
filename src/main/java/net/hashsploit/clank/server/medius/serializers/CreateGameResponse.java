@@ -2,10 +2,7 @@ package net.hashsploit.clank.server.medius.serializers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 
-import net.hashsploit.clank.server.medius.MediusCallbackStatus;
-import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;

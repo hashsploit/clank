@@ -9,9 +9,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
-import io.netty.handler.codec.CorruptedFrameException;
-import io.netty.handler.codec.DecoderException;
-import io.netty.handler.codec.TooLongFrameException;
 import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.utils.Utils;
 

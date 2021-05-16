@@ -189,8 +189,8 @@ public final class Terminal {
 	 * Shutdown the terminal.
 	 */
 	public synchronized void shutdown() {
-		AnsiConsole.out.println();
-		// AnsiConsole.systemUninstall();
+		AnsiConsole.out().println();
+		//AnsiConsole.systemUninstall();
 		if (!running) {
 			return;
 		}
@@ -228,8 +228,8 @@ public final class Terminal {
 	 * 
 	 * @return
 	 */
-	public List<ICLICommand> getRegisteredCommands() {
-		return registeredCommands;
+	public synchronized List<ICLICommand> getRegisteredCommands() {
+		return new ArrayList<ICLICommand>(registeredCommands);
 	}
 
 	/**
@@ -237,8 +237,8 @@ public final class Terminal {
 	 * 
 	 * @return
 	 */
-	public List<ICLIEvent> getRegisteredEvents() {
-		return registeredEvents;
+	public synchronized List<ICLIEvent> getRegisteredEvents() {
+		return new ArrayList<ICLIEvent>(registeredEvents);
 	}
 
 	/**
@@ -246,7 +246,7 @@ public final class Terminal {
 	 * 
 	 * @param handler
 	 */
-	public void setInvalidCommandHandler(ICLIInvalidCommand handler) {
+	public synchronized void setInvalidCommandHandler(ICLIInvalidCommand handler) {
 		this.invalidCommandHandler = handler;
 	}
 
@@ -264,7 +264,7 @@ public final class Terminal {
 	 * 
 	 * @param command
 	 */
-	public void registerCommand(ICLICommand command) {
+	public synchronized void registerCommand(ICLICommand command) {
 
 		// Do not allow a command name of null to exist
 		if (command.commandName() == null) {
@@ -288,7 +288,7 @@ public final class Terminal {
 	 * 
 	 * @param command
 	 */
-	public void registerEvent(ICLIEvent event) {
+	public synchronized void registerEvent(ICLIEvent event) {
 
 		if (event == null) {
 			print(Level.WARNING, "REGISTER: Attempted to register a null event");
@@ -303,7 +303,7 @@ public final class Terminal {
 	 * 
 	 * @param command
 	 */
-	public void unregisterCommand(ICLICommand command) {
+	public synchronized void unregisterCommand(ICLICommand command) {
 		this.registeredCommands.remove(command);
 	}
 
@@ -312,7 +312,7 @@ public final class Terminal {
 	 * 
 	 * @param command
 	 */
-	public void unregisterEvent(ICLIEvent event) {
+	public synchronized void unregisterEvent(ICLIEvent event) {
 		this.registeredEvents.remove(event);
 	}
 
@@ -757,20 +757,21 @@ public final class Terminal {
 				boolean valid = false;
 
 				// Check if there is a registered command
-				for (ICLICommand cmd : registeredCommands) {
-
-					try {
-						if (cmd.commandName().equalsIgnoreCase(command)) {
-							// Spawn a pooled-thread for command dispatch
+				synchronized (registeredCommands) {
+					for (final ICLICommand cmd : registeredCommands) {
+						try {
+							if (cmd.commandName().equalsIgnoreCase(command)) {
+								// Spawn a pooled-thread for command dispatch
+								executor.execute(() -> {
+									cmd.invoke(instance, params);
+								});
+								valid = true;
+							}
+						} catch (RejectedExecutionException e) {
 							executor.execute(() -> {
-								cmd.invoke(instance, params);
+								print(Level.WARNING, "Console Executor rejected to spawn a new thread");
 							});
-							valid = true;
 						}
-					} catch (RejectedExecutionException e) {
-						executor.execute(() -> {
-							print(Level.WARNING, "Console Executor rejected to spawn a new thread");
-						});
 					}
 				}
 

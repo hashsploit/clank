@@ -7,8 +7,6 @@ import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.MlsConfig;
 import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.MediusClient;
-import net.hashsploit.clank.server.RTMessage;
-import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
