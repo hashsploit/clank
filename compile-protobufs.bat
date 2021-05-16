@@ -6,5 +6,7 @@ cd %~dp0
 
 REM Compile the jar file
 echo Compiling protobuf sources ...
-mvn clean protobuf:compile
+call mvn clean protobuf:compile
 
+echo ^> Press any key to exit.
+pause > nul
