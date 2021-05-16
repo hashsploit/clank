@@ -24,9 +24,9 @@ Server features that are complete will be checked, features that are still in pr
 - [x] Emulates NAT Server (NAT).
 - [x] Emulates Medius Lobby Server (MLS).
 - [x] Emulates DME Server (DME).
-- [x] Emulates Medius Universe Information Server (MUIS).
+- [ ] Emulates Medius Universe Information Server (MUIS).
 - [x] SCE-RT encryption/decryption. (Using [medius-crypto](https://github.com/hashsploit/medius-crypto)).
-- [ ] Lua sandbox.
+- [x] Lua sandbox.
 - [ ] Lua plugin API.
 - [x] Database integration (MySQL/MariaDB).
 - [x] Simulated database mode.
@@ -78,7 +78,7 @@ invokes the protobuf to be recompiled.
 1. Run `build.bat`.
 
 #### Docker
-1. See [Docker.md](Docker.md) for more info.
+1. See [docker/README.md](docker/README.md) for more info.
 
 
 ### Run Clank
@@ -86,18 +86,21 @@ In order to run Clank you will need to create a JSON configuration file, there a
 "example" configuration files located in `config/`, that can be used as a starting
 place. For example, make a copy of `config/mas.json.example` named `config/mas.json`.
 
-You can then use `./launch.sh config/mas.json` to run a Clank MAS server.
+You can then use `./launch.sh config/mas.json` on Linux, or `build.bat config\mas.json`, to run a Clank MAS server.
 
 #### Linux
-1. Copy an example configuration file `config/mas.json.example` -> `config/mas.json`.
+1. Copy the example configuration file `config/mas.json.example` -> `config/mas.json`.
 2. Run `./launch.sh config/mas.json`.
 
 #### Windows
-1. Copy an example configuration file `config/mas.json.example` -> `config/mas.json`.
-2. Run `launch.bat config/mas.json`.
+1. Copy the example configuration file `config\mas.json.example` -> `config\mas.json`.
+2. Run `launch.bat config\mas.json`.
 
 
 ## Clank components
+
+![Clank Diagram](clank-diagram.png)
+
 This server supports emulating the following components:
 - The **MUIS (Medius Universe Information Server)** is the entrypoint for several
   games that may have "multiverses", this is generally used before MAS. This server
@@ -110,17 +113,17 @@ This server supports emulating the following components:
   are not in the game world, chatting, looking for a game, managing clans, adding
   buddies, or looking at stats.
 - The **NAT Server (Network Address Translation)** is a server generally used for
-  P2P games, however it is seen used in P2S2P (client/server) titles to return
+  P2P games, however it is seen used in CS (client/server) titles to return
   the client's public IP address to themselves.
 - The **DME Server (Distributed Memory Engine)** is the game server, responsible
-  for hosting P2S2P (client/server) games. This is generally used in the "staging"
+  for hosting CS (client/server) games. This is generally used in the "staging"
   and "in game" modes in most titles.
 
 You can read more about these components [here](https://wiki.hashsploit.net/PlayStation_2#Medius).
 
 
 ## Configuration
-You can read more about the JSON configuration files [here](config/README.md).
+See [config/README.md](config/README.md) for more info.
 
 
 ## Console commands
@@ -140,7 +143,7 @@ For *MAS*, *MLS* and *MUIS* servers:
 
 
 ## Lua plugin API
-Under construction.
+You can read more about the Clank Lua plugin API in the [clank-plugins](https://github.com/hashsploit/clank-plugins) repo.
 
 
 ## About the SCE-RT / RTIME / Medius Protocol
