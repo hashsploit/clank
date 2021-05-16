@@ -6,8 +6,9 @@ cd %~dp0
 
 REM Compile the jar file
 echo Building ...
-mvn clean compile assembly:single
+call mvn clean compile assembly:single
 
-REM Copy final jar to root path.
-copy /B /Y target\clank-*.jar clank.jar
-
+REM Copy final jar to root path
+copy /D /Y "target\clank-*.jar" /B "clank.jar" /B > nul
+echo ^> Build successful^! Press any key to exit.
+pause > nul

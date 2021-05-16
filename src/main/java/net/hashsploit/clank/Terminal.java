@@ -72,7 +72,7 @@ public final class Terminal {
 		executor = Executors.newSingleThreadExecutor();
 
 		// Install ANSI Console if arch is not x86-64
-		if (!System.getProperty("os.arch").equals("aarch64")){
+		if (!System.getProperty("os.arch").equals("aarch64")) {
 			AnsiConsole.systemInstall();
 		}
 
@@ -142,12 +142,12 @@ public final class Terminal {
 						reader.println();
 						reader = null;
 					}
-				} catch (Exception e) {}
+				} catch (Exception e) {
+				}
 			}
 		});
 	}
-	
-	
+
 	/**
 	 * Adds a console-log handler writing to the given file.
 	 *
@@ -167,6 +167,7 @@ public final class Terminal {
 
 	/**
 	 * Get the console reader object.
+	 * 
 	 * @return
 	 */
 	public ConsoleReader getConsoleReader() {
@@ -189,7 +190,7 @@ public final class Terminal {
 	 */
 	public synchronized void shutdown() {
 		AnsiConsole.out.println();
-		//AnsiConsole.systemUninstall();
+		// AnsiConsole.systemUninstall();
 		if (!running) {
 			return;
 		}
@@ -207,7 +208,8 @@ public final class Terminal {
 				reader.getTerminal().restore();
 				reader.println();
 				reader = null;
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 		}
 	}
 
@@ -223,6 +225,7 @@ public final class Terminal {
 
 	/**
 	 * Get a list of registered commands.
+	 * 
 	 * @return
 	 */
 	public List<ICLICommand> getRegisteredCommands() {
@@ -231,6 +234,7 @@ public final class Terminal {
 
 	/**
 	 * Get a list of registered events.
+	 * 
 	 * @return
 	 */
 	public List<ICLIEvent> getRegisteredEvents() {
@@ -239,6 +243,7 @@ public final class Terminal {
 
 	/**
 	 * Set the invalid command handler.
+	 * 
 	 * @param handler
 	 */
 	public void setInvalidCommandHandler(ICLIInvalidCommand handler) {
@@ -247,6 +252,7 @@ public final class Terminal {
 
 	/**
 	 * Get the current invalid command handler.
+	 * 
 	 * @return
 	 */
 	public ICLIInvalidCommand getInvalidCommandHandler() {
@@ -312,6 +318,7 @@ public final class Terminal {
 
 	/**
 	 * Set the logging level.
+	 * 
 	 * @param level
 	 */
 	public synchronized void setLevel(Level level) {
@@ -323,6 +330,7 @@ public final class Terminal {
 
 	/**
 	 * Get the current logging level.
+	 * 
 	 * @return
 	 */
 	public Level getLevel() {
@@ -331,6 +339,7 @@ public final class Terminal {
 
 	/**
 	 * Set the terminal prompt.
+	 * 
 	 * @param prompt
 	 */
 	public void setPrompt(String prompt) {
@@ -344,6 +353,7 @@ public final class Terminal {
 
 	/**
 	 * Set if terminal history should be enabled.
+	 * 
 	 * @param enabled
 	 */
 	public void setHistoryEnabled(boolean enabled) {
@@ -356,6 +366,7 @@ public final class Terminal {
 
 	/**
 	 * Set the terminal history.
+	 * 
 	 * @param history
 	 */
 	public void setHistory(History history) {
@@ -368,6 +379,7 @@ public final class Terminal {
 
 	/**
 	 * Get the terminal history.
+	 * 
 	 * @return
 	 */
 	public History getHistory() {
@@ -376,6 +388,7 @@ public final class Terminal {
 
 	/**
 	 * Pretty print an exception.
+	 * 
 	 * @param e
 	 */
 	public void handleException(Throwable e) {
@@ -423,6 +436,7 @@ public final class Terminal {
 
 	/**
 	 * Get a list of terminal tab completers.
+	 * 
 	 * @param buffer
 	 * @return
 	 */
@@ -439,7 +453,8 @@ public final class Terminal {
 	}
 
 	/**
-	 * Return a String of text that has been converted to valid terminal colors. 
+	 * Return a String of text that has been converted to valid terminal colors.
+	 * 
 	 * @param string
 	 * @return
 	 */
@@ -498,7 +513,7 @@ public final class Terminal {
 				if (!running) {
 					return;
 				}
-				
+
 				reader.print(ConsoleReader.RESET_LINE + "");
 				reader.flush();
 				super.flush();
@@ -515,7 +530,7 @@ public final class Terminal {
 			}
 		}
 	}
-	
+
 	private static class RotatingFileHandler extends StreamHandler {
 
 		private final SimpleDateFormat dateFormat;
@@ -606,7 +621,7 @@ public final class Terminal {
 			StringBuilder builder = new StringBuilder();
 
 			builder.append(date.format(record.getMillis())).append(' ');
-			
+
 			if (color) {
 				if (record.getLevel().intValue() <= Level.CONFIG.intValue()) {
 					builder.append(AnsiColor.BLUE);
@@ -641,7 +656,7 @@ public final class Terminal {
 			return AnsiColor.stripColor(builder.toString());
 		}
 	}
-	
+
 	private class ConsoleDateOutputFormatter extends Formatter {
 		private final SimpleDateFormat date;
 		private final boolean color;
@@ -656,7 +671,7 @@ public final class Terminal {
 			StringBuilder builder = new StringBuilder();
 
 			builder.append(date.format(record.getMillis())).append(' ');
-			
+
 			if (color) {
 				if (record.getLevel().intValue() <= Level.CONFIG.intValue()) {
 					builder.append(AnsiColor.BLUE);
