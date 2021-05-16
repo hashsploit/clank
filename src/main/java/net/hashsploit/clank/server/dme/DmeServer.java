@@ -3,8 +3,10 @@ package net.hashsploit.clank.server.dme;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
 
+import io.grpc.netty.shaded.io.netty.channel.epoll.Epoll;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.epoll.EpollEventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.config.configs.DmeConfig;
 import net.hashsploit.clank.server.TcpServer;
@@ -36,8 +38,16 @@ public class DmeServer extends TcpServer {
 		String udpServerAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
 		int udpServerPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpStartingPort();
 
-		EventLoopGroup udpEventLoopGroup = new EpollEventLoopGroup(4);
 		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super temporary
+			
+			EventLoopGroup udpEventLoopGroup = null;
+
+			if (Epoll.isAvailable()) {
+				udpEventLoopGroup = new EpollEventLoopGroup(4);
+			} else {
+				udpEventLoopGroup = new NioEventLoopGroup(4);
+			}
+			
 			this.udpDmeServer = new DmeUdpServer(udpServerAddress, udpServerPort, udpEventLoopGroup, dmeWorldManager);
 			udpDmeServer.setChannelInitializer(new DmeUdpClientInitializer(udpDmeServer));
 			udpDmeServer.start();
