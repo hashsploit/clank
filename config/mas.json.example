@@ -2,9 +2,9 @@
 	"mode": "MEDIUS_AUTHENTICATION_SERVER",
 	"log_level": "INFO",
 	"file_log_level": null,
-	"address": "172.16.221.250",
+	"address": "192.168.1.3",
 	"port": 10075,
-	"encryption": false,
+	"encryption": true,
 	"capacity": 200,
 	"timeout": 15000,
 	"parent_threads": 1,
@@ -14,11 +14,11 @@
 	"username_blacklist": null,
 	"application_id": 10684,
 	"mls": {
-		"address": "172.16.221.250",
+		"address": "192.168.1.4",
 		"port": 10078
 	},
 	"nat": {
-		"address": "172.16.221.250",
+		"address": "192.168.1.5",
 		"port": 10077
 	},
 	"whitelist": {
@@ -67,7 +67,7 @@
 		"message": ""
 	},
 	"rpc": {
-		"address": "172.16.221.250",
+		"address": "127.0.0.1",
 		"port": 8484
 	}
 }

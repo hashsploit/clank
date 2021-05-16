@@ -11,15 +11,15 @@
 	"child_threads": 4,
 	"application_id": 10684,
 	"nat": {
-		"address": "172.16.221.250",
+		"address": "192.168.1.5",
 		"port": 10070
 	},
 	"dme": {
-		"address": "172.16.221.250",
+		"address": "192.168.1.6",
 		"port": 10079
 	},
 	"rpc_server": {
-		"address": "172.16.221.250",
+		"address": "127.0.0.1",
 		"port": 8484,
 		"encryption": {
 			"enabled": false,
@@ -79,6 +79,7 @@
 		"message": ""
 	},
 	"database": {
+		"mode": "",
 		"host": "",
 		"database": "",
 		"username": "",
