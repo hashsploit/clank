@@ -6,6 +6,7 @@ import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
@@ -34,6 +35,10 @@ public class MediusUpdateLadderStatsWideHandler extends MediusPacketHandler {
 
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
+		
+		Clank.getInstance().getDatabase().updatePlayerLadderStatsWide(client.getPlayer().getAccountId(), Utils.bytesToHex(stats));
+		
+		
 		byte[] statsResponse = Utils.buildByteArrayFromString("0000000", 7); // empty 7 byte array
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {

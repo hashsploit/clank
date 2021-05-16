@@ -96,6 +96,11 @@ public enum ConfigNames {
 	 * Database object.
 	 */
 	DATABASE("database"),
+	
+	/**
+	 * Database mode.
+	 */
+	DATABASE_MODE("mode"),
 
 	/**
 	 * Database hostname/address.

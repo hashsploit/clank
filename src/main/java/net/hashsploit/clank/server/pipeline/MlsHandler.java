@@ -32,7 +32,7 @@ public class MlsHandler extends MessageToMessageDecoder<ByteBuf> {
 
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf msg, List<Object> out) throws Exception {
-		logger.finest("MLS HANDLER IN: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(msg)));
+		logger.finest("MLS HANDLER IN [Client: " + client.getIP() + "]: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(msg)));
 		
 		RtMessageHandler handler = client.getRtHandler(msg.getByte(0));
 		

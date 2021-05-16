@@ -1,5 +1,7 @@
 package net.hashsploit.clank.database;
 
+import java.sql.ResultSet;
+
 public interface IDatabase {
 
 	String generateSessionKey();
@@ -13,5 +15,13 @@ public interface IDatabase {
 	int getAccountIdFromSessionKey(String sessionKey);
 
 	String getUsername(int accountId);
+	
+	String getStats(int accountId);
+	
+	void setStats(int accountId, String stats);
 
+	void setLadderStatsWide(Integer accountId, String stats);
+
+	String getLadderStatsWide(int accountId);
+	
 }

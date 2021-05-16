@@ -2,16 +2,23 @@ package net.hashsploit.clank.config.objects;
 
 public class DatabaseInfo {
 
+	private String mode;
 	private String host;
 	private String database;
 	private String username;
 	private String password;
 
-	public DatabaseInfo(final String host, final String database, final String username, final String password) {
+	public DatabaseInfo(final String mode, final String host, final String database, final String username, final String password) {
+		this.mode = mode;
 		this.host = host;
 		this.database = database;
 		this.username = username;
-		this.password = password;
+		if (password.equals("")) {
+			this.password = null;
+		}
+		else {
+			this.password = password;
+		}
 	}
 
 	public String getHost() {
@@ -44,6 +51,10 @@ public class DatabaseInfo {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getMode() {
+		return mode;
 	}
 
 }

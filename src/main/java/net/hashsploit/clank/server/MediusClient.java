@@ -265,7 +265,7 @@ public class MediusClient implements IClient {
 		RTMessage packet = new RTMessage(RtMessageId.SERVER_APP, msg.toBytes());
 
 		logger.finer(String.format("Sending %s:%d: ", getIPAddress(), getPort(), msg.toString()));
-		logger.finest(String.format("Sending %s:%d byte payload: ", getIPAddress(), getPort(), Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage()))));
+		logger.finest(String.format("Sending %s:%d byte payload: %s", getIPAddress(), getPort(), Utils.bytesToHex(Utils.nettyByteBufToByteArray(packet.getFullMessage()))));
 		this.sendMessage(packet);
 	}
 
@@ -368,6 +368,10 @@ public class MediusClient implements IClient {
 
 	public HashMap<MediusMessageType, MediusPacketHandler> getMediusMessageMap() {
 		return mediusMessageMap;
+	}
+	
+	public String getIP() {
+		return getIPAddress();
 	}
 
 }

@@ -18,7 +18,7 @@ public class NatClient implements IClient {
 		this.server = server;
 		this.channel = ch;
 		
-		channel.pipeline().addLast("NatPipelineHandler", new NatHandler());
+		channel.pipeline().addLast("NatPipelineHandler", new NatHandler(this));
 	}
 
 	@Override

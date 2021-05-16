@@ -3,7 +3,9 @@ package net.hashsploit.clank.server.medius.handlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
+import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
@@ -32,6 +34,9 @@ public class MediusAccountUpdateStatsHandler extends MediusPacketHandler {
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
 
 		respPacket = new AccountUpdateStatsResponse(reqPacket.getMessageID(), callbackStatus);
+				
+		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
+		Clank.getInstance().getDatabase().updatePlayerStats(client.getPlayer().getAccountId(), Utils.bytesToHex(reqPacket.getStats()));
 		
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		response.add(respPacket);

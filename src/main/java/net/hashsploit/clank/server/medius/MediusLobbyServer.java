@@ -256,6 +256,10 @@ public class MediusLobbyServer extends MediusServer {
 			}
 		}
 		
+		if (player != null) {
+			player.updateStatus(status);
+		}
+		
 		logger.finest(MediusLobbyServer.class.getName() + ".updatePlayerStatusFromDme(mlsToken, worldId, status): MlsToken: " + mlsToken + "\nWorld Id: " + worldId + "\nPlayer Status: " + status.name());
 		//playerList.updatePlayerStatus(accountId, status);
 		
@@ -330,6 +334,15 @@ public class MediusLobbyServer extends MediusServer {
 			}
 		}
 		return null;
+	}
+
+	public Player getPlayer(int accountId) {
+		for (Player p: players) {
+			if (p.getAccountId() == accountId) {
+				return p;
+			}
+		}
+		return null;	
 	}
 
 }
