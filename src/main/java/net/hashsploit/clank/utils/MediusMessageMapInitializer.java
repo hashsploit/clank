@@ -53,6 +53,7 @@ import net.hashsploit.clank.server.medius.handlers.MediusPlayerInfoHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusPlayerReportHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusPolicyHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusServerAuthenticationHandler;
+import net.hashsploit.clank.server.medius.handlers.MediusServerHelloHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusServerSessionBeginHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusSessionBeginHandler;
 import net.hashsploit.clank.server.medius.handlers.MediusSessionEndHandler;
@@ -171,6 +172,9 @@ public class MediusMessageMapInitializer {
 
 	public static final HashMap<MediusMessageType, MediusPacketHandler> getMuisMap() {
 		HashMap<MediusMessageType, MediusPacketHandler> mp = new HashMap<MediusMessageType, MediusPacketHandler>();
+		
+		// added for GT4
+		mp.put(MediusMessageType.MediusServerHelloRequest, new MediusServerHelloHandler());
 
 		// added for Killzone
 		mp.put(MediusMessageType.VersionServer, new MediusVersionServerHandler());

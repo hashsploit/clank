@@ -8,16 +8,16 @@ import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.utils.Utils;
 
 
-public class VersionServerResponse extends MediusMessage {
+public class ServerHelloResponse extends MediusMessage {
 
 	private byte[] messageId;
-	private String serverVersion;
+	private String serverHello;
 
-	public VersionServerResponse(byte[] messageId, String serverVersion) {
-		super(MediusMessageType.VersionServerResponse);
+	public ServerHelloResponse(byte[] messageId, String serverHello) {
+		super(MediusMessageType.MediusServerHelloResponse);
 
 		this.messageId = messageId;
-		this.serverVersion = serverVersion;
+		this.serverHello = serverHello;
 	}
 
 	@Override
@@ -25,7 +25,7 @@ public class VersionServerResponse extends MediusMessage {
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		try {
 			outputStream.write(messageId);
-			outputStream.write(Utils.buildByteArrayFromString(serverVersion, 56));
+			outputStream.write(Utils.buildByteArrayFromString(serverHello, 56));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
