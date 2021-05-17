@@ -19,8 +19,6 @@ public enum MediusMessageType {
 	DMELANFindResultsPacket(0x1A00),
 	DMELANTextMessage(0x2100),
 	DMELANRawMessage(0x2200),
-	MediusServerHelloRequest(0x2400),
-	MediusServerHelloResponse(0x2500),
 	MediusServerAuthenticationRequest(0x0103),
 	MediusServerAuthenticationResponse(0x0203),
 	MediusServerSessionBeginRequest(0x0303),
