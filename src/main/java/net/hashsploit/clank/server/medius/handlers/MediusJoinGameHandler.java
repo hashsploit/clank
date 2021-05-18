@@ -91,7 +91,9 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		respPacket = new JoinGameResponse(reqPacket.getMessageID(), Utils.intToBytesLittle(callbackStatus.getValue()), Utils.intToBytesLittle(gameHostType.value), netConnectionInfo);
 				
 		// Check if the game exists and if the game world allows a new player to be added
-		server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin())).addPlayer(client.getPlayer());
+		if (callbackStatus == MediusCallbackStatus.SUCCESS) {
+			server.getGame(Utils.bytesToIntLittle(reqPacket.getWorldIdToJoin())).addPlayer(client.getPlayer());
+		}
 		
 		
 		

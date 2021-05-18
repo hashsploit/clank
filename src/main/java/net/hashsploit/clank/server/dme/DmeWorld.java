@@ -190,7 +190,7 @@ public class DmeWorld {
 
 		for (DmePlayer playerToReceiveData : players.values()) {
 			if (player != playerToReceiveData && (player.getStatus() == DmePlayerStatus.STAGING || player.getStatus() == DmePlayerStatus.ACTIVE)) {
-				playerToReceiveData.sendDataNow(baos.toByteArray());
+				playerToReceiveData.sendData(baos.toByteArray());
 			}
 		}
 	}
