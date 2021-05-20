@@ -40,6 +40,11 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
 		Channel channel = server.getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID()));
 		
+		if (channel == null) {
+			logger.severe("Requested channel: " + Utils.bytesToIntLittle(reqPacket.getWorldID()) + " does not exist! Using default...");
+			channel = server.getChannelById(1);
+		}
+		
 		byte[] lobbyName = Utils.buildByteArrayFromString(channel.getName(), MediusConstants.LOBBYNAME_MAXLEN.value);
 		byte[] activePlayerCount = Utils.intToBytesLittle(server.getChannelActivePlayerCountById(Utils.bytesToIntLittle(reqPacket.getWorldID())));
 		byte[] maxPlayers = Utils.intToBytesLittle(channel.getCapacity());
