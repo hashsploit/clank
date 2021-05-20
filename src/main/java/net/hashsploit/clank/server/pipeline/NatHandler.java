@@ -50,14 +50,16 @@ public class NatHandler extends ChannelInboundHandlerAdapter {
 			ByteBuf buffer = ctx.alloc().buffer(6);
 			byte[] ipAddrBytes = new byte[4];
 			
-			String[] parts = datagram.sender().getAddress().getHostAddress().toString().split("\\.");
-
+			String[] parts = client.getServerIPAddress().split("\\.");
+			
 			for (int i = 0; i < 4; i++) {
-			    ipAddrBytes[i] = (byte) (Byte.parseByte(parts[i]) & 0xFF);
+				int temp = Integer.parseInt(parts[i]);
+				byte b = (byte) temp;
+			    ipAddrBytes[i] = b;
 			}
 			
 			buffer.writeBytes(ipAddrBytes);
-			buffer.writeShort(datagram.sender().getPort());
+			buffer.writeShort(client.getServerPort());
 			
 			byte[] responseArray = new byte[buffer.readableBytes()];
 			

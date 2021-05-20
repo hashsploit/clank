@@ -40,4 +40,13 @@ public class NatClient implements IClient {
 	public void onDisconnect() {
 		
 	}
+	
+	public String getServerIPAddress() {
+		return server.getAddress();
+	}
+	
+	public int getServerPort() {
+		return server.getPort();
+	}
+	
 }
