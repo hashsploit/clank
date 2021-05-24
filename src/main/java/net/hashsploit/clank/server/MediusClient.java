@@ -21,6 +21,7 @@ import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.MediusServer;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
+import net.hashsploit.clank.server.pipeline.MuisHandler;
 import net.hashsploit.clank.server.pipeline.MasHandler;
 import net.hashsploit.clank.server.pipeline.MlsHandler;
 import net.hashsploit.clank.server.pipeline.RtDecryptionHandler;
@@ -93,7 +94,7 @@ public class MediusClient implements IClient {
 		// Initialize the correct pipeline handler for this server (3)
 		switch (server.getEmulationMode()) {
 			case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-				channel.pipeline().addLast("MediusTestHandlerMUIS", new TestHandlerMUIS(this));
+				channel.pipeline().addLast(new MuisHandler(this));
 				break;
 			case MEDIUS_AUTHENTICATION_SERVER:
 				channel.pipeline().addLast(new MasHandler(this));

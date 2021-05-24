@@ -32,4 +32,3 @@ public class VersionServerResponse extends MediusMessage {
 		return outputStream.toByteArray();
 	}
 }
-
