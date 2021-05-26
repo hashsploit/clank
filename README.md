@@ -1,4 +1,4 @@
-# Clank
+![Clank Logo](clank-logo.png)
 
 Clank is a high-performance and Open Source implementation of the
 proprietary SCE-RT Medius server stack used in many PlayStation 2
