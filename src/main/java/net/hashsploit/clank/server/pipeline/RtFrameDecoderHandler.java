@@ -66,6 +66,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	@Override
 	protected void decode(ChannelHandlerContext ctx, ByteBuf input, List<Object> output) throws Exception {
 
+		logger.finest("Deframe pipeline input" + ctx.channel().remoteAddress().toString() + ": " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(input)));
+
 		if (!ctx.pipeline().channel().isActive()) {
 			//return;
 		}
@@ -73,8 +75,8 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		// No valid packet is < 3 or > 2048 bytes, drop the connection
 		if (input.readableBytes() < 3 || input.readableBytes() > 2048) {
 			logger.warning("Invalid protocol request from: " + ctx.channel().remoteAddress().toString());
-			ctx.close();
-			return;
+			//ctx.close();
+			//return;
 		}
 
 		RtMessageId rtid = null;
@@ -110,11 +112,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 //		}
 	}
 	
-	private List<ByteBuf> basicDeframe(ByteBuf input) {
-		// TODO: ADD ERROR CHECKING
-		
-		logger.finest("Deframe pipeline input: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(input)));
-		
+	private List<ByteBuf> basicDeframe(ByteBuf input) {		
 		List<ByteBuf> results = new ArrayList<ByteBuf>();
 		
 		try {

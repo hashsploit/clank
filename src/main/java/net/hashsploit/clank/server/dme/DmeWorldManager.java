@@ -84,11 +84,19 @@ public class DmeWorldManager {
 	 */
 	public void broadcast(DmePlayer dmePlayer, byte[] bytes) {
 		DmeWorld worldToBroadcast = dmeWorldLookup.get(dmePlayer);
+		if (worldToBroadcast == null) {
+			logger.severe("Unknown world to broadcast for this player!");
+			return;
+		}
 		worldToBroadcast.broadcast(dmePlayer, bytes);
 	}
 
 	public void clientAppSingle(DmePlayer dmePlayer, byte[] bytes) {
 		DmeWorld worldToSend = dmeWorldLookup.get(dmePlayer);
+		if (worldToSend == null) {
+			logger.severe("Unknown world to broadcast for this player!");
+			return;
+		}
 		worldToSend.clientAppSingle(dmePlayer, bytes);
 	}
 	
@@ -97,11 +105,19 @@ public class DmeWorldManager {
 	 */
 	public void broadcastUdp(InetSocketAddress senderUdpAddr, byte[] bytes) {
 		DmeWorld worldToBroadcast = dmeUdpWorldLookup.get(senderUdpAddr);
+		if (worldToBroadcast == null) {
+			logger.severe("Unknown world to broadcast for this player!");
+			return;
+		}
 		worldToBroadcast.broadcastUdp(senderUdpAddr, bytes);
 	}
 	
 	public void clientAppSingleUdp(InetSocketAddress senderUdpAddr, byte[] bytes) {
 		DmeWorld worldToSend = dmeUdpWorldLookup.get(senderUdpAddr);
+		if (worldToSend == null) {
+			logger.severe("Unknown world to broadcast for this player!");
+			return;
+		}
 		worldToSend.clientAppSingleUdp(senderUdpAddr, bytes);		
 	}
 
