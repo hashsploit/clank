@@ -64,6 +64,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 				packet.getId() != RtMessageId.CLIENT_APP_SINGLE
 				) {
 				logger.severe("UNKNOWN DME TCP PACKET: " + Utils.bytesToHex(packet.getFullMessage().array()));
+				return;
 		}
 		processSinglePacket(ctx, packet);
 		checkBroadcast(packet);
