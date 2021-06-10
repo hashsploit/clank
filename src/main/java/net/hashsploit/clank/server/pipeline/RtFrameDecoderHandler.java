@@ -141,6 +141,9 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 				if (signed) {
 					input.readBytes(hash);
 				}
+				if (length < 0) {
+					break;
+				}
 				byte [] payload = new byte[length];
 				input.readBytes(payload);
 				
