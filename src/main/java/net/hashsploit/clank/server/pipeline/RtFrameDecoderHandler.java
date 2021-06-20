@@ -10,6 +10,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import net.hashsploit.clank.server.RtMessageId;
+import net.hashsploit.clank.utils.RtBufferDeframer;
 import net.hashsploit.clank.utils.Utils;
 
 public class RtFrameDecoderHandler extends ByteToMessageDecoder {
@@ -26,6 +27,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	private boolean discardingTooLongFrame;
 	private long tooLongFrameLength;
 	private long bytesToDiscard;
+	private RtBufferDeframer deframer;
 
 	public RtFrameDecoderHandler(int maxFrameLength, int lengthFieldOffset, int lengthFieldLength) {
 		this(maxFrameLength, lengthFieldOffset, lengthFieldLength, 0, 0);
@@ -61,6 +63,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 		this.lengthFieldEndOffset = lengthFieldOffset + lengthFieldLength;
 		this.initialBytesToStrip = initialBytesToStrip;
 		this.failFast = failFast;
+		this.deframer = new RtBufferDeframer();
 	}
 
 	@Override
@@ -106,194 +109,22 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			output.add(frame);
 		}
 		
-//		if (decoded != null) {
-//			logger.severe("INCOMING MESSAGE FRAME: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray((ByteBuf) decoded)));
-//			output.add(decoded);
-//		}
 	}
 	
-	private List<ByteBuf> basicDeframe(ByteBuf input) {		
-		List<ByteBuf> results = new ArrayList<ByteBuf>();
-		
-		try {
-			while (input.readableBytes() >= 3) {
-				byte id = input.readByte();
-
-				// Check if encrypted or decrypted
-				int idCheckInt = id & 0xFF;
-				boolean signed = idCheckInt >= 128;
-				//logger.finest("idCheckInt: " + idCheckInt);
-				//logger.finest("signed: " + signed);
-				
-				short length = input.readShortLE();
-				if (length == 0) {
-					ByteBuf buffer;
-					buffer = Unpooled.buffer(length + 2 + 1);
-					buffer.writeByte(id);
-					buffer.writeShortLE(length);
-
-					buffer.resetReaderIndex();
-					results.add(buffer);
-					continue;
-				}
-				
-				byte[] hash = new byte[4];
-				if (signed) {
-					input.readBytes(hash);
-				}
-				if (length < 0) {
-					break;
-				}
-				byte [] payload = new byte[length];
-				input.readBytes(payload);
-				
-				// Write data to out
-				ByteBuf buffer;
-				if (signed) {
-					buffer = Unpooled.buffer(length + 4 + 2 + 1);
-				}
-				else {
-					buffer = Unpooled.buffer(length + 2 + 1);
-				}
-				buffer.writeByte(id);
-				buffer.writeShortLE(length);
-				if (signed) {
-					buffer.writeBytes(hash);
-				}
-				buffer.writeBytes(payload);
-				buffer.resetReaderIndex();
-				results.add(buffer);
-			}
-		}
-		catch (IndexOutOfBoundsException e){
-			logger.severe("Not enough data received! This is either because the TCP Window is Full or the the socket is not receiving enough data.");
-		}
-		
-		
-		return results;
-	}
+	
 
 	private List<ByteBuf> decode(ChannelHandlerContext context, ByteBuf input) {
 		
 		
-		List<ByteBuf> results = basicDeframe(input);
+		List<ByteBuf> results = deframer.deframe_old(input);
 		for (ByteBuf result: results) {
 			logger.finest("Deframe pipeline out: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(result)));
 		}
 		
 		return results;
-//		if (this.discardingTooLongFrame) {
-//			long bytesToDiscard = this.bytesToDiscard;
-//			int localBytesToDiscard = (int) Math.min(bytesToDiscard, input.readableBytes());
-//			input.skipBytes(localBytesToDiscard);
-//			bytesToDiscard -= localBytesToDiscard;
-//			this.bytesToDiscard = bytesToDiscard;
-//
-//			this.failIfNessesary(false);
-//		}
-//		
-//		if (input.readableBytes() < this.lengthFieldEndOffset) {
-//			return null;
-//		}
-//
-//		int actualLengthFieldOffset = input.readerIndex() + this.lengthFieldOffset;
-//		long frameLength = this.getUnadjustedFrameLength(input, actualLengthFieldOffset, this.lengthFieldLength, this.byteOrder);
-//
-//		if (frameLength < 0) {
-//			input.skipBytes(this.lengthFieldEndOffset);
-//			throw new CorruptedFrameException("Negative pre-adjustment length field: " + frameLength);
-//		}
-//
-//		// FIXME: this isn't detecting if the packet is signed or not properly
-//		boolean signed = (input.getByte(input.readerIndex()) & 0xFF) >= 0x80;
-//		
-//		frameLength += this.lengthAdjustment + this.lengthFieldEndOffset + ((signed && frameLength > 0) ? 4 : 0);
-//
-//		if (frameLength < this.lengthFieldEndOffset) {
-//			input.skipBytes(this.lengthFieldEndOffset);
-//			throw new CorruptedFrameException("Adjusted frame length (" + frameLength + ") is less than lengthFieldEndOffset: " + this.lengthFieldEndOffset);
-//		}
-//
-//		if (frameLength > this.maxFrameLength) {
-//			int startOff = (int) Math.min(20, input.arrayOffset());
-//			throw new CorruptedFrameException(String.format("Frame Length exceeds max frame length on buffer: startOffset: %d", startOff));
-//		}
-//		
-//		// never overflows because it's less than maxFrameLength
-//		int frameLengthInt = (int) frameLength;
-//		if (input.readableBytes() < frameLengthInt) {
-//			return null;
-//		}
-//
-//		if (this.initialBytesToStrip > frameLengthInt) {
-//			input.skipBytes(frameLengthInt);
-//			throw new CorruptedFrameException("Adjusted frame length (" + frameLength + ") is less " + "than initialBytesToStrip: " + this.initialBytesToStrip);
-//		}
-//		input.skipBytes(this.initialBytesToStrip);
-//		
-//		// extract frame
-//		int readerIndex = input.readerIndex();
-//		int actualFrameLength = frameLengthInt - this.initialBytesToStrip;
-//		ByteBuf frame = this.extractFrame(context, input, readerIndex, actualFrameLength);
-//		input.readerIndex(readerIndex + actualFrameLength);
-//		return frame;
+
 	}
-//
-//	private long getUnadjustedFrameLength(ByteBuf buffer, int offset, int length, ByteOrder order) {
-//		long frameLength;
-//		switch (length) {
-//			case 1:
-//				frameLength = buffer.getByte(offset);
-//				break;
-//			case 2:
-//				frameLength = order == ByteOrder.BIG_ENDIAN ? buffer.getUnsignedShort(offset) : buffer.getUnsignedShortLE(offset);
-//				break;
-//			case 3:
-//				frameLength = order == ByteOrder.BIG_ENDIAN ? buffer.getUnsignedMedium(offset) : buffer.getUnsignedMediumLE(offset);
-//				break;
-//			case 4:
-//				frameLength = order == ByteOrder.BIG_ENDIAN ? buffer.getInt(offset) : buffer.getIntLE(offset);
-//				break;
-//			case 8:
-//				frameLength = order == ByteOrder.BIG_ENDIAN ? buffer.getLong(offset) : buffer.getLongLE(offset);
-//				break;
-//			default:
-//				throw new DecoderException("Unsupported lengthFieldLength: " + this.lengthFieldLength + " (expected: 1, 2, 3, 4, or 8)");
-//		}
-//		return frameLength;
-//	}
-//
-//	private ByteBuf extractFrame(ChannelHandlerContext ctx, ByteBuf buffer, int index, int length) {
-//		ByteBuf buff = buffer.slice(index, length);
-//		buff.retain();
-//		return buff;
-//	}
-//
-//	private void failIfNessesary(boolean firstDetectionOfTooLongFrame) {
-//		if (this.bytesToDiscard == 0) {
-//			// Reset to the initial state and tell the handlers that
-//			// the frame was too large.
-//			long tooLongFrameLength = this.tooLongFrameLength;
-//			this.tooLongFrameLength = 0;
-//			this.discardingTooLongFrame = false;
-//			if (!this.failFast || this.failFast && firstDetectionOfTooLongFrame) {
-//				this.fail(tooLongFrameLength);
-//			}
-//		} else {
-//			// Keep discarding and notify handlers if necessary.
-//			if (this.failFast && firstDetectionOfTooLongFrame) {
-//				this.fail(this.tooLongFrameLength);
-//			}
-//		}
-//	}
-//
-//	private void fail(long frameLength) {
-//		if (frameLength > 0) {
-//			throw new TooLongFrameException("Adjusted frame length exceeds " + this.maxFrameLength + ": " + frameLength + " - discarded");
-//		} else {
-//			throw new TooLongFrameException("Adjusted frame length exceeds " + this.maxFrameLength + " - discarding");
-//		}
-//	}
+
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
