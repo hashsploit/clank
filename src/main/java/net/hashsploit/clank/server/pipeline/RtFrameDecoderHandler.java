@@ -116,7 +116,7 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 	private List<ByteBuf> decode(ChannelHandlerContext context, ByteBuf input) {
 		
 		
-		List<ByteBuf> results = deframer.deframe_old(input);
+		List<ByteBuf> results = deframer.deframe(input);
 		for (ByteBuf result: results) {
 			logger.finest("Deframe pipeline out: " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(result)));
 		}
