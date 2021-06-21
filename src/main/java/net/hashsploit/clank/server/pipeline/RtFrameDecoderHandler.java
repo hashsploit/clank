@@ -75,13 +75,6 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 			//return;
 		}
 		
-		// No valid packet is < 3 or > 2048 bytes, drop the connection
-		if (input.readableBytes() < 3 || input.readableBytes() > 2048) {
-			logger.warning("Invalid protocol request from: " + ctx.channel().remoteAddress().toString());
-			//ctx.close();
-			//return;
-		}
-
 		RtMessageId rtid = null;
 		
 		// Convert the current id (-0x80 if it's encrypted)
@@ -92,13 +85,6 @@ public class RtFrameDecoderHandler extends ByteToMessageDecoder {
 				rtid = p;
 				break;
 			}
-		}
-
-		// Invalid protocol
-		if (rtid == null) {
-			logger.warning("Invalid protocol from: " + ctx.channel().remoteAddress().toString());
-			ctx.close();
-			return;
 		}
 
 		ByteBuf buffer = Unpooled.buffer(input.readableBytes());
