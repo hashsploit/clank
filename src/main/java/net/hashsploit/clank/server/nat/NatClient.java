@@ -43,6 +43,7 @@ public class NatClient implements IClient {
 	
 	public String getServerIPAddress() {
 		return server.getPublicIp();
+		//return server.getAddress();
 	}
 	
 	public int getServerPort() {

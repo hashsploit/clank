@@ -17,6 +17,7 @@ import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.dme.DmeUdpClient;
 import net.hashsploit.clank.server.dme.DmeUdpServer;
 import net.hashsploit.clank.server.dme.DmeWorldManager;
+import net.hashsploit.clank.utils.RtBufferDeframer;
 import net.hashsploit.clank.utils.Utils;
 
 /**
@@ -26,9 +27,12 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 
 	private static final Logger logger = Logger.getLogger(TestHandlerDmeUdp.class.getName());
 	private final DmeUdpClient client;
+	private RtBufferDeframer deframer;
+
 	
 	public TestHandlerDmeUdp(final DmeUdpClient client) {
 		super();
+		this.deframer = new RtBufferDeframer();
 		this.client = client;
 		
 	}
@@ -47,10 +51,13 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 	public void channelRead(ChannelHandlerContext ctx, Object msg) { // (2)
 		final DatagramPacket datagram = (DatagramPacket) msg;
 		
-		byte[] buff = new byte[datagram.content().readableBytes()];
-		datagram.content().readBytes(buff);
+		ByteBuf allData = datagram.content();
+		List<ByteBuf> deframedPackets = deframer.deframe(allData);
 		
-		List<RTMessage> packets = decodeRTMessageFrames(buff);
+		List<RTMessage> packets = new ArrayList<RTMessage>();
+		for (ByteBuf b: deframedPackets) {
+			packets.add(new RTMessage(b));
+		}
 
 		for (RTMessage rtmsg: packets) {
 			if (rtmsg.getId() != RtMessageId.CLIENT_ECHO && 
@@ -66,7 +73,7 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			
 			checkFirstPacket(ctx, datagram, rtmsg.getFullMessage().array(), datagram.sender().getPort(), datagram.sender().getAddress().toString());
 			
-			checkBroadcast(ctx, datagram, rtmsg.getFullMessage().array());
+			checkBroadcast(ctx, datagram, rtmsg);
 		}
 
 	}
@@ -109,20 +116,17 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 		}
 	}
 
-	private void checkBroadcast(ChannelHandlerContext ctx, DatagramPacket requestDatagram, byte[] data) {
-		List<RTMessage> packets = decodeRTMessageFrames(data);
-		for (RTMessage m: packets) {
+	private void checkBroadcast(ChannelHandlerContext ctx, DatagramPacket requestDatagram, RTMessage m) {
 			if (m.getId().toString().equals("CLIENT_APP_BROADCAST")) {
-				logger.finest("UDP BROADCAST From Addr: " + requestDatagram.sender() + " DmeWorldId: " + client.getDmeWorldId() + " PlayerIndex: " + client.getPlayerId() + " | " + Utils.bytesToHex(data));
+				logger.finest("UDP BROADCAST From Addr: " + requestDatagram.sender() + " DmeWorldId: " + client.getDmeWorldId() + " PlayerIndex: " + client.getPlayerId() + " | " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(m.getFullMessage())));
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
 				dmeWorldManager.broadcastUdp(requestDatagram.sender(), m.getFullMessage().array());	
 			}
 			else if (m.getId().toString().equals("CLIENT_APP_SINGLE")) {
-				logger.finest("UDP CLIENT APP SINGLE From Addr: " + requestDatagram.sender() + " DmeWorldId: " + client.getDmeWorldId() + " PlayerIndex: " + client.getPlayerId() + " | " + Utils.bytesToHex(data));
+				logger.finest("UDP CLIENT APP SINGLE From Addr: " + requestDatagram.sender() + " DmeWorldId: " + client.getDmeWorldId() + " PlayerIndex: " + client.getPlayerId() + " | " + Utils.bytesToHex(Utils.nettyByteBufToByteArray(m.getFullMessage())));
 				DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
 				dmeWorldManager.clientAppSingleUdp(requestDatagram.sender(), m.getFullMessage().array());
 			}
-		}
 	}
 
 	@Override
@@ -143,56 +147,6 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			ctx.write(msg);
 			ctx.flush();
 		}
-	}
-	
-	// TODO: ADD TO PIPELINE
-	public static List<RTMessage> decodeRTMessageFrames(byte[] data) {
-		final List<RTMessage> packets = new ArrayList<RTMessage>();
-
-		int index = 0;
-
-		try {
-			while (index < data.length) {
-				final byte id = data[index + 0];
-
-				ByteBuffer bb = ByteBuffer.allocate(2);
-				bb.order(ByteOrder.LITTLE_ENDIAN);
-				bb.put(data[index + 1]);
-				bb.put(data[index + 2]);
-				short length = bb.getShort(0);
-
-				// logger.fine("Length: " + Integer.toString(length));
-				byte[] finalData = new byte[length];
-				int offset = 0;
-
-				if (length > 0) {
-					// ID(1) + Length(2)
-					offset += 1 + 2;
-				}
-
-				// logger.warning("PLAIN DATA PACKET");
-				System.arraycopy(data, index + offset, finalData, 0, finalData.length);
-
-				RtMessageId rtid = null;
-
-				for (RtMessageId p : RtMessageId.values()) {
-					if (p.getValue() == id) {
-						rtid = p;
-						break;
-					}
-				}
-
-				ByteBuf finalDataBuf = Unpooled.wrappedBuffer(finalData);
-				packets.add(new RTMessage(rtid, finalData.length, finalDataBuf));
-
-				index += length + 3;
-			}
-		} catch (Throwable t) {
-			t.printStackTrace();
-			return null;
-		}
-
-		return packets;
 	}
 
 }
