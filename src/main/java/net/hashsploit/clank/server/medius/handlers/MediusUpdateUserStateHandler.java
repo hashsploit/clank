@@ -13,6 +13,7 @@ import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
 import net.hashsploit.clank.server.medius.objects.MediusPlayerStatus;
 import net.hashsploit.clank.utils.Utils;
+import net.hashsploit.clank.EmulationMode;
 
 public class MediusUpdateUserStateHandler extends MediusPacketHandler {
 
@@ -35,6 +36,9 @@ public class MediusUpdateUserStateHandler extends MediusPacketHandler {
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
 
+		if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER) {
+			return null;
+		}
 		String generatedSessionKey = Utils.bytesToStringClean(sessionKey) + "\0";
 
 		DbManager db = Clank.getInstance().getDatabase();

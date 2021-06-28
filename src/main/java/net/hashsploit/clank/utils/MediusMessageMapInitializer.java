@@ -155,6 +155,9 @@ public class MediusMessageMapInitializer {
 		mp.put(MediusMessageType.AccountLogin, new MediusAccountLoginHandler());
 		mp.put(MediusMessageType.SetLobbyWorldFilter, new MediusSetLobbyWorldFilterHandler());
 
+		// UYA PAL
+		mp.put(MediusMessageType.UpdateUserState, new MediusUpdateUserStateHandler());
+		
 		// Other titles
 		mp.put(MediusMessageType.GetMyIP, new MediusGetMyIPHandler());
 		mp.put(MediusMessageType.GetLocations, new MediusGetLocationsHandler());
