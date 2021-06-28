@@ -1,14 +1,13 @@
 package net.hashsploit.clank.utils;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.DatagramSocket;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
 import java.net.URL;
-import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 import java.util.Date;
 import java.util.Random;
 import java.util.logging.Level;
@@ -72,6 +71,19 @@ public class Utils {
 		return sb.toString();
 	}
 	
+	public static byte[] buildByteArray(int length, Object... args) {
+        ByteArrayOutputStream bOutput = new ByteArrayOutputStream(25);
+        try {
+	        for (Object b: args) {
+	        	bOutput.write((byte[]) b);
+	        }
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}  
+        return bOutput.toByteArray();
+	}
+	
 	public static RtMessageId getRtMessageId(byte id) {
 		for (final RtMessageId p : RtMessageId.values()) {
 			if (p.getValue() == id) {
@@ -79,15 +91,6 @@ public class Utils {
 			}
 		}
 		return null;
-	}
-	
-	public static ByteBuffer toNioBuffer(final ByteBuf buffer) {
-		if (buffer.isDirect()) {
-			return buffer.nioBuffer();
-		}
-		final byte[] bytes = new byte[buffer.readableBytes()];
-		buffer.getBytes(buffer.readerIndex(), bytes);
-		return ByteBuffer.wrap(bytes);
 	}
 	
 	/**
@@ -110,46 +113,33 @@ public class Utils {
 	}
 
 	public static short bytesToShortLittle(final byte[] bytes) {
-		ByteBuffer bb = ByteBuffer.allocate(2);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		bb.put(bytes);
-		short shortVal = bb.getShort(0);
-		return shortVal;
+		return bytesToShortLittle(bytes[0], bytes[1]);
 	}
 	
 	public static short bytesToShortLittle(final byte byte1, final byte byte2) {
-		ByteBuffer bb = ByteBuffer.allocate(2);
-		bb.order(ByteOrder.LITTLE_ENDIAN);
-		bb.put(byte1);
-		bb.put(byte2);
-		short shortVal = bb.getShort(0);
-		return shortVal;
+		return (short)(((byte2 & 0xFF) << 8) | (byte1 & 0xFF));
 	}
 
 	public static int bytesToIntLittle(final byte[] data) {
-
-		ByteBuffer b = ByteBuffer.wrap(data); // big-endian by default
-		b.order(ByteOrder.LITTLE_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
-		int num = b.getInt();
-		return num;
+        return ((data[3] & 0xFF) << 24) |
+                ((data[2] & 0xFF) << 16) |
+                ((data[1] & 0xFF) << 8) |
+                ((data[0] & 0xFF) << 0);
 	}
 
 	public static byte[] shortToBytesLittle(final short data) {
-		ByteBuffer b = ByteBuffer.allocate(2);
-		b.order(ByteOrder.LITTLE_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
-		b.putShort(data);
-
-		byte[] result = b.array();
+		byte[] result = new byte[2];
+		result[0] = (byte)(data & 0xff);
+		result[1] = (byte)((data >> 8) & 0xff);
 		return result;
 	}
 
 	public static byte[] intToBytesLittle(final int data) {
-		ByteBuffer b = ByteBuffer.allocate(4);
-		b.order(ByteOrder.LITTLE_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
-		b.putInt(data);
-
-		byte[] result = b.array();
-		return result;
+        return new byte[] {
+                (byte)data,
+                (byte)(data >> 8),
+                (byte)(data >> 16),
+                (byte)(data >> 24)};
 	}
 
 	public static byte[] buildByteArrayFromString(String s, int len) {
@@ -163,10 +153,9 @@ public class Utils {
 	}
 
 	public static byte[] padByteArray(byte[] input, int length) {
-		ByteBuffer buffer = ByteBuffer.allocate(length);
-		buffer.put(input);
-		buffer.flip();
-		return buffer.array();
+		byte[] newArray = new byte[length];
+		System.arraycopy(input, 0, newArray, 0, input.length);
+		return newArray;
 	}
 
 	/**
@@ -250,12 +239,11 @@ public class Utils {
 	 * @return byteArray
 	 */
 	public static byte[] intToBytes(final int data) {
-		ByteBuffer b = ByteBuffer.allocate(4);
-
-		b.order(ByteOrder.BIG_ENDIAN); // optional, the initial order of a byte buffer is always BIG_ENDIAN.
-		b.putInt(data);
-
-		return b.array();
+        return new byte[] {
+                (byte)(data >> 24),
+                (byte)(data >> 16),
+                (byte)(data >> 8),
+                (byte) data};
 	}
 
 	/**
@@ -536,15 +524,6 @@ public class Utils {
 		sb.append(cornerSeparator).append("\n");
 
 		return sb.toString();
-	}
-
-	public static ByteBuffer byteBufToNioBuffer(final ByteBuf buffer) {
-		if (buffer.isDirect()) {
-			return buffer.nioBuffer();
-		}
-		final byte[] bytes = new byte[buffer.readableBytes()];
-		buffer.getBytes(buffer.readerIndex(), bytes);
-		return ByteBuffer.wrap(bytes);
 	}
 
 	public static byte[] flipByteArray(byte[] array) {
