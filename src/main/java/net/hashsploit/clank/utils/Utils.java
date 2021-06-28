@@ -72,7 +72,7 @@ public class Utils {
 	}
 	
 	public static byte[] buildByteArray(int length, Object... args) {
-        ByteArrayOutputStream bOutput = new ByteArrayOutputStream(25);
+        ByteArrayOutputStream bOutput = new ByteArrayOutputStream(length);
         try {
 	        for (Object b: args) {
 	        	bOutput.write((byte[]) b);
