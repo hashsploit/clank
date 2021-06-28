@@ -60,7 +60,7 @@ public class Clank {
 
 		// Initialize server
 		System.out.println("Initializing ...");
-
+ 		logger.info("Using PID: " + ProcessHandle.current().pid());
 		Security.addProvider(new BouncyCastleProvider());
 
 		terminal = new Terminal();
