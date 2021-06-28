@@ -2,7 +2,6 @@ package net.hashsploit.clank.server.pipeline;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
@@ -191,23 +190,22 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		ctx.flush(); // 
 
     		// Server Accept TCP
-    		ByteBuffer buffer = ByteBuffer.allocate(23);
     		//buffer.put(Utils.hexStringToByteArray("0108D301000300"));    		
     		String hex = "010810" + 
     				Utils.bytesToHex(Utils.shortToBytesLittle((short) dmePlayerId)) + // DME WORLD PLAYER ID (0,1,2 etc)
     				Utils.bytesToHex(Utils.shortToBytesLittle((short) playerCount)); // PLAYER COUNT
     		
-    		buffer.put(Utils.hexStringToByteArray(hex));    		
-    		final byte[] ipAddr = Utils.buildByteArrayFromString(client.getIPAddress(), 16);
-    		buffer.put(ipAddr);
-    		RTMessage d = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_TCP, buffer.array());
+    		byte[] result = Utils.buildByteArray(23, 
+    				Utils.hexStringToByteArray(hex), 
+    				Utils.buildByteArrayFromString(client.getIPAddress(), 16)
+    				);
+    		RTMessage d = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_TCP, result);
     		logger.finest("Final Payload: " + Utils.bytesToHex(d.getFullMessage().array()));
     		ByteBuf msg = d.getFullMessage();
     		ctx.write(msg); // (1)
     		ctx.flush(); // 
     		
     		// Server AUX UDP Info (IP and port)
-    		ByteBuffer buf = ByteBuffer.allocate(18);
     		String udpAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
     		
     		if (udpAddress == null || udpAddress.isEmpty()) {
@@ -217,12 +215,9 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		logger.finest("DME config ip: " + udpAddress + ":" + curUdpPort);
     		
     		final byte[] udpAddr = Utils.buildByteArrayFromString(udpAddress, 16);
-    		
-    		buf.put(udpAddr);
-    		buf.put(Utils.shortToBytesLittle((short) curUdpPort));
+    		byte[] m = Utils.buildByteArray(18, udpAddr, Utils.shortToBytesLittle((short) curUdpPort));
     		curUdpPort += 1;
-
-    		RTMessage da = new RTMessage(RtMessageId.SERVER_INFO_AUX_UDP, buf.array());
+    		RTMessage da = new RTMessage(RtMessageId.SERVER_INFO_AUX_UDP, m);
     		logger.finest("Final Payload: " + Utils.bytesToHex(da.getFullMessage().array()));
     		ByteBuf msg2 = da.getFullMessage();
     		ctx.write(msg2); // (1)
@@ -239,15 +234,6 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
         ctx.close();
     }
     
-	private static ByteBuffer toNioBuffer(final ByteBuf buffer) {
-		if (buffer.isDirect()) {
-			return buffer.nioBuffer();
-		}
-		final byte[] bytes = new byte[buffer.readableBytes()];
-		buffer.getBytes(buffer.readerIndex(), bytes);
-		return ByteBuffer.wrap(bytes);
-	}
-
 
 	
 	private void checkEcho(ChannelHandlerContext ctx, RTMessage packet) {

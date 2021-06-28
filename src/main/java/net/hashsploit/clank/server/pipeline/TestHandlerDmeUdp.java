@@ -84,7 +84,6 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 			clientAddr = clientAddr.substring(1);
 			//logger.info("Client Addr: " + clientAddr);
 			//logger.info("Client port: " + port);
-			ByteBuffer buffer = ByteBuffer.allocate(25);
 			
     		DmeWorldManager dmeWorldManager = ((DmeUdpServer) client.getServer()).getDmeWorldManager();
 			int dmeWorldId = (int) Utils.bytesToShortLittle(data[6], data[7]);
@@ -104,12 +103,13 @@ public class TestHandlerDmeUdp extends ChannelInboundHandlerAdapter { // (1)
 					Utils.bytesToHex(Utils.shortToBytesLittle((short) playerId)) + // DME PLAYER IN WORLD ID
 					Utils.bytesToHex(Utils.shortToBytesLittle(playerCount)); // PLAYER COUNT
 
-			buffer.put(Utils.hexStringToByteArray(hex));
+ 			byte[] h = Utils.hexStringToByteArray(hex);
 			byte[] ad = Utils.buildByteArrayFromString(clientAddr, 16);
-			buffer.put(ad);
-			buffer.put(Utils.shortToBytesLittle((short) port));
-			
-			RTMessage packetResponse = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, buffer.array());
+ 			byte[] bPort = Utils.shortToBytesLittle((short) port);
+ 			
+ 			byte[] bufferAll = Utils.buildByteArray(25, h,ad,bPort);
+ 			
+			RTMessage packetResponse = new RTMessage(RtMessageId.SERVER_CONNECT_ACCEPT_AUX_UDP, bufferAll);
 			byte[] payload = packetResponse.getFullMessage().array();
 			logger.fine("Final payload: " + Utils.bytesToHex(payload));
 			ctx.writeAndFlush(new DatagramPacket(Unpooled.copiedBuffer(payload), requestDatagram.sender()));
