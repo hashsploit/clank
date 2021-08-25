@@ -95,7 +95,7 @@ public class PluginManager {
 			return false;
 		}
 		
-		if (!Utils.isInBitmask(clank.getConfig().getEmulationMode().value, pluginStatus.getEmulationModes())) {
+		if (!Utils.isInBitmask(clank.getConfig().getEmulationMode().getValue(), pluginStatus.getEmulationModes())) {
 			logger.warning(String.format("The plugin '%s' may only be run on %s.", name, pluginStatus.getEmulationModes()));
 			return false;
 		}
@@ -317,7 +317,7 @@ public class PluginManager {
 						final String key = luaEmulationMode.checktable().get(luaKey).checkjstring();
 						for (final EmulationMode mode : EmulationMode.values()) {
 							if (mode.name().toUpperCase().equals(key)) {
-								emulationMode = Utils.addToBitmask(mode.value, emulationMode);
+								emulationMode = Utils.addToBitmask(mode.getValue(), emulationMode);
 							}
 						}
 					}

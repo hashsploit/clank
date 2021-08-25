@@ -1,39 +1,38 @@
 package net.hashsploit.clank.server.rpc;
 
-public class RpcServerConfig {
-	
-	private final String address;
-	private final int port;
-	private final boolean encryption;
-	private final String certChainFile;
-	private final String privateKeyFile;
-	
-	public RpcServerConfig(final String address, final int port, final boolean encryption, final String certChainFile, final String privateKeyFile) {
-		this.address = address;
-		this.port = port;
-		this.encryption = encryption;
-		this.certChainFile = certChainFile;
-		this.privateKeyFile = privateKeyFile;
-	}
+import com.google.gson.annotations.SerializedName;
+import net.hashsploit.clank.config.objects.ServerInfo;
 
-	public String getAddress() {
-		return address;
-	}
+public class RpcServerConfig extends ServerInfo {
 
-	public int getPort() {
-		return port;
-	}
+	@SerializedName("encryption")
+	private Encryption encryption = new Encryption();
 
-	public boolean isEncryption() {
+	public Encryption getEncryption() {
 		return encryption;
 	}
 
-	public String getCertChainFile() {
-		return certChainFile;
-	}
+	public static class Encryption {
 
-	public String getPrivateKeyFile() {
-		return privateKeyFile;
+		@SerializedName("enabled")
+		private boolean enabled = false;
+
+		@SerializedName("cert_chain")
+		private String certChainFile = null;
+
+		@SerializedName("private_key")
+		private String privateKeyFile = null;
+
+		public boolean isEnabled() {
+			return enabled;
+		}
+
+		public String getCertChainFile() {
+			return certChainFile;
+		}
+
+		public String getPrivateKeyFile() {
+			return privateKeyFile;
+		}
 	}
-	
 }

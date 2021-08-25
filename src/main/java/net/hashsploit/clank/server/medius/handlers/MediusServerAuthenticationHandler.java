@@ -39,10 +39,10 @@ public class MediusServerAuthenticationHandler extends MediusPacketHandler {
 
 		byte confirmation = 0x00; // 0x00 = success, 0x01 = failure
 
-		String natAddress = ((MasConfig) Clank.getInstance().getConfig()).getNatAddress();
-		final int natPort = ((MasConfig) Clank.getInstance().getConfig()).getNatPort();
-		String mlsAddress = ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress();
-		final int mlsPort = ((MasConfig) Clank.getInstance().getConfig()).getMlsPort();
+		String natAddress = ((MasConfig) Clank.getInstance().getConfig()).getNatConfig().getAddress();
+		final int natPort = ((MasConfig) Clank.getInstance().getConfig()).getNatConfig().getPort();
+		String mlsAddress = ((MasConfig) Clank.getInstance().getConfig()).getMlsConfig().getAddress();
+		final int mlsPort = ((MasConfig) Clank.getInstance().getConfig()).getMlsConfig().getPort();
 		
 		if (natAddress == null) {
 			natAddress = Utils.getPublicIpAddress();

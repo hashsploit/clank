@@ -1,20 +1,14 @@
 package net.hashsploit.clank;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import net.hashsploit.clank.config.AbstractConfig;
+import net.hashsploit.clank.config.configs.*;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import net.hashsploit.clank.config.AbstractConfig;
-import net.hashsploit.clank.config.ConfigNames;
-import net.hashsploit.clank.config.configs.DmeConfig;
-import net.hashsploit.clank.config.configs.MasConfig;
-import net.hashsploit.clank.config.configs.MlsConfig;
-import net.hashsploit.clank.config.configs.MuisConfig;
-import net.hashsploit.clank.config.configs.NatConfig;
 
 public class Main {
 
@@ -25,58 +19,51 @@ public class Main {
 			return;
 		}
 
-		AbstractConfig config = null;
-
 		try {
 			final File file = new File(args[0]);
 
 			if (!file.isFile()) {
-				System.err.println(String.format("File not found: %s", args[0]));
+				System.err.printf("File not found: %s%n", args[0]);
 				return;
 			}
 
-			if (!file.getName().endsWith(".json")) {
-				System.err.println(String.format("The configuration file '%s' must be a .json file. ", args[0]));
-				return;
-			}
+			Gson gson = new Gson();
+			JsonObject jsonConfig = gson.fromJson(new FileReader(args[0]), JsonObject.class);
 
-			JSONTokener jsonTokener = new JSONTokener(new FileReader(new File(args[0])));
-			JSONObject jsonConfig = new JSONObject(jsonTokener);
-			EmulationMode mode = EmulationMode.valueOf(jsonConfig.getString(ConfigNames.EMULATION_MODE.toString()));
+			AbstractConfig config = gson.fromJson(jsonConfig, AbstractConfig.class);
 
-			switch (mode) {
+			switch (config.getEmulationMode()) {
 				case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-					config = new MuisConfig(jsonConfig);
+					config = gson.fromJson(jsonConfig, MuisConfig.class);
 					break;
 				case MEDIUS_AUTHENTICATION_SERVER:
-					config = new MasConfig(jsonConfig);
+					config = gson.fromJson(jsonConfig, MasConfig.class);
 					break;
 				case MEDIUS_LOBBY_SERVER:
-					config = new MlsConfig(jsonConfig);
+					config = gson.fromJson(jsonConfig, MlsConfig.class);
 					break;
 				case DME_SERVER:
-					config = new DmeConfig(jsonConfig);
+					config = gson.fromJson(jsonConfig, DmeConfig.class);
 					break;
 				case NAT_SERVER:
-					config = new NatConfig(jsonConfig);
+					config = gson.fromJson(jsonConfig, NatConfig.class);
 					break;
 				default:
-					System.err.println(String.format("Invalid 'emulation_mode' provided in the config file %s", args[0]));
+					System.err.printf("Invalid 'emulation_mode' provided in the config file %s%n", args[0]);
 					return;
 			}
 
-		} catch (JSONException e) {
-			System.err.println(String.format("Failed to start server, failed to parse JSON config error: %s", e.getMessage()));
-			return;
+			config.setJsonObject(jsonConfig);
+			new Clank(config);
+
+		} catch (JsonParseException e) {
+			System.err.printf("Failed to start server, failed to parse JSON config error: %s%n", e.getMessage());
 		} catch (FileNotFoundException e) {
-			System.err.println(String.format("File not found: %s", args[0]));
-			return;
+			System.err.printf("File not found: %s%n", args[0]);
 		} catch (Throwable t) {
 			// Invalid config values or something else when loading the config
 			t.printStackTrace();
-			return;
 		}
 
-		new Clank(config);
 	}
 }

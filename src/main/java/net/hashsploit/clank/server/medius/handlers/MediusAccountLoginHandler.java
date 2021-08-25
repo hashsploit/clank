@@ -79,11 +79,11 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		
 		if (Clank.getInstance().getConfig() instanceof MasConfig) {
 			masConfig = (MasConfig) Clank.getInstance().getConfig();	
-			if (!masConfig.isWhitelistEnabled()) { // Whitelist is disabled
+			if (!masConfig.getWhitelist().isEnabled()) { // Whitelist is disabled
 				whitelistSuccess = true;
 			}
 			else { // Whitelist is enabled. Check username/pass with whitelist
-				HashMap<String, String> whitelist = masConfig.getWhitelist();
+				HashMap<String, String> whitelist = masConfig.getWhitelist().getPlayers();
 				if (whitelist.keySet().contains(username.toLowerCase())) {
 					if (whitelist.get(username.toLowerCase()).equals(password)) {
 						whitelistSuccess = true;
@@ -109,8 +109,8 @@ public class MediusAccountLoginHandler extends MediusPacketHandler {
 		
 		// Default world id = 0
 		byte[] worldID = Utils.intToBytesLittle(0);
-		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsAddress() : null;
-		String natIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getNatAddress() : null;
+		String mlsIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getMlsConfig().getAddress() : null;
+		String natIpAddress = (Clank.getInstance().getConfig() instanceof MasConfig) ? ((MasConfig) Clank.getInstance().getConfig()).getNatConfig().getAddress() : null;
 
 		if (mlsIpAddress == null) {
 			mlsIpAddress = Utils.getPublicIpAddress();

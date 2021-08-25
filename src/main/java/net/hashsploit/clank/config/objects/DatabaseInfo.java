@@ -1,60 +1,41 @@
 package net.hashsploit.clank.config.objects;
 
+import com.google.gson.annotations.SerializedName;
+
 public class DatabaseInfo {
 
-	private String mode;
-	private String host;
-	private String database;
-	private String username;
-	private String password;
+	@SerializedName("mode")
+	private String mode = "MariaDb";
 
-	public DatabaseInfo(final String mode, final String host, final String database, final String username, final String password) {
-		this.mode = mode;
-		this.host = host;
-		this.database = database;
-		this.username = username;
-		if (password.equals("")) {
-			this.password = null;
-		}
-		else {
-			this.password = password;
-		}
-	}
+	@SerializedName("host")
+	private String host = "127.0.0.1";
+
+	@SerializedName("database")
+	private String database = "clank";
+
+	@SerializedName("username")
+	private String username = "root";
+
+	@SerializedName("password")
+	private String password = null;
 
 	public String getHost() {
 		return host;
-	}
-
-	public void setHost(String host) {
-		this.host = host;
 	}
 
 	public String getDatabase() {
 		return database;
 	}
 
-	public void setDatabase(String database) {
-		this.database = database;
-	}
-
 	public String getUsername() {
 		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
 	}
 
 	public String getPassword() {
 		return password;
 	}
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
 	public String getMode() {
 		return mode;
 	}
-
 }

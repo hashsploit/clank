@@ -31,7 +31,6 @@ import net.hashsploit.clank.server.medius.MediusAuthenticationServer;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
 import net.hashsploit.clank.server.muis.MediusUniverseInformationServer;
 import net.hashsploit.clank.server.nat.NatServer;
-import net.hashsploit.clank.utils.Utils;
 
 public class Clank {
 
@@ -109,12 +108,12 @@ public class Clank {
 
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
-		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.value | EmulationMode.MEDIUS_LOBBY_SERVER.value | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.value;
+		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
 		
 		// This is a *Medius server, set up the generic Medius components
 		MediusConfig mediusConfig = null;
-		if ((config.getEmulationMode().value & mediusBitmask) != 0) {
-			
+		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
+
 			// Register generic *Medius CLI commands
 			terminal.registerCommand(new CLIPlayersCommand());
 
@@ -172,7 +171,7 @@ public class Clank {
 				terminalPrompt = AnsiColor.GREEN + "DME>";
 				terminal.registerCommand(new CLIBroadcastCommand());
 				DmeConfig dmeConfig = (DmeConfig) config;
-				server = new DmeServer(dmeConfig.getTcpAddress(), dmeConfig.getTcpPort(), dmeConfig.getParentThreads(), dmeConfig.getChildThreads(), dmeConfig.getUdpAddress(), dmeConfig.getUdpStartingPort(), dmeConfig.getUdpThreads(), dmeConfig.getTimeout());
+				server = new DmeServer(dmeConfig.getAddress(), dmeConfig.getPort(), dmeConfig.getParentThreads(), dmeConfig.getChildThreads(), dmeConfig.getUdpAddress(), dmeConfig.getUdpPort(), dmeConfig.getUdpThreads(), dmeConfig.getTimeout());
 				break;
 			default:
 				logger.severe("No valid server component provided.");

@@ -4,6 +4,10 @@ import java.util.Iterator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.luaj.vm2.LuaBoolean;
@@ -77,7 +81,7 @@ public class ClankLib extends TwoArgFunction {
 	class get_config extends ZeroArgFunction {
 		@Override
 		public LuaValue call() {
-			JSONObject json = Clank.getInstance().getConfig().getJson();
+			JsonObject json = Clank.getInstance().getConfig().getJsonObject();
 			return jsonToLuaTable(json);
 		}
 	}
@@ -112,43 +116,46 @@ public class ClankLib extends TwoArgFunction {
 	 * @param object
 	 * @return
 	 */
-	private static LuaValue jsonToLuaTable(JSONObject json) {
+	private static LuaValue jsonToLuaTable(JsonObject json) {
 		
-		if (!json.isEmpty()) {
+		if (!json.isJsonNull()) {
 			
 			LuaTable table = new LuaTable();
 			
 			for (final String key : json.keySet()) {
-				final Object value = json.get(key);
-				
-				if (value.getClass() == Integer.class) {
-					table.entry(LuaString.valueOf(key), LuaInteger.valueOf((int) value));
-				} else if (value.getClass() == Float.class || value.getClass() == Double.class) {
-					table.entry(LuaString.valueOf(key), LuaDouble.valueOf((double) value));
-				} else if (value.getClass() == Boolean.class) {
-					table.entry(LuaString.valueOf(key), LuaBoolean.valueOf((boolean) value));
-				} else if (value.getClass() == String.class) {
-					table.entry(LuaString.valueOf(key), LuaString.valueOf((String) value));
-				} else if (value.getClass() == JSONArray.class) {
-					// Json Array
-					JSONArray array = (JSONArray) value;
-					Iterator<Object> objs = array.iterator();
+				final JsonElement value = json.get(key);
+
+				if(value.isJsonPrimitive()) {
+					JsonPrimitive jsonPrimitive = value.getAsJsonPrimitive();
+					if(jsonPrimitive.isNumber()) {
+						if(jsonPrimitive.getAsString().matches("[-+]?[0-9]*\\\\.[0-9]+")) {
+							table.entry(LuaString.valueOf(key), LuaDouble.valueOf(jsonPrimitive.getAsDouble()));
+						} else {
+							table.entry(LuaString.valueOf(key), LuaInteger.valueOf(jsonPrimitive.getAsInt()));
+						}
+					} else if (jsonPrimitive.isBoolean()) {
+						table.entry(LuaString.valueOf(key), LuaBoolean.valueOf(jsonPrimitive.getAsBoolean()));
+					} else if(jsonPrimitive.isString()) {
+						table.entry(LuaString.valueOf(key), LuaString.valueOf(jsonPrimitive.getAsBoolean()));
+					}
+				} else if(value.isJsonArray()) {
+					JsonArray array = value.getAsJsonArray();
+					Iterator<JsonElement> objs = array.iterator();
 					LuaTable subTable = new LuaTable();
-					
+
 					while (objs.hasNext()) {
-						JSONObject subObject = (JSONObject) objs.next();
-						if (subObject != null) {
-							subTable.add(jsonToLuaTable(subObject));
+						JsonElement jsonElement = objs.next();
+						if (!jsonElement.isJsonNull()) {
+							subTable.add(jsonToLuaTable(jsonElement.getAsJsonObject()));
 						}
 					}
-					
+
 					table.entry(LuaString.valueOf(key), subTable);
 				}
 				return table;
 			}
 		}
-		
-		
+
 		return LuaValue.NIL;
 	}
 	
