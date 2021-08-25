@@ -1,111 +1,44 @@
 package net.hashsploit.clank.config;
 
-import java.util.List;
-import java.util.logging.Level;
-import java.util.stream.Collectors;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.google.gson.JsonObject;
+import com.google.gson.annotations.SerializedName;
 import net.hashsploit.clank.EmulationMode;
+import net.hashsploit.clank.config.objects.ServerInfo;
 
-public class AbstractConfig {
-	
-	private final JSONObject jsonConfig;
-	private final EmulationMode emulationMode;
-	private final Level logLevel;
-	private final Level fileLogLevel;
-	
-	public AbstractConfig(final JSONObject json) {
-		this.jsonConfig = json;
-		this.emulationMode = EmulationMode.valueOf(json.getString(ConfigNames.EMULATION_MODE.toString()));
-		this.logLevel = Level.parse(json.getString(ConfigNames.LOG_LEVEL.toString()));
-		
-		if (!json.isNull(ConfigNames.FILE_LOG_LEVEL.toString())) {
-			this.fileLogLevel = Level.parse(json.getString(ConfigNames.FILE_LOG_LEVEL.toString()));
-		} else {
-			this.fileLogLevel = null;
-		}
-		
-	}
-	
-	/**
-	 * Get the underlying JSON Object configuration.
-	 * @return
-	 */
-	public JSONObject getJson() {
-		return jsonConfig;
-	}
-	
-	/**
-	 * Get a configuration value directly.
-	 * @param key
-	 * @return
-	 */
-	public String getValue(String key) {
-		return jsonConfig.isNull(key) ? null : jsonConfig.getString(key);
-	}
-	
-	/**
-	 * Get an array of objects.
-	 * @param key
-	 * @return
-	 */
-	private static List<Object> getArrayOfObjects(JSONObject json, String key) {
-		if (json.isNull(key)) {
-			return null;
-		}
-		
-		try {
-			JSONArray jsonArray = json.getJSONArray(key);
-			return jsonArray.toList();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-		
-		return null;
-	}
-	
-	/**
-	 * Get an array of strings.
-	 * @param json
-	 * @param key
-	 * @return
-	 */
-	public static List<String> getArrayOfStrings(JSONObject json, String key) {
-		return getArrayOfObjects(json, key).stream().map(element -> element.toString()).collect(Collectors.toList());
-	}
-	
-	/**
-	 * Get an array of integers.
-	 * @param json
-	 * @param key
-	 * @return
-	 */
-	public static List<Integer> getArrayOfIntegers(JSONObject json, String key) {
-		return getArrayOfObjects(json, key).stream().map(element -> Integer.parseInt(element.toString())).collect(Collectors.toList());
-	}
-	
-	/**
-	 * Get the config's emulation mode.
-	 */
-	public EmulationMode getEmulationMode() {
-		return emulationMode;
-	}
+import java.util.logging.Level;
 
-	/**
-	 * Get the config's logger level.
-	 */
-	public Level getLogLevel() {
-		return logLevel;
-	}
-	
-	/**
-	 * Get the config's file logger level.
-	 */
-	public Level getFileLogLevel() {
-		return fileLogLevel;
-	}
-	
+public class AbstractConfig extends ServerInfo {
+
+    private JsonObject jsonObject;
+
+    @SerializedName("mode")
+    private EmulationMode emulationMode;
+
+    @SerializedName("log_level")
+    private String logLevel = "INFO";
+
+    @SerializedName("file_log_level")
+    private String fileLogLevel = null;
+
+    public JsonObject getJsonObject() {
+        return jsonObject;
+    }
+
+    public EmulationMode getEmulationMode() {
+        return emulationMode;
+    }
+
+    // TODO: Log4J
+    public Level getLogLevel() {
+        return logLevel != null ? Level.parse(logLevel) : null;
+    }
+
+    // TODO: Log4J
+    public Level getFileLogLevel() {
+        return fileLogLevel != null ? Level.parse(fileLogLevel) : null;
+    }
+
+    public void setJsonObject(JsonObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
 }

@@ -1,29 +1,20 @@
 package net.hashsploit.clank.server.medius.objects;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Location {
-	
-	private final int id;
-	private final String name;
-	
-	public Location(final int id, final String name) {
-		this.id = id;
-		this.name = name;
-	}
-	
-	/**
-	 * Get the location id.
-	 * @return
-	 */
+
+	@SerializedName("id")
+	private int id = 0;
+
+	@SerializedName("name")
+	private String name = "";
+
 	public int getId() {
 		return id;
 	}
-	
-	/**
-	 * Get the location name.
-	 * @return
-	 */
+
 	public String getName() {
 		return name;
 	}
-	
 }
