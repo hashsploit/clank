@@ -16,28 +16,8 @@ Join our [R&C Online Discord community](https://discord.gg/mUQzqGu) for more inf
 
 ![GitHub repo size](https://img.shields.io/github/repo-size/hashsploit/clank) ![Snyk Vulnerabilities for GitHub Repo](https://img.shields.io/snyk/vulnerabilities/github/hashsploit/clank) ![Discord](https://img.shields.io/discord/711614240120766474?logo=Discord&logoColor=9999FF) ![GitHub Repo stars](https://img.shields.io/github/stars/hashsploit/clank?style=social)
 
-## Features
-Server features that are complete will be checked, features that are still in progress or planned are un-checked.
 
-- [x] gRPC back-end communication between servers.
-- [x] Emulates Medius Authentication Server (MAS).
-- [x] Emulates NAT Server (NAT).
-- [x] Emulates Medius Lobby Server (MLS).
-- [x] Emulates DME Server (DME).
-- [ ] Emulates Medius Universe Information Server (MUIS).
-- [x] SCE-RT encryption/decryption. (Using [medius-crypto](https://github.com/hashsploit/medius-crypto)).
-- [x] Lua sandbox.
-- [ ] Lua plugin API.
-- [x] Database integration (MySQL/MariaDB).
-- [x] Simulated database mode.
-- [ ] Server operator chat commands.
-- [ ] Support for `MEDIUS_MEMORY_POKE` and `MEDIUS_MEMORY_PEEK`.
-- [x] Chat.
-- [x] Custom Channels and Locations support.
-- [x] Configurable player server operators.
-
-
-## Game titles tested so far
+## Supported Games
 The table below shows game titles that have been tested with Clank.
 The focus of the table below is based on a title's ability to get from login to getting in a game world.
 - **SUCCESS** = Able to get past MAS into MLS, create a game world on DME(P2S2P) or MAS(P2P) and be active in the game world.
@@ -45,100 +25,93 @@ The focus of the table below is based on a title's ability to get from login to 
 - **INCOMPLETE** = Missing components or planned features to get past MAS.
 - **UNKNOWN** = The title cannot be tested at the moment. See the description column for more info.
 
-| Name                                                        | Status     | Notes                                          |
-|-------------------------------------------------------------|------------|------------------------------------------------|
-| Amplitude NTSC-U (2003)                                     | PARTIAL    | Lobby mostly works, MAS is missing P2P.        |
-| Jak X: Combat Racing NTSC-U (2005)                          | INCOMPLETE | Missing native MUIS component.                 |
-| Jak X: Combat Racing PAL (2005)                             | INCOMPLETE | Missing native MUIS component.                 |
-| Killzone NTSC-U (2004)                                      | SUCCESS    | Missing native MUIS component.                 |
-| Ratchet & Clank: Up Your Arsenal NTSC-U USA (2004)          | SUCCESS    |                                                |
-| Ratchet & Clank: Up Your Arsenal PAL (2004)                 | SUCCESS    |                                                |
-| Ratchet & Clank: Up Your Arsenal NTSC-K Korean (2004)       | SUCCESS    |                                                |
-| Ratchet & Clank: Up Your Arsenal NTSC-U Public Beta (2004)  | PARTIAL    | Malformed payload for `CreateGame1`.           |
-| Ratchet & Clank: Up Your Arsenal NTSC-U Prototype (2004)    | PARTIAL    | Malformed payload for `JoinGame`.              |
-| Ratchet: Deadlocked NTSC-U (2005)                           | INCOMPLETE | Missing native MUIS component.                 |
-| Ratchet: Deadlocked PAL (2005)                              | UNKNOWN    | Missing native MUIS component.                 |
-| Syphon Filter: The Omega Strain NTSC-U (2004)               | PARTIAL    | Lobby mostly works, MAS is missing P2P.        |
+| Name                                                        | Status     | Notes                                                |
+|-------------------------------------------------------------|------------|------------------------------------------------------|
+| Amplitude NTSC-U (2003)                                     | PARTIAL    | Lobby mostly works, MAS is missing P2P.              |
+| Jak X: Combat Racing NTSC-U (2005)                          | INCOMPLETE | Missing native MUIS component.                       |
+| Jak X: Combat Racing PAL (2005)                             | INCOMPLETE | Missing native MUIS component.                       |
+| Killzone NTSC-U (2004)                                      | SUCCESS    | Missing native MUIS component.                       |
+| Ratchet & Clank: Up Your Arsenal NTSC-U USA (2004)          | SUCCESS    |                                                      |
+| Ratchet & Clank: Up Your Arsenal PAL (2004)                 | SUCCESS    |                                                      |
+| Ratchet & Clank: Up Your Arsenal NTSC-K Korean (2004)       | SUCCESS    |                                                      |
+| Ratchet & Clank: Up Your Arsenal NTSC-U Public Beta (2004)  | PARTIAL    | Malformed payload for `CreateGame1`.                 |
+| Ratchet & Clank: Up Your Arsenal NTSC-U Prototype (2004)    | PARTIAL    | Malformed payload for `JoinGame`.                    |
+| Ratchet: Deadlocked NTSC-U (2005)                           | INCOMPLETE | Missing native MUIS component.                       |
+| Ratchet: Deadlocked PAL (2005)                              | INCOMPLETE | New Central Station findings.                        |
+| Syphon Filter: The Omega Strain NTSC-U (2004)               | PARTIAL    | Lobby mostly works, MAS is missing P2P.              |
+
 
 
 ## Building and Running Clank
 
+### Latest builds
+If you use Docker you can pull the latest release of Clank on [Docker Hub](https://hub.docker.com/r/hashsploit/clank), see [docker/README.md](docker/README.md) for more info on how to use the Clank docker image.
+
+Otherwise you can download the [latest jar here](https://ci.arcadiamc.cz/job/clank/job/master/lastSuccessfulBuild/artifact/clank.jar).
+Thanks to [Speedy11CZ](https://github.com/speedy11cz) for the automated CI build server.
+
+
 ### Build Clank
-Ensure you have the JDK 8+ and Maven installed first.
+You can build clank by using the Clank Dev Script Tool (clank.sh for Mac/Linux, or clank.bat for Windows).
 
-Note: any changes to the `src/main/proto/` files will require the protocol buffers
-to be recompiled, this can easily be run by running `./compile-protobufs.sh` on Linux
-or `compile-protobufs.bat` on Windows. Running either `build.sh` or `build.bat` automatically
-invokes the protobuf to be recompiled.
+**Note:** Any changes to the `src/main/proto/` files will require the protocol buffers
+to be recompiled. This can easily be run by running `./clank.sh proto` on Linux
+or `clank proto` on Windows. Running either `./clank.sh build` or `clank build` automatically
+invokes the protobuf to be recompiled too.
 
-#### Linux
-1. Run `./build.sh`.
+#### Building Clank on Mac/Linux
+1. Run `./clank.sh build`.
 
-#### Windows
-1. Run `build.bat`.
+#### Building Clank on Windows
+1. Run `clank build`.
 
-#### Docker
+#### Building Clank in Docker
 1. See [docker/README.md](docker/README.md) for more info.
-
 
 ### Run Clank
 In order to run Clank you will need to create a JSON configuration file, there are
-"example" configuration files located in `config/`, that can be used as a starting
+example configuration files located in `config/`, that can be used as a starting
 place. For example, make a copy of `config/mas.json.example` named `config/mas.json`.
 
 You can then use `./launch.sh config/mas.json` on Linux, or `build.bat config\mas.json`, to run a Clank MAS server.
 
-#### Linux
+#### Running Clank on Mac/Linux
 1. Copy the example configuration file `config/mas.json.example` -> `config/mas.json`.
-2. Run `./launch.sh config/mas.json`.
+2. Run `./clank.sh run config/mas.json`.
 
-#### Windows
+#### Running Clank on Windows
 1. Copy the example configuration file `config\mas.json.example` -> `config\mas.json`.
-2. Run `launch.bat config\mas.json`.
+2. Run `clank run config\mas.json`.
 
+#### Running Clank in Docker
+1. See [docker/README.md](docker/README.md) for more info.
 
-## Clank components
-
-![Clank Diagram](clank-diagram.png)
-
-This server supports emulating the following components:
-- The **MUIS (Medius Universe Information Server)** is the entrypoint for several
-  games that may have "multiverses", this is generally used before MAS. This server
-  will reply with an `ip address` to a MAS server. This server is also sometimes
-  used for P2P (peer-to-peer) games.
-- The **MAS (Medius Authentication Server)** is where players initially login using
-  an existing profile and get a `session token` and `ip address` that is then
-  used to login to the MLS.
-- The **MLS (Medius Lobby Server)** is where a majority of players reside when they
-  are not in the game world, chatting, looking for a game, managing clans, adding
-  buddies, or looking at stats.
-- The **NAT Server (Network Address Translation)** is a server generally used for
-  P2P games, however it is seen used in CS (client/server) titles to return
-  the client's public IP address to themselves.
-- The **DME Server (Distributed Memory Engine)** is the game server, responsible
-  for hosting CS (client/server) games. This is generally used in the "staging"
-  and "in game" modes in most titles.
-
-You can read more about these components [here](https://wiki.hashsploit.net/PlayStation_2#Medius).
 
 
 ## Configuration
-See [config/README.md](config/README.md) for more info.
+
+![Clank Diagram](clank-diagram.png)
+
+You can read more about the PS2 Medius components [here](https://wiki.hashsploit.net/PlayStation_2#Medius),
+or you can read about the PS3 Medius components [here](https://wiki.hashsploit.net/PlayStation_3#Medius).
+
+See [config/README.md](config/README.md) for more info on the configuration files.
+
 
 
 ## Console commands
-Each component of Clank has different built-in commands as
+Each emulation mode of Clank has different built-in commands as
 they differ per context and implementation, however you can
 always use the `help` command to view all commands available in
 the current component being run. Some commands have
 `[optional]` and or `<required>` parameters.
 
-For *all* servers:
+For *all* emulation modes:
 - `exit` - Shutdown the server emulator.
 - `help [command]` - Show all commands, or show information about a specific command.
 - `version` - Show the current version of the server emulator.
 
-For *MAS*, *MLS* and *MUIS* servers:
+For *MAS*, *MLS* and *MUIS* emulation modes:
 - `broadcast <severity> <message>` - Broadcast a message to all the players connected.
 
 
@@ -165,14 +138,16 @@ Read more about reverse-engineering the SCE-RT/Medius protocol here:
 A huge thanks to [Game Fuckery Inc.](https://discord.gg/KE8G5FA) and the following people in the PlayStation 2/PlayStation 3 community that made this project possible.
 
 - **hashsploit** - reverse engineer, developer, documentation, UYA community.
-- **FourBolt** - developer, UYA community.
+- **FourBolt** - tester, developer, UYA community.
 - **Dnawrkshp** - reverse engineer, developer, modder, DL community.
 - **No23** - medius broker, dnas broker, reverse engineer, developer.
 - **Darkscorpius** - medius broker, reverse engineer, developer.
 - **Badger41** - reverse engineer, developer, modder, DL community.
 - **tn1** - reverse engineer, documentation.
 - **atomic83** - medius broker, developer, documentation.
-- **1UP** - medius broker, developer, SOCOM community.
+- **JumpSuit** - reverse engineer, developer, documentation.
+- **Speedy11CZ** - tester, developer.
+- **1UP** - reverse engineer, developer, SOCOM community.
 - **K3rber0s** - developer, SOCOM community.
 - **JoeyWolf** - tester, Jak X community.
 - **Shanzenos** - medius broker, documentation.
@@ -183,4 +158,3 @@ A huge thanks to [Game Fuckery Inc.](https://discord.gg/KE8G5FA) and the followi
 - **Megalia1** - medius broker, documentation.
 - **Cristian** - DNAS/DNS host, documentation.
 - **shad** - developer, documentation.
-
