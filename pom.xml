@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.hashsploit</groupId>
 	<artifactId>clank</artifactId>
-	<version>0.1.7</version>
+	<version>0.1.8</version>
 	<name>Clank</name>
 	<description>A high-performance SCE-RT Medius server stack implementation.</description>
 	<packaging>jar</packaging>
@@ -58,9 +58,6 @@
 					<protocArtifact>com.google.protobuf:protoc:3.14.0:exe:${os.detected.classifier}</protocArtifact>
 					<pluginId>grpc-java</pluginId>
 					<pluginArtifact>io.grpc:protoc-gen-grpc-java:1.34.0:exe:${os.detected.classifier}</pluginArtifact>
-					<!-- This becomes a mess, if you decide to enable this, update the proto 
-						files package. <protoSourceRoot>${basedir}/src/main/proto</protoSourceRoot> 
-						<outputDirectory>${basedir}/src/main/java/net/hashsploit/clank/rpc</outputDirectory> -->
 				</configuration>
 				<executions>
 					<execution>
