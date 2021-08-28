@@ -5,6 +5,4 @@ clank.jar
 LICENSE
 *.md
 *.bat
-docker-build.sh
-docker-example-*.sh
 

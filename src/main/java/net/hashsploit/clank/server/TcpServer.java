@@ -66,7 +66,7 @@ public class TcpServer extends AbstractServer {
 		logger.info(String.format("Starting TCP server with %d parent thread(s), and %d child thread(s) ...", parentThreads, childThreads));
 		
 		if (!Utils.tcpPortIsAvailable(this.getAddress(), this.getPort())) {
-			logger.severe(String.format("Port %d is currently in use, or attempting to bind to an illegal address.", this.getPort()));
+			logger.severe(String.format("Error binding to %s:%d, port in use or attempting to bind to an illegal address.", this.getAddress(), this.getPort()));
 			Clank.getInstance().shutdown();
 			return;
 		}

@@ -11,10 +11,6 @@ fi
 # Maven source code
 MAVEN_SOURCE="https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz"
 
-# Medius crypto source
-MEDIUS_CRYPTO_SOURCE="https://github.com/hashsploit/medius-crypto/archive/0.1.1.tar.gz"
-
-# Adds additional docker build parameters to each of the other scripts automatically.
-# For example: "--cpuset-cpus 0-3"
-ADDITIONAL_BUILD_PARAMS=""
+# CI Builds Server
+CI_SERVER="https://ci.arcadiamc.cz/job/clank/job/master/lastSuccessfulBuild/artifact/clank.jar"
 

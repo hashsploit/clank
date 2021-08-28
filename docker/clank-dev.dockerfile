@@ -1,7 +1,9 @@
 FROM debian:bullseye-slim
-LABEL name="clank"
-LABEL description="Clank - A high-performance SCE-RT Medius server"
+LABEL name="clank-dev"
+LABEL description="Clank Dev - Clank development environment container"
 LABEL maintainer="hashsploit <hashsploit@protonmail.com>"
+
+ENV TERM="xterm-256color"
 
 # Install dependencies
 RUN echo "Updating packages ..." \
@@ -69,46 +71,4 @@ RUN echo "Installing maven ..." \
 # Add maven to path
 ENV PATH="/opt/maven/bin:$PATH"
 
-# Set up the non-root user
-RUN adduser --shell /bin/bash --gecos "" --disabled-password --quiet ratchet
-
-# Copy everything into the container for virtualization and set permissions
-ADD ./ /home/ratchet
-RUN echo "Setting permissions ..." \
-	&& chown ratchet:ratchet -R /home/ratchet
-
-# Switch user
-USER ratchet
-WORKDIR /home/ratchet
-
-# Download the latest medius-crypto library
-ARG MEDIUS_CRYPTO_SOURCE
-RUN echo "Downloading medius-crypto from ${MEDIUS_CRYPTO_SOURCE} ..." \
-	&& curl -sLo /tmp/medius-crypto.tar.gz ${MEDIUS_CRYPTO_SOURCE}
-
-# Unzip and build the dependency
-RUN echo "Building medius-crypto ..." \
-	&& cd /tmp \
-	&& tar -xzf medius-crypto.tar.gz \
-	&& cd medius-crypto-*/ \
-	&& mvn clean install
-
-# Build project and clean up
-RUN echo "Building Clank ..." \
-	&& cd /home/ratchet/ \
-	&& mv docker/internal.sh . \
-	&& chmod +x build.sh internal.sh \
-	&& ./build.sh \
-	&& rm -rf bin/ target/ src/ .settings/ .git/ docker/ \
-	&& rm -f *.bat \
-	&& rm -f *.md \
-	&& rm -f Dockerfile \
-	&& rm -f launch.sh \
-	&& rm -f build.sh \
-	&& rm -f compile-protobufs.sh \
-	&& rm -f pom.xml \
-	&& rm -f .classpath \
-	&& rm -f .project
-
-ENTRYPOINT ["/bin/bash", "./internal.sh"]
-
+WORKDIR /mnt
