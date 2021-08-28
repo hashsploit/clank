@@ -1,9 +1,23 @@
 ## Clank general configuration
 
-- The **mode** is a *string* and must be either `MEDIUS_UNIVERSE_INFORMATION_SERVER`, `MEDIUS_AUTHENTICATION_SERVER`, `MEDIUS_LOBBY_SERVER`, `NAT_SERVER` or `DME_SERVER`.
+- The **mode** is a *string* and must one of the following Emulation Modes.
 - The **log_level** is a *string* and must be one of the following: `FINEST` > `FINER` > `FINE` > `INFO` > `WARN` > `SEVERE`.
-- The **address** is a *string* and can be set to a valid IPv4 address or `null` to use the default interface's address. This is the address in which the server will bind to and listen on.
-- The **port** is an *integer* and must be valid port from 1025 to 65535, this is the port in which the server will bind to and listen on.
+- The **address** is a *string* and can be set to a valid IPv4 address or `null` to use the default interface's address.
+  This is the address in which the server will bind to and listen on.
+- The **port** is an *integer* and must be valid port from 1025 to 65535,
+  this is the port in which the server will bind to and listen on.
+
+### Emulation Modes
+
+| Name                               | Description                                                                    |
+|------------------------------------|--------------------------------------------------------------------------------|
+| MEDIUS_UNIVERSE_INFORMATION_SERVER | Run an indepedent [MUIS](https://wiki.hashsploit.net/PlayStation_2#Medius_Universe_Information_Server_.28MUIS.29) server.                                              |
+| MEDIUS_AUTHENTICATION_SERVER       | Run an indepedent [MAS](https://wiki.hashsploit.net/PlayStation_2#Medius_Authentication_Server_.28MAS.29) server.                                              |
+| MEDIUS_LOBBY_SERVER                | Run an indepedent [MLS](https://wiki.hashsploit.net/PlayStation_2#Medius_Lobby_Server_.28MLS.29) server.                                              |
+| DME_SERVER                         | Run an indepedent [DME server](https://wiki.hashsploit.net/PlayStation_2#DME_Game_Server_.28Distributed_Memory_Engine.29).                                              |
+| NAT_SERVER                         | Run an indepedent [NAT server](https://wiki.hashsploit.net/PlayStation_2#Medius_Network_Address_Translation_.28NAT.29).                                              |
+| MONOLITH                           | Run all the above components in a single process (useful for development/debugging purposes). |
+
 
 ### MAS configuration (config/mas.json.example)
 
@@ -73,6 +87,8 @@ The component is an authentication server for handling player logins.
 
 
 
+
+
 ### MLS configuration (config/mls.json.example)
 
 The component is an authentication server for handling player logins.
@@ -87,7 +103,7 @@ The component is an authentication server for handling player logins.
 | application_id           | integer | This is the App Id of the game to support.                                     |
 | dme                      | object  | See **DME object** below or `null` if using MAS P2P.                           |
 | nat                      | object  | See **NAT Object** above.                                                      |
-| rpc_server               | object  | See **RPC Server Object** below.                                                      |
+| rpc_server               | object  | See **RPC Server Object** below.                                               |
 | whitelist                | object  | See **Whitelist Object** above.                                                |
 | policy                   | string  | The Policy/EULA to send back to the player.                                    |
 | announcements            | array   | An array of *string* announcements to send to the player.                      |

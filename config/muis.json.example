@@ -2,7 +2,7 @@
 	"mode": "MEDIUS_UNIVERSE_INFORMATION_SERVER",
 	"log_level": "INFO",
 	"file_log_level": null,
-	"address": "192.168.1.2",
+	"address": null,
 	"port": 10071,
 	"encryption": true,
 	"capacity": 200,
@@ -42,5 +42,9 @@
 			"hostname": "killzone-prod.muis.pdonline.scea.com",
 			"port": 10075
 		}
-	]
+	],
+	"rpc": {
+		"address": "127.0.0.1",
+		"port": 8484
+	}
 }

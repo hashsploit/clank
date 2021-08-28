@@ -1,0 +1,195 @@
+{
+	"mode": "MONOLITH",
+	"log_level": "INFO",
+	"file_log_level": null,
+	"address": null,
+	"application_id": 10684,
+	"muis": {
+		"port": 10071,
+		"encryption": true,
+		"capacity": 200,
+		"timeout": 15000,
+		"parent_threads": 1,
+		"child_threads": 4,
+		"universes": [
+			{
+				"application_id": 11184,
+				"name": "R&C DL Production",
+				"description": "Ratchet: Deadlocked Production",
+				"universe_id": 1,
+				"hostname": "ratchetdl-prod.pdonline.scea.com",
+				"port": 10075
+			},
+			{
+				"application_id": 10994,
+				"name": "Jak X NTSC Production",
+				"description": "Jak X: Combat Racing US",
+				"universe_id": 1,
+				"hostname": "jakx-prod.muis.pdonline.scea.com",
+				"port": 10075
+			},
+			{
+				"application_id": 11204,
+				"name": "Jak X PAL Production",
+				"description": "Jak X: Combat Racing EU",
+				"universe_id": 2,
+				"hostname": "jakx-palmaster.muis.online.scee.com",
+				"port": 10075
+			},
+			{
+				"application_id": 10724,
+				"name": "Killzone Production",
+				"description": "Killzone Production US",
+				"universe_id": 1,
+				"hostname": "killzone-prod.muis.pdonline.scea.com",
+				"port": 10075
+			}
+		],
+	},
+	"mas": {
+		"port": 10075,
+		"encryption": true,
+		"capacity": 200,
+		"timeout": 15000,
+		"parent_threads": 1,
+		"child_threads": 4,
+		"max_login_attempts": 20,
+		"max_accounts_per_ip": 6,
+		"username_blacklist": null,
+		"whitelist": {
+			"enabled": true,
+			"players": {
+				"exampleUsername": "examplePassword",
+				"hashsploit": "hashpass",
+				"fourbolt": "fourpass"
+			}
+		},
+		"channels": [
+			{
+				"id": 1,
+				"name": "Channel 1",
+				"capacity": 256
+			},
+			{
+				"id": 2,
+				"name": "Channel 2",
+				"capacity": 256
+			},
+			{
+				"id": 3,
+				"name": "Channel 3",
+				"capacity": 256
+			},
+			{
+				"id": 4,
+				"name": "Channel 4",
+				"capacity": 256
+			}
+		],
+		"locations": [
+			{
+				"id": 1,
+				"name": "Location 1"
+			},
+			{
+				"id": 2,
+				"name": "Location 2"
+			}
+		],
+		"system_message": {
+			"enabled": false,
+			"severity": 200,
+			"message": ""
+		}
+	},
+	"mls": {
+		"port": 10078,
+		"encryption": true,
+		"capacity": 200,
+		"timeout": 15000,
+		"parent_threads": 1,
+		"child_threads": 4,
+		"rpc_server": {
+			"address": "127.0.0.1",
+			"port": 8484,
+			"encryption": {
+				"enabled": false,
+				"cert_chain": null,
+				"private_key": null
+			}
+		},
+		"policy": "Welcome, this is the default policy for the clank server emulator. \r\n\r\nhttps://github.com/hashsploit/clank",
+		"announcements": [
+			"This is an announcement."
+		],
+		"operators": [
+			"hashsploit",
+			"fourbolt"
+		],
+		"chat": {
+			"enabled": true,
+			"blacklist": "blacklisted_words.txt",
+			"command_prefix": "/",
+			"strip_special_chars": true
+		},
+		"channels": [
+			{
+				"id": 1,
+				"name": "Channel 1",
+				"capacity": 256
+			},
+			{
+				"id": 2,
+				"name": "Channel 2",
+				"capacity": 256
+			},
+			{
+				"id": 3,
+				"name": "Channel 3",
+				"capacity": 256
+			},
+			{
+				"id": 4,
+				"name": "Channel 4",
+				"capacity": 256
+			}
+		],
+		"locations": [
+			{
+				"id": 1,
+				"name": "Location 1"
+			},
+			{
+				"id": 2,
+				"name": "Location 2"
+			}
+		],
+		"system_message": {
+			"enabled": false,
+			"severity": 200,
+			"message": ""
+		},
+		"database": {
+			"mode": "",
+			"host": "",
+			"database": "",
+			"username": "",
+			"password": ""
+		}
+	},
+	"dme": {
+		"port": 10079,
+		"udp_port": 50001,
+		"encryption": true,
+		"capacity": 200,
+		"timeout": 15000,
+		"parent_threads": 1,
+		"child_threads": 4,
+		"udp_threads": 8
+	},
+	"nat": {
+		"udp_port": 10070,
+		"encryption": true,
+		"udp_threads": 4
+	}
+}
