@@ -35,35 +35,29 @@ exit /B 0
 :clean
 	call :require_installed "java", "Java"
 	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
-	call :require_installed "mvn", "Maven"
-	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
 	
 	echo Cleaning ...
-	call mvn clean
+	call gradlew.bat clean
 	rmdir target
 exit /B 0
 
 :compile_protobufs
 	call :require_installed "java", "Java"
 	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
-	call :require_installed "mvn", "Maven"
-	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
 	
 	echo Building protocol-buffers ...
-	call mvn clean protobuf:compile
+	call gradlew.bat clean generateProto
 exit /B 0
 
 :build
 	call :require_installed "java", "Java"
 	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
-	call :require_installed "mvn", "Maven"
-	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
 	
 	echo Building ...
-	call mvn clean compile assembly:single
+	call gradlew.bat clean shadowJar
 	
 	REM Copy final jar to root path
-	copy /D /Y "target\clank-*.jar" /B "clank.jar" /B > nul
+	copy /D /Y "build\libs\clank-*.jar" /B "clank.jar" /B > nul
 exit /B 0
 
 :exec
