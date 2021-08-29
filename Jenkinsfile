@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh './build.sh'
+                sh './clank build'
             }
         }
 
