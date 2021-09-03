@@ -3,6 +3,8 @@
 .project
 .settings/
 .gradle/
+.idea
+clank.iml
 
 # Configs
 config/*
@@ -17,5 +19,6 @@ plugins/*
 
 # Bins
 target/
+build/
 bin/
 clank.jar

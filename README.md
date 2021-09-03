@@ -52,18 +52,18 @@ Thanks to [Speedy11CZ](https://github.com/speedy11cz) for the automated CI build
 
 
 ### Build Clank
-You can build clank by using the Clank Dev Script Tool (clank.sh for Mac/Linux, or clank.bat for Windows).
+You can build clank by using the Clank Dev Script Tool (clank for Mac/Linux, or clank.bat for Windows).
 
 **Note:** Any changes to the `src/main/proto/` files will require the protocol buffers
-to be recompiled. This can easily be run by running `./clank.sh proto` on Linux
-or `clank proto` on Windows. Running either `./clank.sh build` or `clank build` automatically
+to be recompiled. This can easily be run by running `./clank proto` on Linux
+or `clank.bat proto` on Windows. Running either `./clank build` or `clank.bat build` automatically
 invokes the protobuf to be recompiled too.
 
 #### Building Clank on Mac/Linux
-1. Run `./clank.sh build`.
+1. Run `./clank build`.
 
 #### Building Clank on Windows
-1. Run `clank build`.
+1. Run `clank.bat build`.
 
 #### Building Clank in Docker
 1. See [docker/README.md](docker/README.md) for more info.
@@ -77,11 +77,11 @@ You can then use `./launch.sh config/mas.json` on Linux, or `build.bat config\ma
 
 #### Running Clank on Mac/Linux
 1. Copy the example configuration file `config/mas.json.example` -> `config/mas.json`.
-2. Run `./clank.sh run config/mas.json`.
+2. Run `./clank run config/mas.json`.
 
 #### Running Clank on Windows
 1. Copy the example configuration file `config\mas.json.example` -> `config\mas.json`.
-2. Run `clank run config\mas.json`.
+2. Run `clank.bat run config\mas.json`.
 
 #### Running Clank in Docker
 1. See [docker/README.md](docker/README.md) for more info.

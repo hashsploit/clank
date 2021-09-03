@@ -19,7 +19,7 @@ Examples:
 # Example MAS
 docker run --rm -it -p 10075:10075 \
 	-u $(id -u ${USER}):$(id -g ${USER}) \
-	-v "$(pwd):/mnt" clank-dev clank.sh run config/mas.json
+	-v "$(pwd):/mnt" clank-dev clank run config/mas.json
 ```
 
 ## How to build clank for production

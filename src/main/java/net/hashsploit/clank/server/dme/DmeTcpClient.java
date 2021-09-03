@@ -109,7 +109,7 @@ public class DmeTcpClient implements IClient {
 	
 	public synchronized void updateDmeWorld(int worldId, WorldStatus status) {
 		DmeServer dmeServer = (DmeServer) server;
-		dmeServer.getRpcClient().updateWorld(worldId, status);	
+		dmeServer.getRpcClient().updateWorld(worldId, status);
 	}
 
 	public synchronized void updateDmePlayer(String mlsToken, int worldId, PlayerStatus status) {

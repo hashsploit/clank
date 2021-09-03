@@ -28,21 +28,25 @@ require_installed() {
 
 clean() {
 	log "Cleaning ..."
-	mvn clean
+	#mvn clean
+	./gradlew clean
 	rm -rf target/
 }
 
 compile_protobufs() {
 	log "Building protocol-buffers ..."
-	mvn clean protobuf:compile
+	#mvn clean protobuf:compile
+	./gradlew clean generateProto
 }
 
 build() {
 	log "Building ..."
-	mvn clean compile assembly:single
+	#mvn clean compile assembly:single
+	./gradlew clean shadowJar
 	
 	# Copy final jar to root path
-	cp target/clank-*.jar clank.jar
+	#cp target/clank-*.jar clank.jar
+	cp build/libs/clank-*.jar clank.jar
 }
 
 run() {
@@ -159,17 +163,14 @@ docker_prod_build() {
 case "$1" in
 	"clean")
 		require_installed "java", "Java"
-		require_installed "mvn", "Maven"
 	    clean
 	;;
 	"proto" | "pt")
 		require_installed "java", "Java"
-		require_installed "mvn", "Maven"
 	    compile_protobufs
 	;;
 	"build" | "jar")
 		require_installed "java", "Java"
-		require_installed "mvn", "Maven"
 	    build
 	;;
 	"run")
