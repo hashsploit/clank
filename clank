@@ -28,20 +28,24 @@ require_installed() {
 
 clean() {
 	log "Cleaning ..."
+	#mvn clean
 	./gradlew clean
 	rm -rf target/
 }
 
 compile_protobufs() {
 	log "Building protocol-buffers ..."
+	#mvn clean protobuf:compile
 	./gradlew clean generateProto
 }
 
 build() {
 	log "Building ..."
+	#mvn clean compile assembly:single
 	./gradlew clean shadowJar
 	
 	# Copy final jar to root path
+	#cp target/clank-*.jar clank.jar
 	cp build/libs/clank-*.jar clank.jar
 }
 

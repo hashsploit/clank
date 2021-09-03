@@ -37,6 +37,7 @@ exit /B 0
 	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
 	
 	echo Cleaning ...
+	::call mvn clean
 	call gradlew.bat clean
 	rmdir target
 exit /B 0
@@ -46,6 +47,7 @@ exit /B 0
 	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
 	
 	echo Building protocol-buffers ...
+	::call mvn clean protobuf:compile
 	call gradlew.bat clean generateProto
 exit /B 0
 
@@ -54,9 +56,11 @@ exit /B 0
 	if %ERRORLEVEL% NEQ 0 exit /B %ERRORLEVEL%
 	
 	echo Building ...
+	::call mvn clean compile assembly:single
 	call gradlew.bat clean shadowJar
 	
 	REM Copy final jar to root path
+	::copy /D /Y "target\clank-*.jar" /B "clank.jar" /B > nul
 	copy /D /Y "build\libs\clank-*.jar" /B "clank.jar" /B > nul
 exit /B 0
 

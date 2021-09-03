@@ -18,6 +18,7 @@ logs/
 plugins/*
 
 # Bins
+target/
 build/
 bin/
 clank.jar
