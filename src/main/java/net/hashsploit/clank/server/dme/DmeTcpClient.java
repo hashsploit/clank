@@ -19,23 +19,24 @@ import net.hashsploit.clank.server.rpc.PlayerStatus;
 import net.hashsploit.clank.server.rpc.WorldUpdateRequest.WorldStatus;
 
 public class DmeTcpClient implements IClient {
-	
+
 	private static final Logger logger = Logger.getLogger(DmeTcpClient.class.getName());
 	private final IServer server;
 	private final SocketChannel channel;
 	private final DmePlayer player;
-	
+
 	public DmeTcpClient(IServer server, SocketChannel ch) {
 		this.server = server;
 		this.channel = ch;
 		this.player = new DmePlayer(this);
-		
+
 		logger.info("Client connected: " + getIPAddress());
-		
+
 		channel.pipeline().addLast(new TimeoutHandler(this, 48));
-		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN, MediusConstants.MEDIUS_MESSAGE_MAXLEN.value, 1, 2, 0, 0, false));
+		channel.pipeline().addLast(new RtFrameDecoderHandler(ByteOrder.LITTLE_ENDIAN,
+				MediusConstants.MEDIUS_MESSAGE_MAXLEN.value, 1, 2, 0, 0, false));
 		channel.pipeline().addLast("MediusTestHandlerDME", new TestHandlerDmeTcp(this));
-		
+
 		ChannelFuture closeFuture = channel.closeFuture();
 		closeFuture.addListener(new GenericFutureListener<Future<? super Void>>() {
 			@Override
@@ -44,11 +45,11 @@ public class DmeTcpClient implements IClient {
 			}
 		});
 	}
-	
+
 	public SocketChannel getSocket() {
 		return channel;
 	}
-	
+
 	public DatagramChannel getDatagram() {
 		return null;
 	}
@@ -77,23 +78,24 @@ public class DmeTcpClient implements IClient {
 		// TODO Auto-generated method stub
 		return server;
 	}
-	
+
 	@Override
 	public void onDisconnect() {
 		logger.info("Player disconnected: " + this.toString());
-		
+
 		// Close the player threads
 		player.disconnect();
 
 		DmeServer dmeServer = (DmeServer) server;
-		
+
 		DmeWorldManager mgr = dmeServer.getDmeWorldManager();
-		
+
 		// Delete player from world
 		int worldId = mgr.playerDisconnected(player);
-		
+
 		// Relay delete player to MLS
-		dmeServer.getRpcClient().updatePlayer(player.getMlsToken(), worldId, PlayerStatus.DISCONNECTED); // 0 = disconnect
+		dmeServer.getRpcClient().updatePlayer(player.getMlsToken(), worldId, PlayerStatus.DISCONNECTED); // 0 =
+																											// disconnect
 
 		// If the world is empty, delete it, and relay that info
 		if (mgr.worldIsEmpty(worldId)) {
@@ -102,11 +104,11 @@ public class DmeTcpClient implements IClient {
 			// Send the world deletion to MLS
 			dmeServer.getRpcClient().updateWorld(worldId, WorldStatus.DESTROYED); // 3 = disconnect
 		}
-		
+
 		logger.info("Player disconnected! WorldManager: ");
 		logger.info(mgr.toString());
 	}
-	
+
 	public synchronized void updateDmeWorld(int worldId, WorldStatus status) {
 		DmeServer dmeServer = (DmeServer) server;
 		dmeServer.getRpcClient().updateWorld(worldId, status);
@@ -114,11 +116,11 @@ public class DmeTcpClient implements IClient {
 
 	public synchronized void updateDmePlayer(String mlsToken, int worldId, PlayerStatus status) {
 		DmeServer dmeServer = (DmeServer) server;
-		dmeServer.getRpcClient().updatePlayer(mlsToken, worldId, status);		
+		dmeServer.getRpcClient().updatePlayer(mlsToken, worldId, status);
 	}
 
 	public DmePlayer getPlayer() {
 		return this.player;
 	}
-	
+
 }
