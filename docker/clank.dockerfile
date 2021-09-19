@@ -54,11 +54,9 @@ RUN adduser --shell /bin/bash --gecos "" --disabled-password --quiet clank
 USER clank
 WORKDIR /home/clank
 
-ARG CI_SERVER
-RUN echo "Downloading latest Clank release from CI server ..." \
-	&& cd /home/clank \
-	&& curl --silent --output clank.jar ${CI_SERVER} \
-	&& mkdir -p plugins/
+COPY clank.jar /home/clank
+
+RUN mkdir -p plugins/
 
 ENV CLANK_MEM_INIT="128m"
 ENV CLANK_MEM_MAX="1024m"

@@ -21,8 +21,8 @@ check_installed() {
 require_installed() {
 	# Check if command is installed
 	if ! check_installed ${1} == 0; then
-    	log "$(tput bold)$(tput setaf 1)${1} (${2}) is not installed, please install it!$(tput sgr0)"
-    	exit 1
+	log "$(tput bold)$(tput setaf 1)${1} (${2}) is not installed, please install it!$(tput sgr0)"
+	exit 1
 	fi
 }
 
@@ -31,6 +31,7 @@ clean() {
 	#mvn clean
 	./gradlew clean
 	rm -rf target/
+	rm -rf bin/
 }
 
 compile_protobufs() {
@@ -128,11 +129,14 @@ docker_run() {
 
 docker_prod_build() {
 	source docker/settings.sh
-		
+	
+	if [ ! -f "${DIR}/${JAR}" ]; then
+		docker_build
+	fi
+	
 	docker build \
 		--force-rm \
 		--build-arg GRAALVM_SOURCE="${GRAALVM_SOURCE}" \
-		--build-arg CI_SERVER="${CI_SERVER}" \
 		--file docker/clank.dockerfile \
 		--tag clank \
 		docker/

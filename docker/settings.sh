@@ -11,6 +11,3 @@ fi
 # Maven source code
 MAVEN_SOURCE="https://downloads.apache.org/maven/maven-3/3.6.3/binaries/apache-maven-3.6.3-bin.tar.gz"
 
-# CI Builds Server
-CI_SERVER="https://ci.arcadiamc.cz/job/clank/job/master/lastSuccessfulBuild/artifact/clank.jar"
-

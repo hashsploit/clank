@@ -1,7 +1,6 @@
 .git/
 bin/
 target/
-clank.jar
 LICENSE
 *.md
 *.bat

@@ -73,6 +73,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	FIRSTNAME_MAXLEN(32),
 
 	/**
@@ -81,6 +82,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	MIDDLENAME_MAXLEN(32),
 
 	/**
@@ -89,6 +91,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	LASTNAME_MAXLEN(32),
 
 	/**
@@ -97,6 +100,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	ADDRESS_MAXLEN(32),
 
 	/**
@@ -105,6 +109,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	EMAILADDRESS_MAXLEN(80),
 
 	/**
@@ -113,6 +118,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	CITY_MAXLEN(32),
 
 	/**
@@ -121,6 +127,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	STATE_MAXLEN(3),
 
 	/**
@@ -129,6 +136,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	PROVINCE_MAXLEN(32),
 
 	/**
@@ -137,6 +145,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	POSTALCODE_MAXLEN(16),
 
 	/**
@@ -145,6 +154,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	COUNTRY_MAXLEN(32),
 
 	/**
@@ -237,6 +247,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	ACCOUNTLIST_MAXLEN(256),
 
 	/**
@@ -257,6 +268,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	ICONLOCATION_MAXLEN(64),
 
 	/**
@@ -374,6 +386,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	LADDERSTATS_MAXLEN(15),
 
 	/**
@@ -404,6 +417,7 @@ public enum MediusConstants {
  * of account ID's with this maximum size.
 	 * @deprecated
 	 */
+	@Deprecated
 	ID_ARRAY_MAXLEN(50),
 	
 	/**
@@ -456,6 +470,7 @@ public enum MediusConstants {
 	 * 
 	 * @deprecated
 	 */
+	@Deprecated
 	CLANCHALLENGEMSG_MAXLEN(200),
 	
 	/**
