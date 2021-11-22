@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class MasConfig extends MediusConfig {
+public class MasConfig2 extends MediusConfig2 {
 
     @SerializedName("mls")
     private ServerInfo mlsConfig = new ServerInfo();

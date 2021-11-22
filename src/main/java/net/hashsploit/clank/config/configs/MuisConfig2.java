@@ -6,7 +6,7 @@ import net.hashsploit.clank.server.muis.UniverseInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MuisConfig extends MediusConfig {
+public class MuisConfig2 extends MediusConfig2 {
 
     @SerializedName("universes")
     private List<UniverseInfo> universes = new ArrayList<>();

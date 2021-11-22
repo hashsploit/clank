@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 import net.hashsploit.clank.config.AbstractConfig;
 import net.hashsploit.clank.config.objects.ServerInfo;
 
-public class DmeConfig extends AbstractConfig {
+public class DmeConfig2 extends AbstractConfig {
 
     @SerializedName("parent_threads")
     private int parentThreads = 1;

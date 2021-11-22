@@ -2,10 +2,12 @@ package net.hashsploit.clank.config.objects;
 
 import com.google.gson.annotations.SerializedName;
 
+import net.hashsploit.clank.database.DatabaseMode;
+
 public class DatabaseInfo {
 
 	@SerializedName("mode")
-	private String mode = "MariaDb";
+	private DatabaseMode mode;
 
 	@SerializedName("host")
 	private String host = "127.0.0.1";
@@ -14,11 +16,15 @@ public class DatabaseInfo {
 	private String database = "clank";
 
 	@SerializedName("username")
-	private String username = "root";
+	private String username = "clank";
 
 	@SerializedName("password")
-	private String password = null;
+	private String password = "clank";
 
+	public DatabaseMode getMode() {
+		return mode;
+	}
+	
 	public String getHost() {
 		return host;
 	}
@@ -35,7 +41,4 @@ public class DatabaseInfo {
 		return password;
 	}
 
-	public String getMode() {
-		return mode;
-	}
 }

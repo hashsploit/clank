@@ -7,7 +7,7 @@ import net.hashsploit.clank.config.objects.ServerInfo;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MediusConfig extends AbstractConfig {
+public class MediusConfig2 extends AbstractConfig {
 
     @SerializedName("encryption")
     private boolean encrypted = false;
@@ -27,9 +27,12 @@ public class MediusConfig extends AbstractConfig {
     @SerializedName("rpc")
     private ServerInfo rpcConfig = new ServerInfo();
 
-    @SerializedName("policy")
-    private String policy = "";
-
+    @SerializedName("usage_policy")
+    private String usagePolicy = "";
+    
+    @SerializedName("privacy_policy")
+    private String privacyPolicy = "";
+    
     @SerializedName("announcements")
     private List<String> announcements = new ArrayList<>();
 
@@ -56,10 +59,14 @@ public class MediusConfig extends AbstractConfig {
     public ServerInfo getRpcConfig() {
         return rpcConfig;
     }
+    
+	public String getUsagePolicy() {
+		return usagePolicy;
+	}
 
-    public String getPolicy() {
-        return policy;
-    }
+	public String getPrivacyPolicy() {
+		return privacyPolicy;
+	}
 
     public List<String> getAnnouncements() {
         return announcements;
