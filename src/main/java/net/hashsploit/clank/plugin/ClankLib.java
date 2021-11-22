@@ -4,12 +4,6 @@ import java.util.Iterator;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.luaj.vm2.LuaBoolean;
 import org.luaj.vm2.LuaDouble;
 import org.luaj.vm2.LuaError;
@@ -22,6 +16,11 @@ import org.luaj.vm2.lib.OneArgFunction;
 import org.luaj.vm2.lib.TwoArgFunction;
 import org.luaj.vm2.lib.ZeroArgFunction;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.server.MediusClient;
 
@@ -30,14 +29,45 @@ public class ClankLib extends TwoArgFunction {
 	private static final String PACKAGE_NAME = "clank";
 	private Executor luaExecutor = Executors.newSingleThreadExecutor();
 	private LuaFunction onConnectCallback;
+	private String pluginName;
 
+	public ClankLib(String pluginName) {
+		this.pluginName = pluginName;
+	}
+	
 	@Override
 	public LuaValue call(LuaValue modname, LuaValue env) {
 		LuaTable luaClank = new LuaTable();
 		
+		luaClank.set("_NAME", Clank.NAME);
+		luaClank.set("_VERSION", Clank.VERSION);
+		luaClank.set("_DESCRIPTION", Clank.NAME + " - A high-performance open source Medius server implementation");
+		luaClank.set("_URL", "https://github.com/hashsploit/clank");
+		luaClank.set("_LICENSE", ""
+		+ "	MIT LICENSE\n"
+		+ "	Copyright (c) 2020 hashsploit <hashsploit@protonmail.com>\n"
+		+ "	Permission is hereby granted, free of charge, to any person obtaining a\n"
+		+ "	copy of tother software and associated documentation files (the\n"
+		+ "	\"Software\"), to deal in the Software without restriction, including\n"
+		+ "	without limitation the rights to use, copy, modify, merge, publish,\n"
+		+ "	distribute, sublicense, and/or sell copies of the Software, and to\n"
+		+ "	permit persons to whom the Software is furnished to do so, subject to\n"
+		+ "	the following conditions:\n"
+		+ "	The above copyright notice and tother permission notice shall be included\n"
+		+ "	in all copies or substantial portions of the Software.\n"
+		+ "	THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS\n"
+		+ "	OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF\n"
+		+ "	MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\n"
+		+ "	IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY\n"
+		+ "	CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,\n"
+		+ "	TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE\n"
+		+ "	SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+		);
+		
 		// Getters
 		luaClank.set("sleep", new sleep());
 		luaClank.set("getConfig", new get_config());
+		luaClank.set("getPluginPath", new get_plugin_path());
 		
 		// Callbacks
 		luaClank.set("onConnection", new on_connect_callback());
@@ -54,6 +84,16 @@ public class ClankLib extends TwoArgFunction {
 		}
 
 		return luaClank;
+	}
+	
+	/**
+	 * Returns the current plugin's path
+	 */
+	class get_plugin_path extends ZeroArgFunction {
+		@Override
+		public LuaValue call() {
+			return LuaString.valueOf("plugins/" + pluginName + "/");
+		}
 	}
 	
 	/**

@@ -6,8 +6,13 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
@@ -19,8 +24,8 @@ import org.luaj.vm2.LuaValue;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
 import net.hashsploit.clank.EventType;
-import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
+import net.hashsploit.clank.cli.Terminal;
 import net.hashsploit.clank.utils.FileHelper;
 import net.hashsploit.clank.utils.Utils;
 
@@ -33,10 +38,12 @@ public class PluginManager {
 	
 	private HashSet<IClankPlugin> plugins;
 	private Clank clank;
+	private final String tmpFolderName;
 	
 	public PluginManager(Clank clank) {
 		this.clank = clank;
-		plugins = new HashSet<>();
+		this.plugins = new HashSet<>();
+		this.tmpFolderName = "clank_plugins_" + new Random().nextInt(100000);
 	}
 	
 	/**
@@ -44,7 +51,7 @@ public class PluginManager {
 	 * @param name
 	 * @return
 	 */
-	public boolean loadPlugin(final File pluginPath) {
+	public synchronized boolean loadPlugin(final File pluginPath) {
 		
 		if (!pluginPath.isDirectory()) {
 			logger.warning(String.format("Attempted to load an invalid plugin: %s", pluginPath.getAbsolutePath()));
@@ -62,7 +69,7 @@ public class PluginManager {
 		}
 		
 		for (IClankPlugin plugin : plugins) {
-			if (plugin.getName().equals(name)) {
+			if (plugin.getName().equalsIgnoreCase(name)) {
 				logger.warning(String.format("Plugin '%s' is already loaded!", name));
 				return false;
 			}
@@ -96,7 +103,16 @@ public class PluginManager {
 		}
 		
 		if (!Utils.isInBitmask(clank.getConfig().getEmulationMode().getValue(), pluginStatus.getEmulationModes())) {
-			logger.warning(String.format("The plugin '%s' may only be run on %s.", name, pluginStatus.getEmulationModes()));
+			int modes = pluginStatus.getEmulationModes();
+			final List<EmulationMode> allowedModes = new ArrayList<>();
+			
+			for (EmulationMode mode : EmulationMode.values()) {
+				if (Utils.isInBitmask(mode.getValue(), modes)) {
+					allowedModes.add(mode);
+				}
+			}
+			
+			logger.warning(String.format("The plugin '%s' may only be run on %s.", name, Arrays.toString(allowedModes.toArray())));
 			return false;
 		}
 		
@@ -147,8 +163,8 @@ public class PluginManager {
 			if (pluginFile.isFile()) {
 				// This plugin is an archive
 				if (pluginFile.getName().endsWith(".zip")) {
-					final String target = System.getProperty("java.io.tmpdir") + File.separator + "clank-plugins" + File.separator + pluginFile.getName().split(Pattern.quote("."))[0];
-					final File tmpPluginFolders = new File(System.getProperty("java.io.tmpdir") + File.separator + "clank-plugins");
+					final String target = System.getProperty("java.io.tmpdir") + File.separator + tmpFolderName + File.separator + pluginFile.getName().split(Pattern.quote("."))[0];
+					final File tmpPluginFolders = new File(System.getProperty("java.io.tmpdir") + File.separator + tmpFolderName);
 					tmpPluginFolders.mkdirs();
 					tmpPluginFolders.deleteOnExit();
 					
@@ -171,6 +187,18 @@ public class PluginManager {
 			
 		}
 		
+	}
+	
+	public void unloadAllPlugins() {
+		Iterator<IClankPlugin> pluginsIterator = plugins.iterator();
+		
+		while (pluginsIterator.hasNext()) {
+			final IClankPlugin plugin = pluginsIterator.next();
+			synchronized (pluginsIterator) {
+				plugin.shutdown();
+				pluginsIterator.remove();
+			}
+		}
 	}
 	
 	/**
@@ -249,17 +277,6 @@ public class PluginManager {
 			final int pluginVersionRevision = pluginVersionRevisionLua.checkint();
 			
 			
-			
-			// Plugin Init Function
-			final LuaValue luaInitFunction = chunk.get("init");
-			if (!luaInitFunction.isfunction()) {
-				status.setStatus(false, "Expected key 'init' to be a function.");
-				return status;
-			}
-			final LuaFunction initFunction = luaInitFunction.checkfunction();
-			
-			
-			
 			// Plugin Events to subscribe
 			final LuaValue luaEventsTable = chunk.get("events");
 			if (!luaEventsTable.istable()) {
@@ -323,7 +340,6 @@ public class PluginManager {
 					}
 					
 					status.setEmulationModes(emulationMode);
-					
 				} else {
 					status.setStatus(false, "Expected key 'run_on' to be an integer or table.");
 					return status;
@@ -384,12 +400,11 @@ public class PluginManager {
 			}
 			
 			final LuaPlugin plugin = new LuaPlugin(
-				pluginName.toLowerCase(),
+				pluginName,
 				pluginDescription,
 				pluginVersionMajor,
 				pluginVersionMinor,
 				pluginVersionRevision,
-				initFunction,
 				status.getCommands(),
 				subscribedEvents
 			);
@@ -406,19 +421,23 @@ public class PluginManager {
 	
 		return status;
 	}
-	
+
 	/**
 	 * Unload a plugin by name.
 	 * @param name
 	 * @return
 	 */
 	public boolean unloadPlugin(final String name) {
+		Iterator<IClankPlugin> pluginsIterator = plugins.iterator();
 		
-		for (IClankPlugin plugin : plugins) {
-			if (plugin.getName().equals(name.toLowerCase())) {
-				
-				plugins.remove(plugin);
-				
+		while (pluginsIterator.hasNext()) {
+			final IClankPlugin plugin = pluginsIterator.next();
+			if (plugin.getName().equalsIgnoreCase(name)) {
+				plugin.shutdown();
+				pluginsIterator.remove();
+				for (final ICLICommand cmd : plugin.getRegisteredCommands()) {
+					Clank.getInstance().getTerminal().unregisterCommand(cmd);
+				}
 				return true;
 			}
 		}

@@ -63,7 +63,7 @@ public class LuaChunk {
 		user_globals.load(new JseMathLib());
 
 		// Clank Library
-		user_globals.load(new ClankLib());
+		user_globals.load(new ClankLib(pluginName));
 
 		// This library is dangerous as it gives unfettered access to the
 		// entire Java VM, so it's not suitable within this lightweight sandbox.
@@ -98,7 +98,7 @@ public class LuaChunk {
 			this.chunk = chunk.checkfunction().call();
 			
 		} catch (LuaError e) {
-			logger.warning("[lua] " + e.getMessage());
+			logger.warning("[Lua] " + e.getMessage());
 		}
 		
 	}

@@ -15,17 +15,15 @@ public class LuaPlugin implements IClankPlugin {
 	private final int minorVersion;
 	private final int majorVersion;
 	private final String description;
-	private final LuaFunction initFunction;
 	private final HashSet<ICLICommand> commands;
 	private final HashMap<EventType, LuaFunction> subscribedEvents;
 	
-	public LuaPlugin(String name, String description, int majorVersion, int minorVersion, int revisionVersion, LuaFunction initFunction, HashSet<ICLICommand> commands, HashMap<EventType, LuaFunction> subscribedEvents) {
+	public LuaPlugin(String name, String description, int majorVersion, int minorVersion, int revisionVersion, HashSet<ICLICommand> commands, HashMap<EventType, LuaFunction> subscribedEvents) {
 		this.name = name;
 		this.description = description;
 		this.majorVersion = majorVersion;
 		this.minorVersion = minorVersion;
 		this.revisionVersion = revisionVersion;
-		this.initFunction = initFunction;
 		this.commands = commands;
 		this.subscribedEvents = subscribedEvents;
 	}
@@ -62,7 +60,16 @@ public class LuaPlugin implements IClankPlugin {
 	
 	@Override
 	public void init() {
-		initFunction.call();
+		if (subscribedEvents.get(EventType.PLUGIN_INIT_EVENT) != null) {
+			subscribedEvents.get(EventType.PLUGIN_INIT_EVENT).call();
+		}
+	}
+	
+	@Override
+	public void shutdown() {
+		if (subscribedEvents.get(EventType.PLUGIN_SHUTDOWN_EVENT) != null) {
+			subscribedEvents.get(EventType.PLUGIN_SHUTDOWN_EVENT).call();
+		}
 	}
 
 	@Override

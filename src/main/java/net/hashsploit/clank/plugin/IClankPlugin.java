@@ -44,9 +44,14 @@ public interface IClankPlugin {
 	public String getDescription();
 	
 	/**
-	 * Plugin initialization function
+	 * Plugin initialization function.
 	 */
 	public void init();
+	
+	/**
+	 * Plugin shutdown function.
+	 */
+	public void shutdown();
 	
 	/**
 	 * Get all the CLI commands this plugin registers.
