@@ -27,9 +27,12 @@
 			"private_key": null
 		}
 	},
-	"policy": "Welcome, this is the default policy for the clank server emulator. \r\n\r\nhttps://github.com/hashsploit/clank",
+	"usage_policy": "Welcome, this is the default policy for the clank server emulator. \r\n\r\nhttps://github.com/hashsploit/clank",
+	"privacy_policy": "Default privacy policy.",
 	"announcements": [
-		"This is an announcement."
+		"Announcement 1",
+		"Announcement 2",
+		"Announcement 3"
 	],
 	"operators": [
 		"hashsploit",

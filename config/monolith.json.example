@@ -44,7 +44,7 @@
 				"hostname": "killzone-prod.muis.pdonline.scea.com",
 				"port": 10075
 			}
-		],
+		]
 	},
 	"mas": {
 		"port": 10075,
