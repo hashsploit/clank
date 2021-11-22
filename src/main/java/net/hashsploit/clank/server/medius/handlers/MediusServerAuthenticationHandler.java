@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MasConfig;
+import net.hashsploit.clank.config.configs.MasConfig2;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
@@ -39,10 +39,10 @@ public class MediusServerAuthenticationHandler extends MediusPacketHandler {
 
 		byte confirmation = 0x00; // 0x00 = success, 0x01 = failure
 
-		String natAddress = ((MasConfig) Clank.getInstance().getConfig()).getNatConfig().getAddress();
-		final int natPort = ((MasConfig) Clank.getInstance().getConfig()).getNatConfig().getPort();
-		String mlsAddress = ((MasConfig) Clank.getInstance().getConfig()).getMlsConfig().getAddress();
-		final int mlsPort = ((MasConfig) Clank.getInstance().getConfig()).getMlsConfig().getPort();
+		String natAddress = ((MasConfig2) Clank.getInstance().getConfig()).getNatConfig().getAddress();
+		final int natPort = ((MasConfig2) Clank.getInstance().getConfig()).getNatConfig().getPort();
+		String mlsAddress = ((MasConfig2) Clank.getInstance().getConfig()).getMlsConfig().getAddress();
+		final int mlsPort = ((MasConfig2) Clank.getInstance().getConfig()).getMlsConfig().getPort();
 		
 		if (natAddress == null) {
 			natAddress = Utils.getPublicIpAddress();

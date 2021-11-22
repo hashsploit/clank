@@ -1,8 +1,8 @@
 package net.hashsploit.clank.cli.commands;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
+import net.hashsploit.clank.cli.Terminal;
 
 public class CLIExitCommand implements ICLICommand {
 

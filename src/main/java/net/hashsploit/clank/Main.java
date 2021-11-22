@@ -1,21 +1,27 @@
 package net.hashsploit.clank;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import net.hashsploit.clank.config.AbstractConfig;
-import net.hashsploit.clank.config.configs.*;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+
+import net.hashsploit.clank.config.AbstractConfig;
+import net.hashsploit.clank.config.configs.DmeConfig2;
+import net.hashsploit.clank.config.configs.MasConfig2;
+import net.hashsploit.clank.config.configs.MlsConfig2;
+import net.hashsploit.clank.config.configs.MonolithConfig2;
+import net.hashsploit.clank.config.configs.MuisConfig2;
+import net.hashsploit.clank.config.configs.NatConfig2;
 
 public class Main {
 
 	public static void main(String[] args) {
 
 		if (args.length != 1) {
-			System.err.println("Required argument: 1 (config file)");
+			System.err.printf("Required argument: 1 (config file)%n");
 			return;
 		}
 
@@ -34,20 +40,22 @@ public class Main {
 
 			switch (config.getEmulationMode()) {
 				case MEDIUS_UNIVERSE_INFORMATION_SERVER:
-					config = gson.fromJson(jsonConfig, MuisConfig.class);
+					config = gson.fromJson(jsonConfig, MuisConfig2.class);
 					break;
 				case MEDIUS_AUTHENTICATION_SERVER:
-					config = gson.fromJson(jsonConfig, MasConfig.class);
+					config = gson.fromJson(jsonConfig, MasConfig2.class);
 					break;
 				case MEDIUS_LOBBY_SERVER:
-					config = gson.fromJson(jsonConfig, MlsConfig.class);
+					config = gson.fromJson(jsonConfig, MlsConfig2.class);
 					break;
 				case DME_SERVER:
-					config = gson.fromJson(jsonConfig, DmeConfig.class);
+					config = gson.fromJson(jsonConfig, DmeConfig2.class);
 					break;
 				case NAT_SERVER:
-					config = gson.fromJson(jsonConfig, NatConfig.class);
+					config = gson.fromJson(jsonConfig, NatConfig2.class);
 					break;
+				case MONOLITH:
+					config = gson.fromJson(jsonConfig, MonolithConfig2.class);
 				default:
 					System.err.printf("Invalid 'emulation_mode' provided in the config file %s%n", args[0]);
 					return;
@@ -57,7 +65,7 @@ public class Main {
 			new Clank(config);
 
 		} catch (JsonParseException e) {
-			System.err.printf("Failed to start server, failed to parse JSON config error: %s%n", e.getMessage());
+			System.err.printf("Failed to parse JSON config error: %s%n", e.getMessage());
 		} catch (FileNotFoundException e) {
 			System.err.printf("File not found: %s%n", args[0]);
 		} catch (Throwable t) {

@@ -8,7 +8,7 @@ import io.netty.channel.epoll.Epoll;
 import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.config.configs.DmeConfig2;
 import net.hashsploit.clank.config.objects.ServerInfo;
 import net.hashsploit.clank.server.TcpServer;
 import net.hashsploit.clank.server.UdpServer;
@@ -36,8 +36,8 @@ public class DmeServer extends TcpServer {
 		this.udpStartingPort = udpStartingPort;
 		this.udpThreads = udpThreads;
 
-		String udpServerAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
-		int udpServerPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpPort();
+		String udpServerAddress = ((DmeConfig2) Clank.getInstance().getConfig()).getUdpAddress();
+		int udpServerPort = ((DmeConfig2) Clank.getInstance().getConfig()).getUdpPort();
 
 		Executors.newSingleThreadExecutor().execute(() -> { // TODO: this is super temporary
 			
@@ -57,7 +57,7 @@ public class DmeServer extends TcpServer {
 		setChannelInitializer(new DmeTcpClientInitializer(this));
 		
 		// Start RPC client
-		final ServerInfo rpcConfig = ((DmeConfig) Clank.getInstance().getConfig()).getRpcConfig();
+		final ServerInfo rpcConfig = ((DmeConfig2) Clank.getInstance().getConfig()).getRpcConfig();
 		String rpcAddress = rpcConfig.getAddress();
 		final int rpcPort = rpcConfig.getPort();
 		

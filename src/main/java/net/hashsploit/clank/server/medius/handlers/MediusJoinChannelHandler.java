@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.MediusConfig2;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
@@ -56,8 +56,8 @@ public class MediusJoinChannelHandler extends MediusPacketHandler {
 
 		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 		byte[] callbackStatus = Utils.intToBytesLittle(0);
-		String ipAddrStr = ((MediusConfig) Clank.getInstance().getConfig()).getAddress();
-		short port = (short) ((MediusConfig) Clank.getInstance().getConfig()).getPort();
+		String ipAddrStr = ((MediusConfig2) Clank.getInstance().getConfig()).getAddress();
+		short port = (short) ((MediusConfig2) Clank.getInstance().getConfig()).getPort();
 
 		if (ipAddrStr == null || ipAddrStr.isEmpty()) {
 			ipAddrStr = Utils.getPublicIpAddress();

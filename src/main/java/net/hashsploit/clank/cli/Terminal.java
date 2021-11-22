@@ -1,4 +1,4 @@
-package net.hashsploit.clank;
+package net.hashsploit.clank.cli;
 
 import java.io.ByteArrayOutputStream;
 import java.io.EOFException;
@@ -35,10 +35,6 @@ import jline.console.ConsoleReader;
 import jline.console.UserInterruptException;
 import jline.console.completer.Completer;
 import jline.console.history.History;
-import net.hashsploit.clank.cli.AnsiColor;
-import net.hashsploit.clank.cli.ICLICommand;
-import net.hashsploit.clank.cli.ICLIEvent;
-import net.hashsploit.clank.cli.ICLIInvalidCommand;
 
 public final class Terminal {
 

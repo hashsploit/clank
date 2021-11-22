@@ -1,7 +1,5 @@
 package net.hashsploit.clank.database;
 
-import java.sql.ResultSet;
-
 public interface IDatabase {
 
 	String generateSessionKey();

@@ -9,6 +9,7 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
 import net.hashsploit.clank.cli.ICLIEvent;
+import net.hashsploit.clank.cli.Terminal;
 import net.hashsploit.clank.cli.commands.CLIBroadcastCommand;
 import net.hashsploit.clank.cli.commands.CLIExitCommand;
 import net.hashsploit.clank.cli.commands.CLIHelpCommand;
@@ -16,14 +17,15 @@ import net.hashsploit.clank.cli.commands.CLIPlayersCommand;
 import net.hashsploit.clank.cli.commands.CLIPluginsCommand;
 import net.hashsploit.clank.cli.commands.CLIVersionCommand;
 import net.hashsploit.clank.config.AbstractConfig;
-import net.hashsploit.clank.config.configs.DmeConfig;
-import net.hashsploit.clank.config.configs.MediusConfig;
-import net.hashsploit.clank.config.configs.MlsConfig;
-import net.hashsploit.clank.config.configs.NatConfig;
+import net.hashsploit.clank.config.configs.DmeConfig2;
+import net.hashsploit.clank.config.configs.MediusConfig2;
+import net.hashsploit.clank.config.configs.MlsConfig2;
+import net.hashsploit.clank.config.configs.NatConfig2;
 import net.hashsploit.clank.config.objects.DatabaseInfo;
 import net.hashsploit.clank.database.DbManager;
 import net.hashsploit.clank.database.MariaDb;
 import net.hashsploit.clank.database.SimDb;
+import net.hashsploit.clank.plugin.IClankPlugin;
 import net.hashsploit.clank.plugin.PluginManager;
 import net.hashsploit.clank.server.IServer;
 import net.hashsploit.clank.server.dme.DmeServer;
@@ -35,11 +37,10 @@ import net.hashsploit.clank.server.nat.NatServer;
 public class Clank {
 
 	public static final String NAME = "Clank";
-	public static final String VERSION = "0.1.8";
+	public static final String VERSION = "0.2.0";
 	public static Clank instance;
 	private static final Logger logger = Logger.getLogger(Clank.class.getName());
 
-	private boolean running;
 	private AbstractConfig config;
 	private Terminal terminal;
 	private IServer server;
@@ -55,7 +56,6 @@ public class Clank {
 
 		instance = this;
 		this.config = config;
-		this.running = true;
 
 		// Initialize server
 		System.out.println("Initializing ...");
@@ -70,26 +70,18 @@ public class Clank {
 		terminal.registerCommand(new CLIPluginsCommand());
 
 		terminal.registerEvent(new ICLIEvent() {
-
 			@Override
 			public void userInterruptEvent() {
 				shutdown();
 			}
-
 			@Override
 			public void onReturnEvent(String line) {
-
 			}
-
 			@Override
 			public void onCommandEvent(String command, String[] params, ICLICommand handler) {
-
 			}
-
 			@Override
 			public void eofInterruptEvent() {
-				// TODO: replace with issuing the stats command.
-				logger.warning("Caught ^D EOL, use 'exit' to shutdown the server.");
 			}
 		});
 
@@ -108,17 +100,17 @@ public class Clank {
 
 		logger.info(String.format("%s v%s (starting %s)", NAME, VERSION, config.getEmulationMode().name()));
 		
-		final int mediusBitmask = EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
+		final int mediusBitmask = EmulationMode.MONOLITH.getValue() | EmulationMode.MEDIUS_AUTHENTICATION_SERVER.getValue() | EmulationMode.MEDIUS_LOBBY_SERVER.getValue() | EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER.getValue();
 		
 		// This is a *Medius server, set up the generic Medius components
-		MediusConfig mediusConfig = null;
+		MediusConfig2 mediusConfig = null;
 		if ((config.getEmulationMode().getValue() & mediusBitmask) != 0) {
 
 			// Register generic *Medius CLI commands
 			terminal.registerCommand(new CLIPlayersCommand());
 
 			// Set up the basic configuration for *Medius servers
-			mediusConfig = (MediusConfig) config;
+			mediusConfig = (MediusConfig2) config;
 		}
 
 		String terminalPrompt = ">";
@@ -152,25 +144,26 @@ public class Clank {
 					mediusConfig.getParentThreads(),
 					mediusConfig.getChildThreads()
 				);
-				MlsConfig mlsConfig = (MlsConfig) config;
-				//db = new DbManager(this, new SimDb());
+				MlsConfig2 mlsConfig = (MlsConfig2) config;
 				DatabaseInfo dbInfo = mlsConfig.getDatabaseInfo();
-				if (dbInfo.getMode().equalsIgnoreCase("MariaDb")) {
-					db = new DbManager(this, new MariaDb(dbInfo));
+				
+				switch (dbInfo.getMode()) {
+					case MARIA_DB:
+						db = new DbManager(this, new MariaDb(dbInfo));
+					default:
+						db = new DbManager(this, new SimDb());
 				}
-				else {
-					db = new DbManager(this, new SimDb());
-				}
+				
 				break;
 			case NAT_SERVER:
 				terminalPrompt = "NAT>";
-				NatConfig natConfig = (NatConfig) config;
+				NatConfig2 natConfig = (NatConfig2) config;
 				server = new NatServer(natConfig.getAddress(), natConfig.getPort(), natConfig.getUdpThreads());
 				break;
 			case DME_SERVER:
 				terminalPrompt = AnsiColor.GREEN + "DME>";
 				terminal.registerCommand(new CLIBroadcastCommand());
-				DmeConfig dmeConfig = (DmeConfig) config;
+				DmeConfig2 dmeConfig = (DmeConfig2) config;
 				server = new DmeServer(dmeConfig.getAddress(), dmeConfig.getPort(), dmeConfig.getParentThreads(), dmeConfig.getChildThreads(), dmeConfig.getUdpAddress(), dmeConfig.getUdpPort(), dmeConfig.getUdpThreads(), dmeConfig.getTimeout());
 				break;
 			default:
@@ -200,11 +193,14 @@ public class Clank {
 	 * Gracefully shutdown Clank.
 	 */
 	public void shutdown() {
-		running = false;
 		terminal.print(Level.INFO, "Shutting down ...");
+		
+		pluginManager.unloadAllPlugins();
+		
 		if (server != null) {
 			server.stop();
 		}
+		
 		terminal.shutdown();
 		System.exit(0);
 	}

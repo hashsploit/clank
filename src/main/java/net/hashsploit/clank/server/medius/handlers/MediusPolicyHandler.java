@@ -2,28 +2,29 @@ package net.hashsploit.clank.server.medius.handlers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 import java.util.regex.Pattern;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.MediusConfig2;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusConstants;
 import net.hashsploit.clank.server.medius.MediusMessageType;
 import net.hashsploit.clank.server.medius.MediusPacketHandler;
 import net.hashsploit.clank.server.medius.objects.MediusMessage;
+import net.hashsploit.clank.server.medius.serializers.PolicyRequest;
+import net.hashsploit.clank.server.medius.serializers.PolicyResponse;
 import net.hashsploit.clank.utils.Utils;
 
 public class MediusPolicyHandler extends MediusPacketHandler {
 
 	private static final Logger logger = Logger.getLogger(MediusPolicyHandler.class.getName());
-
-	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
-	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
+	
+	private PolicyRequest reqPacket;
+	private PolicyResponse respPacket;
 
 	public MediusPolicyHandler() {
 		super(MediusMessageType.Policy, MediusMessageType.PolicyResponse);
@@ -31,16 +32,18 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 
 	@Override
 	public void read(MediusClient client, MediusMessage mm) {
-		// Process the packet
-		ByteBuffer buf = ByteBuffer.wrap(mm.getPayload());
-		buf.get(messageId);
-		buf.get(sessionKey);
+		reqPacket = new PolicyRequest(mm.getPayload());
+		logger.finest(reqPacket.toString());
 	}
 
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
 
-		String policyString = ((MediusConfig) Clank.getInstance().getConfig()).getPolicy();
+		
+		
+		
+		// FIXME: use serializer PolicyResponse and implement both types of policy responses.
+		String policyString = ((MediusConfig2) Clank.getInstance().getConfig()).getUsagePolicy();
 		List<MediusMessage> mediusMessages = new ArrayList<MediusMessage>();
 		
 		if (policyString != null && policyString.length() > 0) {
@@ -82,7 +85,7 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 				
 				ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				try {
-					outputStream.write(messageId); // medius message uuid
+					outputStream.write(reqPacket.getMessageId()); // medius message uuid
 					outputStream.write(padding); // padding
 					outputStream.write(Utils.intToBytes(callbackStatus.getValue())); // medius callback status
 					outputStream.write(policy); // segmented policy length
@@ -100,7 +103,7 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 						"endOfList",
 					},
 					new String[] {
-						"0x" + Utils.bytesToHex(messageId),
+						"0x" + Utils.bytesToHex(reqPacket.getMessageId()),
 						"0x" + Utils.bytesToHex(padding),
 						callbackStatus.name() + " (0x" + Integer.toHexString(callbackStatus.getValue() & 0xFF) + ")",
 						new String(policy).replaceAll(Pattern.quote("\n"), "\\\\n").replaceAll(Pattern.quote("\r"), "\\\\r"),
@@ -118,7 +121,7 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 			
 			ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 			try {
-				outputStream.write(messageId); // medius message uuid
+				outputStream.write(reqPacket.getMessageId()); // medius message uuid
 				outputStream.write(padding); // padding
 				outputStream.write(Utils.intToBytes(callbackStatus.getValue())); // medius callback status
 				outputStream.write(policy); // segmented policy length
@@ -136,7 +139,7 @@ public class MediusPolicyHandler extends MediusPacketHandler {
 						"endOfList",
 					},
 					new String[] {
-						"0x" + Utils.bytesToHex(messageId),
+						"0x" + Utils.bytesToHex(reqPacket.getMessageId()),
 						"0x" + Utils.bytesToHex(padding),
 						callbackStatus.name() + " (0x" + Utils.intToHex(callbackStatus.getValue() & 0xFF) + ")",
 						Utils.bytesToStringClean(policy),

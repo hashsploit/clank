@@ -12,7 +12,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.config.configs.DmeConfig2;
 import net.hashsploit.clank.rt.serializers.RT_ClientConnectTcpAuxUdp;
 import net.hashsploit.clank.server.RTMessage;
 import net.hashsploit.clank.server.RtMessageId;
@@ -29,7 +29,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
 
 	private static final Logger logger = Logger.getLogger(TestHandlerDmeTcp.class.getName());
 	private final DmeTcpClient client;
-	private int curUdpPort = ((DmeConfig) Clank.getInstance().getConfig()).getUdpPort();
+	private int curUdpPort = ((DmeConfig2) Clank.getInstance().getConfig()).getUdpPort();
 
 	public TestHandlerDmeTcp(final DmeTcpClient client) {
 		super();
@@ -208,7 +208,7 @@ public class TestHandlerDmeTcp extends MessageToMessageDecoder<ByteBuf> { // (1)
     		
     		// Server AUX UDP Info (IP and port)
     		ByteBuffer buf = ByteBuffer.allocate(18);
-    		String udpAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
+    		String udpAddress = ((DmeConfig2) Clank.getInstance().getConfig()).getUdpAddress();
     		
     		if (udpAddress == null || udpAddress.isEmpty()) {
     			udpAddress = Utils.getPublicIpAddress();

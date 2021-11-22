@@ -7,8 +7,8 @@ import java.util.List;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
-import net.hashsploit.clank.config.configs.MediusConfig;
-import net.hashsploit.clank.config.configs.MlsConfig;
+import net.hashsploit.clank.config.configs.MediusConfig2;
+import net.hashsploit.clank.config.configs.MlsConfig2;
 import net.hashsploit.clank.server.MediusGame;
 import net.hashsploit.clank.server.Player;
 import net.hashsploit.clank.server.medius.objects.Channel;
@@ -33,7 +33,7 @@ public class MediusLobbyServer extends MediusServer {
 	public MediusLobbyServer(String address, int port, int parentThreads, int childThreads) {
 		super(EmulationMode.MEDIUS_LOBBY_SERVER, address, port, parentThreads, childThreads);
 		
-		final MlsConfig config = (MlsConfig) Clank.getInstance().getConfig();
+		final MlsConfig2 config = (MlsConfig2) Clank.getInstance().getConfig();
 		
 		this.players = new HashSet<Player>();
 		this.clans = new HashSet<Clan>();
@@ -120,7 +120,7 @@ public class MediusLobbyServer extends MediusServer {
 	 * @return
 	 */
 	public Location getLocationById(int locationId) {
-		for (final Location location : ((MlsConfig) Clank.getInstance().getConfig()).getLocations()) {
+		for (final Location location : ((MlsConfig2) Clank.getInstance().getConfig()).getLocations()) {
 			if (location.getId() == locationId) {
 				return location;
 			}
@@ -134,7 +134,7 @@ public class MediusLobbyServer extends MediusServer {
 	 * @return
 	 */
 	public Channel getChannelById(int channelId) {
-		for (final Channel channel : ((MlsConfig) Clank.getInstance().getConfig()).getChannels()) {
+		for (final Channel channel : ((MlsConfig2) Clank.getInstance().getConfig()).getChannels()) {
 			if (channel.getId() == channelId) {
 				return channel;
 			}

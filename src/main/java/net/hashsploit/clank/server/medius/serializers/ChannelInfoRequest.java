@@ -9,33 +9,34 @@ import net.hashsploit.clank.utils.Utils;
 
 public class ChannelInfoRequest extends MediusMessage {
 
-	private byte[] messageID = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
+	private byte[] messageId = new byte[MediusConstants.MESSAGEID_MAXLEN.value];
 	private byte[] sessionKey = new byte[MediusConstants.SESSIONKEY_MAXLEN.value];
-	private byte[] worldID = new byte[4];
+	private byte[] worldId = new byte[4];
 	
 	public ChannelInfoRequest(byte[] data) {
 		super(MediusMessageType.ChannelInfo, data);
 		
 		ByteBuffer buf = ByteBuffer.wrap(data);
-		buf.get(messageID);
+		buf.get(messageId);
 		buf.get(sessionKey);
-		buf.getShort(); // buffer
-		buf.get(worldID);
+		buf.getShort(); // padding
+		buf.get(worldId);
 	}
 	
+	@Override
 	public String toString() {
-		return "ChannelInfoRequest: \n" + 
-				"messageID: " + Utils.bytesToHex(messageID) + '\n' + 
-				"sessionKey: " + Utils.bytesToHex(sessionKey) + '\n' + 
-				"worldID: " + Utils.bytesToHex(worldID);		
+		return "ChannelInfoRequest{" + 
+				"'messageId':" + Utils.bytesToHex(messageId) + 
+				"'sessionKey':" + Utils.bytesToHex(sessionKey) + 
+				"'worldId': " + Utils.bytesToHex(worldId);		
 	}
 	
-	public synchronized byte[] getMessageID() {
-		return messageID;
+	public byte[] getMessageId() {
+		return messageId;
 	}
 	
-	public synchronized void setMessageID(byte[] messageID) {
-		this.messageID = messageID;
+	public synchronized void setMessageId(byte[] messageId) {
+		this.messageId = messageId;
 	}
 	
 	public synchronized byte[] getSessionKey() {
@@ -46,12 +47,12 @@ public class ChannelInfoRequest extends MediusMessage {
 		this.sessionKey = sessionKey;
 	}
 
-	public synchronized byte[] getWorldID() {
-		return worldID;
+	public byte[] getWorldId() {
+		return worldId;
 	}
 	
-	public synchronized void setWorldID(byte[] worldID) {
-		this.worldID = worldID;
+	public synchronized void setWorldId(byte[] worldId) {
+		this.worldId = worldId;
 	}
 
 	

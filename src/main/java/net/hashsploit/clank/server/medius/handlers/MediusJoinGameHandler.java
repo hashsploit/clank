@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MlsConfig;
+import net.hashsploit.clank.config.configs.MlsConfig2;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusLobbyServer;
@@ -53,7 +53,7 @@ public class MediusJoinGameHandler extends MediusPacketHandler {
 		}
 
 		final MediusGameHostType gameHostType = MediusGameHostType.HOST_CLIENT_SERVER_AUX_UDP;
-		final MlsConfig mlsConfig = (MlsConfig) Clank.getInstance().getConfig();
+		final MlsConfig2 mlsConfig = (MlsConfig2) Clank.getInstance().getConfig();
 		
 		String dmeAddress = mlsConfig.getDmeConfig().getAddress();
 		String natAddress = mlsConfig.getNatConfig().getAddress();

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MuisConfig;
+import net.hashsploit.clank.config.configs.MuisConfig2;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
 import net.hashsploit.clank.server.medius.MediusMessageType;
@@ -37,7 +37,7 @@ public class MediusGetUniverseInformationHandler extends MediusPacketHandler {
 		byte[] messageId = reqPacket.getMessageId();
 		
 		// This is OK to cast without checking because this handler is only ever used in the MUIS.
-		MuisConfig config = (MuisConfig) Clank.getInstance().getConfig();
+		MuisConfig2 config = (MuisConfig2) Clank.getInstance().getConfig();
 		
 		List<MediusMessage> responses = new ArrayList<MediusMessage>();
 		

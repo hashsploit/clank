@@ -1,7 +1,5 @@
 package net.hashsploit.clank.cli;
 
-import net.hashsploit.clank.Terminal;
-
 public interface ICLICommand {
 	
 	/**

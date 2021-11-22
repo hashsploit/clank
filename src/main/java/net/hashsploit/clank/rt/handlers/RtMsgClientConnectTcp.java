@@ -6,8 +6,8 @@ import java.util.List;
 import io.netty.buffer.ByteBuf;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
-import net.hashsploit.clank.config.configs.DmeConfig;
-import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.DmeConfig2;
+import net.hashsploit.clank.config.configs.MediusConfig2;
 import net.hashsploit.clank.rt.RtMessageHandler;
 import net.hashsploit.clank.rt.serializers.RT_ClientConnectTcp;
 import net.hashsploit.clank.rt.serializers.RT_ServerConnectAcceptTcp;
@@ -75,7 +75,7 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 		if (client.getServer().getEmulationMode() == EmulationMode.MEDIUS_AUTHENTICATION_SERVER ||
 			client.getServer().getEmulationMode() == EmulationMode.MEDIUS_LOBBY_SERVER ||
 			client.getServer().getEmulationMode() == EmulationMode.MEDIUS_UNIVERSE_INFORMATION_SERVER) {
-			MediusConfig cfg = (MediusConfig) Clank.getInstance().getConfig();
+			MediusConfig2 cfg = (MediusConfig2) Clank.getInstance().getConfig();
 			
 			if (cfg.isEncrypted()) { // Encryption is enabled				
 				// CRYPT KEY GAME
@@ -97,7 +97,7 @@ public class RtMsgClientConnectTcp extends RtMessageHandler {
 			responses.add(serverConnectComplete);
 			
 		} else if (client.getServer().getEmulationMode() == EmulationMode.DME_SERVER) {
-			DmeConfig cfg = (DmeConfig) Clank.getInstance().getConfig();
+			DmeConfig2 cfg = (DmeConfig2) Clank.getInstance().getConfig();
 		}
 
 		return responses;

@@ -11,7 +11,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
-import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.MediusConfig2;
 import net.hashsploit.clank.rt.RtMessageHandler;
 import net.hashsploit.clank.rt.RtPacketMap;
 import net.hashsploit.clank.server.medius.MediusConstants;
@@ -86,7 +86,7 @@ public class MediusClient implements IClient {
 
 		// 2
 		// Decrypt the packet (2)
-		if (((MediusConfig) Clank.getInstance().getConfig()).isEncrypted()) {
+		if (((MediusConfig2) Clank.getInstance().getConfig()).isEncrypted()) {
 			channel.pipeline().addLast(new RtDecryptionHandler(this));
 		}
 
@@ -112,7 +112,7 @@ public class MediusClient implements IClient {
 		
 		// 4
 		// Re-encrypt the packet (4)
-		if (((MediusConfig) Clank.getInstance().getConfig()).isEncrypted()) {
+		if (((MediusConfig2) Clank.getInstance().getConfig()).isEncrypted()) {
 			channel.pipeline().addLast(new RtEncryptionHandler(this));
 		}
 

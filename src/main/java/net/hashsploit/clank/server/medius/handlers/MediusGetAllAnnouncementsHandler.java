@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.MlsConfig;
+import net.hashsploit.clank.config.configs.MlsConfig2;
 import net.hashsploit.clank.server.ChatColor;
 import net.hashsploit.clank.server.MediusClient;
 import net.hashsploit.clank.server.medius.MediusCallbackStatus;
@@ -34,7 +34,7 @@ public class MediusGetAllAnnouncementsHandler extends MediusPacketHandler {
 	@Override
 	public List<MediusMessage> write(MediusClient client) {
 		
-		final List<String> announcements = ((MlsConfig) Clank.getInstance().getConfig()).getAnnouncements();
+		final List<String> announcements = ((MlsConfig2) Clank.getInstance().getConfig()).getAnnouncements();
 		String announcementStr = "";
 		MediusCallbackStatus callbackStatus = MediusCallbackStatus.NO_RESULT;
 		

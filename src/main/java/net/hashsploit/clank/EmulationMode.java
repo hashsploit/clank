@@ -3,10 +3,7 @@ package net.hashsploit.clank;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * The server mode in which Clank is currently running as.
- * 
- * @author hashsploit
- *
+ * The server emulation mode in which Clank is currently running as.
  */
 public enum EmulationMode {
 	
@@ -38,7 +35,13 @@ public enum EmulationMode {
 	 * DME server component.
 	 */
 	@SerializedName("DME_SERVER")
-	DME_SERVER(16);
+	DME_SERVER(16),
+	
+	/**
+	 * Monolith server component. (all servers in-one process, useful for debugging)
+	 */
+	@SerializedName("MONOLITH")
+	MONOLITH(32);
 
 	private final int value;
 

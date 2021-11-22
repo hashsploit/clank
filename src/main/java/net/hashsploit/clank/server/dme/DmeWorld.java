@@ -10,7 +10,7 @@ import java.util.HashSet;
 import java.util.logging.Logger;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.config.configs.DmeConfig;
+import net.hashsploit.clank.config.configs.DmeConfig2;
 import net.hashsploit.clank.server.RtMessageId;
 import net.hashsploit.clank.server.medius.objects.DmePlayerStatus;
 import net.hashsploit.clank.utils.Utils;
@@ -158,7 +158,7 @@ public class DmeWorld {
 		int playerId = player.getPlayerId();
 
 		// build server notify packet
-		String ipAddress = ((DmeConfig) Clank.getInstance().getConfig()).getUdpAddress();
+		String ipAddress = ((DmeConfig2) Clank.getInstance().getConfig()).getUdpAddress();
 
 		if (ipAddress == null) {
 			ipAddress = Utils.getPublicIpAddress();

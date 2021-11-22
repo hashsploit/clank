@@ -6,9 +6,9 @@ import java.util.logging.Logger;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EventType;
-import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.AnsiColor;
 import net.hashsploit.clank.cli.ICLICommand;
+import net.hashsploit.clank.cli.Terminal;
 import net.hashsploit.clank.plugin.IClankPlugin;
 import net.hashsploit.clank.plugin.PluginManager;
 
@@ -75,6 +75,46 @@ public class CLIPluginsCommand implements ICLICommand {
 				
 				logger.warning(String.format("Plugin not loaded: %s", pluginName));
 				return;
+			} else if (params[0].equalsIgnoreCase("reload")) {
+				// Plugin names may have spaces
+				String pluginName = String.join(" ", Arrays.copyOfRange(params, 1, params.length));
+				
+				for (final IClankPlugin plugin : Clank.getInstance().getPluginManager().getPlugins()) {
+					if (plugin.getName().equals(pluginName)) {
+						Clank.getInstance().getPluginManager().unloadPlugin(pluginName);
+						// Verify the plugin name is valid
+						if (!pluginName.matches("[A-Za-z0-9_-]+")) {
+							logger.warning(String.format("Invalid plugin name '%s'!", pluginName));
+							logger.warning("A plugin name may only be alpha-numeric with hyphens and underscores.");
+							return;
+						}
+						
+						final File pluginsFolder = new File(PluginManager.PLUGINS_FOLDER);
+
+						// If plugins/ does not exist, create it.
+						if (!pluginsFolder.exists()) {
+							pluginsFolder.mkdirs();
+						}
+						
+						// If plugins/ is not a directory
+						if (!pluginsFolder.isDirectory()) {
+							pluginsFolder.delete();
+							pluginsFolder.mkdirs();
+						}
+						
+						final File pluginFile = new File(pluginsFolder, pluginName);
+						
+						if (!pluginFile.exists()) {
+							logger.warning(String.format("Plugin not found: %s", pluginFile.getName()));
+							return;
+						}
+						Clank.getInstance().getPluginManager().loadPlugin(pluginFile);
+						return;
+					}
+				}
+				
+				logger.warning(String.format("Plugin reloaded: %s", pluginName));
+				return;
 			} else if (params[0].equalsIgnoreCase("info")) {
 				
 				// Plugin names may have spaces
@@ -116,6 +156,7 @@ public class CLIPluginsCommand implements ICLICommand {
 		logger.info("Usage: " + commandName() + " list - List all loaded plugins.");
 		logger.info("Usage: " + commandName() + " load <plugin-name> - Load a new plugin in manually.");
 		logger.info("Usage: " + commandName() + " unload <plugin-name> - Unload a currently loaded plugin.");
+		logger.info("Usage: " + commandName() + " reload <plugin-name> - Reloads a plugin.");
 		logger.info("Usage: " + commandName() + " info <plugin-name> - Inspect a plugin and provide information about it.");
 	}
 

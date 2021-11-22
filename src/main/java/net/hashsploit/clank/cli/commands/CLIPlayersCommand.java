@@ -3,8 +3,8 @@ package net.hashsploit.clank.cli.commands;
 import java.util.logging.Level;
 
 import net.hashsploit.clank.Clank;
-import net.hashsploit.clank.Terminal;
 import net.hashsploit.clank.cli.ICLICommand;
+import net.hashsploit.clank.cli.Terminal;
 import net.hashsploit.clank.server.ClientState;
 import net.hashsploit.clank.server.IClient;
 import net.hashsploit.clank.server.MediusClient;

@@ -5,8 +5,8 @@ import java.util.List;
 
 import net.hashsploit.clank.Clank;
 import net.hashsploit.clank.EmulationMode;
-import net.hashsploit.clank.config.configs.MasConfig;
-import net.hashsploit.clank.config.configs.MediusConfig;
+import net.hashsploit.clank.config.configs.MasConfig2;
+import net.hashsploit.clank.config.configs.MediusConfig2;
 import net.hashsploit.clank.config.objects.ServerInfo;
 import net.hashsploit.clank.server.medius.objects.Channel;
 import net.hashsploit.clank.server.medius.objects.Location;
@@ -25,7 +25,7 @@ public class MediusAuthenticationServer extends MediusServer {
 		super(EmulationMode.MEDIUS_AUTHENTICATION_SERVER, address, port, parentThreads, childThreads);
 		
 		// Start RPC client
-		final ServerInfo config = ((MediusConfig) Clank.getInstance().getConfig()).getRpcConfig();
+		final ServerInfo config = ((MediusConfig2) Clank.getInstance().getConfig()).getRpcConfig();
 		String rpcAddress = config.getAddress();
 		final int rpcPort = config.getPort();
 
@@ -35,8 +35,8 @@ public class MediusAuthenticationServer extends MediusServer {
 
 		rpcClient = new ClankMasRpcClient(rpcAddress, rpcPort);
 
-		if (Clank.getInstance().getConfig() instanceof MasConfig) {
-			final MasConfig masConfig = (MasConfig) Clank.getInstance().getConfig();
+		if (Clank.getInstance().getConfig() instanceof MasConfig2) {
+			final MasConfig2 masConfig = (MasConfig2) Clank.getInstance().getConfig();
 			if (masConfig.getWhitelist().isEnabled()) {
 				logger.info(String.format("Whitelisted users: %s", Arrays.toString(masConfig.getWhitelist().getPlayers().keySet().toArray())));
 			}
@@ -57,11 +57,11 @@ public class MediusAuthenticationServer extends MediusServer {
 	}
 
 	public List<Channel> getChannels() {
-		return ((MasConfig) Clank.getInstance().getConfig()).getChannels();
+		return ((MasConfig2) Clank.getInstance().getConfig()).getChannels();
 	}
 	
 	public List<Location> getLocations() {
-		return ((MasConfig) Clank.getInstance().getConfig()).getLocations();
+		return ((MasConfig2) Clank.getInstance().getConfig()).getLocations();
 	}
 
 	public int getNatPort() {

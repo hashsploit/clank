@@ -38,18 +38,18 @@ public class MediusChannelInfoHandler extends MediusPacketHandler {
 		byte[] callbackStatus = Utils.intToBytesLittle((MediusCallbackStatus.SUCCESS.getValue()));
 
 		MediusLobbyServer server = (MediusLobbyServer) client.getServer();
-		Channel channel = server.getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldID()));
+		Channel channel = server.getChannelById(Utils.bytesToIntLittle(reqPacket.getWorldId()));
 		
 		if (channel == null) {
-			logger.severe("Requested channel: " + Utils.bytesToIntLittle(reqPacket.getWorldID()) + " does not exist! Using default...");
+			logger.severe("Requested channel: " + Utils.bytesToIntLittle(reqPacket.getWorldId()) + " does not exist! Using default...");
 			channel = server.getChannelById(1);
 		}
 		
 		byte[] lobbyName = Utils.buildByteArrayFromString(channel.getName(), MediusConstants.LOBBYNAME_MAXLEN.value);
-		byte[] activePlayerCount = Utils.intToBytesLittle(server.getChannelActivePlayerCountById(Utils.bytesToIntLittle(reqPacket.getWorldID())));
+		byte[] activePlayerCount = Utils.intToBytesLittle(server.getChannelActivePlayerCountById(Utils.bytesToIntLittle(reqPacket.getWorldId())));
 		byte[] maxPlayers = Utils.intToBytesLittle(channel.getCapacity());
 
-		respPacket = new ChannelInfoResponse(reqPacket.getMessageID(), callbackStatus, lobbyName, activePlayerCount, maxPlayers);
+		respPacket = new ChannelInfoResponse(reqPacket.getMessageId(), callbackStatus, lobbyName, activePlayerCount, maxPlayers);
 		
 		List<MediusMessage> response = new ArrayList<MediusMessage>();
 		response.add(respPacket);
