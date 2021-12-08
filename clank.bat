@@ -26,7 +26,7 @@ exit /B 0
 
 :require_installed
 	call :check_installed %~1, status
-	if %status% == 0 (
+	if %status% == "0" (
 		echo %~1 ^(%~2^) is not installed, please install it!
 		exit /B 100
 	)
