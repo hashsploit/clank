@@ -147,7 +147,7 @@
 		<dependency>
 			<groupId>io.grpc</groupId>
 			<artifactId>grpc-protobuf</artifactId>
-			<version>1.34.0</version>
+			<version>1.48.1</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/io.grpc/grpc-stub -->
 		<dependency>
